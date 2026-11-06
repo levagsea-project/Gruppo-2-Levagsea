@@ -5,5 +5,6 @@ public enum CardOrigin {
     PACK,
     REWARD,
     PURCHASE,
-    GRANT
+    GRANT,
+    STARTER
 }

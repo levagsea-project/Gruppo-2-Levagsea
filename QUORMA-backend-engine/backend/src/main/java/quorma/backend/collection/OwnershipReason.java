@@ -6,5 +6,6 @@ public enum OwnershipReason {
     REWARD,
     PURCHASE,
     GRANT,
+    STARTER,
     TRADE
 }

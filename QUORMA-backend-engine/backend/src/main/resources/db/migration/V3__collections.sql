@@ -6,7 +6,7 @@ CREATE TABLE card_instances
     id          uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
     owner_id    uuid        NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
     card_id     uuid        NOT NULL REFERENCES cards (id) ON DELETE RESTRICT,
-    origin_type varchar(12) NOT NULL CHECK (origin_type IN ('PACK', 'REWARD', 'PURCHASE', 'GRANT')),
+    origin_type varchar(12) NOT NULL CHECK (origin_type IN ('PACK', 'REWARD', 'PURCHASE', 'GRANT', 'STARTER')),
     origin_ref  uuid,
     created_at  timestamptz NOT NULL DEFAULT now(),
     acquired_at timestamptz NOT NULL DEFAULT now(),
@@ -41,7 +41,7 @@ CREATE TABLE card_ownership_history
     card_instance_id uuid        NOT NULL REFERENCES card_instances (id) ON DELETE RESTRICT,
     from_user_id     uuid REFERENCES users (id) ON DELETE RESTRICT,
     to_user_id       uuid        NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
-    reason           varchar(12) NOT NULL CHECK (reason IN ('PACK', 'REWARD', 'PURCHASE', 'GRANT', 'TRADE')),
+    reason           varchar(12) NOT NULL CHECK (reason IN ('PACK', 'REWARD', 'PURCHASE', 'GRANT', 'STARTER', 'TRADE')),
     trade_id         uuid, -- FK added in V5 (trades)
     created_at       timestamptz NOT NULL DEFAULT now(),
     CHECK (from_user_id IS DISTINCT FROM to_user_id),
