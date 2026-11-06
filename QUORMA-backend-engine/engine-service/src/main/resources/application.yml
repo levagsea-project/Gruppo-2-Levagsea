@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: quorma-engine
+
+server:
+  port: ${SERVER_PORT:8081}
+
+engine:
+  version: 1.0.0-SNAPSHOT
