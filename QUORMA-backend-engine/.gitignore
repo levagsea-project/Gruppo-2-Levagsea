@@ -1,0 +1,21 @@
+# Java / Maven
+target/
+*.class
+*.jar
+# IDE
+.idea/
+*.iml
+.vscode/
+# Python
+__pycache__/
+*.pyc
+# Local / secrets
+.env*
+*.local
+# OS
+.DS_Store
+# Generated, never committed
+engine/out/
+backend/logs/
+# Logs
+*.log
