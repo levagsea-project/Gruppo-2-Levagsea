@@ -47,6 +47,10 @@ public class Deck {
     @Version
     private Long version;
 
+    @Column(name = "is_defense")
+    @Setter
+    private boolean defense;
+
     public Deck(UUID ownerId, String name, String faction, UUID snapshotId, Instant updatedAt) {
         this.ownerId = ownerId;
         this.name = name;

@@ -13,11 +13,14 @@ CREATE TABLE decks
     created_at  timestamptz NOT NULL DEFAULT now(),
     updated_at  timestamptz NOT NULL DEFAULT now(),
     version     bigint      NOT NULL DEFAULT 0,
+    -- Fights when its owner is attacked by matchmaking while offline: at most one per owner and faction.
+    is_defense  boolean     NOT NULL DEFAULT false,
     FOREIGN KEY (snapshot_id, faction) REFERENCES pool_snapshots (id, faction),
     UNIQUE (owner_id, name),
     UNIQUE (id, owner_id, faction, snapshot_id)
 );
 CREATE INDEX decks_owner_idx ON decks (owner_id);
+CREATE UNIQUE INDEX decks_one_defense_per_owner_faction_uq ON decks (owner_id, faction) WHERE is_defense;
 
 -- owner_id, card_id, faction, snapshot_id and deck_slot are copies kept consistent by the composite FKs.
 CREATE TABLE deck_cards
