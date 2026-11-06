@@ -19,3 +19,5 @@ engine/out/
 backend/logs/
 # Logs
 *.log
+# pdf in docs
+docs/**/*.pdf
