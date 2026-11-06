@@ -1,0 +1,505 @@
+{
+  "_schema": {
+    "instantiation": "per_creature = una copia dell'espansione per ogni creatura del controllore del seme indicato (sorgente = quella creatura); per_player = una sola copia (sorgente = il giocatore).",
+    "replaces": "Finché la sinergia è attiva le sinergie elencate smettono di applicarsi.",
+    "values": "I valori '$tune.synergies.*' sono in balance.json."
+  },
+  "VINCOLO_3": {
+    "suit": "Vincolo",
+    "tier": 3,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Ogni creatura Vincolo guadagna +[600] ATK mentre è adiacente a un'altra creatura Vincolo.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.VINCOLO_3.atk"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vincolo",
+              "level": 3
+            }
+          },
+          {
+            "id": "C11",
+            "params": {
+              "suit": "Vincolo"
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "VINCOLO_4": {
+    "suit": "Vincolo",
+    "tier": 4,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Ogni creatura Vincolo concede +[400] ATK a ogni attaccante adiacente, anche se è a sua volta un attaccante.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.VINCOLO_4.atk"
+        },
+        "target_id": "S41",
+        "target_params": {
+          "filters": [
+            "attacker"
+          ]
+        },
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vincolo",
+              "level": 4
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "VINCOLO_5": {
+    "suit": "Vincolo",
+    "tier": 5,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Ogni creatura Vincolo guadagna +[1000] ATK. Le creature Vincolo sono sempre considerate adiacenti tra loro per gli effetti delle carte.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.VINCOLO_5.atk"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vincolo",
+              "level": 5
+            }
+          }
+        ],
+        "class": "C"
+      },
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E34",
+        "effect_params": {
+          "group": "Vincolo"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vincolo",
+              "level": 5
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "FRATTURA_3": {
+    "suit": "Frattura",
+    "tier": 3,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Un attaccante Frattura guadagna +[1200] ATK quando attacca un bersaglio la cui DEF attuale è superiore al suo ATK attuale (valori presi all'inizio del ciclo).",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.FRATTURA_3.atk"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Frattura",
+              "level": 3
+            }
+          },
+          {
+            "id": "C1"
+          },
+          {
+            "id": "C22"
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "FRATTURA_4": {
+    "suit": "Frattura",
+    "tier": 4,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Quando un attaccante Frattura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per [1.2] per quell'attacco e il suo spill tratta la DEF del bersaglio prima del colpo mortale come l'[80]% del suo valore.",
+    "expands_to": [
+      {
+        "trigger_id": "T34",
+        "trigger_params": {},
+        "effect_id": "E21",
+        "effect_params": {
+          "factor": "$tune.synergies.FRATTURA_4.factor"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Frattura",
+              "level": 4
+            }
+          },
+          {
+            "id": "C1"
+          }
+        ],
+        "class": "R"
+      },
+      {
+        "trigger_id": "T34",
+        "trigger_params": {},
+        "effect_id": "E22",
+        "effect_params": {
+          "permille": "$tune.synergies.FRATTURA_4.def_permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Frattura",
+              "level": 4
+            }
+          },
+          {
+            "id": "C1"
+          }
+        ],
+        "class": "R"
+      }
+    ]
+  },
+  "FRATTURA_5": {
+    "suit": "Frattura",
+    "tier": 5,
+    "instantiation": "per_creature",
+    "replaces": [
+      "FRATTURA_4"
+    ],
+    "description": "Quando un attaccante Frattura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per [1.2] per quell'attacco e il suo spill tratta la DEF del bersaglio prima del colpo mortale come il [50]% del suo valore. L'ATK attuale delle creature Frattura non può essere ridotto dagli effetti. Sostituisce il Tier 4.",
+    "expands_to": [
+      {
+        "trigger_id": "T34",
+        "trigger_params": {},
+        "effect_id": "E22",
+        "effect_params": {
+          "permille": "$tune.synergies.FRATTURA_5.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Frattura",
+              "level": 5
+            }
+          },
+          {
+            "id": "C1"
+          }
+        ],
+        "class": "R"
+      },
+      {
+        "trigger_id": "T34",
+        "trigger_params": {},
+        "effect_id": "E21",
+        "effect_params": {
+          "factor": "$tune.synergies.FRATTURA_5.factor"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Frattura",
+              "level": 5
+            }
+          },
+          {
+            "id": "C1"
+          }
+        ],
+        "class": "R"
+      },
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E52",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Frattura",
+              "level": 5
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "SPIRA_3": {
+    "suit": "Spira",
+    "tier": 3,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Per ogni Evoluzione innescata su una tua creatura, ogni tua creatura Spira guadagna +[200] ATK.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.SPIRA_3.atk_per_evolution",
+          "scale_by": "own_evolutions_triggered"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Spira",
+              "level": 3
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "SPIRA_4": {
+    "suit": "Spira",
+    "tier": 4,
+    "instantiation": "per_creature",
+    "replaces": [],
+    "description": "Ogni valore numerico sugli effetti Evoluzione delle creature Spira è moltiplicato per [1.2] prima di essere usato.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E19",
+        "effect_params": {
+          "factor": "$tune.synergies.SPIRA_4.factor"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Spira",
+              "level": 4
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "SPIRA_5": {
+    "suit": "Spira",
+    "tier": 5,
+    "instantiation": "per_player",
+    "replaces": [],
+    "description": "La keyword Evoluzione di ogni creatura Spira viene innescata (una sola volta) anche se la sua condizione di innesco non è soddisfatta.",
+    "expands_to": [
+      {
+        "trigger_id": "T5",
+        "trigger_params": {
+          "suit": "Spira",
+          "level": 5
+        },
+        "effect_id": "E17",
+        "effect_params": {},
+        "target_id": "S12",
+        "target_params": {
+          "suit": "Spira"
+        },
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "VESTIGIO_3": {
+    "suit": "Vestigio",
+    "tier": 3,
+    "instantiation": "per_player",
+    "replaces": [],
+    "description": "Quando una tua creatura Vestigio viene distrutta, la creatura (di qualsiasi seme) che la sostituisce in quella corsia guadagna +[1000] ATK fino a quando non distrugge una creatura.",
+    "expands_to": [
+      {
+        "trigger_id": "T29",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.VESTIGIO_3.atk"
+        },
+        "target_id": "S27",
+        "target_params": {},
+        "duration": "D_FinoAUccisione",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vestigio",
+              "level": 3
+            }
+          },
+          {
+            "id": "C25",
+            "params": {
+              "suit": "Vestigio"
+            }
+          }
+        ],
+        "class": "T"
+      }
+    ]
+  },
+  "VESTIGIO_4": {
+    "suit": "Vestigio",
+    "tier": 4,
+    "instantiation": "per_player",
+    "replaces": [],
+    "description": "All'inizio di ogni fase di Rifornimento, ognuna delle tue creature Vestigio cura [1400] DEF, fino alla sua DEF base. Le creature distrutte non vengono curate.",
+    "expands_to": [
+      {
+        "trigger_id": "T2",
+        "trigger_params": {
+          "phase": "Rifornimento"
+        },
+        "effect_id": "E6",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$tune.synergies.VESTIGIO_4.heal"
+        },
+        "target_id": "S12",
+        "target_params": {
+          "suit": "Vestigio"
+        },
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vestigio",
+              "level": 4
+            }
+          }
+        ],
+        "class": "T"
+      }
+    ]
+  },
+  "VESTIGIO_5": {
+    "suit": "Vestigio",
+    "tier": 5,
+    "instantiation": "per_creature",
+    "replaces": [
+      "VESTIGIO_3"
+    ],
+    "description": "Quando una tua creatura Vestigio sta per essere distrutta, non viene distrutta e rientra in gioco con difesa completa. Durante il Rifornimento, se è ancora lì, viene distrutta. L'effetto resta disattivato finché non hai di nuovo meno di [5] creature Vestigio dopo il Rifornimento. Sostituisce il Tier 3.",
+    "expands_to": [
+      {
+        "trigger_id": "T20",
+        "trigger_params": {},
+        "effect_id": "E12",
+        "effect_params": {
+          "then": "destroy_at_next_refill",
+          "lockout": {
+            "key": "VESTIGIO_5",
+            "suit": "Vestigio",
+            "reactivate_below": "$tune.synergies.VESTIGIO_5.reactivate_below"
+          }
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "C4",
+            "params": {
+              "suit": "Vestigio",
+              "level": 5
+            }
+          },
+          {
+            "id": "C24",
+            "params": {
+              "key": "VESTIGIO_5"
+            }
+          }
+        ],
+        "class": "R"
+      }
+    ]
+  }
+}

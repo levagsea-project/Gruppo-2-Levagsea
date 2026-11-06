@@ -1,0 +1,1261 @@
+{
+  "schema_version": 1,
+  "ruleset_version": "1.0-alpha",
+  "status": "TUTTI i valori sono segnaposto in attesa di playtest/simulazione. stat_cost_pct negativo = bonus di statistiche.",
+  "globals": {
+    "mitigation_floor_permille": 700,
+    "mitigation_note": "Le riduzioni danno si moltiplicano ma non scendono sotto ×0.7 (tetto 30%, Appendice D).",
+    "stat_cost_effect_cards_pct": 15,
+    "target_win_rate_band": [
+      44,
+      56
+    ],
+    "high_card_min_win_rate": 42,
+    "max_single_effect_power": "circa un vantaggio del 5% sulle statistiche",
+    "target_match_turns": [
+      7,
+      10
+    ],
+    "max_def_atk_ratio": 4,
+    "distribution_model": "Nessun limite di copie nel mazzo. Un mazzo ha al massimo una creatura per rango e seme, quindi una keyword riservata a un solo rango compare al massimo 4 volte. L'idoneità (allowed_ranks) è verificata alla creazione del pool di carte, non alla costruzione del mazzo.",
+    "card_ability_slots": {
+      "keyword": 1,
+      "evolution": 1,
+      "note": "Ipotesi segnaposto: una carta ha al massimo una keyword e una Evoluzione. Le keyword concesse da un'Evoluzione non occupano slot."
+    },
+    "limited_max_ranks": 3,
+    "cap_classes": {
+      "capped": "1 rango (max 4 copie per mazzo)",
+      "limited": "da 2 a limited_max_ranks ranghi (max 8-12 copie), per abilita' limitate da se' ma non spammabili",
+      "open": "piu' di limited_max_ranks ranghi"
+    }
+  },
+  "keywords": {
+    "K_SCUDO": {
+      "stat_cost_pct": 3,
+      "family": "damage_mitigation",
+      "favours": [
+        "high_def",
+        "defensive"
+      ],
+      "params": {
+        "x": 25
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "x_range": {
+        "pct": [
+          5,
+          30
+        ],
+        "flat": [
+          400,
+          1600
+        ]
+      },
+      "stat_cost_pct_per_x": {
+        "pct": 0.12,
+        "flat": 0.0012
+      },
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "fattore di riduzione moltiplicativo con tetto mitigation_floor_permille",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "K_PRIMO_COLPO": {
+      "stat_cost_pct": 10,
+      "family": "offense_support",
+      "favours": [
+        "high_atk",
+        "pair_heavy"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "J"
+      ],
+      "max_built_in": 4,
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "swingy",
+      "cap_risk": "swingy"
+    },
+    "K_LETALE": {
+      "stat_cost_pct": 15,
+      "family": "swingy_removal",
+      "favours": [
+        "high_def",
+        "low_atk"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "A"
+      ],
+      "max_built_in": 4,
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "swingy",
+      "cap_risk": "swingy"
+    },
+    "K_MURO": {
+      "stat_cost_pct": -30,
+      "family": "drawback",
+      "favours": [
+        "high_card",
+        "many_non_attackers"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2"
+      ],
+      "max_built_in": 4,
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "copy_scaling: stalli con Provocazione",
+      "cap_risk": "stall"
+    },
+    "K_TRABOCCANTE": {
+      "stat_cost_pct": 8,
+      "family": "spill_support",
+      "favours": [
+        "high_atk"
+      ],
+      "params": {
+        "factor": 1200
+      },
+      "display": {
+        "multiplier": "×1.2"
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "stacking max_with Frattura 4: non cumulativo",
+      "tier_scaled": []
+    },
+    "K_INSAZIABILE": {
+      "stat_cost_pct": 4,
+      "family": "growth_stacking",
+      "favours": [
+        "high_atk"
+      ],
+      "params": {
+        "permille": 150,
+        "max_stacks": 3
+      },
+      "display": {
+        "bonus_pct_per_stack": 15,
+        "max_stacks": 3
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "themes": [
+        "growth",
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "max_stacks 3 per creatura",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_VENDICATIVO": {
+      "stat_cost_pct": 5,
+      "family": "atk_support",
+      "favours": [
+        "many_creatures",
+        "adjacent"
+      ],
+      "params": {
+        "permille": 100
+      },
+      "display": {
+        "bonus_pct": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola creatura adiacente, solo alla distruzione",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_CUSTODE": {
+      "stat_cost_pct": 15,
+      "family": "survival",
+      "favours": [
+        "defensive"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "Q",
+        "K"
+      ],
+      "max_built_in": 8,
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "limited",
+      "cap_reason": "ritarda soltanto la distruzione: la creatura viene distrutta al Rifornimento successivo se e' ancora in corsia",
+      "cap_risk": "swingy"
+    },
+    "K_RIGENERANTE": {
+      "stat_cost_pct": 8,
+      "family": "def_restoration",
+      "favours": [
+        "high_def",
+        "defensive"
+      ],
+      "params": {
+        "permille": 100
+      },
+      "display": {
+        "heal_pct_base_def": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "stacking max_with Vestigio 4; la cura non supera la DEF base",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_DOPPIO_COLPO": {
+      "allowed_ranks": [
+        "A"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 15,
+      "family": "swingy_offense",
+      "favours": [
+        "high_atk"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "swingy",
+      "cap_risk": "swingy"
+    },
+    "K_PERFORANTE": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 8,
+      "family": "anti_mitigation",
+      "favours": [
+        "high_atk"
+      ],
+      "params": {
+        "x": 30
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "x_range": [
+        10,
+        50
+      ],
+      "themes": [
+        "breakthrough",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "ignora al piu' X% delle riduzioni del bersaglio",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "K_PROVOCAZIONE": {
+      "allowed_ranks": [
+        "7",
+        "8"
+      ],
+      "max_built_in": 8,
+      "stat_cost_pct": 8,
+      "family": "redirect",
+      "favours": [
+        "high_def",
+        "defensive"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "limited",
+      "cap_reason": "stalli solo con Muro, che resta su un solo rango: due ranghi bastano per il ruolo da specialista",
+      "cap_risk": "stall"
+    },
+    "K_SOSTEGNO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 9,
+      "family": "atk_from_non_attackers",
+      "favours": [
+        "many_non_attackers",
+        "high_card"
+      ],
+      "params": {
+        "x": 15
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "x_range": [
+        5,
+        30
+      ],
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "solo le creature adiacenti (al massimo 2), solo se non attacca",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "K_FLESSIBILE": {
+      "allowed_ranks": [
+        "3"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 5,
+      "family": "hand_forming_rank_step",
+      "favours": [
+        "straight_window"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "copy_scaling: formazione della mano",
+      "cap_risk": "copy_scaling"
+    },
+    "K_CAMALEONTE": {
+      "allowed_ranks": [
+        "2"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 5,
+      "family": "hand_forming_any_suit",
+      "favours": [
+        "one_suit"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "copy_scaling: formazione della mano",
+      "cap_risk": "copy_scaling"
+    }
+  },
+  "synergies": {
+    "VINCOLO_3": {
+      "atk": 600
+    },
+    "VINCOLO_4": {
+      "atk": 400
+    },
+    "VINCOLO_5": {
+      "atk": 1000
+    },
+    "FRATTURA_3": {
+      "atk": 1200
+    },
+    "FRATTURA_4": {
+      "factor": 1200,
+      "def_permille": 800
+    },
+    "FRATTURA_5": {
+      "permille": 500,
+      "factor": 1200
+    },
+    "SPIRA_3": {
+      "atk_per_evolution": 200
+    },
+    "SPIRA_4": {
+      "factor": 1200
+    },
+    "SPIRA_5": {},
+    "VESTIGIO_3": {
+      "atk": 1000
+    },
+    "VESTIGIO_4": {
+      "heal": 1400
+    },
+    "VESTIGIO_5": {
+      "reactivate_below": 5
+    }
+  },
+  "testing_protocol": [
+    "1. Il validatore passa (classi, target_kind, trigger_context, duration, combination_rules).",
+    "2. Assegnare la keyword ai suoi allowed_ranks nel pool e simulare la matrice a cinque build (solo statistiche, pair-heavy, straight-window, un seme, carta alta), con e senza, per fazione.",
+    "3. Ripetere con tutte le build autorizzate a usarlo.",
+    "4. Verificare banda 44–56% (carta alta ≥ 42%).",
+    "5. Matrice tra fazioni con la matrice delle sottofazioni attiva.",
+    "6. Durata media 7–10 turni e tasso di turn limit.",
+    "7. Frequenza delle mani per gli effetti di formazione della mano.",
+    "8. Registrare il risultato in keywords.<ID>.sim.",
+    "9. Telemetria sinergie: per ogni tier misurare synergy_health (turni attivi, quota decisiva) e rivedere i tier sotto soglia.",
+    "10. Build all-in: per ogni abilita' open riempire il mazzo con le carte idonee; per ogni gruppo capped la build con 4 carte. Entrambe nella banda 44-56%.",
+    "11. Verificare in simulazione che la quota reale di sinergie di seme attive e decisive non dipenda dalla sola probabilita' di pesca del tema (fit_targets)."
+  ],
+  "open_decisions": [
+    "Provocazione + Muro può produrre stalli: simulare il tasso di turn limit.",
+    "Letale e Doppio Colpo sono le keyword piu' swingy e condividono il rango A: insieme a Carnefice possono occupare al massimo 4 Assi per mazzo (quattro Letale, quattro Doppio Colpo o una combinazione).",
+    "Vestigio 3/4 e Vincolo 3/4/5 usano valori flat dal regolamento: valutare la conversione in percentuali dopo i test.",
+    "Eredità e Saccheggio usano vita flat (circa 5% della vita iniziale): verificare che non accorcino le partite sotto i 7 turni.",
+    "Vincolo 4 riscritto: ogni Vincolo (anche attaccante) concede +[400] ATK a ogni attaccante adiacente. Il testo originale richiedeva un Vincolo non attaccante, quindi era inerte nelle mani Vincolo (Colore, Quattro dello stesso seme). Il Regolamento 7.10.6 e' allineato (2026-11-01). Con Vincolo 3 e 5 attivi una fila piena puo' superare il tetto di potenza: simulare la build un-seme.",
+    "Camaleonte (E55) non conta come altro seme per sinergie e condizioni C4/C11. Confermato dal vocabolario; verificare in simulazione se Camaleonte e' troppo debole per le build un-seme.",
+    "Spira 4 e 5 dipendono dalle Evoluzioni sulle carte Spira: verificare con pool_generation.evolution_slot_fill_pct. Le 11 Evoluzioni open sono idonee a ogni rango, Asso compreso.",
+    "tier_scaling.permille (800/1000/1200/1500) e' un segnaposto: un Asso con Scudo scalato supera il Tier 2 del 50%. Simulare le build un-seme e pair-heavy con Assi pieni di abilita' open.",
+    "ranks.json e' una proposta di lore: Assi, Comandanti e Campioni con nome proprio sono canone nuovo (il dossier tiene aperti 'protagonisti ed episodi'). Va approvata dal team narrativo.",
+    "Il limite e' per rango: le abilita' swingy (Letale, Doppio Colpo, Primo Colpo, Custode e le loro Evoluzioni) stanno sui ranghi A, J, Q, K, cioe' fino a 16 carte per mazzo. In una simulazione semplificata Custode (Q, K, costo 15%) vale ancora circa +8 punti di vittoria in un mazzo di ranghi alti, dove tutte e 8 le carte sono in campo; con un solo rango (K) il valore scende a circa +2.5. Valutare se Custode va su un solo rango.",
+    "Candidati a passare da capped a limited dopo i test: Flessibile (3,4) e Muro (2,3). Camaleonte, Primo Colpo, Letale e Doppio Colpo restano su un rango.",
+    "Custode (Q,K) e' limited perche' ritarda soltanto la distruzione; ricontrollare se Vestigio 5 (stesso effetto) rende troppo frequente il salvataggio.",
+    "Muro: nelle simulazioni il bonus di statistiche non compensa lo svantaggio (anche +100% sulle 4 carte non cambia il risultato: non attacca e conta poco in difesa, e in una mano di coppia spreca un attaccante). Il bonus e' stato portato a 30%, ma serve una compensazione strutturale (per esempio Scudo o Provocazione integrati).",
+    "Scala delle statistiche (ipotesi di lavoro per la taratura, nessuna carta esiste ancora): ATK intorno a 4000, DEF 1.5-2.5 volte l'ATK, vita 12000, circa 9 turni a partita. I valori flat delle sinergie sono stati riscalati su questa ipotesi (Vincolo 600/400/1000, Frattura 1200, Spira 200 per Evoluzione, Vestigio 1000 e cura 1400); ricontrollarli quando esistono le carte."
+  ],
+  "evolutions": {
+    "EVO_CRESCITA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 150
+      },
+      "display": {
+        "bonus_pct": 15
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_SOPRAVVISSUTO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "x": 10
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "EVO_TEMPRATO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": []
+    },
+    "EVO_SFONDAMENTO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": []
+    },
+    "EVO_CAPITANO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "x": 10
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "EVO_PREDATORE": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 8,
+      "params": {
+        "x": 20
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough",
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "EVO_VENDETTA": {
+      "allowed_ranks": [
+        "J"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 8,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_PRIMO_COLPO: concede una keyword vincolata",
+      "cap_risk": "swingy"
+    },
+    "EVO_FURIA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_TRINCEA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_EREDITA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 8,
+      "params": {
+        "amount": 600
+      },
+      "display": {
+        "life": 600
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "amount"
+      ]
+    },
+    "EVO_SACCHEGGIO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 8,
+      "params": {
+        "amount": 500
+      },
+      "display": {
+        "life": 500
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "amount"
+      ]
+    },
+    "EVO_INTRECCIO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 100
+      },
+      "display": {
+        "bonus_pct": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_SENTINELLA": {
+      "allowed_ranks": [
+        "7",
+        "8"
+      ],
+      "max_built_in": 8,
+      "stat_cost_pct": 5,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "limited",
+      "cap_reason": "eredita il tetto di K_PROVOCAZIONE: concede una keyword vincolata",
+      "cap_risk": "stall"
+    },
+    "EVO_MATURAZIONE": {
+      "allowed_ranks": [
+        "3"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 3,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_FLESSIBILE: concede una keyword vincolata",
+      "cap_risk": "copy_scaling"
+    },
+    "EVO_MIMETICO": {
+      "allowed_ranks": [
+        "2"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 3,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_CAMALEONTE: concede una keyword vincolata",
+      "cap_risk": "copy_scaling"
+    },
+    "EVO_CARNEFICE": {
+      "allowed_ranks": [
+        "A"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 15,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough",
+        "growth"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_LETALE: concede una keyword vincolata",
+      "cap_risk": "swingy"
+    }
+  },
+  "suit_themes": {
+    "_note": "Temi per seme usati dalla generazione del pool (pool_generation) e dal lint del validatore. Un tema e' un tag, non un vincolo.",
+    "Vincolo": [
+      "adjacency"
+    ],
+    "Frattura": [
+      "breakthrough"
+    ],
+    "Spira": [
+      "adaptation",
+      "growth"
+    ],
+    "Vestigio": [
+      "persistence"
+    ]
+  },
+  "pool_generation": {
+    "_note": "Valori segnaposto. Applicati alla CREAZIONE del pool di carte, non al deckbuilding. Nessun blocco rigido: il seme non identifica una sottofazione ne' limita le abilita' (lore v2.0, sez. 06).",
+    "evolution_slot_fill_pct": {
+      "default": 35,
+      "Spira": 80
+    },
+    "theme_match_stat_cost_pct": 3,
+    "theme_match_note": "Costo extra di statistiche quando i temi dell'abilita' coincidono con quelli del seme della carta (stacking con la sinergia).",
+    "variants_per_rank_suit": {
+      "1": 2,
+      "2": 3,
+      "3": 3,
+      "4": 4
+    },
+    "variants_note": "Piu' versioni della stessa carta (fazione, rango, seme) con abilita' diverse. Il mazzo ne usa una sola per rango e seme, quindi le versioni sono il materiale con cui si costruisce il mazzo.",
+    "keyword_slot_fill_pct_by_tier": {
+      "1": 30,
+      "2": 50,
+      "3": 75,
+      "4": 100
+    },
+    "no_forced_signature": "Nessun rango e' obbligato ad avere una abilita' di firma: l'Asso puo' avere qualsiasi abilita' open, anche debole.",
+    "themed_draw_pct": 70,
+    "role_draw_pct": 50,
+    "selection_procedure": "Per ogni slot (keyword, Evoluzione) di una carta: 1) con probabilita' themed_draw_pct i candidati si restringono alle abilita' idonee al rango che condividono un tema col seme (se non ce ne sono, nessuna restrizione); 2) con probabilita' role_draw_pct si restringono ulteriormente a quelle in ranks.json -> role_affinity del Tier (se non ce ne sono, nessuna restrizione); 3) scelta uniforme tra i candidati. Le abilita' capped e limited hanno pochi ranghi idonei, quindi il loro tetto non dipende dalla scelta.",
+    "fit_targets": {
+      "min_suit_match_pct": 60,
+      "min_role_match_pct": 40,
+      "note": "Quota attesa di scelte che rispettano il tema del seme / il ruolo del Tier, per slot, seme e Tier. Calcolata dal validatore."
+    }
+  },
+  "synergy_health": {
+    "_note": "Metriche di telemetria per sinergia/tier. Una sinergia sotto soglia e' tematicamente morta anche se il testo e' coerente.",
+    "metrics": [
+      "active_turn_share_pct",
+      "decisive_share_pct"
+    ],
+    "decisive_definition": "Percentuale di turni attivi in cui il tier cambia l'esito di una uccisione, di una sopravvivenza o di un valore di spill.",
+    "min_active_turn_share_pct": 15,
+    "min_decisive_share_pct": 5,
+    "watchlist": [
+      "VINCOLO_4",
+      "SPIRA_4",
+      "SPIRA_5"
+    ]
+  },
+  "tier_scaling": {
+    "_note": "Segnaposto. I valori numerici in params sono il baseline del Tier 2. Alla CREAZIONE del pool il valore delle abilita' open elencato in tier_scaled viene moltiplicato per il fattore del Tier della carta e scritto sull'istanza di carta (card.params). Il motore non conosce i Tier. Spira 4 (E19) moltiplica dopo, sul valore gia' scalato.",
+    "permille": {
+      "1": 800,
+      "2": 1000,
+      "3": 1200,
+      "4": 1500
+    },
+    "baseline_tier": 2,
+    "rounding": "floor",
+    "clamp": "x_range quando presente",
+    "stat_cost": "stat_cost_pct e' proporzionale al valore scalato."
+  }
+}
