@@ -32,7 +32,7 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
     - Frattura
     - Spira
     - Vestigio
-4. Ogni sottofazione è forte contro una sottofazione e debole contro un'altra. Le relazioni sono reciproche e formano due cicli tematici: il Ciclo del Mondo e il Ciclo del Sé. Le relazioni sono le seguenti:
+4. Ogni sottofazione è forte contro una sottofazione e debole contro un'altra. Le relazioni sono reciproche e formano due cicli tematici: il Ciclo del Mondo e il Ciclo dell'Identità (nomi del dossier lore). Le relazioni sono in `data/subfactions.json` e i modificatori numerici (9.1) in `data/balance.json`; devono coincidere con questa tabella. Le relazioni sono le seguenti:
 
 | Sottofazione | Forte Contro | Debole Contro |
 |---|---|---|

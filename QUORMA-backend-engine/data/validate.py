@@ -14,6 +14,7 @@ root = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
 load = lambda n: json.loads((root / n).read_text(encoding="utf-8"))
 vocab, kw, evo = load("vocab.json"), load("keyword.json"), load("evolutions.json")
 syn, bal, inv = load("synergies.json"), load("balance.json"), load("invalid-combinations.json")
+sub = load("subfactions.json")
 syn = {k: v for k, v in syn.items() if not k.startswith("_")}
 ranks_doc = load("ranks.json") if (root / "ranks.json").exists() else None
 
@@ -290,6 +291,48 @@ if ranks_doc and "themed_draw_pct" in bal.get("pool_generation", {}):
                 if rm * 100 < ft["min_role_match_pct"]:
                     warn(f"fit {slot} {suit} tier {tier}", f"expected role match {rm*100:.0f}% < {ft['min_role_match_pct']}%")
     print(f"INFO  lowest expected match: suit {lo_s:.0f}%, role {lo_r:.0f}%")
+
+# Subfaction matrix (subfactions.json + balance.json -> subfaction_advantage_permille)
+sf = sub.get("subfactions", {})
+declared = {s: f for f, names in vocab["constants"]["subfactions"].items() for s in names}
+if set(sf) != set(declared):
+    err("subfactions.json", f"subfactions {sorted(set(sf) ^ set(declared))} differ from vocab.constants.subfactions")
+for name, v in sf.items():
+    where = f"subfactions.json {name}"
+    if v.get("faction") != declared.get(name):
+        err(where, f"faction '{v.get('faction')}' differs from vocab ('{declared.get(name)}')")
+    for rel in ("strong_against", "weak_against"):
+        other = v.get(rel)
+        if other not in sf:
+            err(where, f"{rel} names unknown subfaction '{other}'")
+        elif sf[other].get("faction") == v.get("faction"):
+            err(where, f"{rel} '{other}' is in the same faction (relations only exist between factions)")
+    if v.get("strong_against") == v.get("weak_against"):
+        err(where, "strong_against and weak_against are the same subfaction")
+    s_, w_ = v.get("strong_against"), v.get("weak_against")
+    if s_ in sf and sf[s_].get("weak_against") != name:
+        err(where, f"strong against {s_}, but {s_} is not weak against {name} (relations are reciprocal)")
+    if w_ in sf and sf[w_].get("strong_against") != name:
+        err(where, f"weak against {w_}, but {w_} is not strong against {name} (relations are reciprocal)")
+    if v.get("cycle") not in sub.get("cycles", {}):
+        err(where, f"unknown cycle '{v.get('cycle')}'")
+for cid, cyc in sub.get("cycles", {}).items():
+    order = cyc.get("order", [])
+    where = f"subfactions.json cycle {cid}"
+    if len(order) != 4 or len(set(order)) != 4:
+        err(where, "a cycle must list 4 distinct subfactions")
+        continue
+    for i, name in enumerate(order):
+        nxt = order[(i + 1) % 4]
+        if sf.get(name, {}).get("strong_against") != nxt:
+            err(where, f"{name} should be strong against {nxt} (ring order)")
+        if sf.get(name, {}).get("cycle") != cid:
+            err(where, f"{name} is tagged with cycle '{sf.get(name, {}).get('cycle')}'")
+adv = bal.get("subfaction_advantage_permille", {})
+for key, ok in (("strong", lambda x: x > 1000), ("weak", lambda x: 0 < x < 1000)):
+    val = adv.get(key)
+    if not isinstance(val, int) or isinstance(val, bool) or not ok(val):
+        err("balance.json subfaction_advantage_permille", f"'{key}' must be an integer per-mille ({'> 1000' if key == 'strong' else 'between 1 and 999'}), got {val!r}")
 
 for w in warnings:
     print("WARN ", w)

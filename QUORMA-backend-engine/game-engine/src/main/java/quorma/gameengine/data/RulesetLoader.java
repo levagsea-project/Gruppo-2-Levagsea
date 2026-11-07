@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Builds a {@link Ruleset} from {@code vocab.json}, {@code keyword.json} and {@code balance.json}.
+ * Builds a {@link Ruleset} from {@code vocab.json}, {@code keyword.json}, {@code subfactions.json} and
+ * {@code balance.json}.
  *
  * <ul>
  *   <li>{@link #fromDirectory(Path)}: reads the live files, so a rebalance shows up on the next load (use {@code data/}).</li>
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public final class RulesetLoader {
 
-    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "balance.json");
+    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json");
 
     private RulesetLoader() {}
 
@@ -61,6 +62,7 @@ public final class RulesetLoader {
                         section(vocab, "effects"), section(vocab, "triggers"), section(vocab, "targets"),
                         section(vocab, "conditions"), section(vocab, "durations")),
                 keywords(roots.get("keyword.json")),
+                subfactions(roots.get("subfactions.json")),
                 roots.get("balance.json"));
     }
 
@@ -150,6 +152,26 @@ public final class RulesetLoader {
                 requireString(m, "duration", path),
                 List.copyOf(conditions),
                 resClass(requireString(m, "class", path), path + ".class"));
+    }
+
+    // ---- subfactions ----
+
+    /** Reads {@code subfactions.json}: the {@code subfactions} section, keyed by name, in file order. */
+    private static Map<String, SubfactionDef> subfactions(Value.MapV root) {
+        String file = "subfactions.json";
+        Value.MapV entries = asMap(require(root, "subfactions", file), file + "#subfactions");
+        Map<String, SubfactionDef> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> e : entries.fields().entrySet()) {
+            if (e.getKey().startsWith("_")) {
+                continue;
+            }
+            String path = file + "#subfactions." + e.getKey();
+            Value.MapV m = asMap(e.getValue(), path);
+            out.put(e.getKey(), new SubfactionDef(
+                    e.getKey(), requireString(m, "faction", path), requireString(m, "cycle", path),
+                    requireString(m, "strong_against", path), requireString(m, "weak_against", path)));
+        }
+        return java.util.Collections.unmodifiableMap(out);
     }
 
     // ---- helpers ----
