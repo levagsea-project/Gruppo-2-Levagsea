@@ -1,0 +1,403 @@
+{
+  "K_SCUDO": {
+    "name": "Scudo",
+    "class": "C",
+    "balance_ref": "K_SCUDO",
+    "params": {
+      "x": {
+        "type": "int",
+        "required": true,
+        "description": "Intensità scritta sulla carta: Scudo (X)."
+      },
+      "kind": {
+        "type": "enum",
+        "values": [
+          "pct",
+          "flat"
+        ],
+        "default": "pct",
+        "description": "pct: X% di riduzione. flat: X danni sottratti a ogni colpo (minimo 1). Il flat è ammesso solo se la carta lo indica."
+      }
+    },
+    "description": "Scudo (X): il danno subito da questa creatura è ridotto di X% in modo permanente (Scudo flat: di X per colpo, minimo 1).",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E28",
+        "effect_params": {
+          "mode": "reduction_pct",
+          "pct": "$param.x"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "kind",
+              "equals": "pct"
+            }
+          }
+        ],
+        "class": "C"
+      },
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E28",
+        "effect_params": {
+          "mode": "flat",
+          "amount": "$param.x",
+          "min_damage": 1
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "kind",
+              "equals": "flat"
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "K_PRIMO_COLPO": {
+    "name": "Primo Colpo",
+    "class": "R",
+    "balance_ref": "K_PRIMO_COLPO",
+    "description": "Nel Ciclo 1, se questa creatura distruggerebbe il suo bersaglio, il bersaglio non infligge danno da combattimento alla sorgente.",
+    "expands_to": [
+      {
+        "trigger_id": "T22",
+        "trigger_params": {},
+        "effect_id": "E23",
+        "effect_params": {},
+        "target_id": "S43",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelCombattimento",
+        "conditions": [
+          {
+            "id": "C6"
+          },
+          {
+            "id": "C21"
+          }
+        ],
+        "class": "R"
+      }
+    ]
+  },
+  "K_LETALE": {
+    "name": "Letale",
+    "class": "C",
+    "balance_ref": "K_LETALE",
+    "description": "Qualsiasi danno da combattimento inflitto da questa creatura distrugge la creatura danneggiata. Lo spill usa la formula normale.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E26",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_MURO": {
+    "name": "Muro",
+    "class": "R",
+    "balance_ref": "K_MURO",
+    "description": "Questa creatura non può attaccare. Se è selezionata come attaccante dalla mano, non dichiara né effettua attacchi, ma conta comunque per la mano.",
+    "expands_to": [
+      {
+        "trigger_id": "T22",
+        "trigger_params": {},
+        "effect_id": "E25",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "R"
+      }
+    ]
+  },
+  "K_TRABOCCANTE": {
+    "name": "Traboccante",
+    "class": "R",
+    "balance_ref": "K_TRABOCCANTE",
+    "description": "Quando questa creatura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill è {multiplier} per quell'attacco. Non cumulativo con Frattura 4: si applica il fattore maggiore.",
+    "stacking": {
+      "mode": "max_with",
+      "with": [
+        "SYNERGY:FRATTURA_4"
+      ]
+    },
+    "expands_to": [
+      {
+        "trigger_id": "T34",
+        "trigger_params": {},
+        "effect_id": "E21",
+        "effect_params": {
+          "factor": "$tune.K_TRABOCCANTE.factor"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "R"
+      }
+    ]
+  },
+  "K_INSAZIABILE": {
+    "name": "Insaziabile",
+    "class": "T",
+    "balance_ref": "K_INSAZIABILE",
+    "description": "Quando questa creatura uccide una creatura: guadagna +{bonus_pct_per_stack}% del suo ATK base in modo permanente, fino a {max_stacks} volte.",
+    "expands_to": [
+      {
+        "trigger_id": "T19",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_INSAZIABILE.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T",
+        "max_stacks": "$tune.K_INSAZIABILE.max_stacks",
+        "stack_key": "K_INSAZIABILE"
+      }
+    ]
+  },
+  "K_VENDICATIVO": {
+    "name": "Vendicativo",
+    "class": "T",
+    "balance_ref": "K_VENDICATIVO",
+    "description": "Quando questa creatura viene distrutta: una creatura alleata adiacente guadagna +{bonus_pct}% del suo ATK base fino alla fine del turno.",
+    "expands_to": [
+      {
+        "trigger_id": "T10",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_VENDICATIVO.permille"
+        },
+        "target_id": "S7",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelTurno",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_CUSTODE": {
+    "name": "Custode",
+    "class": "R",
+    "balance_ref": "K_CUSTODE",
+    "description": "La prima volta che questa creatura sta per essere distrutta, non viene distrutta e rientra in gioco con DEF completa. Al prossimo Rifornimento, se è ancora nella sua corsia, viene distrutta.",
+    "expands_to": [
+      {
+        "trigger_id": "T20",
+        "trigger_params": {},
+        "effect_id": "E12",
+        "effect_params": {
+          "then": "destroy_at_next_refill"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "R",
+        "max_triggers": 1
+      }
+    ]
+  },
+  "K_RIGENERANTE": {
+    "name": "Rigenerante",
+    "class": "T",
+    "balance_ref": "K_RIGENERANTE",
+    "description": "All'inizio di ogni fase di Rifornimento, questa creatura cura il {heal_pct_base_def}% della sua DEF base, fino alla DEF base. Non cumulativo con Vestigio 4: si applica la cura maggiore.",
+    "stacking": {
+      "mode": "max_with",
+      "with": [
+        "SYNERGY:VESTIGIO_4"
+      ]
+    },
+    "expands_to": [
+      {
+        "trigger_id": "T2",
+        "trigger_params": {
+          "phase": "Rifornimento"
+        },
+        "effect_id": "E6",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.K_RIGENERANTE.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_DOPPIO_COLPO": {
+    "name": "Doppio Colpo",
+    "class": "C",
+    "balance_ref": "K_DOPPIO_COLPO",
+    "description": "Se questa creatura sopravvive al Ciclo 1 dopo aver attaccato, nel Ciclo 2 attacca di nuovo il suo bersaglio.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E53",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_PERFORANTE": {
+    "name": "Perforante",
+    "class": "C",
+    "balance_ref": "K_PERFORANTE",
+    "params": {
+      "x": {
+        "type": "int",
+        "required": true
+      }
+    },
+    "description": "Perforante (X): il danno da combattimento di questa creatura ignora X% delle riduzioni di danno del bersaglio.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E56",
+        "effect_params": {
+          "pct": "$param.x"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_PROVOCAZIONE": {
+    "name": "Provocazione",
+    "class": "T",
+    "balance_ref": "K_PROVOCAZIONE",
+    "description": "Quando un attaccante dichiara come bersaglio una creatura alleata adiacente, l'attacco viene reindirizzato a questa creatura.",
+    "expands_to": [
+      {
+        "trigger_id": "T35",
+        "trigger_params": {},
+        "effect_id": "E24",
+        "effect_params": {
+          "new_target_id": "S1"
+        },
+        "target_id": "S2",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_SOSTEGNO": {
+    "name": "Sostegno",
+    "class": "C",
+    "balance_ref": "K_SOSTEGNO",
+    "params": {
+      "x": {
+        "type": "int",
+        "required": true
+      }
+    },
+    "description": "Sostegno (X): se questa creatura non attacca, ogni attaccante adiacente guadagna +X% del suo ATK base.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "pct": "$param.x"
+        },
+        "target_id": "S41",
+        "target_params": {
+          "filters": [
+            "attacker"
+          ]
+        },
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C2"
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "K_FLESSIBILE": {
+    "name": "Flessibile",
+    "class": "C",
+    "balance_ref": "K_FLESSIBILE",
+    "description": "Per formare scale, questa creatura può contare come il rango adiacente (±1).",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E54",
+        "effect_params": {
+          "step": 1
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_CAMALEONTE": {
+    "name": "Camaleonte",
+    "class": "C",
+    "balance_ref": "K_CAMALEONTE",
+    "description": "Per i colori e il quattro dello stesso seme, questa creatura conta come qualsiasi seme. Non conta come altro seme per le sinergie di seme.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E55",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  }
+}

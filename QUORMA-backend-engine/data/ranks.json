@@ -1,0 +1,207 @@
+{
+  "_note": "Scala gerarchica dei ranghi: lore e idoneita' di ruolo. Nessuna meccanica: i Tier del regolamento 3.2.2 restano la sola fonte delle regole. I motivi narrativi non aggiungono abilita' da soli (nota di metodo del dossier).",
+  "status": "proposta: da approvare dal team narrativo (nomi propri e personaggi sono canone nuovo)",
+  "principle": "Piu' il rango sale, piu' la carta e' una persona e meno e' un numero. Dal 2 all'Asso: anonimi, mezzi e squadre; specialisti; luogotenenti con nome; i Personaggi delle fazioni.",
+  "tiers": {
+    "1": {
+      "name": "Truppa",
+      "ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "naming": "Nessun nome proprio: descrittori di ruolo (squadra, mezzo, reparto)."
+    },
+    "2": {
+      "name": "Specialisti e veterani",
+      "ranks": [
+        "7",
+        "8",
+        "9",
+        "10"
+      ],
+      "naming": "Soprannomi d'uso (Resistenza) o designazioni numeriche (Potenze). Nessun personaggio."
+    },
+    "3": {
+      "name": "Luogotenenti",
+      "ranks": [
+        "J",
+        "Q",
+        "K"
+      ],
+      "naming": "Nome proprio. Seguono le convenzioni di nome della sottofazione."
+    },
+    "4": {
+      "name": "I Personaggi",
+      "ranks": [
+        "A"
+      ],
+      "naming": "Nome proprio, figura simbolo. Ogni fazione ha i suoi quattro (uno per seme)."
+    }
+  },
+  "ranks": {
+    "2": {
+      "tier": 1,
+      "role": "Gregario anonimo",
+      "named": false,
+      "resistenza": "Recluta o civile armato: nessun nome, solo un posto nella linea.",
+      "potenze": "Frammento operativo: un drone o una routine senza designazione."
+    },
+    "3": {
+      "tier": 1,
+      "role": "Squadra",
+      "named": false,
+      "resistenza": "Piccola squadra di sopravvissuti che si muove e combatte insieme.",
+      "potenze": "Gruppo coordinato di unita' identiche, senza individualita'."
+    },
+    "4": {
+      "tier": 1,
+      "role": "Mezzo",
+      "named": false,
+      "resistenza": "Veicolo recuperato o macchinario riadattato alla guerra.",
+      "potenze": "Macchina da guerra autonoma: piattaforma o veicolo."
+    },
+    "5": {
+      "tier": 1,
+      "role": "Reparto",
+      "named": false,
+      "resistenza": "Reparto organizzato di una sottofazione, noto per il compito che svolge.",
+      "potenze": "Nodo operativo: un insieme di macchine assegnato a una funzione."
+    },
+    "6": {
+      "tier": 1,
+      "role": "Unita' attrezzata",
+      "named": false,
+      "resistenza": "Squadra o mezzo con equipaggiamento specializzato.",
+      "potenze": "Piattaforma pesante con moduli specializzati."
+    },
+    "7": {
+      "tier": 2,
+      "role": "Specialista",
+      "named": false,
+      "resistenza": "Combattente con un soprannome d'uso, non ancora una leggenda.",
+      "potenze": "Istanza specializzata: una designazione, una funzione."
+    },
+    "8": {
+      "tier": 2,
+      "role": "Operatore scelto",
+      "named": false,
+      "resistenza": "Addestrato a missioni che gli altri non portano a termine.",
+      "potenze": "Istanza ottimizzata dopo molti cicli operativi."
+    },
+    "9": {
+      "tier": 2,
+      "role": "Veterano",
+      "named": false,
+      "resistenza": "Ha visto cadere intere linee e le ricorda.",
+      "potenze": "Istanza che conserva i dati di scontri passati."
+    },
+    "10": {
+      "tier": 2,
+      "role": "Capo unita'",
+      "named": false,
+      "resistenza": "Guida una formazione e ne risponde.",
+      "potenze": "Coordinatore di un gruppo di istanze."
+    },
+    "J": {
+      "tier": 3,
+      "role": "Campione",
+      "named": true,
+      "resistenza": "Primo nome proprio della scala: combatte in prima linea.",
+      "potenze": "Istanza campione: la prima con un nome proprio assegnato dalla corrente."
+    },
+    "Q": {
+      "tier": 3,
+      "role": "Stratega",
+      "named": true,
+      "resistenza": "Legge il campo e tiene unite le forze.",
+      "potenze": "Pianificatrice della corrente: conserva il piano anche quando il fronte cede."
+    },
+    "K": {
+      "tier": 3,
+      "role": "Comandante",
+      "named": true,
+      "resistenza": "Da lui dipende un intero fronte della Resistenza.",
+      "potenze": "Dirige un fronte per conto della corrente."
+    },
+    "A": {
+      "tier": 4,
+      "role": "Il Personaggio",
+      "named": true,
+      "resistenza": "Figura simbolo della sottofazione: il suo nome e' una bandiera.",
+      "potenze": "Istanza emblematica della corrente: la sua designazione e' nota anche ai nemici."
+    }
+  },
+  "narrative_mirror": "Nella narrazione gli Assi si fronteggiano tra loro, cosi' come i Comandanti e le altre coppie di ranghi. Nel gioco il bersaglio dipende solo dalla corsia, quindi e' un legame di lore e non una regola.",
+  "naming_guard": "Le sottofazioni AI sono correnti, non sovrani planetari (dossier v2.0): nessun Asso AI puo' essere presentato come sovrano o come la Primaria senza approvazione.",
+  "role_affinity": {
+    "_note": "Abilita' che il pool favorisce per Tier (role_weight_pct). Un suggerimento, non un limite: ogni abilita' open resta idonea a ogni rango.",
+    "1": [
+      "K_SCUDO",
+      "K_MURO",
+      "K_SOSTEGNO",
+      "K_RIGENERANTE",
+      "K_FLESSIBILE",
+      "K_CAMALEONTE",
+      "EVO_CRESCITA",
+      "EVO_SOPRAVVISSUTO",
+      "EVO_TEMPRATO",
+      "EVO_TRINCEA",
+      "EVO_MATURAZIONE",
+      "EVO_MIMETICO",
+      "K_PERFORANTE",
+      "EVO_SFONDAMENTO",
+      "EVO_INTRECCIO"
+    ],
+    "2": [
+      "K_PERFORANTE",
+      "K_TRABOCCANTE",
+      "K_INSAZIABILE",
+      "K_PROVOCAZIONE",
+      "EVO_PREDATORE",
+      "EVO_SFONDAMENTO",
+      "EVO_SENTINELLA",
+      "EVO_FURIA",
+      "EVO_CAPITANO",
+      "K_SCUDO",
+      "K_SOSTEGNO",
+      "EVO_TRINCEA",
+      "EVO_SOPRAVVISSUTO",
+      "EVO_TEMPRATO"
+    ],
+    "3": [
+      "K_PRIMO_COLPO",
+      "K_CUSTODE",
+      "K_VENDICATIVO",
+      "EVO_VENDETTA",
+      "EVO_EREDITA",
+      "EVO_INTRECCIO",
+      "EVO_CAPITANO",
+      "K_PERFORANTE",
+      "K_TRABOCCANTE",
+      "K_INSAZIABILE",
+      "EVO_PREDATORE",
+      "EVO_SACCHEGGIO",
+      "EVO_CRESCITA",
+      "EVO_TEMPRATO"
+    ],
+    "4": [
+      "K_LETALE",
+      "K_DOPPIO_COLPO",
+      "EVO_CARNEFICE",
+      "EVO_SACCHEGGIO",
+      "K_INSAZIABILE",
+      "K_PERFORANTE",
+      "K_TRABOCCANTE",
+      "K_SOSTEGNO",
+      "K_SCUDO",
+      "K_VENDICATIVO",
+      "EVO_INTRECCIO",
+      "EVO_CAPITANO",
+      "EVO_EREDITA",
+      "EVO_SOPRAVVISSUTO"
+    ]
+  }
+}
