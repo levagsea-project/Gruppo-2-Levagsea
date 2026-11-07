@@ -30,6 +30,22 @@
       "open": "piu' di limited_max_ranks ranghi"
     }
   },
+  "hand_multipliers_permille": {
+    "_note": "Moltiplicatore del danno da traboccamento (spill) per mano di poker (regolamento 7.8), in per-mille: 1100 = x1.1. Chiavi = nomi dell'enum HandType del motore. NONE (nessuna creatura) non infligge spill. Valori segnaposto in attesa di playtest.",
+    "HIGH_CARD": 1000,
+    "PAIR": 1100,
+    "TWO_PAIR": 1300,
+    "FOUR_OF_A_SUIT": 1350,
+    "THREE_OF_A_KIND": 1400,
+    "STRAIGHT": 1600,
+    "FLUSH": 1700,
+    "FULL_HOUSE": 1800,
+    "FOUR_OF_A_KIND": 2200,
+    "STRAIGHT_FLUSH": 2600,
+    "ROYAL_FLUSH": 3000,
+    "FIVE_OF_A_KIND": 3500,
+    "NONE": 0
+  },
   "keywords": {
     "K_SCUDO": {
       "stat_cost_pct": 3,
