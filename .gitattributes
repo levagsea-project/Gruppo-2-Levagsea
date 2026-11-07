@@ -1,0 +1,25 @@
+# Line endings: the repository stores LF, and the working tree uses LF too, on every OS.
+# This overrides each developer's core.autocrlf, so a Windows checkout never turns files into CRLF
+# and a commit can never again show a whole file as changed because of line endings.
+# Why LF in the working tree: Dockerfile, Makefile and shell scripts must be LF on Linux, and the engine's
+# rule pack hash and golden files must be byte-identical on every machine (QUORMA game-engine AGENTS.md).
+* text=auto eol=lf
+
+# Windows-only scripts need CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files: never convert
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.jar binary
+*.zip binary
