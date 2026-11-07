@@ -32,6 +32,10 @@ Working in a subfolder? Its `AGENTS.md` adds to this file. `CLAUDE.md` files onl
 - **Never renumber or reuse vocabulary IDs** (E…, T…, S…, C…).
 - **Card text overrides the ruleset** (Regola d'Oro 1). The engine must not "correct" an ability that contradicts the base rules.
 
+## Line endings
+
+Every text file uses **LF**, on every OS, including Windows checkouts. `.gitattributes` (repo root) enforces it (`* text=auto eol=lf`) and `.editorconfig` tells editors. Do not set per-file CRLF. If Git ever shows a whole file as changed after a pull, run `git add --renormalize .` and check `git diff --cached --stat` before committing.
+
 ## Language
 
 Game text, card names, lore and faction names are **Italian**, spelled exactly as in the ruleset (SEKTAC, MEROZYN, EFFRIX, YLMOR, Adattati, Spezzasigilli, Portanome, Segnaterra). Code, identifiers, JSON keys, commit messages and agent guides are **English**.
