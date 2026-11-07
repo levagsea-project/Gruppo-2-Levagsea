@@ -60,11 +60,6 @@ public final class HandEvaluator {
                 }
                 best.offer(HandType.FLUSH, suited, suitedValues);
             } else if (suited.size() == 4) {
-                // Sort suited cards by value and select the three highest as attackers.
-                List<HandCard> sorted = new ArrayList<>(suited);
-                sorted.sort(Comparator.comparingInt(HandEvaluator::value).reversed());
-                List<HandCard> attackers = new ArrayList<>(sorted.subList(0, 3));
- 
                 List<Integer> tie = descendingValues(suited, 0, 0);
                 Suit suit = suited.get(0).suit();
                 int kicker = 0;
@@ -72,7 +67,7 @@ public final class HandEvaluator {
                     if (card.suit() != suit) kicker = Math.max(kicker, value(card));
                 }
                 if (kicker != 0) tie.add(kicker);
-                best.offer(HandType.FOUR_OF_A_SUIT, attackers, tie);
+                best.offer(HandType.FOUR_OF_A_SUIT, suited, tie);
             }
         }
  
