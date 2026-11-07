@@ -1,0 +1,39 @@
+name: Java tests
+
+on:
+  push:
+    branches: [SWD]
+  pull_request:
+    branches: [SWD]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: QUORMA-backend-engine
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Run tests
+        run: mvn -B verify
+
+      - name: Publish test report
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: '**/target/surefire-reports/TEST-*.xml'
+          detailed_summary: true
+          include_passed: true
+          check_name: Test results
