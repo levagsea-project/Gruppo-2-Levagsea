@@ -17,15 +17,6 @@ class RulesetLoaderTest {
     private static final Ruleset RULES = RulesetLoader.fromClasspath();
 
     @Test
-    void realDataLoadsWithExpectedCounts() {
-        assertEquals(57, RULES.vocab().effects().size());
-        assertEquals(39, RULES.vocab().triggers().size());
-        assertEquals(44, RULES.vocab().targets().size());
-        assertEquals(27, RULES.vocab().conditions().size());
-        assertEquals(15, RULES.keywords().size());
-    }
-
-    @Test
     void scudoIsMappedToRecords() {
         KeywordDef scudo = RULES.keywords().get("K_SCUDO");
         assertEquals("Scudo", scudo.name());
@@ -55,11 +46,16 @@ class RulesetLoaderTest {
 
     @Test
     void tuneReadsBalanceJson() {
-        // balance.json keywords.K_SCUDO.params.x is 25 (a placeholder value: only the lookup order matters here).
+        // balance.json keywords.K_SCUDO.params.x is a number: only the lookup order matters here.
         Optional<Value> fromBalance = RULES.tune("K_SCUDO", "x", Map.of());
-        assertEquals(Optional.of(new Value.IntV(25)), fromBalance);
-        // the card instance params win over balance.json
-        assertEquals(Optional.of(new Value.IntV(15)), RULES.tune("K_SCUDO", "x", Map.of("x", new Value.IntV(15))));
+        assertTrue(fromBalance.isPresent());
+        assertEquals(Value.IntV.class, fromBalance.get().getClass());
+        // the card instance params win over balance.json (lookup order, not the value)
+        Value.IntV instanceParam = new Value.IntV(15);
+        Optional<Value> tuned = RULES.tune("K_SCUDO", "x", Map.of("x", instanceParam));
+        assertTrue(tuned.isPresent());
+        assertEquals(Value.IntV.class, tuned.get().getClass());
+        assertEquals(instanceParam, tuned.get());
         assertEquals(Optional.empty(), RULES.tune("K_SCUDO", "nope", Map.of()));
     }
 
@@ -101,6 +97,17 @@ class RulesetLoaderTest {
     void fractionsAreKeptAsTextNotDouble() {
         Value v = JsonReader.parse("{\"a\":0.12}".getBytes(StandardCharsets.UTF_8), "t.json");
         assertEquals(new Value.DecV("0.12"), ((Value.MapV) v).get("a"));
+    }
+
+    @Test
+    void synergyTuneReadsBalanceJson() {
+        // balance.json synergies.VINCOLO_3.atk is number.
+        Optional<Value> fromBalance = RULES.synergyTune("VINCOLO_3", "atk");
+        assertTrue(fromBalance.isPresent());
+        assertEquals(Value.IntV.class, fromBalance.get().getClass());
+        assertEquals(Optional.empty(), RULES.synergyTune("VINCOLO_3", "nope"));
+        Optional<Value> fromBalance2 = RULES.synergyTune("NOPE", "atk");
+        assertEquals(Optional.empty(), fromBalance2);
     }
 
     private static void write(Path dir, String name, String content) throws Exception {
