@@ -19,9 +19,9 @@
     "max_def_atk_ratio": 4,
     "distribution_model": "Nessun limite di copie nel mazzo. Un mazzo ha al massimo una creatura per rango e seme, quindi una keyword riservata a un solo rango compare al massimo 4 volte. L'idoneità (allowed_ranks) è verificata alla creazione del pool di carte, non alla costruzione del mazzo.",
     "card_ability_slots": {
-      "keyword": 1,
+      "keyword": 3,
       "evolution": 1,
-      "note": "Ipotesi segnaposto: una carta ha al massimo una keyword e una Evoluzione. Le keyword concesse da un'Evoluzione non occupano slot."
+      "note": "Ipotesi segnaposto: una carta ha al massimo 3 keyword (valore da tarare) e una sola Evoluzione. Le keyword concesse da un'Evoluzione non occupano slot. Le keyword di una carta sono distinte (nessun duplicato) e si risolvono in ordine di lista."
     },
     "limited_max_ranks": 3,
     "cap_classes": {

@@ -16,6 +16,11 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- JSON parsing (Jackson 3, tree model only). Version from the BOM in the parent. -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
         <!-- Test only. Versions come from the BOM imported in the parent. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -25,6 +30,20 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- Bundle the rules data into the jar, re-copied on every build so a rebalance in data/ is picked up. -->
+            <resource>
+                <directory>../data</directory>
+                <includes>
+                    <include>*.json</include>
+                </includes>
+                <targetPath>ruleset</targetPath>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -44,6 +63,12 @@
                                         <exclude>org.springframework.*</exclude>
                                     </excludes>
                                     <message>game-engine must not depend on Spring.</message>
+                                </bannedDependencies>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>com.fasterxml.jackson.core:jackson-databind</exclude>
+                                    </excludes>
+                                    <message>Use Jackson 3 (tools.jackson), not Jackson 2 databind.</message>
                                 </bannedDependencies>
                             </rules>
                             <fail>true</fail>

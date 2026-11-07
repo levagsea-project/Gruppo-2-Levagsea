@@ -70,7 +70,7 @@ There is no cards file yet. The intended card shape:
 }
 ```
 
-- Assumption (placeholder, see `balance.globals.card_ability_slots`): at most one keyword and one evolution per card. Keywords granted by an evolution don't use a slot.
+- Assumption (placeholder, see `balance.globals.card_ability_slots`): at most `keyword` (currently 3) distinct keywords and exactly one evolution per card. Keywords granted by an evolution don't use a slot. Several keywords on one card resolve in list order; each keeps its own `params`. The `evolutions` array holds at most one entry.
 - **There are no copy limits; scarcity is per rank.** A deck has at most one creature per rank and suit, so any single rank appears at most 4 times in a deck. Every keyword and evolution has a `cap_class` in `balance.json`: `capped`, `limited` or `open`.
   - `capped` abilities (swingy ones such as Letale and Doppio Colpo, or ones that scale with copies such as Muro, Provocazione, Flessibile, Camaleonte) have exactly one `allowed_ranks` entry and `max_built_in` 4. Several capped abilities may share a rank (Letale, Doppio Colpo and Carnefice all sit on the Ace): the 4-card limit then applies to them combined, so a deck can have four Letale Aces, four Doppio Colpo Aces or any mix.
   - `limited` abilities are bounded by their own effect, so they may sit on 2 to `globals.limited_max_ranks` (3) ranks, normally within one Tier (Provocazione 7-8, Custode Q-K). `max_built_in` is then 8 or 12. Promote an ability from `capped` to `limited` only when its effect is conditional, one-shot or bounded; `balance.json` → `open_decisions` lists the candidates.
