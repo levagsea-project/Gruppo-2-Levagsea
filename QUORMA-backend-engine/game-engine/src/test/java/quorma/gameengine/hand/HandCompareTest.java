@@ -153,6 +153,41 @@ class HandCompareTest {
         assertBeats(r(HandType.HIGH_CARD, 12, 3), r(HandType.HIGH_CARD, 11, 10));
     }
 
+    // ---- boards with different creature counts: a missing kicker counts as 0 ----
+
+    @Test
+    void aMissingKickerCountsAsZero() {
+        // a kicker of 5 beats an empty card
+        assertBeats(r(HandType.HIGH_CARD, 9, 5), r(HandType.HIGH_CARD, 9));
+        assertBeats(r(HandType.PAIR, 9, 13, 5), r(HandType.PAIR, 9, 13));
+        assertBeats(r(HandType.THREE_OF_A_KIND, 9, 2), r(HandType.THREE_OF_A_KIND, 9));
+        assertBeats(r(HandType.TWO_PAIR, 13, 4, 2), r(HandType.TWO_PAIR, 13, 4));
+        assertBeats(r(HandType.FOUR_OF_A_KIND, 9, 2), r(HandType.FOUR_OF_A_KIND, 9));
+        assertBeats(r(HandType.FOUR_OF_A_SUIT, 13, 11, 6, 3, 2), r(HandType.FOUR_OF_A_SUIT, 13, 11, 6, 3));
+    }
+
+    @Test
+    void aMissingKickerDoesNotOutweighAHigherRank() {
+        assertBeats(r(HandType.HIGH_CARD, 10), r(HandType.HIGH_CARD, 9, 14, 13));
+        assertBeats(r(HandType.PAIR, 9, 3), r(HandType.PAIR, 8, 14, 13, 12));
+    }
+
+    @Test
+    void sameLengthAndSameValuesTie() {
+        assertTie(r(HandType.HIGH_CARD, 9), r(HandType.HIGH_CARD, 9));
+        assertTie(r(HandType.PAIR, 9, 13), r(HandType.PAIR, 9, 13));
+    }
+
+    @Test
+    void realBoardsPairWithAndWithoutAFourthCreature() {
+        assertBeats(
+                HandEvaluator.evaluate(hand("9V KF 9S 5T")),
+                HandEvaluator.evaluate(hand("9V KF 9S")));
+        assertBeats(
+                HandEvaluator.evaluate(hand("1:9V 3:KF")),
+                HandEvaluator.evaluate(hand("2:9S")));
+    }
+
     // ---- real boards: aces and suits (needs evaluate) ----
 
     @Test

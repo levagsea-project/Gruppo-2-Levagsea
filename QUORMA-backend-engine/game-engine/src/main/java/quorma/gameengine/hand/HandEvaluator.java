@@ -28,7 +28,8 @@ public final class HandEvaluator {
     /**
      * Compares two results: positive if {@code a} is the better hand, negative if {@code b} is, zero for a
      * tie. A lower {@link HandType} ordinal wins; equal types compare their {@link HandResult#tiebreak()}.
-     * Suits and lanes never break a tie.
+     * When one list is shorter (fewer creatures), each missing value counts as 0, so a kicker of 5 beats
+     * an empty card. Suits and lanes never break a tie.
      */
     public static int compare(HandResult a, HandResult b) {
         //TODO: implement this method
