@@ -38,6 +38,22 @@ public record Ruleset(Vocab vocab, Map<String, KeywordDef> keywords, Value.MapV 
         return Optional.empty();
     }
 
+    /**
+     * Spill multiplier of a poker hand in per mille, from {@code balance.hand_multipliers_permille}. The key is
+     * the {@code HandType} name (for example {@code "PAIR"}); the map is keyed by name so this package does
+     * not depend on the hand package.
+     *
+     * @throws RulesetException if the entry is missing or is not an integer
+     */
+    public int handMultiplierPermille(String handTypeName) {
+        if (balance.get("hand_multipliers_permille") instanceof Value.MapV m
+                && m.get(handTypeName) instanceof Value.IntV n) {
+            return Math.toIntExact(n.v());
+        }
+        throw new RulesetException(
+                "balance.json#hand_multipliers_permille." + handTypeName + ": missing or not an integer");
+    }
+
     /** A global number from {@code balance.globals}, for example {@code mitigation_floor_permille}. */
     public Optional<Value> global(String name) {
         if (balance.get("globals") instanceof Value.MapV g && g.get(name) != null) {
