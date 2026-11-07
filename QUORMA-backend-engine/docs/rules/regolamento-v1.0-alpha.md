@@ -81,7 +81,7 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
 3. L'Attacco base non cambia mai. L'Attacco attuale di una creatura è pari al suo Attacco base più eventuali modificatori, nell'ordine indicato dalle Regole d'Oro.
 4. L'Attacco non può mai scendere sotto 0. Se l'Attacco di una creatura viene ridotto a 0, può comunque attaccare ma non infliggerà alcun danno.
 5. La Difesa è la salute di una creatura. Quando una creatura subisce danni, la sua Difesa viene ridotta della quantità di danni subiti.
-6. Se la Difesa di una creatura raggiunge 0 o meno, viene distrutta e sarà scartata durante la fase di Rifornimento. I danni rimangono tra i turni, riducendo permanentemente la Difesa della creatura.
+6. Se la Difesa di una creatura raggiunge 0 o meno, viene distrutta e sarà scartata durante la fase di Rifornimento. I danni rimangono tra i turni, riducendo permanentemente la Difesa della creatura. Una creatura distrutta resta nella sua corsia, contrassegnata come distrutta, fino al Rifornimento: non può essere scelta come bersaglio, a meno che un effetto non lo permetta.
 7. Se una creatura viene curata, la sua Difesa aumenta della quantità di cura. La cura non può mai portare la Difesa al di sopra della DEF base della creatura (la sua DEF stampata). Un effetto che aumenta la DEF base di una creatura aumenta la Difesa massima che può avere, ma non la cura.
 8. Una creatura può avere effetti keyword. Una keyword è una regola con un nome stampata sulla carta.
 9. Un effetto Evoluzione è un effetto che può essere applicato a qualsiasi creatura, qualunque sia il suo seme. Conferisce alla creatura un effetto extra se la sua condizione di innesco (trigger) è soddisfatta. Un'Evoluzione viene innescata quando la sua condizione di innesco è soddisfatta, oppure quando un effetto stabilisce che viene innescata indipendentemente dalla sua condizione.
@@ -108,7 +108,7 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
 
 1. La pila è un elenco di effetti in attesa di essere risolti. Gli effetti vengono aggiunti alla pila quando vengono innescati.
 2. Gli effetti vengono risolti in ordine LIFO (Last-In-First-Out): l'ultimo effetto aggiunto alla pila è il primo a essere risolto.
-3. Se due effetti vengono innescati contemporaneamente, vengono aggiunti alla pila in ordine di corsia (da 1 a 5), aggiungendo prima gli effetti delle Potenze Artificiali e poi quelli della Resistenza Umana (il che significa che gli effetti della Resistenza Umana si risolveranno per primi).
+3. Se due effetti vengono innescati contemporaneamente, vengono aggiunti alla pila in ordine di corsia (da 1 a 5), aggiungendo prima gli effetti delle Potenze Artificiali e poi quelli della Resistenza Umana (il che significa che gli effetti della Resistenza Umana si risolveranno per primi). Se entrambi i giocatori hanno la stessa fazione, viene prima il giocatore A (quello che ha avviato la partita), poi il giocatore B.
 
 ## 5. Setup
 
@@ -194,7 +194,7 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
 
 ## 8. Fase di Dichiarazione
 
-1. Ogni creatura selezionata dalla mano di poker dichiara un bersaglio per il suo attacco. Ogni creatura attacca la creatura avversaria nella stessa corsia. Se la corsia opposta è vuota, l'attaccante parte dalla propria corsia e si muove verso l'alto in modo circolare (la corsia 4 controlla 4, 5, 1, 2, 3). La prima corsia che contiene una creatura nemica è il bersaglio.
+1. Ogni creatura selezionata dalla mano di poker dichiara un bersaglio per il suo attacco. Ogni creatura attacca la creatura avversaria nella stessa corsia. Se la corsia opposta è vuota (o non contiene una creatura bersagliabile), l'attaccante parte dalla propria corsia e si muove verso l'alto in modo circolare (la corsia 4 controlla 4, 5, 1, 2, 3). La prima corsia che contiene una creatura nemica non distrutta è il bersaglio. Se nessuna corsia avversaria contiene una creatura nemica non distrutta, l'attaccante non ha un bersaglio: non attacca e non infligge danni al giocatore avversario, come un attaccante il cui bersaglio è già distrutto (9.3).
 2. I bersagli vengono fissati una volta dichiarati e non vengono cambiati durante il combattimento.
 
 ## 9. Fase di Combattimento
@@ -203,8 +203,8 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
     - Se l'attaccante è forte contro il difensore, l'Attacco effettivo viene moltiplicato per 1.1.
     - Se l'attaccante è debole contro il difensore, l'Attacco effettivo viene moltiplicato per 0.9.
     - Se l'attaccante non è né forte né debole contro il difensore, l'Attacco effettivo è pari al suo Attacco attuale.
-2. Durante il Ciclo 1, ogni attaccante il cui bersaglio è un nemico nella corsia opposta attacca simultaneamente. Una creatura può essere attaccata solo una volta durante questo ciclo.
-3. Durante il Ciclo 2, ogni attaccante sopravvissuto al Ciclo 1 e che non ha ancora attaccato può attaccare il suo bersaglio. Gli attacchi vengono eseguiti in ordine di numero di corsia, dal più basso al più alto. Se il bersaglio è già stato distrutto, l'attaccante non attacca.
+2. Durante il Ciclo 1, ogni attaccante il cui bersaglio è un nemico nella corsia opposta attacca simultaneamente. Una creatura può essere attaccata solo una volta durante questo ciclo. Gli attacchi del Ciclo 1 sono simultanei: una creatura distrutta in questo ciclo infligge comunque il suo danno.
+3. Durante il Ciclo 2, ogni attaccante sopravvissuto al Ciclo 1 e che non ha ancora attaccato può attaccare il suo bersaglio. Gli attacchi vengono eseguiti uno alla volta, ciascuno con effetto immediato (gli attacchi successivi trovano la Difesa lasciata dai precedenti), in ordine di numero di corsia dell'attaccante, dal più basso al più alto, alternando i giocatori. A parità di corsia (possibile solo con gli effetti) vengono prima le Potenze Artificiali, poi la Resistenza Umana, e a parità di fazione il giocatore A. Se il bersaglio è già stato distrutto, l'attaccante non attacca. Se l'attaccante è già stato distrutto quando viene chiamato ad attaccare, non attacca. Il danno da spill del Ciclo 2 è sempre normale.
 4. Se un effetto reindirizza un attacco, l'attacco reindirizzato viene risolto nello stesso ciclo dell'attacco originale. Gli attacchi reindirizzati nel Ciclo 1 vengono risolti dopo che tutti gli attacchi simultanei sono stati risolti. Gli attacchi reindirizzati nel Ciclo 2 vengono risolti quando l'attacco originale sarebbe stato risolto.
 5. Un attaccante infligge danni pari al suo ATK effettivo al difensore. La DEF del difensore viene ridotta della quantità di danni inflitti.
 6. Se l'attacco uccide il bersaglio, l'attaccante trabocca (spill) sul giocatore avversario. Il danno da spill è pari a (ATK Effettivo − DEF del bersaglio prima del colpo mortale), con minimo 0, moltiplicato per il moltiplicatore della mano, arrotondato per difetto. Le sinergie dei semi possono cambiare il valore DEF usato e il moltiplicatore della mano per un dato attacco (vedi 7.10). I modificatori al moltiplicatore della mano sono moltiplicativi e vengono applicati in per-mille.
@@ -214,7 +214,7 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
 
 1. All'inizio della fase di Rifornimento, gli effetti che si innescano all'inizio della fase di rifornimento si risolvono per primi, prima che le creature distrutte vengano scartate. Le creature distrutte non sono influenzate da questi effetti.
 2. Tutte le creature distrutte vanno nella pila degli scarti del loro proprietario. Una creatura salvata dall'effetto Vestigio Tier 5 che è ancora nella sua corsia viene distrutta ora e va nella pila degli scarti.
-3. Ogni giocatore pesca i sostituti per le proprie corsie vuote in ordine di corsia, da 1 a 5. Le Potenze Artificiali pescano per prime, poi la Resistenza Umana. Se un giocatore non ha più carte nel suo mazzo, non pesca un sostituto per quella corsia.
+3. Ogni giocatore pesca i sostituti per le proprie corsie vuote in ordine di corsia, da 1 a 5. Le Potenze Artificiali pescano per prime, poi la Resistenza Umana (a parità di fazione, prima il giocatore A). Se un giocatore non ha più carte nel suo mazzo, non pesca un sostituto per quella corsia.
 4. Un sostituto pescato come creatura viene piazzato nella corsia vuota.
 5. Una magia pescata ha effetto immediatamente, poi il giocatore pesca un'altra carta.
 6. Un equipaggiamento pescato si applica immediatamente alla successiva creatura pescata in questa fase, poi il giocatore pesca un'altra carta.
