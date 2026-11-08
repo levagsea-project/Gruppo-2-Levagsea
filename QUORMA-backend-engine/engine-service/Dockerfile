@@ -1,10 +1,11 @@
-# Build context: repo root (needs the parent pom and game-engine)
+# Build context: repo root (needs the parent pom, game-engine and data/)
 FROM maven:3.9-eclipse-temurin-25 AS builder
 WORKDIR /build
 COPY pom.xml .
 COPY game-engine/pom.xml game-engine/pom.xml
 COPY engine-service/pom.xml engine-service/pom.xml
 COPY backend/pom.xml backend/pom.xml
+COPY data data
 COPY game-engine/src game-engine/src
 COPY engine-service/src engine-service/src
 RUN mvn -q -B -pl engine-service -am package -DskipTests
