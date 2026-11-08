@@ -24,7 +24,7 @@ Spring Boot API, the game's management layer and **the only component allowed to
 - Decks may reuse the same card instance. `deck_cards` repeats `owner_id`, `card_id`, `faction`, `snapshot_id` and `deck_slot`; composite foreign keys keep them consistent, so build a `DeckCard` from the instance and the deck, never by hand. `cards.deck_slot` is a generated column.
 - Append-only tables (ledger, snapshots, cards, definitions, ownership history, matches) reject UPDATE and DELETE with a trigger. Create a snapshot and all its definitions **in one transaction**; later inserts are rejected.
 - `created_at`-style columns are filled by the database (`@Generated`), because the snapshot sealing trigger compares with `now()`.
-- Entities use plain UUID foreign-key fields, not JPA associations. JSON columns (`abilities`, `effect`, deck snapshots) are mapped as `String`: the backend stores and hashes them but never interprets them.
+- Entities use plain UUID foreign-key fields, not JPA associations. JSON columns (`abilities`, deck snapshots) are mapped as `String`: the backend stores and hashes them but never interprets them.
 
 ## Lombok
 

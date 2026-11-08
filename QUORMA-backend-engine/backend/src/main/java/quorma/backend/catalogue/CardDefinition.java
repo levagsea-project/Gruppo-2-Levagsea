@@ -18,7 +18,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.generator.EventType;
 import org.hibernate.type.SqlTypes;
 
-/** Versioned content of a card inside one pool snapshot. Abilities and effect are opaque JSON owned by the engine. */
+/** Versioned content of a card inside one pool snapshot. Abilities (a JSON list, the same for every kind of card) are opaque to the backend and owned by the engine. */
 @Entity
 @Table(name = "card_definitions")
 @Getter
@@ -47,14 +47,11 @@ public class CardDefinition {
     @JdbcTypeCode(SqlTypes.JSON)
     private String abilities;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    private String effect;
-
     @Generated(event = EventType.INSERT)
     @Column(insertable = false, updatable = false)
     private Instant createdAt;
 
-    public CardDefinition(UUID snapshotId, UUID cardId, String faction, CardKind kind, String name, Integer atk, Integer def, String abilities, String effect) {
+    public CardDefinition(UUID snapshotId, UUID cardId, String faction, CardKind kind, String name, Integer atk, Integer def, String abilities) {
         this.snapshotId = snapshotId;
         this.cardId = cardId;
         this.faction = faction;
@@ -63,6 +60,5 @@ public class CardDefinition {
         this.atk = atk;
         this.def = def;
         this.abilities = abilities;
-        this.effect = effect;
     }
 }

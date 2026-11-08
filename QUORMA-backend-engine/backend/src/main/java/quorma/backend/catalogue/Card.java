@@ -38,7 +38,7 @@ public class Card {
 
     private String suit;
 
-    private String rank;
+    private Short rank;
 
     @Generated(event = EventType.INSERT)
     @Column(insertable = false, updatable = false)
@@ -48,7 +48,7 @@ public class Card {
     @Column(insertable = false, updatable = false)
     private String deckSlot;
 
-    public Card(String cardCode, String faction, CardKind kind, String subfaction, String suit, String rank) {
+    public Card(String cardCode, String faction, CardKind kind, String subfaction, String suit, Short rank) {
         this.cardCode = cardCode;
         this.faction = faction;
         this.kind = kind;

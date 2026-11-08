@@ -1,8 +1,11 @@
 -- Catalogue and versioning.
 --   pool_snapshots   : immutable, hashed, one per faction (each faction has its own pool).
 --   cards            : stable identity of a card (never changes across balance versions).
---   card_definitions : versioned content (stats / abilities / effect) of a card inside one snapshot.
--- Abilities and effects are opaque JSON for the backend: the engine owns their meaning.
+--   card_definitions : versioned content (stats / abilities) of a card inside one snapshot.
+-- Abilities are opaque JSON for the backend: the engine owns their meaning. Every kind of card (creature, spell,
+-- equipment) writes them the same way: an ordered list (2026-11-07-cards-share-abilities).
+-- Suit and rank use the engine's own values (2026-11-08-db-uses-engine-names): suit is the name of the
+-- quorma.gameengine.hand.Suit constant, rank is the number 1..13 (Ace = 1, Jack = 11, Queen = 12, King = 13).
 
 CREATE TABLE pool_snapshots
 (
@@ -24,18 +27,16 @@ CREATE TABLE cards
     kind       varchar(12) NOT NULL CHECK (kind IN ('CREATURE', 'SPELL', 'EQUIPMENT')),
     subfaction varchar(24),
     suit       varchar(16),
-    rank       varchar(2),
+    rank       smallint,
     created_at timestamptz NOT NULL DEFAULT now(),
     -- Deck uniqueness key: one creature per suit and rank, one copy of each spell / equipment.
     deck_slot  varchar(96) GENERATED ALWAYS AS (
-        CASE WHEN kind = 'CREATURE' THEN 'C:' || suit || '/' || rank ELSE 'N:' || card_code END) STORED NOT NULL,
+        CASE WHEN kind = 'CREATURE' THEN 'C:' || suit || '/' || rank::text ELSE 'N:' || card_code END) STORED NOT NULL,
     CONSTRAINT cards_kind_shape CHECK (
         (kind = 'CREATURE' AND subfaction IS NOT NULL AND suit IS NOT NULL AND rank IS NOT NULL)
             OR (kind <> 'CREATURE' AND subfaction IS NULL AND suit IS NULL AND rank IS NULL)),
-    CONSTRAINT cards_suit_valid CHECK (suit IS NULL OR suit IN ('Vincolo', 'Frattura', 'Spira', 'Vestigio')),
-    CONSTRAINT cards_rank_valid CHECK (rank IS NULL OR rank IN
-                                                       ('A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3',
-                                                        '2')),
+    CONSTRAINT cards_suit_valid CHECK (suit IS NULL OR suit IN ('VINCOLO', 'FRATTURA', 'SPIRA', 'VESTIGIO')),
+    CONSTRAINT cards_rank_valid CHECK (rank IS NULL OR rank BETWEEN 1 AND 13),
     CONSTRAINT cards_subfaction_matches_faction CHECK (subfaction IS NULL
         OR (faction = 'Resistenza Umana' AND subfaction IN ('Adattati', 'Spezzasigilli', 'Portanome', 'Segnaterra'))
         OR (faction = 'Potenze Artificiali' AND subfaction IN ('SEKTAC', 'MEROZYN', 'EFFRIX', 'YLMOR'))),
@@ -53,15 +54,14 @@ CREATE TABLE card_definitions
     name        varchar(100) NOT NULL,
     atk         integer,
     def         integer,
-    abilities   jsonb,
-    effect      jsonb,
+    abilities   jsonb        NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(abilities) = 'array'),
     created_at  timestamptz  NOT NULL DEFAULT now(),
     FOREIGN KEY (snapshot_id, faction) REFERENCES pool_snapshots (id, faction),
     FOREIGN KEY (card_id, faction, kind) REFERENCES cards (id, faction, kind),
     UNIQUE (snapshot_id, card_id),
     CONSTRAINT card_definitions_kind_shape CHECK (
-        (kind = 'CREATURE' AND atk IS NOT NULL AND atk >= 0 AND def IS NOT NULL AND def > 0 AND effect IS NULL)
-            OR (kind <> 'CREATURE' AND atk IS NULL AND def IS NULL AND abilities IS NULL AND effect IS NOT NULL))
+        (kind = 'CREATURE' AND atk IS NOT NULL AND atk >= 0 AND def IS NOT NULL AND def > 0)
+            OR (kind <> 'CREATURE' AND atk IS NULL AND def IS NULL))
 );
 CREATE INDEX card_definitions_card_idx ON card_definitions (card_id);
 
