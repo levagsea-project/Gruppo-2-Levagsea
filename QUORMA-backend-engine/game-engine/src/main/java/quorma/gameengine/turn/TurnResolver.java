@@ -12,35 +12,35 @@ import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
-import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
-import quorma.gameengine.log.MatchEvent.HandEvaluated;
-import quorma.gameengine.log.MatchEvent.TargetDeclared;
+import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
+import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
+import quorma.gameengine.log.MatchEvent.EquipmentApplied;
+import quorma.gameengine.log.MatchEvent.EquipmentLost;
+import quorma.gameengine.log.MatchEvent.EquipmentPending;
+import quorma.gameengine.log.MatchEvent.HandEvaluated;
+import quorma.gameengine.log.MatchEvent.LaneLeftEmpty;
+import quorma.gameengine.log.MatchEvent.MatchEnded;
+import quorma.gameengine.log.MatchEvent.SpellResolved;
+import quorma.gameengine.log.MatchEvent.TargetDeclared;
+import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.log.SkipReason;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.Card;
+import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.CreatureCard;
-import quorma.gameengine.model.EquipmentCard;
 import quorma.gameengine.model.EndReason;
+import quorma.gameengine.model.EquipmentCard;
 import quorma.gameengine.model.Faction;
 import quorma.gameengine.model.MatchResult;
 import quorma.gameengine.model.MatchState;
-import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Outcome;
 import quorma.gameengine.model.PlayerState;
 import quorma.gameengine.model.Side;
 import quorma.gameengine.model.SpellCard;
 import quorma.gameengine.model.Target;
-import quorma.gameengine.log.MatchEvent.CardDrawn;
-import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
-import quorma.gameengine.log.MatchEvent.LaneLeftEmpty;
-import quorma.gameengine.log.MatchEvent.MatchEnded;
-import quorma.gameengine.log.MatchEvent.EquipmentApplied;
-import quorma.gameengine.log.MatchEvent.EquipmentLost;
-import quorma.gameengine.log.MatchEvent.EquipmentPending;
-import quorma.gameengine.log.MatchEvent.SpellResolved;
 
 /**
  * Plays one turn: Evaluate, Declare, Combat (Cycle 1, Cycle 2), Refill, End of turn (ruleset 6 to 11).
@@ -66,7 +66,6 @@ public final class TurnResolver {
         this.cardEffects = Objects.requireNonNull(cardEffects, "cardEffects");
     }
 
-    
     /** The real evaluator and comparator, and spell and equipment hooks that do nothing. */
     public TurnResolver(Ruleset rules) {
         this(rules, HandEvaluator::evaluate, HandEvaluator::compare, CardEffects.NONE);
@@ -75,7 +74,7 @@ public final class TurnResolver {
     /** Plays the turn of {@code state}: every phase in order. Moves {@code state} to the next turn if the match goes on. */
     public TurnReport playTurn(MatchState state) {
         int turn = state.turn();
-        List<MatchEvent> log = new java.util.ArrayList<>();
+        List<MatchEvent> log = new ArrayList<>();
         Evaluation evaluation = evaluate(state);
         log.add(new HandEvaluated(turn, Side.A, evaluation.a(), evaluation.multiplierA()));
         log.add(new HandEvaluated(turn, Side.B, evaluation.b(), evaluation.multiplierB()));
@@ -126,7 +125,7 @@ public final class TurnResolver {
      * and within a lane by faction priority, then {@code Side.A} first.
      */
     public List<Attack> declare(MatchState state, Evaluation evaluation) {
-        List<Attack> attacks = new java.util.ArrayList<>();
+        List<Attack> attacks = new ArrayList<>();
         for (int lane = 1; lane <= 5; lane++) {
             for (Side side : new Side[] {Side.A, Side.B}) {
                 if (!evaluation.hand(side).attackerLanes().contains(lane)
@@ -154,7 +153,7 @@ public final class TurnResolver {
         record Blow(Attack attack, Creature attacker, Creature target, int effectiveAtk, int advantage,
                 int defBefore, int defAfter, boolean killed, int spill) {}
 
-        List<Blow> blows = new java.util.ArrayList<>();
+        List<Blow> blows = new ArrayList<>();
         for (Attack attack : attacks) {
             if (!attack.inCycle1()) continue;
 
@@ -200,14 +199,13 @@ public final class TurnResolver {
     public void cycle2(MatchState state, Evaluation evaluation, List<Attack> attacks, List<MatchEvent> log) {
         for (Attack attack : attacks) {
             if (attack.inCycle1()) continue;
-            if (attack.target().isEmpty()) {
-                log.add(new AttackSkipped(attack, 2, SkipReason.NO_TARGET));
-                continue;
-            }
-
             Creature attacker = state.player(attack.attacker()).creatureAt(attack.attackerLane()).orElse(null);
             if (attacker == null || attacker.destroyed()) {
                 log.add(new AttackSkipped(attack, 2, SkipReason.ATTACKER_DESTROYED));
+                continue;
+            }
+            if (attack.target().isEmpty()) {
+                log.add(new AttackSkipped(attack, 2, SkipReason.NO_TARGET));
                 continue;
             }
             Target targetRef = attack.target().orElseThrow();

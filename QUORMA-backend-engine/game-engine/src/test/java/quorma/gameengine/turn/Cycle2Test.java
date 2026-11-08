@@ -124,6 +124,27 @@ class Cycle2Test {
     }
 
     @Test
+    void aDestroyedAttackerWithoutATargetIsReportedAsDestroyedNotAsNoTarget() {
+        // B3 is destroyed by A1 first; when called it has no target either, and the destroyed check comes first
+        MatchState state = match("1:4V(4000/1500)", "3:9F(3000/2000)");
+
+        List<MatchEvent> log = cycle2(state, List.of(hit(Side.A, 1, 3), noTarget(Side.B, 3)));
+
+        assertEquals(new AttackSkipped(noTarget(Side.B, 3), 2, SkipReason.ATTACKER_DESTROYED), log.get(2));
+        assertEquals(3, log.size());
+    }
+
+    @Test
+    void anAttackerDestroyedBeforeItsTurnWhoseTargetIsAlsoGoneIsReportedAsDestroyedAttacker() {
+        // B3 is destroyed by A1, and B3's target A2 is destroyed by B4: both are gone, the attacker is reported
+        MatchState state = match("1:4V(4000/1500) 2:5V(1000/500)", "3:9F(3000/2000) 4:8F(2000/2000)");
+
+        List<MatchEvent> log = cycle2(state, List.of(hit(Side.A, 1, 3), hit(Side.B, 4, 2), hit(Side.B, 3, 2)));
+
+        assertEquals(new AttackSkipped(hit(Side.B, 3, 2), 2, SkipReason.ATTACKER_DESTROYED), log.get(log.size() - 1));
+    }
+
+    @Test
     void anAttackWithoutATargetIsSkipped() {
         MatchState state = match("2:4V(4000/3000)", "");
 

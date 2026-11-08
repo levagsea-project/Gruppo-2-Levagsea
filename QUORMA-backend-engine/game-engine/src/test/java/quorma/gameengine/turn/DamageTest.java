@@ -36,6 +36,14 @@ class DamageTest {
     }
 
     @Test
+    void aNegativeAtkNeverHealsTheTarget() {
+        // effective ATK is clamped at 0, whatever the debuff and the advantage
+        assertEquals(0, Damage.effectiveAtk(-1, 1100));
+        assertEquals(0, Damage.effectiveAtk(-1, 900));
+        assertEquals(0, Damage.effectiveAtk(-4000, 1000));
+    }
+
+    @Test
     void zeroAtkStaysZero() {
         assertEquals(0, Damage.effectiveAtk(0, 1100));
     }

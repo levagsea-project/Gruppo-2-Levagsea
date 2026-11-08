@@ -10,7 +10,8 @@ public final class Damage {
      * Strong 1100, weak 900, neutral 1000. Intermediate products use {@code long}.
      */
     public static int effectiveAtk(int currentAtk, int advantagePermille) {
-        return (int) ((long) currentAtk * advantagePermille / 1000);
+        long atk = Math.max(0, currentAtk);
+        return (int) (atk * advantagePermille / 1000L);
     }
 
     /**

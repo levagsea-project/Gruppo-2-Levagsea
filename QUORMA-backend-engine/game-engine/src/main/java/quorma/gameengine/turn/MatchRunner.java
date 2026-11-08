@@ -1,8 +1,7 @@
 package quorma.gameengine.turn;
 
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.List;
 import quorma.gameengine.model.MatchState;
 
 /** Plays turns one after the other until the match has a result. Always ends: turn 50 is the last. */
