@@ -8,7 +8,6 @@ import static quorma.gameengine.testkit.Evaluators.hand;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandResult;
@@ -242,7 +241,6 @@ class TurnResolverTest {
     // ---- with the real evaluator ----
 
     @Test
-    @Disabled("needs HandEvaluator.evaluate")
     void withTheRealEvaluatorAPairIsFoundAndItsMultiplierApplied() {
         PlayerState a = Boards.side(
                 Subfaction.ADATTATI, 12000, "1:9V(1000/1000) 2:9F(1000/1000) 3:KS(1000/1000) 4:5T(1000/1000) 5:2V(1000/1000)");
