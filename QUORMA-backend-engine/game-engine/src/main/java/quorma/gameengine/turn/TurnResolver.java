@@ -272,6 +272,7 @@ public final class TurnResolver {
                     if (pendingEquipment != null) {
                         cardEffects.onEquipment(pendingEquipment, side, drawn);
                         log.add(new EquipmentApplied(side, lane, pendingEquipment.id(), card.id()));
+                        player.discard().add(pendingEquipment);
                         pendingEquipment = null;
                     }
                 } else if (card instanceof SpellCard spell) {
@@ -281,12 +282,12 @@ public final class TurnResolver {
                     lane--;
                 } else if (card instanceof EquipmentCard equipment) {
                     pendingEquipment = equipment;
-                    player.discard().add(equipment);
                     log.add(new EquipmentPending(side, equipment.id()));
                     lane--;
                 }
             }
             if (pendingEquipment != null) {
+                player.discard().add(pendingEquipment);
                 log.add(new EquipmentLost(side, pendingEquipment.id()));
             }
         }
