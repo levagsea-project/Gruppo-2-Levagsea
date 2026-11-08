@@ -51,7 +51,7 @@ Without effects, two attackers of different players on the same lane number cann
 
 ### `2026-11-07-spell-equipment-hooks-no-data`: Spell and equipment hooks do nothing
 
-`CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`), but nothing is tested yet. When cards exist: write those tests and replace the no-op default.
+`CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves, discards and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`, `2026-11-08-equipment-discard-after-use`) and `RefillTest` covers that flow with a recording hook. When cards exist: replace the no-op default and test what the effects do.
 
 
 ## Resolved (only list those with future impact)
