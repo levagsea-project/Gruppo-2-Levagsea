@@ -18,7 +18,18 @@ public final class Targeting {
      * @return the target lane 1..5, or empty if no enemy lane is targetable
      */
     public static OptionalInt targetLane(int attackerLane, boolean[] targetable) {
-        // TODO(task-2): implement ruleset 8.1
-        throw new UnsupportedOperationException("Targeting.targetLane is not implemented yet");
+        if (attackerLane < 1 || attackerLane > 5) {
+            throw new IllegalArgumentException("attackerLane must be between 1 and 5");
+        }
+        if (targetable.length != 5) {
+            throw new IllegalArgumentException("targetable must contain exactly 5 lanes");
+        }
+        for (int os = 0; os < 5; os++) {
+            int laneIndex = (attackerLane - 1 + os) % 5;
+            if (targetable[laneIndex]) {
+                return OptionalInt.of(laneIndex + 1);
+            }
+        }
+        return OptionalInt.empty();
     }
 }

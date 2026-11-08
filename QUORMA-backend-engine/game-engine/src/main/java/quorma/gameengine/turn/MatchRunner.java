@@ -1,5 +1,8 @@
 package quorma.gameengine.turn;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import quorma.gameengine.model.MatchState;
 
 /** Plays turns one after the other until the match has a result. Always ends: turn 50 is the last. */
@@ -9,7 +12,12 @@ public final class MatchRunner {
 
     /** Plays turns from the current turn of {@code state} until {@code resolver} reports a result. */
     public static MatchReport run(MatchState state, TurnResolver resolver) {
-        // TODO(task-2): loop playTurn until a result
-        throw new UnsupportedOperationException("MatchRunner.run is not implemented yet");
+        List<TurnReport> turns = new ArrayList<>();
+        TurnReport report;
+        do {
+            report = resolver.playTurn(state);
+            turns.add(report);
+        } while (report.result().isEmpty());
+        return new MatchReport(turns, report.result().orElseThrow());
     }
 }

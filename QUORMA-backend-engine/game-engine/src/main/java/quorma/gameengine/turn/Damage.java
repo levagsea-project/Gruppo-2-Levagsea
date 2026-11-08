@@ -10,8 +10,7 @@ public final class Damage {
      * Strong 1100, weak 900, neutral 1000. Intermediate products use {@code long}.
      */
     public static int effectiveAtk(int currentAtk, int advantagePermille) {
-        // TODO(task-2): implement ruleset 9.1
-        throw new UnsupportedOperationException("Damage.effectiveAtk is not implemented yet");
+        return (int) ((long) currentAtk * advantagePermille / 1000);
     }
 
     /**
@@ -22,7 +21,7 @@ public final class Damage {
      * @param multiplierPermille  the attacker's hand multiplier, for example 1100 for a Pair
      */
     public static int spill(int effectiveAtk, int targetDefBeforeBlow, int multiplierPermille) {
-        // TODO(task-2): implement ruleset 9.6
-        throw new UnsupportedOperationException("Damage.spill is not implemented yet");
+        long excess = Math.max(0L, (long) effectiveAtk - targetDefBeforeBlow);
+        return (int) (excess * multiplierPermille / 1000);
     }
 }
