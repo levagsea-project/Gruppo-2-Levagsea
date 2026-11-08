@@ -7,7 +7,14 @@ import java.util.Optional;
  * Everything loaded from {@code data/}: vocabulary, keywords and the raw balance tree.
  * Immutable. Rebalancing {@code balance.json} changes {@link #tune} results with no code change.
  */
-public record Ruleset(Vocab vocab, Map<String, KeywordDef> keywords, Value.MapV balance) {
+public record Ruleset(
+        Vocab vocab,
+        Map<String, KeywordDef> keywords,
+        Map<String, SubfactionDef> subfactions,
+        Value.MapV balance) {
+
+    /** Modifier when two subfactions have no relation (ruleset 9.1). Identity, not a tuning value. */
+    public static final int NEUTRAL_PERMILLE = 1000;
 
     /**
      * Resolves {@code $tune.<key>.<name>}: card instance params first, then {@code balance.keywords[key].params},
@@ -52,6 +59,36 @@ public record Ruleset(Vocab vocab, Map<String, KeywordDef> keywords, Value.MapV 
         }
         throw new RulesetException(
                 "balance.json#hand_multipliers_permille." + handTypeName + ": missing or not an integer");
+    }
+
+    /**
+     * ATK modifier in per mille for an attack, from the subfaction matrix (ruleset 9.1): the strong value of
+     * {@code balance.subfaction_advantage_permille} if the attacker is strong against the defender, the weak
+     * value if it is weak, {@link #NEUTRAL_PERMILLE} otherwise (including two subfactions of one faction).
+     * Names are those of {@code subfactions.json}, for example {@code "Adattati"}.
+     *
+     * @throws RulesetException if a name is unknown or the balance value is missing
+     */
+    public int advantagePermille(String attacker, String defender) {
+        SubfactionDef a = subfactions.get(attacker);
+        if (a == null || !subfactions.containsKey(defender)) {
+            throw new RulesetException(
+                    "subfactions.json: unknown subfaction in advantagePermille(" + attacker + ", " + defender + ")");
+        }
+        if (defender.equals(a.strongAgainst())) {
+            return advantageValue("strong");
+        }
+        if (defender.equals(a.weakAgainst())) {
+            return advantageValue("weak");
+        }
+        return NEUTRAL_PERMILLE;
+    }
+
+    private int advantageValue(String key) {
+        if (balance.get("subfaction_advantage_permille") instanceof Value.MapV m && m.get(key) instanceof Value.IntV n) {
+            return Math.toIntExact(n.v());
+        }
+        throw new RulesetException("balance.json#subfaction_advantage_permille." + key + ": missing or not an integer");
     }
 
     /** A global number from {@code balance.globals}, for example {@code mitigation_floor_permille}. */

@@ -1,0 +1,65 @@
+{
+  "_schema": "Matrice di forza e debolezza tra sottofazioni (regolamento 2.4, lore v2.0 sez. 08). STRUTTURA: chi e' forte e chi e' debole contro chi. I NUMERI (x1.1 / x0.9) stanno in balance.json -> subfaction_advantage_permille. Le chiavi sono i nomi di vocab.constants.subfactions. 'strong_against': l'attaccante ha il vantaggio (ATK effettivo x strong). 'weak_against': l'attaccante ha lo svantaggio (ATK effettivo x weak). Le relazioni esistono solo tra le due fazioni: due sottofazioni della stessa fazione sono neutre. Ogni relazione e' reciproca: se A e' forte contro B, B e' debole contro A.",
+  "cycles": {
+    "MONDO": {
+      "name": "Il Mondo",
+      "order": ["Spezzasigilli", "SEKTAC", "Segnaterra", "YLMOR"],
+      "note": "Ogni sottofazione e' forte contro la successiva (YLMOR chiude l'anello su Spezzasigilli). Fonte: lore v2.0, tabella dei cicli."
+    },
+    "IDENTITA": {
+      "name": "L'Identità",
+      "order": ["EFFRIX", "Adattati", "MEROZYN", "Portanome"],
+      "note": "Ogni sottofazione e' forte contro la successiva (Portanome chiude l'anello su EFFRIX). Fonte: lore v2.0. Il regolamento 2.4 lo chiamava 'Ciclo del Se', allineato al lore il 2026-11-07."
+    }
+  },
+  "subfactions": {
+    "Adattati": {
+      "faction": "Resistenza Umana",
+      "cycle": "IDENTITA",
+      "strong_against": "MEROZYN",
+      "weak_against": "EFFRIX"
+    },
+    "Spezzasigilli": {
+      "faction": "Resistenza Umana",
+      "cycle": "MONDO",
+      "strong_against": "SEKTAC",
+      "weak_against": "YLMOR"
+    },
+    "Portanome": {
+      "faction": "Resistenza Umana",
+      "cycle": "IDENTITA",
+      "strong_against": "EFFRIX",
+      "weak_against": "MEROZYN"
+    },
+    "Segnaterra": {
+      "faction": "Resistenza Umana",
+      "cycle": "MONDO",
+      "strong_against": "YLMOR",
+      "weak_against": "SEKTAC"
+    },
+    "SEKTAC": {
+      "faction": "Potenze Artificiali",
+      "cycle": "MONDO",
+      "strong_against": "Segnaterra",
+      "weak_against": "Spezzasigilli"
+    },
+    "MEROZYN": {
+      "faction": "Potenze Artificiali",
+      "cycle": "IDENTITA",
+      "strong_against": "Portanome",
+      "weak_against": "Adattati"
+    },
+    "EFFRIX": {
+      "faction": "Potenze Artificiali",
+      "cycle": "IDENTITA",
+      "strong_against": "Adattati",
+      "weak_against": "Portanome"
+    },
+    "YLMOR": {
+      "faction": "Potenze Artificiali",
+      "cycle": "MONDO",
+      "strong_against": "Spezzasigilli",
+      "weak_against": "Segnaterra"
+    }
+  }
+}

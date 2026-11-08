@@ -46,6 +46,11 @@
     "FIVE_OF_A_KIND": 3500,
     "NONE": 0
   },
+  "subfaction_advantage_permille": {
+    "_note": "Modificatore dell'ATK effettivo in base alla matrice delle sottofazioni, in per-mille: 1100 = x1.1. strong = l'attaccante e' forte contro il difensore, weak = e' debole. Senza relazione il modificatore e' neutro (1000, non e' un valore da tarare). Valori segnaposto in attesa di playtest.",
+    "strong": 1100,
+    "weak": 900
+  },
   "keywords": {
     "K_SCUDO": {
       "stat_cost_pct": 3,
