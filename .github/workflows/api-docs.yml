@@ -1,0 +1,105 @@
+name: API docs
+
+on:
+  push:
+    branches: [SWD]
+  pull_request:
+    branches: [SWD]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build-docs:
+    name: Validate and build docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: QUORMA-backend-engine
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: quorma
+          POSTGRES_USER: quorma
+          POSTGRES_PASSWORD: quorma
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U quorma -d quorma"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Package backend
+        run: mvn -B -ntp -DskipTests -pl backend -am package
+
+      - name: Start backend and export OpenAPI spec
+        run: |
+          mkdir -p ../build/api-docs
+          java -jar backend/target/backend-1.0.0-SNAPSHOT.jar > ../build/backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/api-docs -o ../build/api-docs/openapi.json; then
+              echo "Spec exported"; exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not become ready"; cat ../build/backend.log; exit 1
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Validate spec (Redocly lint)
+        run: npx --yes @redocly/cli@2 lint ../build/api-docs/openapi.json --config redocly.yaml
+
+      - name: Build static HTML docs
+        run: npx --yes @redocly/cli@2 build-docs ../build/api-docs/openapi.json -o ../build/api-docs/index.html
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/api-docs
+
+      - name: Upload docs (for PRs and debugging)
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: api-docs
+          path: |
+            build/api-docs
+            build/backend.log
+          if-no-files-found: warn
+          retention-days: 14
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: build-docs
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
