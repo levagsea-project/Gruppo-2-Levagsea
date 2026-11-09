@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "engine.service.url",
+      "type": "java.lang.String",
+      "description": "Base URL of the engine-service HTTP API.",
+      "defaultValue": "http://localhost:8081"
+    }
+  ]
+}

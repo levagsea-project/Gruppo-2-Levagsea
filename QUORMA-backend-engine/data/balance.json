@@ -19,9 +19,9 @@
     "max_def_atk_ratio": 4,
     "distribution_model": "Nessun limite di copie nel mazzo. Un mazzo ha al massimo una creatura per rango e seme, quindi una keyword riservata a un solo rango compare al massimo 4 volte. L'idoneità (allowed_ranks) è verificata alla creazione del pool di carte, non alla costruzione del mazzo.",
     "card_ability_slots": {
-      "keyword": 1,
+      "keyword": 3,
       "evolution": 1,
-      "note": "Ipotesi segnaposto: una carta ha al massimo una keyword e una Evoluzione. Le keyword concesse da un'Evoluzione non occupano slot."
+      "note": "Ipotesi segnaposto: una carta ha al massimo 3 keyword (valore da tarare) e una sola Evoluzione. Le keyword concesse da un'Evoluzione non occupano slot. Le keyword di una carta sono distinte (nessun duplicato) e si risolvono in ordine di lista."
     },
     "limited_max_ranks": 3,
     "cap_classes": {
@@ -29,6 +29,27 @@
       "limited": "da 2 a limited_max_ranks ranghi (max 8-12 copie), per abilita' limitate da se' ma non spammabili",
       "open": "piu' di limited_max_ranks ranghi"
     }
+  },
+  "hand_multipliers_permille": {
+    "_note": "Moltiplicatore del danno da traboccamento (spill) per mano di poker (regolamento 7.8), in per-mille: 1100 = x1.1. Chiavi = nomi dell'enum HandType del motore. NONE (nessuna creatura) non infligge spill. Valori segnaposto in attesa di playtest.",
+    "HIGH_CARD": 1000,
+    "PAIR": 1100,
+    "TWO_PAIR": 1300,
+    "FOUR_OF_A_SUIT": 1350,
+    "THREE_OF_A_KIND": 1400,
+    "STRAIGHT": 1600,
+    "FLUSH": 1700,
+    "FULL_HOUSE": 1800,
+    "FOUR_OF_A_KIND": 2200,
+    "STRAIGHT_FLUSH": 2600,
+    "ROYAL_FLUSH": 3000,
+    "FIVE_OF_A_KIND": 3500,
+    "NONE": 0
+  },
+  "subfaction_advantage_permille": {
+    "_note": "Modificatore dell'ATK effettivo in base alla matrice delle sottofazioni, in per-mille: 1100 = x1.1. strong = l'attaccante e' forte contro il difensore, weak = e' debole. Senza relazione il modificatore e' neutro (1000, non e' un valore da tarare). Valori segnaposto in attesa di playtest.",
+    "strong": 1100,
+    "weak": 900
   },
   "keywords": {
     "K_SCUDO": {

@@ -1,0 +1,58 @@
+name: Java tests
+
+on:
+  push:
+    branches: [SWD]
+  pull_request:
+    branches: [SWD]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: QUORMA-backend-engine
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Build and run tests
+        run: mvn -B -ntp verify
+
+      - name: Publish test report
+        if: ${{ !cancelled() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: 'QUORMA-backend-engine/**/target/surefire-reports/TEST-*.xml'
+          check_name: Test results
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: false
+          require_tests: true
+
+      - name: Upload test reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-reports
+          path: QUORMA-backend-engine/**/target/surefire-reports/
+          if-no-files-found: warn
+          retention-days: 14

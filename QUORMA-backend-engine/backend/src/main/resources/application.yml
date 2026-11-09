@@ -12,7 +12,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        format_sql: false
+        "[format_sql]": false
 
 server:
   port: ${SERVER_PORT:8080}
@@ -30,3 +30,7 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+    
+auth:
+  # Registration bonus for new users
+  registration-bonus: ${AUTH_REGISTRATION_BONUS:0}

@@ -16,6 +16,7 @@ All game text is in Italian. IDs, field names and this guide are in English. Eve
 | `evolutions.json` | Evolutions: one-shot wrappers that give a creature a keyword or an effect when a trigger fires. | You add or change an evolution. |
 | `synergies.json` | The 12 suit-tier effects of ruleset 7.10 (3 / 4 / 5 creatures of a suit). | The ruleset's suit synergies change. |
 | `balance.json` | All tunable numbers, rank eligibility, stat costs, simulation status, testing protocol, open decisions. | You tune balance. |
+| `subfactions.json` | The subfaction matrix (ruleset 2.4, lore section 08): faction, cycle, who each subfaction is strong and weak against. Structure only: the x1.1 and x0.9 numbers are in `balance.json` → `subfaction_advantage_permille`. | The matrix changes. |
 | `ranks.json` | The rank ladder (Tier names, roles per rank and faction, naming rules) and `role_affinity`. Lore plus pool-generation hints, no rules. | You change the lore of the ranks. |
 | `invalid-combinations.json` | Class rules per trigger, a description of the derived rules, and the few hand-written exceptions. | You find a combination that should be illegal. |
 
@@ -70,7 +71,7 @@ There is no cards file yet. The intended card shape:
 }
 ```
 
-- Assumption (placeholder, see `balance.globals.card_ability_slots`): at most one keyword and one evolution per card. Keywords granted by an evolution don't use a slot.
+- Assumption (placeholder, see `balance.globals.card_ability_slots`): at most `keyword` (currently 3) distinct keywords and exactly one evolution per card. Keywords granted by an evolution don't use a slot. Several keywords on one card resolve in list order; each keeps its own `params`. The `evolutions` array holds at most one entry.
 - **There are no copy limits; scarcity is per rank.** A deck has at most one creature per rank and suit, so any single rank appears at most 4 times in a deck. Every keyword and evolution has a `cap_class` in `balance.json`: `capped`, `limited` or `open`.
   - `capped` abilities (swingy ones such as Letale and Doppio Colpo, or ones that scale with copies such as Muro, Provocazione, Flessibile, Camaleonte) have exactly one `allowed_ranks` entry and `max_built_in` 4. Several capped abilities may share a rank (Letale, Doppio Colpo and Carnefice all sit on the Ace): the 4-card limit then applies to them combined, so a deck can have four Letale Aces, four Doppio Colpo Aces or any mix.
   - `limited` abilities are bounded by their own effect, so they may sit on 2 to `globals.limited_max_ranks` (3) ranks, normally within one Tier (Provocazione 7-8, Custode Q-K). `max_built_in` is then 8 or 12. Promote an ability from `capped` to `limited` only when its effect is conditional, one-shot or bounded; `balance.json` → `open_decisions` lists the candidates.
@@ -179,5 +180,7 @@ Suits are narrative principles, not locked ability lists (lore v2.0, section 06)
 - **Card text overrides the ruleset** (Golden Rule 1), so the engine must not "correct" an ability that contradicts the base rules.
 - **Do not hide logic in the engine.** Behaviour like Custode's delayed destruction is expressed as data (`E12.then`, `E12.lockout`, condition `C24`).
 - **Names:** use the Italian faction and subfaction names exactly as in the ruleset (e.g. SEKTAC, MEROZYN, EFFRIX, YLMOR, Adattati, Spezzasigilli, Portanome, Segnaterra).
+- **Subfaction relations are reciprocal and only exist between the two factions.** Two subfactions of one faction are neutral (1000). `validate.py` checks reciprocity, the two rings of four, and that `balance.json` has `strong` above 1000 and `weak` below it. The cycle ids are `MONDO` and `IDENTITA`; display names follow the lore ("Il Mondo", "L'Identità").
+- **All cards write abilities the same way** (decision `2026-11-07-cards-share-abilities`). A creature, a spell and an equipment each have an ordered list of abilities. An ability is a reference to a keyword or evolution by id with the card's own params, or a whole effect written as expansions, and any card may have either. Spells and equipment differ only in when they fire (on draw, class `I`) and in which targets apply (none that need a trigger's context).
 - **No spell or equipment cards exist yet.** There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections. The vocabulary (class `I`, `vocab.card_contexts`) stays so they can be added later; when they are, add the card file, the balance entries and the validator checks together.
 - **No effect may depend on player input or information.** Players decide nothing during a match, so an effect that only reveals information or needs a choice does nothing. `E50` (reveal top card) was removed for this reason and replaced by `E57` (discard the top cards of a deck). Never reuse the `E50` ID.
