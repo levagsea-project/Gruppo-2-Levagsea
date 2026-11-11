@@ -334,6 +334,38 @@ for key, ok in (("strong", lambda x: x > 1000), ("weak", lambda x: 0 < x < 1000)
     if not isinstance(val, int) or isinstance(val, bool) or not ok(val):
         err("balance.json subfaction_advantage_permille", f"'{key}' must be an integer per-mille ({'> 1000' if key == 'strong' else 'between 1 and 999'}), got {val!r}")
 
+# Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
+# Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.
+labels_dir = root / "labels"
+if labels_dir.is_dir():
+    placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
+    locales = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(labels_dir.glob("*.json"))}
+    base_name = "it" if "it" in locales else next(iter(locales), None)
+    for loc, table in locales.items():
+        for k, v in table.items():
+            if not isinstance(v, str) or not v.strip():
+                err(f"labels/{loc}.json", f"'{k}' must be a non-empty string")
+    if base_name:
+        base = locales[base_name]
+        for loc, table in locales.items():
+            if loc == base_name:
+                continue
+            for k in sorted(base.keys() - table.keys()):
+                err(f"labels/{loc}.json", f"missing key '{k}' (present in {base_name}.json)")
+            for k in sorted(table.keys() - base.keys()):
+                err(f"labels/{loc}.json", f"extra key '{k}' (absent from {base_name}.json)")
+            for k in base.keys() & table.keys():
+                if isinstance(base[k], str) and isinstance(table[k], str) and placeholders(base[k]) != placeholders(table[k]):
+                    err(f"labels/{loc}.json", f"'{k}' placeholders {sorted(placeholders(table[k]))} differ from {base_name}.json {sorted(placeholders(base[k]))}")
+        slug = lambda s: re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
+        c = vocab["constants"]
+        wanted = [("faction", c["factions"]), ("suit", c["suits"]), ("phase", c["phases"]), ("hand_type", c["hand_types"]),
+                  ("subfaction", [s_ for v_ in c["subfactions"].values() for s_ in v_])]
+        for group, names in wanted:
+            for n in names:
+                if f"game.{group}.{slug(n)}" not in base:
+                    err(f"labels/{base_name}.json", f"no label 'game.{group}.{slug(n)}' for vocab value '{n}'")
+
 for w in warnings:
     print("WARN ", w)
 for e_ in errors:

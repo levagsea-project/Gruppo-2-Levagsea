@@ -19,6 +19,7 @@ All game text is in Italian. IDs, field names and this guide are in English. Eve
 | `subfactions.json` | The subfaction matrix (ruleset 2.4, lore section 08): faction, cycle, who each subfaction is strong and weak against. Structure only: the x1.1 and x0.9 numbers are in `balance.json` → `subfaction_advantage_permille`. | The matrix changes. |
 | `ranks.json` | The rank ladder (Tier names, roles per rank and faction, naming rules) and `role_affinity`. Lore plus pool-generation hints, no rules. | You change the lore of the ranks. |
 | `invalid-combinations.json` | Class rules per trigger, a description of the derived rules, and the few hand-written exceptions. | You find a combination that should be illegal. |
+| `labels/<locale>.json` | Player-facing text in Italian (`it`) and English (`en`): API error codes and base game vocabulary. Flat `"dotted.key": "text"`, `{name}` placeholders. Effect text (keywords, evolutions, synergies) is not translated yet. | You add an error code or a game term, or a language. |
 
 **Golden rule: structure lives in the structure files, numbers live in `balance.json`.** A designer should be able to retune the game by editing only `balance.json`.
 
