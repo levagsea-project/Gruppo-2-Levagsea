@@ -58,9 +58,10 @@ Keep the OpenAPI document current: it is the formal contact point with the Web t
 
 The API never returns text for the player. Every error has a `code`, a key of `data/labels/<locale>.json` (Italian and English), and the frontend translates it (`2026-11-11-error-codes-not-text`). Shape (RFC 9457 `ProblemDetail`): `{status, detail, code}`; `detail` repeats the code. A 400 from bean validation has `code: "validation.failed"` and `fieldErrors: { field: { code, params } }`, where `params` fills the `{min}`, `{max}`, `{value}` placeholders of the label.
 
-- Codes are constants in `ErrorCodes`. Use them as the `message` of constraint annotations and as the second argument of `AuthException`. Never write English text there.
+- Codes are constants in `common/ErrorCodes`, one class for every domain (label keys are one shared namespace), grouped by domain. Use them as the `message` of constraint annotations and as the second argument of the domain exception (`AuthException`, `PackException`). Never write English text there.
 - A new code needs a key in **both** `it.json` and `en.json`, in the same commit. `data/validate.py` checks the two files against each other, not against `ErrorCodes`.
-- Labels for game text (factions, suits, phases, hand types) are in the same files; the backend does not read them.
+- Labels for game text (factions, suits, phases, hand types, card rarities and kinds) and for pack types (`pack.type.<code>`) are in the same files; the backend does not read them. A new pack type in `application.yml` needs its `pack.type.<code>` label.
+- Identifiers sent to the client are language-neutral constants, never translated text: `Faction` constant names, enum names for kind, origin and rarity (`2026-11-12-faction-ids-neutral`).
 
 ## Tests
 
