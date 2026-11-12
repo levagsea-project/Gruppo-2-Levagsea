@@ -29,8 +29,8 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register a new player and return a JWT")
     @ApiResponse(responseCode = "201", description = "Account created")
-    @ApiResponse(responseCode = "400", description = "Invalid username, email or password", content = @Content)
-    @ApiResponse(responseCode = "409", description = "Username or email already in use")
+    @ApiResponse(responseCode = "400", description = "Invalid username, email or password. Body: `code` = validation.failed, `fieldErrors` = field -> {code, params}.", content = @Content)
+    @ApiResponse(responseCode = "409", description = "Username or email already in use. Body: `code` = auth.username_taken, auth.email_taken or auth.credentials_taken")
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return auth.register(request);
     }
@@ -38,8 +38,8 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "Log in and return a JWT")
     @ApiResponse(responseCode = "200", description = "Login successful")
-    @ApiResponse(responseCode = "400", description = "Missing username or password", content = @Content)
-    @ApiResponse(responseCode = "401", description = "Invalid username or password")
+    @ApiResponse(responseCode = "400", description = "Missing username or password. Same body as the register 400", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Invalid username or password. Body: `code` = auth.invalid_credentials")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return auth.login(request);
     }

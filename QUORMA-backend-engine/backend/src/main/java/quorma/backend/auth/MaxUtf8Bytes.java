@@ -20,7 +20,7 @@ public @interface MaxUtf8Bytes {
 
     int value();
 
-    String message() default "must be at most {value} bytes in UTF-8";
+    String message() default ErrorCodes.MAX_UTF8_BYTES;
 
     Class<?>[] groups() default {};
 
