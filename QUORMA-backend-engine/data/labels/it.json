@@ -1,0 +1,53 @@
+{
+  "validation.failed": "Dati non validi",
+  "validation.required": "Campo obbligatorio",
+  "validation.username.pattern": "Da 3 a 32 caratteri: lettere, cifre, _ . -",
+  "validation.email.invalid": "Inserisci un indirizzo email valido, ad esempio nome@esempio.it",
+  "validation.email.max_length": "Al massimo {max} caratteri",
+  "validation.password.size": "Da {min} a {max} caratteri",
+  "validation.max_utf8_bytes": "Al massimo {value} byte in UTF-8",
+
+  "auth.username_taken": "Nome utente già in uso",
+  "auth.email_taken": "Email già registrata",
+  "auth.credentials_taken": "Nome utente o email già in uso",
+  "auth.invalid_credentials": "Nome utente o password non validi",
+
+  "game.faction.resistenza_umana": "Resistenza Umana",
+  "game.faction.potenze_artificiali": "Potenze Artificiali",
+
+  "game.subfaction.adattati": "Adattati",
+  "game.subfaction.spezzasigilli": "Spezzasigilli",
+  "game.subfaction.portanome": "Portanome",
+  "game.subfaction.segnaterra": "Segnaterra",
+  "game.subfaction.sektac": "SEKTAC",
+  "game.subfaction.merozyn": "MEROZYN",
+  "game.subfaction.effrix": "EFFRIX",
+  "game.subfaction.ylmor": "YLMOR",
+
+  "game.suit.vincolo": "Vincolo",
+  "game.suit.frattura": "Frattura",
+  "game.suit.spira": "Spira",
+  "game.suit.vestigio": "Vestigio",
+
+  "game.phase.valutazione": "Valutazione",
+  "game.phase.dichiarazione": "Dichiarazione",
+  "game.phase.inizio_del_combattimento": "Inizio del combattimento",
+  "game.phase.ciclo_1": "Ciclo 1",
+  "game.phase.ciclo_2": "Ciclo 2",
+  "game.phase.fine_del_combattimento": "Fine del combattimento",
+  "game.phase.rifornimento": "Rifornimento",
+  "game.phase.fine_del_turno": "Fine del turno",
+
+  "game.hand_type.five_of_a_kind": "Five of a kind",
+  "game.hand_type.scala_reale": "Scala reale",
+  "game.hand_type.scala_colore": "Scala colore",
+  "game.hand_type.poker": "Poker",
+  "game.hand_type.full": "Full",
+  "game.hand_type.colore": "Colore",
+  "game.hand_type.scala": "Scala",
+  "game.hand_type.tris": "Tris",
+  "game.hand_type.quattro_dello_stesso_seme": "Quattro dello stesso seme",
+  "game.hand_type.doppia_coppia": "Doppia coppia",
+  "game.hand_type.coppia": "Coppia",
+  "game.hand_type.carta_alta": "Carta alta"
+}

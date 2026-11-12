@@ -1,0 +1,53 @@
+{
+  "validation.failed": "Validation failed",
+  "validation.required": "This field is required",
+  "validation.username.pattern": "3-32 characters: letters, digits, _ . -",
+  "validation.email.invalid": "Must be a valid email address, e.g. name@example.com",
+  "validation.email.max_length": "At most {max} characters",
+  "validation.password.size": "Between {min} and {max} characters",
+  "validation.max_utf8_bytes": "At most {value} bytes in UTF-8",
+
+  "auth.username_taken": "Username already taken",
+  "auth.email_taken": "Email already registered",
+  "auth.credentials_taken": "Username or email already in use",
+  "auth.invalid_credentials": "Invalid username or password",
+
+  "game.faction.resistenza_umana": "Resistenza Umana",
+  "game.faction.potenze_artificiali": "Potenze Artificiali",
+
+  "game.subfaction.adattati": "Adattati",
+  "game.subfaction.spezzasigilli": "Spezzasigilli",
+  "game.subfaction.portanome": "Portanome",
+  "game.subfaction.segnaterra": "Segnaterra",
+  "game.subfaction.sektac": "SEKTAC",
+  "game.subfaction.merozyn": "MEROZYN",
+  "game.subfaction.effrix": "EFFRIX",
+  "game.subfaction.ylmor": "YLMOR",
+
+  "game.suit.vincolo": "Vincolo",
+  "game.suit.frattura": "Frattura",
+  "game.suit.spira": "Spira",
+  "game.suit.vestigio": "Vestigio",
+
+  "game.phase.valutazione": "Evaluation",
+  "game.phase.dichiarazione": "Declaration",
+  "game.phase.inizio_del_combattimento": "Start of combat",
+  "game.phase.ciclo_1": "Cycle 1",
+  "game.phase.ciclo_2": "Cycle 2",
+  "game.phase.fine_del_combattimento": "End of combat",
+  "game.phase.rifornimento": "Resupply",
+  "game.phase.fine_del_turno": "End of turn",
+
+  "game.hand_type.five_of_a_kind": "Five of a kind",
+  "game.hand_type.scala_reale": "Royal flush",
+  "game.hand_type.scala_colore": "Straight flush",
+  "game.hand_type.poker": "Four of a kind",
+  "game.hand_type.full": "Full house",
+  "game.hand_type.colore": "Flush",
+  "game.hand_type.scala": "Straight",
+  "game.hand_type.tris": "Three of a kind",
+  "game.hand_type.quattro_dello_stesso_seme": "Four of the same suit",
+  "game.hand_type.doppia_coppia": "Two pair",
+  "game.hand_type.coppia": "Pair",
+  "game.hand_type.carta_alta": "High card"
+}

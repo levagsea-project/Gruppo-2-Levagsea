@@ -51,6 +51,14 @@ All requests use JWT. Critical operations (buying packs, accepting trades) are a
 
 Keep the OpenAPI document current: it is the formal contact point with the Web team. Treat changes to it as breaking changes.
 
+## Errors and languages
+
+The API never returns text for the player. Every error has a `code`, a key of `data/labels/<locale>.json` (Italian and English), and the frontend translates it (`2026-11-11-error-codes-not-text`). Shape (RFC 9457 `ProblemDetail`): `{status, detail, code}`; `detail` repeats the code. A 400 from bean validation has `code: "validation.failed"` and `fieldErrors: { field: { code, params } }`, where `params` fills the `{min}`, `{max}`, `{value}` placeholders of the label.
+
+- Codes are constants in `ErrorCodes`. Use them as the `message` of constraint annotations and as the second argument of `AuthException`. Never write English text there.
+- A new code needs a key in **both** `it.json` and `en.json`, in the same commit. `data/validate.py` checks the two files against each other, not against `ErrorCodes`.
+- Labels for game text (factions, suits, phases, hand types) are in the same files; the backend does not read them.
+
 ## Tests
 
 **No automated tests in the backend for now** (project decision: unit tests exist for the engine only), so the pom has no test dependencies. If this changes, log it in `docs/DECISIONS.md`. Whatever is added later, a trade or purchase must still be proven atomic with no duplication.
