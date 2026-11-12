@@ -11,6 +11,7 @@ import quorma.backend.catalogue.PoolSnapshotRepository;
 import quorma.backend.collection.CardInstanceRepository;
 import quorma.backend.collection.CardOwnershipHistoryRepository;
 import quorma.backend.collection.CollectionService;
+import quorma.backend.common.ErrorCodes;
 import quorma.backend.user.CreditTransactionRepository;
 import quorma.backend.user.UserRepository;
 
@@ -67,6 +68,6 @@ public class PackService {
     }
 
     private static PackException notImplemented() {
-        return new PackException(HttpStatus.NOT_IMPLEMENTED, PackErrorCodes.NOT_IMPLEMENTED);
+        return new PackException(HttpStatus.NOT_IMPLEMENTED, ErrorCodes.NOT_IMPLEMENTED);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import quorma.backend.common.ErrorCodes;
 
 /**
  * Errors carry a language-neutral {@code code}; the frontend translates it.
@@ -22,7 +23,7 @@ public class PackExceptionHandler {
     /** The only header and the only converted parameter of the controller is the Idempotency-Key. */
     @ExceptionHandler({MissingRequestHeaderException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ProblemDetail> handleBadKey(Exception e) {
-        return respond(HttpStatus.BAD_REQUEST, PackErrorCodes.IDEMPOTENCY_KEY_INVALID);
+        return respond(HttpStatus.BAD_REQUEST, ErrorCodes.PACK_IDEMPOTENCY_KEY_INVALID);
     }
 
     private static ResponseEntity<ProblemDetail> respond(HttpStatus status, String code) {
