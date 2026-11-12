@@ -6,11 +6,22 @@
   "validation.email.max_length": "At most {max} characters",
   "validation.password.size": "Between {min} and {max} characters",
   "validation.max_utf8_bytes": "At most {value} bytes in UTF-8",
+  "validation.faction.unknown": "Unknown faction",
 
   "auth.username_taken": "Username already taken",
   "auth.email_taken": "Email already registered",
   "auth.credentials_taken": "Username or email already in use",
   "auth.invalid_credentials": "Invalid username or password",
+
+  "pack.unknown_type": "Unknown pack type",
+  "pack.insufficient_credits": "Not enough credits",
+  "pack.no_pool": "No cards available for this faction yet",
+  "pack.idempotency_key_invalid": "Invalid request: please try again",
+  "pack.idempotency_key_reused": "This request was already used for a different purchase",
+  "pack.type.standard": "Standard Pack",
+  "pack.type.advanced": "Advanced Pack",
+  "pack.type.elite": "Elite Pack",
+  "error.not_implemented": "Not available yet",
 
   "game.faction.resistenza_umana": "Resistenza Umana",
   "game.faction.potenze_artificiali": "Potenze Artificiali",
@@ -28,6 +39,15 @@
   "game.suit.frattura": "Frattura",
   "game.suit.spira": "Spira",
   "game.suit.vestigio": "Vestigio",
+
+  "game.tier.tier_1": "Common",
+  "game.tier.tier_2": "Uncommon",
+  "game.tier.tier_3": "Rare",
+  "game.tier.tier_4": "Epic",
+
+  "game.card_kind.creature": "Creature",
+  "game.card_kind.spell": "Spell",
+  "game.card_kind.equipment": "Equipment",
 
   "game.phase.valutazione": "Evaluation",
   "game.phase.dichiarazione": "Declaration",

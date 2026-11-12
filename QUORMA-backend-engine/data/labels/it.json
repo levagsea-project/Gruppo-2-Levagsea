@@ -6,11 +6,22 @@
   "validation.email.max_length": "Al massimo {max} caratteri",
   "validation.password.size": "Da {min} a {max} caratteri",
   "validation.max_utf8_bytes": "Al massimo {value} byte in UTF-8",
+  "validation.faction.unknown": "Fazione sconosciuta",
 
   "auth.username_taken": "Nome utente già in uso",
   "auth.email_taken": "Email già registrata",
   "auth.credentials_taken": "Nome utente o email già in uso",
   "auth.invalid_credentials": "Nome utente o password non validi",
+
+  "pack.unknown_type": "Tipo di pacchetto sconosciuto",
+  "pack.insufficient_credits": "Crediti insufficienti",
+  "pack.no_pool": "Nessuna carta disponibile per questa fazione",
+  "pack.idempotency_key_invalid": "Richiesta non valida: riprova",
+  "pack.idempotency_key_reused": "Questa richiesta è già stata usata per un altro acquisto",
+  "pack.type.standard": "Pacchetto Standard",
+  "pack.type.advanced": "Pacchetto Avanzato",
+  "pack.type.elite": "Pacchetto Élite",
+  "error.not_implemented": "Funzione non ancora disponibile",
 
   "game.faction.resistenza_umana": "Resistenza Umana",
   "game.faction.potenze_artificiali": "Potenze Artificiali",
@@ -28,6 +39,15 @@
   "game.suit.frattura": "Frattura",
   "game.suit.spira": "Spira",
   "game.suit.vestigio": "Vestigio",
+
+  "game.tier.tier_1": "Comune",
+  "game.tier.tier_2": "Non comune",
+  "game.tier.tier_3": "Rara",
+  "game.tier.tier_4": "Epica",
+
+  "game.card_kind.creature": "Creatura",
+  "game.card_kind.spell": "Magia",
+  "game.card_kind.equipment": "Equipaggiamento",
 
   "game.phase.valutazione": "Valutazione",
   "game.phase.dichiarazione": "Dichiarazione",
