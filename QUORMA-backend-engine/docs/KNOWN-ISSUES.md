@@ -54,6 +54,48 @@ Without effects, two attackers of different players on the same lane number cann
 `CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves, discards and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`, `2026-11-08-equipment-discard-after-use`) and `RefillTest` covers that flow with a recording hook. When cards exist: replace the no-op default and test what the effects do.
 
 
+### `2026-11-12-pack-odds`: Pack prices, sizes and Tier weights are placeholders
+
+The three pack types (`standard`, `advanced`, `elite`) in `application.yml`, with their prices and slots per Tier, are placeholders (`2026-11-12-pack-pricing-strategy`, from the team's first proposal). The mapping of rarity names to Tiers (comune, non comune, rara, epica = Tier 1 to 4) is an assumption to confirm. Spells and equipment have no Tier, so their pack slot is a plain uniform draw over all of them. No spell or equipment cards exist in the pool yet, so **packs cannot be opened until some do** (the drawer refuses to sell a pack short); to decide whether to relax that meanwhile. Not decided: spell/equipment rarity, and whether a pack type can be limited in time. Also: `auth.registration-bonus` is 0 by default, so a new player cannot buy a pack without a grant.
+
+### `2026-11-12-pack-labels-pending`: Pack error codes and labels wait for the labels branch
+
+The pack endpoints already return error codes, not text (`2026-11-11-error-codes-not-text`), but `ErrorCodes` and `data/labels/` are on branch `76-swd-label-per-supporto-multilingua`, not merged into the pack branch. Until then the codes live in `PackErrorCodes` and have no labels. After the merge:
+
+1. Move the constants of `PackErrorCodes` to `ErrorCodes` (`validation.required` is already there) and delete the class.
+2. Add these keys to **both** `data/labels/it.json` and `en.json`, then run `make validate`:
+
+| Key | it | en |
+|---|---|---|
+| `validation.faction.unknown` | Fazione sconosciuta | Unknown faction |
+| `pack.unknown_type` | Tipo di pacchetto sconosciuto | Unknown pack type |
+| `pack.insufficient_credits` | Crediti insufficienti | Not enough credits |
+| `pack.no_pool` | Nessuna carta disponibile per questa fazione | No cards available for this faction yet |
+| `pack.idempotency_key_invalid` | Richiesta non valida: riprova | Invalid request: please try again |
+| `pack.idempotency_key_reused` | Questa richiesta è già stata usata per un altro acquisto | This request was already used for a different purchase |
+| `error.not_implemented` | Funzione non ancora disponibile | Not available yet |
+| `pack.type.standard` | Pacchetto Standard | Standard Pack |
+| `pack.type.advanced` | Pacchetto Avanzato | Advanced Pack |
+| `pack.type.elite` | Pacchetto Élite | Elite Pack |
+| `game.tier.tier_1` | Comune | Common |
+| `game.tier.tier_2` | Non comune | Uncommon |
+| `game.tier.tier_3` | Rara | Rare |
+| `game.tier.tier_4` | Epica | Epic |
+| `game.card_kind.creature` | Creatura | Creature |
+| `game.card_kind.spell` | Magia | Spell |
+| `game.card_kind.equipment` | Equipaggiamento | Equipment |
+
+A new pack type in `application.yml` needs its `pack.type.<code>` label. On the pack branch a validation 400 still has the old body (`fieldErrors: {field: code}`); it takes the `{code, params}` shape with the merge. Card names (`card_definitions.name`) are stored in one language: translating them is not designed.
+
+### `2026-11-12-faction-ids-db`: Faction and subfaction identifiers are not neutral everywhere yet
+
+The pack and collection endpoints use the `Faction` constant name (`2026-11-12-faction-ids-neutral`). Still to do:
+
+- **Other endpoints.** Decks (branch 21: `DeckRequest`, `DeckValidator`, deck responses) and any later endpoint still take and return `Resistenza Umana`. Switch them to `Faction.PATTERN` and the constant name.
+- **Database.** The `faction` columns and their CHECKs (`V2`, and the tables that repeat the column) store `Resistenza Umana`, unlike `suit`, which stores the constant name. Storing the constant too would remove the conversion, but it needs a new migration that rewrites CHECKs on append-only tables, and it reverses part of `2026-11-08-db-uses-engine-names`. Not decided.
+- **Subfaction.** Responses return it as stored (`Adattati`, `SEKTAC`). The same rule would give `ADATTATI`; needs a backend `Subfaction` enum like `Faction`.
+- **Labels.** `data/validate.py` (branch 76) builds label keys from the data name with a slug, which gives the same key as the constant in lower case, so no label changes.
+
 ## Resolved (only list those with future impact)
 
 
