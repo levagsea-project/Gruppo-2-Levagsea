@@ -145,13 +145,20 @@ public final class RulesetLoader {
                         requireString(c, "id", path + ".conditions[" + i + "]"), params(c.get("params"))));
             }
         }
+        Map<String, Value> common = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> field : m.fields().entrySet()) {
+            if (ExpansionDef.COMMON_KEYS.contains(field.getKey())) {
+                common.put(field.getKey(), field.getValue());
+            }
+        }
         return new ExpansionDef(
                 requireString(m, "trigger_id", path), params(m.get("trigger_params")),
                 requireString(m, "effect_id", path), params(m.get("effect_params")),
                 requireString(m, "target_id", path), params(m.get("target_params")),
                 requireString(m, "duration", path),
                 List.copyOf(conditions),
-                resClass(requireString(m, "class", path), path + ".class"));
+                resClass(requireString(m, "class", path), path + ".class"),
+                common);
     }
 
     // ---- subfactions ----

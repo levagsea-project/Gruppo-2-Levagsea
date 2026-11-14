@@ -33,7 +33,11 @@
     "side": { "enum": ["A", "B"] },
     "lane": { "type": "integer", "minimum": 1, "maximum": 5 },
     "card_id": { "type": "string", "minLength": 1, "maxLength": 64 },
-    "ability_id": { "type": "string", "pattern": "^(K|EVO)_[A-Z0-9_]+$" },
+    "ability_id": {
+      "description": "A keyword or evolution id, or INLINE_<n> for the n-th ability of the card (from 1, keywords included) when it is written on the card as expansions.",
+      "type": "string",
+      "pattern": "^((K|EVO)_[A-Z0-9_]+|INLINE_[1-9][0-9]*)$"
+    },
     "effect_id": { "type": "string", "pattern": "^E[0-9]+$" },
     "trigger_id": { "type": "string", "pattern": "^(T[0-9]+|T_EVO)$" },
     "permille": { "type": "integer", "minimum": 0 },

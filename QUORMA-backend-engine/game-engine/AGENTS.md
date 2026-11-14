@@ -35,7 +35,7 @@ The engine implements the vocabulary in `data/vocab.json`; it does not hard-code
 
 ## MVP scope
 
-Only the live data ships (decision `2026-11-14-mvp-ability-set`): keywords Scudo, Perforante, Insaziabile and Traboccante, no Evolutions, and the 12 suit synergies. Everything else is in `data/parked/`, which is not bundled in the jar; bring an ability back only when the engine is ready to resolve it (`data/AGENTS.md` §13). The 3-turn demo still uses parked abilities (`2026-11-14-demo-uses-parked-abilities`). No spell or equipment cards exist yet (none are defined in `data/`).
+Only the live data ships (decision `2026-11-14-mvp-ability-set`): keywords Scudo, Perforante, Insaziabile and Traboccante, no Evolutions, and the 12 suit synergies. Everything else is in `data/parked/`, which is not bundled in the jar; bring an ability back only when the engine is ready to resolve it (`data/AGENTS.md` §13). The 3-turn demo still uses parked abilities (`2026-11-14-demo-uses-parked-abilities`). No spell or equipment cards exist yet (none are defined in `data/`). A creature may also have an ability written on the card (trigger, effect, target, no keyword) in one of the shapes of those four keywords, with its own numbers (`2026-11-14-inline-abilities`).
 
 ## Tests
 

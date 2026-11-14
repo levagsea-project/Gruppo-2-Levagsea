@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
 import quorma.gameengine.data.Ruleset;
+import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
@@ -54,6 +55,7 @@ public final class TurnResolver {
     private final Function<List<HandCard>, HandResult> handEvaluator;
     private final Comparator<HandResult> handComparator;
     private final CardEffects cardEffects;
+    private final AbilityBinder binder;
 
     public TurnResolver(
             Ruleset rules,
@@ -64,6 +66,7 @@ public final class TurnResolver {
         this.handEvaluator = Objects.requireNonNull(handEvaluator, "handEvaluator");
         this.handComparator = Objects.requireNonNull(handComparator, "handComparator");
         this.cardEffects = Objects.requireNonNull(cardEffects, "cardEffects");
+        this.binder = new AbilityBinder(rules);
     }
 
     /** The real evaluator and comparator, and spell and equipment hooks that do nothing. */
@@ -266,7 +269,7 @@ public final class TurnResolver {
                 }
                 Card card = player.deck().remove(0);
                 if (card instanceof CreatureCard creatureCard) {
-                    Creature drawn = new Creature(creatureCard, lane);
+                    Creature drawn = new Creature(creatureCard, lane, binder.bind(creatureCard));
                     player.place(drawn);
                     log.add(new CardDrawn(side, lane, card.id()));
                     if (pendingEquipment != null) {

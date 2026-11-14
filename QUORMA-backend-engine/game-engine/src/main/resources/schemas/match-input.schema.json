@@ -130,7 +130,7 @@
       }
     },
     "inline_effect": {
-      "description": "A whole effect written on the card as expansions (data/AGENTS.md section 2).",
+      "description": "A whole effect written on the card as expansions, with no keyword: no card params, no $param, no conditions; $tune resolves against balance.json. The MatchLog names it INLINE_<n>, n being its position in the card's abilities from 1. The engine accepts only the shapes it implements (trigger, effect, class, duration of a live keyword) and refuses anything else.",
       "type": "object",
       "additionalProperties": false,
       "required": ["expansions"],
@@ -144,6 +144,7 @@
     },
     "expansion": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["trigger_id", "effect_id", "target_id", "duration", "class"],
       "properties": {
         "trigger_id": { "type": "string" },
@@ -161,7 +162,11 @@
             "properties": { "id": { "type": "string" }, "params": { "type": "object" } }
           }
         },
-        "class": { "enum": ["C", "T", "R", "I"] }
+        "class": { "enum": ["C", "T", "R", "I"] },
+        "max_triggers": { "type": "integer", "minimum": 1 },
+        "once_per_turn": { "type": "boolean" },
+        "max_stacks": { "type": "integer", "minimum": 1 },
+        "stack_key": { "type": "string", "description": "Default: the ability id (INLINE_<n>)." }
       }
     }
   }
