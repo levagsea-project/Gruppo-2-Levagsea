@@ -35,6 +35,13 @@
             <version>3.0.8</version>
             <scope>test</scope>
         </dependency>
+        <!-- Test only: the validator logs through SLF4J. A no-op backend keeps test runs quiet (otherwise SLF4J warns
+             "No SLF4J providers were found"). Version from the BOM, the same as slf4j-api. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
