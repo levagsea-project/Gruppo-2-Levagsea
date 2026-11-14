@@ -14,6 +14,7 @@ import quorma.gameengine.effects.AbilityException;
 import quorma.gameengine.input.MatchInput;
 import quorma.gameengine.input.MatchInputException;
 import quorma.gameengine.input.MatchInputReader;
+import quorma.gameengine.log.BoardSnapshot;
 import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.model.Card;
 import quorma.gameengine.model.CreatureCard;
@@ -35,18 +36,34 @@ import quorma.gameengine.turn.TurnResolver;
 public final class GameEngine {
 
     private final Ruleset rules;
+    private final String rulesetHash;
 
     /** An engine on the rule pack bundled in the jar. */
     public GameEngine() {
-        this(RulesetLoader.fromClasspath());
+        this(RulesetLoader.fromClasspath(), RulesetLoader.rulesetHashFromClasspath());
     }
 
-    public GameEngine(Ruleset rules) {
+    /**
+     * @param rulesetHash the hash of the rule pack {@code rules} was loaded from
+     *                    ({@code RulesetLoader.rulesetHashFromDirectory} or {@code ...FromClasspath})
+     */
+    public GameEngine(Ruleset rules, String rulesetHash) {
         this.rules = Objects.requireNonNull(rules, "rules");
+        this.rulesetHash = Objects.requireNonNull(rulesetHash, "rulesetHash");
     }
 
     public Ruleset rules() {
         return rules;
+    }
+
+    /** SHA-256 of the rule pack this engine plays, recorded in every MatchLog. */
+    public String rulesetHash() {
+        return rulesetHash;
+    }
+
+    /** Reads the input JSON, plays it and returns the canonical MatchLog JSON. */
+    public String matchLog(String inputJson) {
+        return simulate(inputJson).toMatchLog();
     }
 
     /** Reads the input JSON and plays it. */
@@ -78,15 +95,21 @@ public final class GameEngine {
                 new PlayerState(input.player(Side.B).faction(), life, decks.get(Side.B)));
         List<MatchEvent> setup = new ArrayList<>();
         Setup.run(state, binder, rng, setup);
+        BoardSnapshot setupBoard = BoardSnapshot.of(state);
 
         MatchReport report = MatchRunner.run(state, new TurnResolver(rules));
-        return new Simulation(input, life, drawOrder, setup, report);
+        return new Simulation(EngineVersion.VERSION, rules.rulesetVersion(), rulesetHash, input, life, drawOrder, setup,
+                setupBoard, report);
     }
 
     private void check(MatchInput input, AbilityBinder binder) {
         if (!input.rulesetVersion().equals(rules.rulesetVersion())) {
             throw new MatchInputException("input.ruleset_version: this engine plays " + rules.rulesetVersion()
                     + ", got " + input.rulesetVersion());
+        }
+        if (input.rulesetHash().isPresent() && !input.rulesetHash().get().equals(rulesetHash)) {
+            throw new MatchInputException("input.ruleset_hash: this engine plays the rule pack " + rulesetHash
+                    + ", got " + input.rulesetHash().get() + " (ruleset 12.6: a replay needs the same rules)");
         }
         for (Side side : Side.values()) {
             MatchInput.Player player = input.player(side);

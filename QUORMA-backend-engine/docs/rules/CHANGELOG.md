@@ -10,6 +10,7 @@ Anything may change until 1.0 is released. Changes before this log started are i
 
 | Date | Area | Change | Reference |
 |---|---|---|---|
+| 2026-11-14 | engine | The engine writes the canonical MatchLog JSON (`GameEngine.matchLog`) with `ruleset_hash`, `engine_version` and `result_hash`, and refuses an input whose `ruleset_hash` differs from its rule pack | `2026-11-14-match-log-writer` |
 | 2026-11-14 | engine | `GameEngine.simulate` plays a whole match from the input JSON: input checks, shuffle (A then B), setup with spells and equipment set aside and shuffled back (A then B, only if any) | `2026-11-14-match-setup` |
 | 2026-11-14 | data | `balance.json` `globals.starting_life` = 12000 (ruleset 5.2, value unchanged) | `2026-11-14-match-setup` |
 | 2026-11-14 | engine | Effect stack and Insaziabile: a kill triggers the killer's T19 abilities, resolved LIFO once all Cycle 1 blows have landed or right after the Cycle 2 attack (Potenze Artificiali pushed first); Insaziabile adds 15% of base ATK, at most 3 times; an effect whose creature is destroyed fizzles. | `2026-11-14-stack-resolves-when-quiet`, `2026-11-14-mvp-ability-set` |

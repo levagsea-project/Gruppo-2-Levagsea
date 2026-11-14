@@ -15,6 +15,7 @@ import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
+import quorma.gameengine.log.BoardSnapshot;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
@@ -78,23 +79,28 @@ public final class TurnResolver {
     /** Plays the turn of {@code state}: every phase in order. Moves {@code state} to the next turn if the match goes on. */
     public TurnReport playTurn(MatchState state) {
         int turn = state.turn();
-        List<MatchEvent> log = new ArrayList<>();
+        List<MatchEvent> opening = new ArrayList<>();
         Evaluation evaluation = evaluate(state);
-        log.add(new HandEvaluated(turn, Side.A, evaluation.a(), evaluation.multiplierA()));
-        log.add(new HandEvaluated(turn, Side.B, evaluation.b(), evaluation.multiplierB()));
+        opening.add(new HandEvaluated(turn, Side.A, evaluation.a(), evaluation.multiplierA()));
+        opening.add(new HandEvaluated(turn, Side.B, evaluation.b(), evaluation.multiplierB()));
 
         List<Attack> attacks = declare(state, evaluation);
         for (Attack attack : attacks) {
-            log.add(new TargetDeclared(attack));
+            opening.add(new TargetDeclared(attack));
         }
-        cycle1(state, evaluation, attacks, log);
-        cycle2(state, evaluation, attacks, log);
-        refill(state, log);
-        Optional<MatchResult> result = endOfTurn(state, evaluation, log);
+        List<MatchEvent> cycle1 = new ArrayList<>();
+        cycle1(state, evaluation, attacks, cycle1);
+        List<MatchEvent> cycle2 = new ArrayList<>();
+        cycle2(state, evaluation, attacks, cycle2);
+        List<MatchEvent> refill = new ArrayList<>();
+        refill(state, refill);
+        List<MatchEvent> closing = new ArrayList<>();
+        Optional<MatchResult> result = endOfTurn(state, evaluation, closing);
+        BoardSnapshot board = BoardSnapshot.of(state);
         if (result.isEmpty() && state.turn() < MatchState.LAST_TURN) {
             state.nextTurn();
         }
-        return new TurnReport(turn, evaluation, attacks, log, result);
+        return new TurnReport(turn, evaluation, attacks, opening, cycle1, cycle2, refill, closing, board, result);
     }
 
     /** Evaluate (7): each player's hand from their creatures in lane order, and the multiplier. */
