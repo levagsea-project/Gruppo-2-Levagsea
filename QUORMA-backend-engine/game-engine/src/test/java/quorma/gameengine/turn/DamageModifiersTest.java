@@ -28,8 +28,9 @@ import quorma.gameengine.testkit.Boards;
 import quorma.gameengine.testkit.TurnResolvers;
 
 /**
- * Scudo, Perforante and Traboccante in combat (decision {@code 2026-11-14-damage-modifiers}). Side A is Adattati,
- * side B is SEKTAC: no advantage between them. A's hand multiplier is 1100 (Pair), B's is 1000 (High card).
+ * Scudo, Perforante and Traboccante in combat (formulas in {@link Damage}; spill from the damage dealt, decision
+ * {@code 2026-11-14-spill-after-mitigation}). Side A is Adattati, side B is SEKTAC: no advantage between them.
+ * A's hand multiplier is 1100 (Pair), B's is 1000 (High card).
  * Every expected value is worked out by hand.
  */
 class DamageModifiersTest {

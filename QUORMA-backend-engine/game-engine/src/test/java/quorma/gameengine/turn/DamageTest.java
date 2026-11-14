@@ -93,7 +93,7 @@ class DamageTest {
         assertEquals(6_999_996, Damage.spill(2_000_000, 1, 3500));
     }
 
-    // ---- abilities: decision 2026-11-14-damage-modifiers ----
+    // ---- abilities: Scudo (reductions), Perforante (pierce), Traboccante (spill factors) ----
 
     @Test
     void scudoAgainstPerforanteLeavesPartOfTheReduction() {

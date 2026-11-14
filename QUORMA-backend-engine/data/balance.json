@@ -3,6 +3,7 @@
   "ruleset_version": "1.0-alpha",
   "status": "TUTTI i valori sono segnaposto in attesa di playtest/simulazione. stat_cost_pct negativo = bonus di statistiche.",
   "globals": {
+    "starting_life": 12000,
     "mitigation_floor_permille": 700,
     "mitigation_note": "Le riduzioni danno si moltiplicano ma non scendono sotto ×0.7 (tetto 30%, Appendice D).",
     "stat_cost_effect_cards_pct": 15,

@@ -84,6 +84,21 @@ public sealed interface MatchEvent {
     record EffectFizzled(CreatureRef source, String abilityId, String effectId, FizzleReason reason)
             implements MatchEvent {}
 
+    /** Setup: a spell or equipment drawn while filling the lanes, set aside with no effect (ruleset 5.4). */
+    record CardSetAside(Side side, String cardId) implements MatchEvent {}
+
+    /**
+     * Setup: the set-aside cards went back into the deck, which was shuffled again (ruleset 5.4 and 12.2).
+     *
+     * @param drawOrder card ids after the reshuffle, top first
+     */
+    record DeckReshuffled(Side side, int cardsReturned, List<String> drawOrder) implements MatchEvent {
+
+        public DeckReshuffled {
+            drawOrder = List.copyOf(drawOrder);
+        }
+    }
+
     /** Refill: a destroyed creature went to the discard pile and its lane is empty. */
     record CreatureDiscarded(Side side, int lane, String cardId) implements MatchEvent {}
 

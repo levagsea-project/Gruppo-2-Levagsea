@@ -135,7 +135,14 @@ public final class RulesetLoader {
         return new ParamSpec(optString(m, "type"), required, m.get("default"), values);
     }
 
-    private static ExpansionDef expansion(Value.MapV m, String path) {
+    /**
+     * Reads one expansion as written in the data files and in a card's inline abilities. Keys other than the
+     * expansion's own and the common params are ignored: the caller checks them if it needs to.
+     *
+     * @param path names the expansion in error messages
+     * @throws RulesetException naming the path of the problem
+     */
+    public static ExpansionDef expansion(Value.MapV m, String path) {
         List<ConditionDef> conditions = new ArrayList<>();
         if (m.get("conditions") != null) {
             List<Value> raw = asList(m.get("conditions"), path + ".conditions");
