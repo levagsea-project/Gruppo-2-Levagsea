@@ -11,14 +11,15 @@ All game text is in Italian. IDs, field names and this guide are in English. Eve
 
 | File | Role | Edit when |
 |---|---|---|
-| `vocab.json` | The vocabulary: constants, resolution classes, durations, conditions, effects, triggers, targets, target selection rules, evolution rules. Defines what can be expressed. | You need a new building block. |
-| `keyword.json` | Keywords (Scudo, Letale, …) as expansions into vocab pieces. Structure only, no balance numbers. | You add or change a keyword. |
+| `vocab.json` | The vocabulary: constants, resolution classes, durations, conditions, effects, triggers, targets, target selection rules. Only the pieces live abilities use; the rest is in `parked/vocab.json`. Defines what can be expressed. | You need a new building block. |
+| `keyword.json` | Keywords (Scudo, Perforante, …) as expansions into vocab pieces. Structure only, no balance numbers. | You add or change a keyword. |
 | `evolutions.json` | Evolutions: one-shot wrappers that give a creature a keyword or an effect when a trigger fires. | You add or change an evolution. |
 | `synergies.json` | The 12 suit-tier effects of ruleset 7.10 (3 / 4 / 5 creatures of a suit). | The ruleset's suit synergies change. |
 | `balance.json` | All tunable numbers, rank eligibility, stat costs, simulation status, testing protocol, open decisions. | You tune balance. |
 | `subfactions.json` | The subfaction matrix (ruleset 2.4, lore section 08): faction, cycle, who each subfaction is strong and weak against. Structure only: the x1.1 and x0.9 numbers are in `balance.json` → `subfaction_advantage_permille`. | The matrix changes. |
 | `ranks.json` | The rank ladder (Tier names, roles per rank and faction, naming rules) and `role_affinity`. Lore plus pool-generation hints, no rules. | You change the lore of the ranks. |
 | `invalid-combinations.json` | Class rules per trigger, a description of the derived rules, and the few hand-written exceptions. | You find a combination that should be illegal. |
+| `parked/*.json` | Abilities, vocab entries and rules kept out of the game until needed (section 13). Same shapes as the live files. Not loaded by the engine, not bundled in the jar. | You park or restore an ability. |
 | `labels/<locale>.json` | Player-facing text in Italian (`it`) and English (`en`): API error codes and base game vocabulary. Flat `"dotted.key": "text"`, `{name}` placeholders. Effect text (keywords, evolutions, synergies) is not translated yet. | You add an error code or a game term, or a language. |
 
 **Golden rule: structure lives in the structure files, numbers live in `balance.json`.** A designer should be able to retune the game by editing only `balance.json`.
@@ -113,13 +114,15 @@ Repeatable growth is **not** an evolution. Use a normal trigger plus `max_stacks
 3. **Target kind**: some value of `effects[effect].target_kind` appears in `targets[target].kind` (`card` is also satisfied by `creature`).
 4. **Trigger context**: if `targets[target].requires_context` is set, it must appear in `triggers[trigger].provides` (for `T_EVO`, use the inner trigger's `provides`).
 5. **Duration**: `effects[effect].duration_mode` is `instant_only` (only `D_Istantanea`), `sustained_only` (anything except `D_Istantanea`) or `any`.
-6. **Class `I` only effects** (`E48`, `E49`, `E57`) never appear in creature abilities. `E50` is deprecated (empty class list) and cannot be used anywhere.
+6. **Class `I` only effects** never appear in creature abilities.
 7. **`combination_rules`**: a rule matches when all its non-null fields match (`null` means any, a list means any of). Rules with `allowed_triggers` are whitelists: the effect is legal only with those triggers. A match means the expansion is invalid.
 8. **Keyword grants**: an `E14` must name an existing keyword, include its required params, and not include unknown ones.
 9. **References**: every `$tune.*` resolves in `balance.json`, every `balance_ref` exists, every description placeholder can be filled.
 10. **No keyword uses `T_EVO`.**
 
-The structure files are meant to pass all ten checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; currently at least 75% and 69%), and prints theme-coverage warnings (section 10); warnings never fail the run.
+An id that exists only in `parked/` fails check 1 with a message saying where to restore it from. The validator also checks that no id is both live and parked, and prints the next free id of each kind.
+
+The structure files are meant to pass all ten checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; with only four live keywords Vincolo misses the suit target and Vestigio Tier 3 the role target, see `2026-11-14-vincolo-no-themed-ability`), and prints theme-coverage warnings (section 10); warnings never fail the run.
 
 ## 8. How to add things
 
@@ -135,8 +138,8 @@ The structure files are meant to pass all ten checks with zero errors. Run the v
 3. Validate.
 
 **New vocab piece**
-- New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID (currently `E58`). Never renumber or reuse IDs.
-- New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (currently next is `T38`).
+- New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID printed by `make validate` (`next free E id`, currently `E58`); it counts parked IDs too. Never renumber or reuse IDs.
+- New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (next free `T` id from `make validate`, currently `T38`).
 - New target: give it `kind` and `requires_context` (use `null` if none).
 - Replacement effects (`R`) must have a trigger that can express the moment ("sta per…"). If none exists, add one.
 
@@ -183,5 +186,22 @@ Suits are narrative principles, not locked ability lists (lore v2.0, section 06)
 - **Names:** use the Italian faction and subfaction names exactly as in the ruleset (e.g. SEKTAC, MEROZYN, EFFRIX, YLMOR, Adattati, Spezzasigilli, Portanome, Segnaterra).
 - **Subfaction relations are reciprocal and only exist between the two factions.** Two subfactions of one faction are neutral (1000). `validate.py` checks reciprocity, the two rings of four, and that `balance.json` has `strong` above 1000 and `weak` below it. The cycle ids are `MONDO` and `IDENTITA`; display names follow the lore ("Il Mondo", "L'Identità").
 - **All cards write abilities the same way** (decision `2026-11-07-cards-share-abilities`). A creature, a spell and an equipment each have an ordered list of abilities. An ability is a reference to a keyword or evolution by id with the card's own params, or a whole effect written as expansions, and any card may have either. Spells and equipment differ only in when they fire (on draw, class `I`) and in which targets apply (none that need a trigger's context).
-- **No spell or equipment cards exist yet.** There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections. The vocabulary (class `I`, `vocab.card_contexts`) stays so they can be added later; when they are, add the card file, the balance entries and the validator checks together.
+- **No spell or equipment cards exist yet.** There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections. Their vocabulary (class `I` effects, `card_contexts`) is parked in `parked/vocab.json` so they can be added later; when they are, add the card file, the balance entries and the validator checks together.
 - **No effect may depend on player input or information.** Players decide nothing during a match, so an effect that only reveals information or needs a choice does nothing. `E50` (reveal top card) was removed for this reason and replaced by `E57` (discard the top cards of a deck). Never reuse the `E50` ID.
+
+## 13. Parked data
+
+Only what the engine resolves is live (decision `2026-11-14-mvp-ability-set`): keywords Scudo, Perforante, Insaziabile, Traboccante, no Evolutions, all 12 suit synergies, and the vocab entries and rules they reach. Everything else waits in `parked/`, unchanged, so it can come back or serve as a model for new abilities.
+
+| File | Holds |
+|---|---|
+| `parked/keyword.json`, `parked/evolutions.json` | The parked abilities, same shape as the live files. |
+| `parked/balance.json` | Their `keywords` / `evolutions` entries (numbers untouched) and the `open_decisions` that only concern them. |
+| `parked/vocab.json` | Vocab entries no live expansion reaches, per section; whole sections that only serve parked features (`evolution_rules`, `evolution_schema`, `card_contexts`); `_original_section_text` with the full wording of live notes that were trimmed because they named parked IDs. |
+| `parked/invalid-combinations.json` | Class rules of parked triggers and the combination rules that can only match parked IDs. |
+| `parked/ranks.json` | The parked `role_affinity` entries per Tier. |
+
+- **IDs stay reserved.** A parked ID keeps its number and is never reused. New IDs continue after the highest live or parked one (`make validate` prints them).
+- **Never shipped.** The engine reads only the top-level `data/*.json`, and `game-engine/pom.xml` excludes `parked/**` from the jar.
+- **Restoring an ability:** move its entry from `parked/keyword.json` (or `evolutions.json`) and its `parked/balance.json` entry back; move back every vocab entry it uses, following nested references (for example `E56` uses `E28`, `E12` uses `C24`), and for each restored trigger its `class_rules` line; move back any combination rule, open decision or role affinity that applies again; restore the original section text if the trimmed note becomes true again. Then `make validate`: a missing piece fails check 1 and names the parked file it is in. Add a `DECISIONS.md` and `CHANGELOG.md` line.
+- **Parking an ability:** the reverse. Move only vocab entries that no live keyword, evolution or synergy still reaches.

@@ -26,6 +26,7 @@ Anything may change until 1.0 is released. Changes before this log started are i
 | 2026-11-07 | engine | Every card kind has the same `abilities` list (`AbilityRef` by id, or `InlineEffect`); no code reads it yet | `2026-11-07-cards-share-abilities` |
 | 2026-11-07 | engine | Task 2 contract: packages `model`, `turn`, `log` (match state, targeting, damage, turn phases, events); the turn logic is not implemented yet | `docs/plans/game-loop.md` |
 | 2026-11-07 | engine | `quorma.gameengine.hand` contract (`Suit`, `HandType`, `HandCard`, `HandResult`, `HandEvaluator`); `evaluate` and `compare` not implemented yet | `docs/plans/hand-evaluator.md` |
+| 2026-11-14 | data | Live abilities reduced to Scudo, Perforante, Insaziabile and Traboccante (no Evolutions); the rest of the keywords, all 16 Evolutions, the unused vocab entries, their class and combination rules, role affinities and open decisions moved unchanged to `data/parked/`, which is not bundled in the jar. Numbers and IDs unchanged | `2026-11-14-mvp-ability-set` |
 
 ## Released versions
 

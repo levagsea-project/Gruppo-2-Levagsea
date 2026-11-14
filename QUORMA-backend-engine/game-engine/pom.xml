@@ -34,12 +34,16 @@
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-            <!-- Bundle the rules data into the jar, re-copied on every build so a rebalance in data/ is picked up. -->
+            <!-- Bundle the rules data into the jar, re-copied on every build so a rebalance in data/ is picked up.
+                 data/parked/ is never shipped: it holds abilities and vocab kept out of the game until needed. -->
             <resource>
                 <directory>../data</directory>
                 <includes>
                     <include>*.json</include>
                 </includes>
+                <excludes>
+                    <exclude>parked/**</exclude>
+                </excludes>
                 <targetPath>ruleset</targetPath>
                 <filtering>false</filtering>
             </resource>

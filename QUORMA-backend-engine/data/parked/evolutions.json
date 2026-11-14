@@ -1,0 +1,393 @@
+{
+  "EVO_SOPRAVVISSUTO": {
+    "name": "Sopravvissuto",
+    "balance_ref": "EVO_SOPRAVVISSUTO",
+    "description": "Evoluzione — Quando questa creatura sopravvive a danno da combattimento: ottiene Scudo (X).",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T12",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_SCUDO",
+          "keyword_params": {
+            "x": "$tune.EVO_SOPRAVVISSUTO.x"
+          }
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_TEMPRATO": {
+    "name": "Temprato",
+    "balance_ref": "EVO_TEMPRATO",
+    "description": "Evoluzione — Quando questa creatura subisce danno da combattimento: ottiene Rigenerante.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T13",
+          "max_triggers": 1,
+          "trigger_params": {
+            "source": "combattimento"
+          }
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_RIGENERANTE"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_PREDATORE": {
+    "name": "Predatore",
+    "balance_ref": "EVO_PREDATORE",
+    "description": "Evoluzione — Quando questa creatura uccide una creatura: ottiene Perforante (X).",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T19",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_PERFORANTE",
+          "keyword_params": {
+            "x": "$tune.EVO_PREDATORE.x"
+          }
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_SFONDAMENTO": {
+    "name": "Sfondamento",
+    "balance_ref": "EVO_SFONDAMENTO",
+    "description": "Evoluzione — Quando questa creatura infligge spill: ottiene Traboccante.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T11",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_TRABOCCANTE"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_VENDETTA": {
+    "name": "Vendetta",
+    "balance_ref": "EVO_VENDETTA",
+    "description": "Evoluzione — Quando una tua creatura viene distrutta: questa creatura ottiene Primo Colpo.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T36",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_PRIMO_COLPO"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_CAPITANO": {
+    "name": "Capitano",
+    "balance_ref": "EVO_CAPITANO",
+    "description": "Evoluzione — Quando una creatura avversaria viene distrutta: ottiene Sostegno (X).",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T37",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_SOSTEGNO",
+          "keyword_params": {
+            "x": "$tune.EVO_CAPITANO.x"
+          }
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_CRESCITA": {
+    "name": "Crescita",
+    "balance_ref": "EVO_CRESCITA",
+    "description": "Evoluzione — Quando questa creatura sopravvive a danno da combattimento: guadagna +{bonus_pct}% del suo ATK base in modo permanente.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T12",
+          "max_triggers": 1
+        },
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.EVO_CRESCITA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_FURIA": {
+    "name": "Furia",
+    "balance_ref": "EVO_FURIA",
+    "description": "Evoluzione — Quando questa creatura subisce danno da combattimento: guadagna +{bonus_pct}% del suo ATK base fino alla fine del turno.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T13",
+          "max_triggers": 1,
+          "trigger_params": {
+            "source": "combattimento"
+          }
+        },
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.EVO_FURIA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelTurno",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_TRINCEA": {
+    "name": "Trincea",
+    "balance_ref": "EVO_TRINCEA",
+    "description": "Evoluzione — Quando questa creatura è dichiarata bersaglio di un attacco: guadagna +{bonus_pct}% della sua DEF base in modo permanente.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T9",
+          "max_triggers": 1
+        },
+        "effect_id": "E2",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.EVO_TRINCEA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_EREDITA": {
+    "name": "Eredità",
+    "balance_ref": "EVO_EREDITA",
+    "description": "Evoluzione — Quando questa creatura viene distrutta: guadagni {life} punti vita.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T10",
+          "max_triggers": 1
+        },
+        "effect_id": "E9",
+        "effect_params": {
+          "amount": "$tune.EVO_EREDITA.amount"
+        },
+        "target_id": "S31",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_SACCHEGGIO": {
+    "name": "Saccheggio",
+    "balance_ref": "EVO_SACCHEGGIO",
+    "description": "Evoluzione — Quando questa creatura uccide una creatura: l'avversario perde {life} punti vita.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T19",
+          "max_triggers": 1
+        },
+        "effect_id": "E8",
+        "effect_params": {
+          "amount": "$tune.EVO_SACCHEGGIO.amount"
+        },
+        "target_id": "S30",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_INTRECCIO": {
+    "name": "Intreccio",
+    "balance_ref": "EVO_INTRECCIO",
+    "description": "Evoluzione — Quando raggiungi la sinergia Vincolo 3: le creature adiacenti a questa guadagnano +{bonus_pct}% del loro ATK base in modo permanente.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T5",
+          "max_triggers": 1,
+          "trigger_params": {
+            "suit": "Vincolo",
+            "level": 3
+          }
+        },
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.EVO_INTRECCIO.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_SENTINELLA": {
+    "name": "Sentinella",
+    "balance_ref": "EVO_SENTINELLA",
+    "description": "Evoluzione — Quando questa creatura è attaccata: ottiene Provocazione.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T7",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_PROVOCAZIONE"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_MATURAZIONE": {
+    "name": "Maturazione",
+    "balance_ref": "EVO_MATURAZIONE",
+    "description": "Evoluzione — Alla fine del turno: ottiene Flessibile.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T26",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_FLESSIBILE"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_MIMETICO": {
+    "name": "Mimetico",
+    "balance_ref": "EVO_MIMETICO",
+    "description": "Evoluzione — Alla fine del turno: ottiene Camaleonte.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T26",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_CAMALEONTE"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_CARNEFICE": {
+    "name": "Carnefice",
+    "balance_ref": "EVO_CARNEFICE",
+    "description": "Evoluzione — Quando questa creatura uccide una creatura: ottiene Letale.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T19",
+          "max_triggers": 1
+        },
+        "effect_id": "E14",
+        "effect_params": {
+          "keyword": "K_LETALE"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  }
+}
