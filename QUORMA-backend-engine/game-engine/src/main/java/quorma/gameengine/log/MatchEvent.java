@@ -1,5 +1,6 @@
 package quorma.gameengine.log;
 
+import java.util.List;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.MatchResult;
@@ -21,20 +22,39 @@ public sealed interface MatchEvent {
     record AttackSkipped(Attack attack, int cycle, SkipReason reason) implements MatchEvent {}
 
     /**
-     * An attack that happened. {@code defBefore} is the target DEF just before this blow (the value spill uses),
-     * {@code spill} is damage to the opponent's life, 0 unless the attack killed.
+     * An attack that happened.
+     *
+     * @param atk                     the attacker's current ATK at the blow
+     * @param mitigationPermille      share of the damage that goes through the target's percentage reductions
+     * @param damage                  damage dealt to the target
+     * @param defBefore               the target DEF just before this blow, the value spill uses
+     * @param handMultiplierPermille  the attacker's hand multiplier
+     * @param spillMultiplierPermille the multiplier spill used
+     * @param spill                   damage to the opponent's life, 0 unless the attack killed
+     * @param modifiers               the abilities that changed the numbers
      */
     record AttackResolved(
             Attack attack,
             int cycle,
-            int effectiveAtk,
+            int atk,
             int advantagePermille,
+            int effectiveAtk,
+            int mitigationPermille,
+            int damage,
             int defBefore,
             int defAfter,
             boolean killed,
+            boolean mutualKill,
+            int handMultiplierPermille,
+            int spillMultiplierPermille,
             int spill,
-            boolean mutualKill)
-            implements MatchEvent {}
+            List<Modifier> modifiers)
+            implements MatchEvent {
+
+        public AttackResolved {
+            modifiers = List.copyOf(modifiers);
+        }
+    }
 
     /** A creature was flagged destroyed. It stays in its lane until Refill. */
     record CreatureDestroyed(Side side, int lane, String cardId) implements MatchEvent {}

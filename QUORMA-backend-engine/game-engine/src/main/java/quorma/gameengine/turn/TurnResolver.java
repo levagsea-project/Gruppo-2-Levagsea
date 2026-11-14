@@ -13,7 +13,6 @@ import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
-import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
@@ -153,47 +152,38 @@ public final class TurnResolver {
 
     /** Cycle 1 (9.2, 9.5 to 9.7): attacks on the opposite lane, simultaneous. Appends events to {@code log}. */
     public void cycle1(MatchState state, Evaluation evaluation, List<Attack> attacks, List<MatchEvent> log) {
-        record Blow(Attack attack, Creature attacker, Creature target, int effectiveAtk, int advantage,
-                int defBefore, int defAfter, boolean killed, int spill) {}
+        record Blow(Attack attack, Creature attacker, Creature target, Strike strike) {}
 
+        // Every blow is worked out from the state at the start of the cycle, then they all land.
         List<Blow> blows = new ArrayList<>();
         for (Attack attack : attacks) {
             if (!attack.inCycle1()) continue;
 
+            Target targetRef = attack.target().orElseThrow();
             Creature attacker = state.player(attack.attacker()).creatureAt(attack.attackerLane()).orElse(null);
-            Creature target = state.player(attack.target().orElseThrow().side())
-                    .creatureAt(attack.target().orElseThrow().lane()).orElse(null);
+            Creature target = state.player(targetRef.side()).creatureAt(targetRef.lane()).orElse(null);
 
             if (attacker == null || target == null) continue;
 
-            String attackerSubfaction = attacker.card().subfaction().dataName();
-            String targetSubfaction = target.card().subfaction().dataName();
-            int advantage = rules.advantagePermille(attackerSubfaction, targetSubfaction);
-            int effectiveAtk = Damage.effectiveAtk(attacker.currentAtk(), advantage);
-            int defBefore = target.currentDef();
-            int defAfter = defBefore - effectiveAtk;
-            boolean killed = defAfter <= 0;
-
-            int spill = killed ? Damage.spill(effectiveAtk, defBefore, evaluation.multiplier(attack.attacker())) : 0;
-
-            blows.add(new Blow(attack, attacker, target, effectiveAtk, advantage, defBefore, defAfter, killed, spill));
+            Strike strike = Strike.of(rules, attack.attacker(), attacker, targetRef.side(), target,
+                    evaluation.multiplier(attack.attacker()));
+            blows.add(new Blow(attack, attacker, target, strike));
         }
 
         for (Blow blow : blows) {
-            boolean mutualKill = blow.killed() && blows.stream().anyMatch(other ->
-                    other != blow && other.killed() && other.attacker() == blow.target() && other.target() == blow.attacker());
-            int spill = mutualKill ? 0 : blow.spill();
+            boolean mutualKill = blow.strike().killed() && blows.stream().anyMatch(other ->
+                    other != blow && other.strike().killed()
+                            && other.attacker() == blow.target() && other.target() == blow.attacker());
+            Strike strike = mutualKill ? blow.strike().withoutSpill() : blow.strike();
 
-            blow.target().takeDamage(blow.effectiveAtk());
-
-            if (spill > 0) {
-                state.player(blow.attack().attacker().other()).loseLife(spill);
+            blow.target().takeDamage(strike.damage());
+            if (strike.spill() > 0) {
+                state.player(blow.attack().attacker().other()).loseLife(strike.spill());
             }
-            log.add(new AttackResolved(blow.attack(), 1, blow.effectiveAtk(), blow.advantage(), blow.defBefore(),
-                    blow.defAfter(), blow.killed(), spill, mutualKill));
-            if (blow.killed()) {
-                log.add(new CreatureDestroyed(blow.attack().target().orElseThrow().side(),
-                        blow.attack().target().orElseThrow().lane(), blow.target().card().id()));
+            log.add(strike.event(blow.attack(), 1, mutualKill));
+            if (strike.killed()) {
+                Target targetRef = blow.attack().target().orElseThrow();
+                log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), blow.target().card().id()));
             }
         }
     }
@@ -218,20 +208,15 @@ public final class TurnResolver {
                 continue;
             }
 
-            int advantage = rules.advantagePermille(
-                    attacker.card().subfaction().dataName(), target.card().subfaction().dataName());
-            int effectiveAtk = Damage.effectiveAtk(attacker.currentAtk(), advantage);
-            int defBefore = target.currentDef();
-            int defAfter = defBefore - effectiveAtk;
-            boolean killed = defAfter <= 0;
-            int spill = killed ? Damage.spill(effectiveAtk, defBefore, evaluation.multiplier(attack.attacker())) : 0;
+            Strike strike = Strike.of(rules, attack.attacker(), attacker, targetRef.side(), target,
+                    evaluation.multiplier(attack.attacker()));
 
-            target.takeDamage(effectiveAtk);
-            if (spill > 0) {
-                state.player(attack.attacker().other()).loseLife(spill);
+            target.takeDamage(strike.damage());
+            if (strike.spill() > 0) {
+                state.player(attack.attacker().other()).loseLife(strike.spill());
             }
-            log.add(new AttackResolved(attack, 2, effectiveAtk, advantage, defBefore, defAfter, killed, spill, false));
-            if (killed) {
+            log.add(strike.event(attack, 2, false));
+            if (strike.killed()) {
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), target.card().id()));
             }
         }
