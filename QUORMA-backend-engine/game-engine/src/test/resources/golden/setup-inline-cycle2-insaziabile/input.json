@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "seed": 3,
+  "ruleset_version": "1.0-alpha",
+  "players": {
+    "A": {
+      "faction": "RESISTENZA_UMANA",
+      "deck": [
+        {
+          "id": "RU-VIN-K",
+          "kind": "CREATURE",
+          "rank": 13,
+          "suit": "VINCOLO",
+          "subfaction": "ADATTATI",
+          "atk": 2000,
+          "def": 30000,
+          "abilities": [
+            {
+              "id": "K_INSAZIABILE"
+            },
+            {
+              "expansions": [
+                {
+                  "trigger_id": "T0",
+                  "effect_id": "E56",
+                  "effect_params": {
+                    "pct": 50
+                  },
+                  "target_id": "S1",
+                  "duration": "D_Permanente",
+                  "class": "C"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "RU-S1",
+          "kind": "SPELL",
+          "faction": "RESISTENZA_UMANA",
+          "abilities": []
+        }
+      ]
+    },
+    "B": {
+      "faction": "POTENZE_ARTIFICIALI",
+      "deck": [
+        {
+          "id": "PA-VIN-2",
+          "kind": "CREATURE",
+          "rank": 2,
+          "suit": "VINCOLO",
+          "subfaction": "SEKTAC",
+          "atk": 100,
+          "def": 1000,
+          "abilities": []
+        },
+        {
+          "id": "PA-FRA-3",
+          "kind": "CREATURE",
+          "rank": 3,
+          "suit": "FRATTURA",
+          "subfaction": "SEKTAC",
+          "atk": 100,
+          "def": 1000,
+          "abilities": []
+        },
+        {
+          "id": "PA-SPI-4",
+          "kind": "CREATURE",
+          "rank": 4,
+          "suit": "SPIRA",
+          "subfaction": "SEKTAC",
+          "atk": 100,
+          "def": 1000,
+          "abilities": []
+        },
+        {
+          "id": "PA-VES-5",
+          "kind": "CREATURE",
+          "rank": 5,
+          "suit": "VESTIGIO",
+          "subfaction": "SEKTAC",
+          "atk": 100,
+          "def": 1000,
+          "abilities": [
+            {
+              "id": "K_SCUDO",
+              "params": {
+                "x": 25
+              }
+            },
+            {
+              "expansions": [
+                {
+                  "trigger_id": "T0",
+                  "effect_id": "E28",
+                  "effect_params": {
+                    "mode": "reduction_pct",
+                    "pct": 20
+                  },
+                  "target_id": "S1",
+                  "duration": "D_Permanente",
+                  "class": "C"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "PA-S1",
+          "kind": "SPELL",
+          "faction": "POTENZE_ARTIFICIALI",
+          "abilities": []
+        }
+      ]
+    }
+  }
+}

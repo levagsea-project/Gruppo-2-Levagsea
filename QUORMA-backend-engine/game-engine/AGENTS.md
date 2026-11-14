@@ -35,20 +35,32 @@ The engine implements the vocabulary in `data/vocab.json`; it does not hard-code
 
 ## MVP scope
 
-Only the live data ships (decision `2026-11-14-mvp-ability-set`): keywords Scudo, Perforante, Insaziabile and Traboccante, no Evolutions, and the 12 suit synergies. Everything else is in `data/parked/`, which is not bundled in the jar; bring an ability back only when the engine is ready to resolve it (`data/AGENTS.md` §13). The 3-turn demo still uses parked abilities (`2026-11-14-demo-uses-parked-abilities`). No spell or equipment cards exist yet (none are defined in `data/`). A creature may also have an ability written on the card (trigger, effect, target, no keyword) in one of the shapes of those four keywords, with its own numbers (`2026-11-14-inline-abilities`).
+Only the live data ships (decision `2026-11-14-mvp-ability-set`): keywords Scudo, Perforante, Insaziabile and Traboccante, no Evolutions, and the 12 suit synergies. Everything else is in `data/parked/`, which is not bundled in the jar; bring an ability back only when the engine is ready to resolve it (`data/AGENTS.md` §13). The 3-turn demo still uses parked abilities (`2026-11-14-demo-uses-parked-abilities`). No spell or equipment cards exist yet (none are defined in `data/`). A creature may also have an ability written on the card (trigger, effect, target, no keyword) in one of the shapes of those four keywords, with its own numbers (`2026-11-14-inline-abilities`). The engine does not apply suit synergies yet (`2026-11-14-suit-synergies-not-in-engine`). Spells and equipment are accepted only without abilities.
+
+## Entry point
+
+`GameEngine.matchLog(inputJson)` plays one match and returns the canonical MatchLog JSON. `GameEngine.simulate` returns the same match as Java objects (`Simulation`). Input and log follow the JSON Schemas in `src/main/resources/schemas/` (`2026-11-14-match-log-schema`); bad input is a `MatchInputException` whose message starts with the JSON path. Steps: input checks, shuffle, setup (`2026-11-14-match-setup`), turns, log (`2026-11-14-match-log-writer`).
 
 ## Tests
 
 - JUnit for effects, edge cases (draws, turn 50, empty lanes, simultaneous deaths) and repeatability.
-- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical. Compute expected values by hand and from the ruleset, never from the engine's own output.
+- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit until synergies exist.
 - A golden file changes only when a rule changes deliberately. Say why in the commit and in `docs/DECISIONS.md`.
 
-## Suggested layout
+## Layout
 
 ```
-game-engine/
-  pom.xml
-  src/main/java/.../engine/   (rng, model, data, phases, effects, log)
-  src/test/java/...
-  src/test/resources/golden/
+game-engine/src/main/java/quorma/gameengine/
+  GameEngine, Simulation, MatchLogWriter, EngineVersion   entry point and the MatchLog
+  input/     match input JSON reader
+  data/      rule pack loader, Ruleset, rule pack hash
+  effects/   ability binder, effect registry, stack, effect resolver
+  turn/      setup, turn phases, damage (Strike, Damage)
+  hand/      poker hand evaluator
+  model/     cards, creatures, players, match state
+  log/       events, board snapshots
+  rng/       SplitMix64, Fisher-Yates
+  json/      canonical JSON writer and SHA-256
+game-engine/src/main/resources/schemas/      input and MatchLog JSON Schemas, example log
+game-engine/src/test/resources/golden/       golden files
 ```

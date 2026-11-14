@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "seed": 42,
+  "ruleset_version": "1.0-alpha",
+  "players": {
+    "A": {
+      "faction": "RESISTENZA_UMANA",
+      "deck": [
+        {
+          "id": "RU-VIN-A",
+          "kind": "CREATURE",
+          "rank": 1,
+          "suit": "VINCOLO",
+          "subfaction": "ADATTATI",
+          "atk": 4000,
+          "def": 7000,
+          "abilities": [
+            {
+              "id": "K_INSAZIABILE"
+            },
+            {
+              "id": "K_TRABOCCANTE"
+            },
+            {
+              "id": "K_PERFORANTE",
+              "params": {
+                "x": 30
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "B": {
+      "faction": "POTENZE_ARTIFICIALI",
+      "deck": [
+        {
+          "id": "PA-SPI-K",
+          "kind": "CREATURE",
+          "rank": 13,
+          "suit": "SPIRA",
+          "subfaction": "SEKTAC",
+          "atk": 3000,
+          "def": 5000,
+          "abilities": [
+            {
+              "id": "K_SCUDO",
+              "params": {
+                "x": 25
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

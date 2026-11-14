@@ -1,0 +1,699 @@
+{
+  "schema_version": 1,
+  "header": {
+    "engine_version": "1.0.0-SNAPSHOT",
+    "ruleset_version": "1.0-alpha",
+    "ruleset_hash": "4ff26fcd5e5fcc9798a2322ccb4158a0123fabc565a81b8aec0e058931a375ef",
+    "prng": "SplitMix64",
+    "shuffle": "FISHER_YATES",
+    "seed": 42,
+    "starting_life": 12000,
+    "players": {
+      "A": {
+        "faction": "RESISTENZA_UMANA",
+        "deck": [
+          {
+            "id": "RU-VIN-A",
+            "kind": "CREATURE",
+            "rank": 1,
+            "suit": "VINCOLO",
+            "subfaction": "ADATTATI",
+            "atk": 4000,
+            "def": 7000,
+            "abilities": [
+              {
+                "id": "K_INSAZIABILE"
+              },
+              {
+                "id": "K_TRABOCCANTE"
+              },
+              {
+                "id": "K_PERFORANTE",
+                "params": {
+                  "x": 30
+                }
+              }
+            ]
+          }
+        ],
+        "draw_order": [
+          "RU-VIN-A"
+        ]
+      },
+      "B": {
+        "faction": "POTENZE_ARTIFICIALI",
+        "deck": [
+          {
+            "id": "PA-SPI-K",
+            "kind": "CREATURE",
+            "rank": 13,
+            "suit": "SPIRA",
+            "subfaction": "SEKTAC",
+            "atk": 3000,
+            "def": 5000,
+            "abilities": [
+              {
+                "id": "K_SCUDO",
+                "params": {
+                  "x": 25
+                }
+              }
+            ]
+          }
+        ],
+        "draw_order": [
+          "PA-SPI-K"
+        ]
+      }
+    }
+  },
+  "setup": {
+    "events": [
+      {
+        "type": "card_drawn",
+        "side": "A",
+        "lane": 1,
+        "card_id": "RU-VIN-A"
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 2
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 3
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 4
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 5
+      },
+      {
+        "type": "card_drawn",
+        "side": "B",
+        "lane": 1,
+        "card_id": "PA-SPI-K"
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 2
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 3
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 4
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 5
+      }
+    ],
+    "board": {
+      "A": {
+        "life": 12000,
+        "deck_count": 0,
+        "discard_count": 0,
+        "lanes": [
+          {
+            "card_id": "RU-VIN-A",
+            "atk": 4000,
+            "def": 7000,
+            "destroyed": false,
+            "stacks": {}
+          },
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "B": {
+        "life": 12000,
+        "deck_count": 0,
+        "discard_count": 0,
+        "lanes": [
+          {
+            "card_id": "PA-SPI-K",
+            "atk": 3000,
+            "def": 5000,
+            "destroyed": false,
+            "stacks": {}
+          },
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "evaluation": {
+        "A": {
+          "hand_type": "HIGH_CARD",
+          "attacker_lanes": [
+            1
+          ],
+          "tiebreak": [
+            14
+          ],
+          "multiplier_permille": 1000
+        },
+        "B": {
+          "hand_type": "HIGH_CARD",
+          "attacker_lanes": [
+            1
+          ],
+          "tiebreak": [
+            13
+          ],
+          "multiplier_permille": 1000
+        }
+      },
+      "declarations": [
+        {
+          "attacker": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "cycle": 1
+        },
+        {
+          "attacker": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "target": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "cycle": 1
+        }
+      ],
+      "cycle_1": [
+        {
+          "type": "attack_resolved",
+          "cycle": 1,
+          "attacker": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "atk": 3000,
+          "advantage_permille": 1000,
+          "effective_atk": 3000,
+          "mitigation_permille": 1000,
+          "damage": 3000,
+          "def_before": 7000,
+          "def_after": 4000,
+          "killed": false,
+          "mutual_kill": false,
+          "hand_multiplier_permille": 1000,
+          "spill_multiplier_permille": 1000,
+          "spill": 0,
+          "modifiers": []
+        },
+        {
+          "type": "attack_resolved",
+          "cycle": 1,
+          "attacker": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "target": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "atk": 4000,
+          "advantage_permille": 1000,
+          "effective_atk": 4000,
+          "mitigation_permille": 825,
+          "damage": 3300,
+          "def_before": 5000,
+          "def_after": 1700,
+          "killed": false,
+          "mutual_kill": false,
+          "hand_multiplier_permille": 1000,
+          "spill_multiplier_permille": 1000,
+          "spill": 0,
+          "modifiers": [
+            {
+              "source": {
+                "side": "B",
+                "lane": 1,
+                "card_id": "PA-SPI-K"
+              },
+              "ability_id": "K_SCUDO",
+              "effect_id": "E28",
+              "kind": "damage_reduction_pct",
+              "value": 25
+            },
+            {
+              "source": {
+                "side": "A",
+                "lane": 1,
+                "card_id": "RU-VIN-A"
+              },
+              "ability_id": "K_PERFORANTE",
+              "effect_id": "E56",
+              "kind": "pierce_pct",
+              "value": 30
+            }
+          ]
+        }
+      ],
+      "cycle_2": [],
+      "refill": [
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 2
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 3
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 4
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 5
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 2
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 3
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 4
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 5
+        }
+      ],
+      "board": {
+        "A": {
+          "life": 12000,
+          "deck_count": 0,
+          "discard_count": 0,
+          "lanes": [
+            {
+              "card_id": "RU-VIN-A",
+              "atk": 4000,
+              "def": 4000,
+              "destroyed": false,
+              "stacks": {}
+            },
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "B": {
+          "life": 12000,
+          "deck_count": 0,
+          "discard_count": 0,
+          "lanes": [
+            {
+              "card_id": "PA-SPI-K",
+              "atk": 3000,
+              "def": 1700,
+              "destroyed": false,
+              "stacks": {}
+            },
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "evaluation": {
+        "A": {
+          "hand_type": "HIGH_CARD",
+          "attacker_lanes": [
+            1
+          ],
+          "tiebreak": [
+            14
+          ],
+          "multiplier_permille": 1000
+        },
+        "B": {
+          "hand_type": "HIGH_CARD",
+          "attacker_lanes": [
+            1
+          ],
+          "tiebreak": [
+            13
+          ],
+          "multiplier_permille": 1000
+        }
+      },
+      "declarations": [
+        {
+          "attacker": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "cycle": 1
+        },
+        {
+          "attacker": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "target": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "cycle": 1
+        }
+      ],
+      "cycle_1": [
+        {
+          "type": "attack_resolved",
+          "cycle": 1,
+          "attacker": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "atk": 3000,
+          "advantage_permille": 1000,
+          "effective_atk": 3000,
+          "mitigation_permille": 1000,
+          "damage": 3000,
+          "def_before": 4000,
+          "def_after": 1000,
+          "killed": false,
+          "mutual_kill": false,
+          "hand_multiplier_permille": 1000,
+          "spill_multiplier_permille": 1000,
+          "spill": 0,
+          "modifiers": []
+        },
+        {
+          "type": "attack_resolved",
+          "cycle": 1,
+          "attacker": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "target": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          },
+          "atk": 4000,
+          "advantage_permille": 1000,
+          "effective_atk": 4000,
+          "mitigation_permille": 825,
+          "damage": 3300,
+          "def_before": 1700,
+          "def_after": -1600,
+          "killed": true,
+          "mutual_kill": false,
+          "hand_multiplier_permille": 1000,
+          "spill_multiplier_permille": 1200,
+          "spill": 1920,
+          "modifiers": [
+            {
+              "source": {
+                "side": "B",
+                "lane": 1,
+                "card_id": "PA-SPI-K"
+              },
+              "ability_id": "K_SCUDO",
+              "effect_id": "E28",
+              "kind": "damage_reduction_pct",
+              "value": 25
+            },
+            {
+              "source": {
+                "side": "A",
+                "lane": 1,
+                "card_id": "RU-VIN-A"
+              },
+              "ability_id": "K_PERFORANTE",
+              "effect_id": "E56",
+              "kind": "pierce_pct",
+              "value": 30
+            },
+            {
+              "source": {
+                "side": "A",
+                "lane": 1,
+                "card_id": "RU-VIN-A"
+              },
+              "ability_id": "K_TRABOCCANTE",
+              "effect_id": "E21",
+              "kind": "spill_multiplier",
+              "value": 1200
+            }
+          ]
+        },
+        {
+          "type": "creature_destroyed",
+          "creature": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          }
+        },
+        {
+          "type": "effect_triggered",
+          "source": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "ability_id": "K_INSAZIABILE",
+          "trigger_id": "T19",
+          "effect_id": "E1",
+          "stack_size": 1
+        },
+        {
+          "type": "effect_resolved",
+          "source": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "ability_id": "K_INSAZIABILE",
+          "effect_id": "E1",
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-VIN-A"
+          },
+          "changes": [
+            {
+              "stat": "atk",
+              "before": 4000,
+              "after": 4600
+            }
+          ],
+          "stacks": 1
+        }
+      ],
+      "cycle_2": [],
+      "refill": [
+        {
+          "type": "creature_discarded",
+          "creature": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-SPI-K"
+          }
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 1
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 2
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 3
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 4
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 5
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 2
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 3
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 4
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 5
+        }
+      ],
+      "board": {
+        "A": {
+          "life": 12000,
+          "deck_count": 0,
+          "discard_count": 0,
+          "lanes": [
+            {
+              "card_id": "RU-VIN-A",
+              "atk": 4600,
+              "def": 1000,
+              "destroyed": false,
+              "stacks": {
+                "K_INSAZIABILE": 1
+              }
+            },
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "B": {
+          "life": 10080,
+          "deck_count": 0,
+          "discard_count": 1,
+          "lanes": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      }
+    }
+  ],
+  "result": {
+    "outcome": "A_WIN",
+    "reason": "NO_CREATURES",
+    "turns_played": 2,
+    "life": {
+      "A": 12000,
+      "B": 10080
+    }
+  },
+  "totals": {
+    "players": {
+      "A": {
+        "damage_dealt": 6600,
+        "spill_damage": 1920,
+        "kills": 1,
+        "creatures_lost": 0
+      },
+      "B": {
+        "damage_dealt": 6000,
+        "spill_damage": 0,
+        "kills": 0,
+        "creatures_lost": 1
+      }
+    },
+    "cards": [
+      {
+        "side": "A",
+        "card_id": "RU-VIN-A",
+        "times_drawn": 1,
+        "damage_dealt": 6600,
+        "spill_damage": 1920,
+        "kills": 1
+      },
+      {
+        "side": "B",
+        "card_id": "PA-SPI-K",
+        "times_drawn": 1,
+        "damage_dealt": 6000,
+        "spill_damage": 0,
+        "kills": 0
+      }
+    ]
+  },
+  "result_hash": "ee6b1df4af1ff955b77a8f755100797b0a6d992ca9d4a06cc727bce1beeb8783"
+}
