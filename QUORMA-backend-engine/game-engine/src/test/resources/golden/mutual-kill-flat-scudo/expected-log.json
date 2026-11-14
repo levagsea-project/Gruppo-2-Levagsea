@@ -1,0 +1,434 @@
+{
+  "schema_version": 1,
+  "header": {
+    "engine_version": "1.0.0-SNAPSHOT",
+    "ruleset_version": "1.0-alpha",
+    "ruleset_hash": "4ff26fcd5e5fcc9798a2322ccb4158a0123fabc565a81b8aec0e058931a375ef",
+    "prng": "SplitMix64",
+    "shuffle": "FISHER_YATES",
+    "seed": 7,
+    "starting_life": 12000,
+    "players": {
+      "A": {
+        "faction": "RESISTENZA_UMANA",
+        "deck": [
+          {
+            "id": "RU-FRA-5",
+            "kind": "CREATURE",
+            "rank": 5,
+            "suit": "FRATTURA",
+            "subfaction": "ADATTATI",
+            "atk": 3000,
+            "def": 2000,
+            "abilities": [
+              {
+                "id": "K_TRABOCCANTE"
+              }
+            ]
+          }
+        ],
+        "draw_order": [
+          "RU-FRA-5"
+        ]
+      },
+      "B": {
+        "faction": "POTENZE_ARTIFICIALI",
+        "deck": [
+          {
+            "id": "PA-VES-5",
+            "kind": "CREATURE",
+            "rank": 5,
+            "suit": "VESTIGIO",
+            "subfaction": "SEKTAC",
+            "atk": 2500,
+            "def": 2500,
+            "abilities": [
+              {
+                "id": "K_SCUDO",
+                "params": {
+                  "x": 400,
+                  "kind": "flat"
+                }
+              }
+            ]
+          }
+        ],
+        "draw_order": [
+          "PA-VES-5"
+        ]
+      }
+    }
+  },
+  "setup": {
+    "events": [
+      {
+        "type": "card_drawn",
+        "side": "A",
+        "lane": 1,
+        "card_id": "RU-FRA-5"
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 2
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 3
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 4
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "A",
+        "lane": 5
+      },
+      {
+        "type": "card_drawn",
+        "side": "B",
+        "lane": 1,
+        "card_id": "PA-VES-5"
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 2
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 3
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 4
+      },
+      {
+        "type": "lane_left_empty",
+        "side": "B",
+        "lane": 5
+      }
+    ],
+    "board": {
+      "A": {
+        "life": 12000,
+        "deck_count": 0,
+        "discard_count": 0,
+        "lanes": [
+          {
+            "card_id": "RU-FRA-5",
+            "atk": 3000,
+            "def": 2000,
+            "destroyed": false,
+            "stacks": {}
+          },
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "B": {
+        "life": 12000,
+        "deck_count": 0,
+        "discard_count": 0,
+        "lanes": [
+          {
+            "card_id": "PA-VES-5",
+            "atk": 2500,
+            "def": 2500,
+            "destroyed": false,
+            "stacks": {}
+          },
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "evaluation": {
+        "A": {
+          "hand_type": "HIGH_CARD",
+          "attacker_lanes": [
+            1
+          ],
+          "tiebreak": [
+            5
+          ],
+          "multiplier_permille": 1000
+        },
+        "B": {
+          "hand_type": "HIGH_CARD",
+          "attacker_lanes": [
+            1
+          ],
+          "tiebreak": [
+            5
+          ],
+          "multiplier_permille": 1000
+        }
+      },
+      "declarations": [
+        {
+          "attacker": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-VES-5"
+          },
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-FRA-5"
+          },
+          "cycle": 1
+        },
+        {
+          "attacker": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-FRA-5"
+          },
+          "target": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-VES-5"
+          },
+          "cycle": 1
+        }
+      ],
+      "cycle_1": [
+        {
+          "type": "attack_resolved",
+          "cycle": 1,
+          "attacker": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-VES-5"
+          },
+          "target": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-FRA-5"
+          },
+          "atk": 2500,
+          "advantage_permille": 1000,
+          "effective_atk": 2500,
+          "mitigation_permille": 1000,
+          "damage": 2500,
+          "def_before": 2000,
+          "def_after": -500,
+          "killed": true,
+          "mutual_kill": true,
+          "hand_multiplier_permille": 1000,
+          "spill_multiplier_permille": 1000,
+          "spill": 0,
+          "modifiers": []
+        },
+        {
+          "type": "creature_destroyed",
+          "creature": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-FRA-5"
+          }
+        },
+        {
+          "type": "attack_resolved",
+          "cycle": 1,
+          "attacker": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-FRA-5"
+          },
+          "target": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-VES-5"
+          },
+          "atk": 3000,
+          "advantage_permille": 1000,
+          "effective_atk": 3000,
+          "mitigation_permille": 1000,
+          "damage": 2600,
+          "def_before": 2500,
+          "def_after": -100,
+          "killed": true,
+          "mutual_kill": true,
+          "hand_multiplier_permille": 1000,
+          "spill_multiplier_permille": 1000,
+          "spill": 0,
+          "modifiers": [
+            {
+              "source": {
+                "side": "B",
+                "lane": 1,
+                "card_id": "PA-VES-5"
+              },
+              "ability_id": "K_SCUDO",
+              "effect_id": "E28",
+              "kind": "damage_reduction_flat",
+              "value": 400
+            }
+          ]
+        },
+        {
+          "type": "creature_destroyed",
+          "creature": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-VES-5"
+          }
+        }
+      ],
+      "cycle_2": [],
+      "refill": [
+        {
+          "type": "creature_discarded",
+          "creature": {
+            "side": "B",
+            "lane": 1,
+            "card_id": "PA-VES-5"
+          }
+        },
+        {
+          "type": "creature_discarded",
+          "creature": {
+            "side": "A",
+            "lane": 1,
+            "card_id": "RU-FRA-5"
+          }
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 1
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 2
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 3
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 4
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "B",
+          "lane": 5
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 1
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 2
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 3
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 4
+        },
+        {
+          "type": "lane_left_empty",
+          "side": "A",
+          "lane": 5
+        }
+      ],
+      "board": {
+        "A": {
+          "life": 12000,
+          "deck_count": 0,
+          "discard_count": 1,
+          "lanes": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "B": {
+          "life": 12000,
+          "deck_count": 0,
+          "discard_count": 1,
+          "lanes": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      }
+    }
+  ],
+  "result": {
+    "outcome": "DRAW",
+    "reason": "BOTH_LOST",
+    "turns_played": 1,
+    "life": {
+      "A": 12000,
+      "B": 12000
+    }
+  },
+  "totals": {
+    "players": {
+      "A": {
+        "damage_dealt": 2600,
+        "spill_damage": 0,
+        "kills": 1,
+        "creatures_lost": 1
+      },
+      "B": {
+        "damage_dealt": 2500,
+        "spill_damage": 0,
+        "kills": 1,
+        "creatures_lost": 1
+      }
+    },
+    "cards": [
+      {
+        "side": "A",
+        "card_id": "RU-FRA-5",
+        "times_drawn": 1,
+        "damage_dealt": 2600,
+        "spill_damage": 0,
+        "kills": 1
+      },
+      {
+        "side": "B",
+        "card_id": "PA-VES-5",
+        "times_drawn": 1,
+        "damage_dealt": 2500,
+        "spill_damage": 0,
+        "kills": 1
+      }
+    ]
+  },
+  "result_hash": "26a7769abca295e5358fc4fa3628f0177070a7628ceccb4b4de1b6f42b918dde"
+}

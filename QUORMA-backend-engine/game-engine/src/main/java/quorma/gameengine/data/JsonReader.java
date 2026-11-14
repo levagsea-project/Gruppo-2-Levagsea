@@ -9,8 +9,11 @@ import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** The only class that imports Jackson. Strict parse (duplicate keys and trailing content fail) into {@link Value}. */
-final class JsonReader {
+/**
+ * The only class that imports Jackson. Strict parse (duplicate keys and trailing content fail) into {@link Value}.
+ * Used for the data files and for the match input.
+ */
+public final class JsonReader {
 
     private static final JsonMapper MAPPER = JsonMapper.builder()
             .enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
@@ -19,7 +22,11 @@ final class JsonReader {
 
     private JsonReader() {}
 
-    static Value parse(byte[] utf8, String fileName) {
+    /**
+     * @param fileName names the document in error messages
+     * @throws RulesetException naming the path of the problem
+     */
+    public static Value parse(byte[] utf8, String fileName) {
         JsonNode root;
         try {
             root = MAPPER.readTree(utf8);

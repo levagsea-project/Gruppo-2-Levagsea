@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.hand.Suit;
+import quorma.gameengine.model.Ability;
 import quorma.gameengine.model.Card;
 import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.CreatureCard;
@@ -101,6 +103,23 @@ public final class Boards {
     /** The creature in a lane, which must exist. */
     public static Creature creature(PlayerState player, int lane) {
         return player.creatureAt(lane).orElseThrow(() -> new AssertionError("no creature in lane " + lane));
+    }
+
+    /**
+     * Gives abilities to the creature in {@code lane}: replaces it with the same card plus {@code abilities}, bound
+     * on the live ruleset as when a creature enters play. The creature must be undamaged and not destroyed.
+     */
+    public static Creature give(PlayerState player, int lane, Ability... abilities) {
+        Creature old = creature(player, lane);
+        CreatureCard c = old.card();
+        if (old.destroyed() || old.currentDef() != c.def()) {
+            throw new IllegalArgumentException("give abilities before the creature is damaged: " + old);
+        }
+        CreatureCard card = new CreatureCard(c.id(), c.rank(), c.suit(), c.subfaction(), c.atk(), c.def(), List.of(abilities));
+        player.remove(lane);
+        Creature fresh = new Creature(card, lane, new AbilityBinder(TurnResolvers.RULES).bind(card));
+        player.place(fresh);
+        return fresh;
     }
 
     /** Card ids, in list order. */

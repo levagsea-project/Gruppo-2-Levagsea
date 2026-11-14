@@ -33,6 +33,15 @@ class RulesetLoaderTest {
     }
 
     @Test
+    void commonParamsAreKeptOnTheExpansion() {
+        ExpansionDef insaziabile = RULES.keywords().get("K_INSAZIABILE").expandsTo().get(0);
+        assertEquals(java.util.List.of("max_stacks", "stack_key"), java.util.List.copyOf(insaziabile.common().keySet()));
+        assertEquals(new Value.Ref(Value.RefKind.TUNE, "K_INSAZIABILE.max_stacks"), insaziabile.common().get("max_stacks"));
+        assertEquals(new Value.StrV("K_INSAZIABILE"), insaziabile.common().get("stack_key"));
+        assertEquals(Map.of(), RULES.keywords().get("K_SCUDO").expandsTo().get(0).common());
+    }
+
+    @Test
     void everyKeywordExpansionPointsAtKnownVocab() {
         Vocab v = RULES.vocab();
         for (KeywordDef k : RULES.keywords().values()) {

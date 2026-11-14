@@ -132,14 +132,6 @@
       "name": "Istantanea",
       "description": "L'effetto si esaurisce non appena viene applicato."
     },
-    "D_FinoAllaFineDelCombattimento": {
-      "name": "Fino alla fine del combattimento",
-      "description": "L'effetto dura fino alla fine della fase di Combattimento del turno corrente."
-    },
-    "D_FinoAllaFineDelTurno": {
-      "name": "Fino alla fine del turno",
-      "description": "L'effetto dura fino alla fine della fase di Fine del turno corrente."
-    },
     "D_Permanente": {
       "name": "Permanente",
       "description": "L'effetto non scade. Resta finché la sorgente è in gioco o finché non viene esplicitamente rimosso."
@@ -148,35 +140,15 @@
       "name": "Finché la sorgente è in gioco",
       "description": "L'effetto dura finché la carta sorgente è in una corsia."
     },
-    "D_FincheCondizioneVera": {
-      "name": "Finché la condizione è vera",
-      "description": "L'effetto dura finché la condizione indicata da params.condition_id è soddisfatta."
-    },
-    "D_FinoAlProssimoRifornimento": {
-      "name": "Fino al prossimo Rifornimento",
-      "description": "L'effetto dura fino all'inizio della prossima fase di Rifornimento."
-    },
     "D_FinoAUccisione": {
       "name": "Fino a quando distrugge una creatura",
       "description": "L'effetto dura finché la creatura che lo possiede distrugge una creatura (compreso il turno in cui avviene), poi termina."
     }
   },
   "conditions": {
-    "C0": {
-      "name": "Nessuna condizione",
-      "description": "La condizione è sempre vera."
-    },
     "C1": {
       "name": "È attaccante",
       "description": "La creatura è stata selezionata come attaccante dalla mano di poker."
-    },
-    "C2": {
-      "name": "È non-attaccante",
-      "description": "La creatura non è stata selezionata come attaccante dalla mano di poker."
-    },
-    "C3": {
-      "name": "DEF attuale > ATK attuale",
-      "description": "La DEF attuale della sorgente è superiore al suo ATK attuale (senza bonus esterni)."
     },
     "C4": {
       "name": "Seme [SUIT] con conteggio >= [N]",
@@ -201,61 +173,6 @@
         }
       }
     },
-    "C5": {
-      "name": "Evoluzione innescata",
-      "description": "Almeno un effetto Evoluzione del controllore è stato innescato in questo turno o in precedenza."
-    },
-    "C6": {
-      "name": "Ciclo 1",
-      "description": "L'effetto è valutato durante il Ciclo 1 del combattimento."
-    },
-    "C7": {
-      "name": "Ciclo 2",
-      "description": "L'effetto è valutato durante il Ciclo 2 del combattimento."
-    },
-    "C8": {
-      "name": "Il bersaglio sta per essere distrutto",
-      "description": "L'evento di distruzione del bersaglio sta per avvenire; usato con effetti di sostituzione."
-    },
-    "C9": {
-      "name": "Mano di tipo [HAND_TYPE]",
-      "description": "La mano di poker del controllore è del tipo indicato da params.hand_type. Valori ammessi: 'Five of a kind', 'Scala reale', 'Scala colore', 'Poker', 'Full', 'Colore', 'Scala', 'Tris', 'Quattro dello stesso seme', 'Doppia coppia', 'Coppia', 'Carta alta'.",
-      "params": {
-        "hand_type": {
-          "type": "enum",
-          "values": [
-            "Five of a kind",
-            "Scala reale",
-            "Scala colore",
-            "Poker",
-            "Full",
-            "Colore",
-            "Scala",
-            "Tris",
-            "Quattro dello stesso seme",
-            "Doppia coppia",
-            "Coppia",
-            "Carta alta"
-          ]
-        }
-      }
-    },
-    "C10": {
-      "name": "Sorgente nella corsia [LANE]",
-      "description": "La sorgente si trova nella corsia params.lane. Valori ammessi: 1, 2, 3, 4, 5.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      }
-    },
     "C11": {
       "name": "Adiacente a creatura di seme [SUIT]",
       "description": "La sorgente è in una corsia adiacente (differenza di 1) a una creatura del seme params.suit.",
@@ -271,112 +188,9 @@
         }
       }
     },
-    "C12": {
-      "name": "Controllore ha <= [N] creature",
-      "description": "Il controllore ha al massimo params.count creature in gioco.",
-      "params": {
-        "count": {
-          "type": "int"
-        }
-      }
-    },
-    "C13": {
-      "name": "Controllore ha >= [N] creature",
-      "description": "Il controllore ha almeno params.count creature in gioco.",
-      "params": {
-        "count": {
-          "type": "int"
-        }
-      }
-    },
-    "C14": {
-      "name": "Vita del giocatore <= [N]",
-      "description": "La vita del giocatore indicato da params.player è pari o inferiore a params.amount. Valori ammessi per params.player: 'controllore', 'avversario'.",
-      "params": {
-        "player": {
-          "type": "enum",
-          "values": [
-            "controllore",
-            "avversario"
-          ]
-        },
-        "amount": {
-          "type": "int"
-        }
-      }
-    },
-    "C15": {
-      "name": "Vita del giocatore >= [N]",
-      "description": "La vita del giocatore indicato da params.player è pari o superiore a params.amount.",
-      "params": {
-        "player": {
-          "type": "enum",
-          "values": [
-            "controllore",
-            "avversario"
-          ]
-        },
-        "amount": {
-          "type": "int"
-        }
-      }
-    },
-    "C16": {
-      "name": "Danneggiata in questo turno",
-      "description": "La sorgente ha subito danno in questo turno."
-    },
-    "C17": {
-      "name": "Curata in questo turno",
-      "description": "La sorgente è stata curata in questo turno."
-    },
-    "C18": {
-      "name": "Ha equipaggiamento [GEAR_ID]",
-      "description": "La sorgente ha applicato l'equipaggiamento params.gear_id.",
-      "params": {
-        "gear_id": {
-          "type": "string"
-        }
-      }
-    },
-    "C19": {
-      "name": "È stata piazzata come sostituto",
-      "description": "La sorgente è stata piazzata come carta sostitutiva durante il Rifornimento."
-    },
-    "C20": {
-      "name": "Pescata in questa fase",
-      "description": "La carta indicata da params.card_ref è stata pescata durante la fase corrente.",
-      "params": {
-        "card_ref": {
-          "type": "string"
-        }
-      }
-    },
-    "C21": {
-      "name": "L'attacco ucciderebbe il bersaglio",
-      "description": "Il danno da combattimento che la sorgente infliggerebbe al suo bersaglio in questo ciclo (ATK effettivo, mitigazioni del bersaglio ed eventuale E26 inclusi) distruggerebbe il bersaglio. snapshot: cycle_start."
-    },
     "C22": {
       "name": "DEF del bersaglio > ATK della sorgente",
       "description": "La DEF attuale del bersaglio dichiarato è superiore all'ATK attuale della sorgente (senza il bonus che questa condizione abilita). snapshot: cycle_start."
-    },
-    "C23": {
-      "name": "Creatura opposta di sottofazione [SUBFACTION]",
-      "description": "La creatura avversaria nella stessa corsia appartiene alla sottofazione params.subfaction.",
-      "params": {
-        "subfaction": {
-          "type": "enum",
-          "values": [
-            "Adattati",
-            "Spezzasigilli",
-            "Portanome",
-            "Segnaterra",
-            "SEKTAC",
-            "MEROZYN",
-            "EFFRIX",
-            "YLMOR"
-          ]
-        }
-      }
     },
     "C24": {
       "name": "Blocco [KEY] non attivo",
@@ -464,89 +278,6 @@
       ],
       "duration_mode": "sustained_only"
     },
-    "E2": {
-      "name": "Aggiungi DEF attuale [AMOUNT]",
-      "class": [
-        "C",
-        "T",
-        "I"
-      ],
-      "description": "Aggiunge params.amount alla DEF attuale del bersaglio. Non è una cura: non aumenta la DEF massima.",
-      "params": {
-        "mode": {
-          "type": "enum",
-          "values": [
-            "flat",
-            "pct_base_def"
-          ],
-          "default": "flat"
-        },
-        "amount": {
-          "type": "int",
-          "optional": true
-        },
-        "permille": {
-          "type": "int",
-          "optional": true,
-          "description": "Per-mille della DEF base del bersaglio (200 = +20%)."
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E3": {
-      "name": "Aggiungi DEF base [AMOUNT]",
-      "class": [
-        "C",
-        "I"
-      ],
-      "description": "Aumenta la DEF base stampata del bersaglio di params.amount. Aumenta la DEF massima raggiungibile dalla cura, ma non cura.",
-      "params": {
-        "amount": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E4": {
-      "name": "Imposta ATK attuale [VALUE]",
-      "class": [
-        "C",
-        "T"
-      ],
-      "description": "Imposta l'ATK attuale del bersaglio a params.value. Si applica dopo tutti i modificatori. Se più effetti impostano lo stesso valore, prevale l'ultimo risolto.",
-      "params": {
-        "value": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E5": {
-      "name": "Imposta DEF attuale [VALUE]",
-      "class": [
-        "C",
-        "T"
-      ],
-      "description": "Imposta la DEF attuale del bersaglio a params.value. Si applica dopo tutti i modificatori.",
-      "params": {
-        "value": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
     "E6": {
       "name": "Cura DEF [AMOUNT]",
       "class": [
@@ -577,95 +308,6 @@
         "creature"
       ],
       "duration_mode": "instant_only"
-    },
-    "E7": {
-      "name": "Infliggi danno a creatura [AMOUNT]",
-      "class": [
-        "T",
-        "I"
-      ],
-      "description": "Riduce la DEF attuale del bersaglio di params.amount. Se la DEF scende a 0 o meno, la creatura è distrutta.",
-      "params": {
-        "amount": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E8": {
-      "name": "Fai perdere vita al giocatore [AMOUNT]",
-      "class": [
-        "T",
-        "I"
-      ],
-      "description": "Il giocatore bersaglio perde params.amount punti vita.",
-      "params": {
-        "amount": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E9": {
-      "name": "Fai guadagnare vita al giocatore [AMOUNT]",
-      "class": [
-        "T",
-        "I"
-      ],
-      "description": "Il giocatore bersaglio guadagna params.amount punti vita.",
-      "params": {
-        "amount": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E10": {
-      "name": "Distruggi creatura",
-      "class": [
-        "T",
-        "I"
-      ],
-      "description": "Distrugge il bersaglio. La creatura andrà nella pila degli scarti durante il Rifornimento. Non è danno.",
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E11": {
-      "name": "Previeni distruzione [COUNT]",
-      "class": [
-        "R"
-      ],
-      "description": "Previene la prossima distruzione del bersaglio. params.count indica quante volte la sostituzione è applicabile; dopo l'uso, se count è esaurito, rimuovi l'effetto. Dopo la prevenzione la DEF attuale è impostata a params.set_def; lo spill è inflitto solo se params.spill_on_prevent è true.",
-      "params": {
-        "count": {
-          "type": "int"
-        },
-        "set_def": {
-          "type": "int",
-          "default": 1,
-          "description": "DEF attuale del bersaglio dopo la distruzione prevenuta. Default 1: la creatura non resta con DEF <= 0."
-        },
-        "spill_on_prevent": {
-          "type": "bool",
-          "default": false,
-          "description": "Se false l'attacco che l'avrebbe distrutto non infligge spill."
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
     },
     "E12": {
       "name": "Salva con DEF completa",
@@ -699,80 +341,6 @@
       ],
       "duration_mode": "instant_only"
     },
-    "E13": {
-      "name": "Scarta creatura",
-      "class": [
-        "T",
-        "I"
-      ],
-      "description": "Sposta il bersaglio nella pila degli scarti senza passare dall'evento di distruzione. Non innesca T10/T20.",
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E14": {
-      "name": "Concedi keyword [KEYWORD]",
-      "class": [
-        "C",
-        "T",
-        "I"
-      ],
-      "description": "Concede al bersaglio la keyword params.keyword (con params.keyword_params) per la durata indicata. È il modo in cui le Evoluzioni conferiscono keyword.",
-      "params": {
-        "keyword": {
-          "type": "keyword_id"
-        },
-        "keyword_params": {
-          "type": "object",
-          "optional": true,
-          "description": "Parametri della keyword concessa (es. {\"x\":10} per Scudo (X)). Devono rispettare lo schema params della keyword."
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E15": {
-      "name": "Rimuovi keyword [KEYWORD]",
-      "class": [
-        "C",
-        "T"
-      ],
-      "description": "Rimuove dal bersaglio la keyword params.keyword per la durata indicata.",
-      "params": {
-        "keyword": {
-          "type": "keyword_id"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E16": {
-      "name": "Concedi Evoluzione [TRIGGER]",
-      "class": [
-        "C",
-        "T"
-      ],
-      "description": "Concede al bersaglio l'Evoluzione params.evolution_id (con params.evolution_params). Un'Evoluzione concessa ha il proprio contatore di innesco (max 1).",
-      "params": {
-        "evolution_id": {
-          "type": "string",
-          "description": "Chiave in evolutions.json."
-        },
-        "evolution_params": {
-          "type": "object",
-          "optional": true
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
     "E17": {
       "name": "Innesca Evoluzione",
       "class": [
@@ -783,18 +351,6 @@
         "creature"
       ],
       "duration_mode": "instant_only"
-    },
-    "E18": {
-      "name": "Sopprimi Evoluzione",
-      "class": [
-        "C",
-        "T"
-      ],
-      "description": "L'effetto Evoluzione del bersaglio non può essere innescato per la durata indicata.",
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
     },
     "E19": {
       "name": "Moltiplica valore Evoluzione [FACTOR]",
@@ -811,22 +367,6 @@
         "creature"
       ],
       "duration_mode": "sustained_only"
-    },
-    "E20": {
-      "name": "Modifica moltiplicatore mano [FACTOR]",
-      "class": [
-        "R"
-      ],
-      "description": "Moltiplica per params.factor (in per-mille) il moltiplicatore della mano per l'attacco indicato. Si applica solo allo spill di quell'attacco. Classe R: si applica come sostituzione al momento del calcolo dello spill (trigger T34).",
-      "params": {
-        "factor": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "any"
     },
     "E21": {
       "name": "Modifica moltiplicatore spill [FACTOR]",
@@ -859,88 +399,6 @@
         "creature"
       ],
       "duration_mode": "any"
-    },
-    "E23": {
-      "name": "Previeni danno da combattimento dalla sorgente",
-      "class": [
-        "R"
-      ],
-      "description": "Il danno da combattimento che il bersaglio infliggerebbe alla sorgente è prevenuto. Usato per 'Primo Colpo' nel Ciclo 1.",
-      "params": {},
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "any"
-    },
-    "E24": {
-      "name": "Reindirizza attacco",
-      "class": [
-        "T"
-      ],
-      "description": "Reindirizza l'attacco indicato verso il nuovo bersaglio params.new_target_id. L'attacco reindirizzato si risolve nello stesso ciclo dell'attacco originale.",
-      "params": {
-        "new_target_id": {
-          "type": "target_id"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E25": {
-      "name": "Previeni attacco",
-      "class": [
-        "R"
-      ],
-      "description": "L'attaccante indicato non effettua il suo attacco.",
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "any"
-    },
-    "E26": {
-      "name": "Segna danno da combattimento come letale",
-      "class": [
-        "C"
-      ],
-      "description": "Il danno da combattimento inflitto dalla sorgente (> 0) distrugge qualsiasi creatura danneggiata, indipendentemente dalla DEF residua. Lo spill si calcola con la formula normale (ATK effettivo − DEF prima del colpo, minimo 0): Letale non aggiunge spill.",
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E27": {
-      "name": "Modifica danno inflitto [AMOUNT o PERCENT]",
-      "class": [
-        "C",
-        "T",
-        "R",
-        "I"
-      ],
-      "description": "Modifica il danno inflitto dalla sorgente. params.mode: 'flat' (params.amount) oppure 'permille' (params.permille, fattore in per-mille).",
-      "params": {
-        "mode": {
-          "type": "enum",
-          "values": [
-            "flat",
-            "permille"
-          ]
-        },
-        "amount": {
-          "type": "int",
-          "optional": true
-        },
-        "permille": {
-          "type": "int",
-          "optional": true,
-          "description": "Fattore in per-mille (800 = ×0.8)."
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
     },
     "E28": {
       "name": "Modifica danno subito [AMOUNT o PERCENT]",
@@ -987,138 +445,6 @@
       ],
       "duration_mode": "sustained_only"
     },
-    "E29": {
-      "name": "Previeni danno [AMOUNT o ONCE]",
-      "class": [
-        "R",
-        "T"
-      ],
-      "description": "Previeni params.amount danno, oppure previeni completamente il prossimo danno se params.once è true.",
-      "params": {
-        "amount": {
-          "type": "int",
-          "optional": true
-        },
-        "once": {
-          "type": "bool",
-          "optional": true
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "any"
-    },
-    "E30": {
-      "name": "Conta come altro rango per la mano [RANK]",
-      "class": [
-        "C",
-        "R"
-      ],
-      "description": "Per la determinazione della mano di poker, il bersaglio conta come rango params.rank in aggiunta al suo rango reale. Valori ammessi: 'A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'.",
-      "params": {
-        "rank": {
-          "type": "enum",
-          "values": [
-            "A",
-            "K",
-            "Q",
-            "J",
-            "10",
-            "9",
-            "8",
-            "7",
-            "6",
-            "5",
-            "4",
-            "3",
-            "2"
-          ]
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E31": {
-      "name": "Conta come altro seme per la mano [SUIT]",
-      "class": [
-        "C",
-        "R"
-      ],
-      "description": "Per la determinazione della mano di poker, il bersaglio conta anche come seme params.suit. Valori ammessi: 'Vincolo', 'Frattura', 'Spira', 'Vestigio'.",
-      "params": {
-        "suit": {
-          "type": "enum",
-          "values": [
-            "Vincolo",
-            "Frattura",
-            "Spira",
-            "Vestigio"
-          ]
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E32": {
-      "name": "Cambia rango per la mano [RANK]",
-      "class": [
-        "C",
-        "R"
-      ],
-      "description": "Sostituisce il rango del bersaglio con params.rank per la determinazione della mano. Diverso da E30: sostituisce, non aggiunge.",
-      "params": {
-        "rank": {
-          "type": "enum",
-          "values": [
-            "A",
-            "K",
-            "Q",
-            "J",
-            "10",
-            "9",
-            "8",
-            "7",
-            "6",
-            "5",
-            "4",
-            "3",
-            "2"
-          ]
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E33": {
-      "name": "Cambia seme per la mano [SUIT]",
-      "class": [
-        "C",
-        "R"
-      ],
-      "description": "Sostituisce il seme del bersaglio con params.suit per la determinazione della mano.",
-      "params": {
-        "suit": {
-          "type": "enum",
-          "values": [
-            "Vincolo",
-            "Frattura",
-            "Spira",
-            "Vestigio"
-          ]
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
     "E34": {
       "name": "Tratta come adiacente [GROUP]",
       "class": [
@@ -1142,360 +468,6 @@
       ],
       "duration_mode": "sustained_only"
     },
-    "E35": {
-      "name": "Pesca la prima carta",
-      "class": [
-        "I",
-        "T"
-      ],
-      "description": "Pesca la carta in cima al mazzo. Se è una magia o un equipaggiamento, risolvila immediatamente prima di continuare.",
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E36": {
-      "name": "Piazza sostituto nella corsia [LANE]",
-      "class": [
-        "I",
-        "T"
-      ],
-      "description": "Piazza una carta sostitutiva nella corsia params.lane. Se la corsia non è vuota o il mazzo è vuoto, l'effetto non fa nulla.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      },
-      "target_kind": [
-        "lane"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E37": {
-      "name": "Muovi creatura nella corsia [LANE]",
-      "class": [
-        "T"
-      ],
-      "description": "Muove il bersaglio nella corsia params.lane. Se la corsia è occupata, l'effetto non fa nulla.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E38": {
-      "name": "Scambia corsie di due creature [LANE_A] [LANE_B]",
-      "class": [
-        "T"
-      ],
-      "description": "Scambia le posizioni di due creature nelle corsie params.lane_a e params.lane_b. Entrambe devono esistere.",
-      "params": {
-        "lane_a": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        },
-        "lane_b": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      },
-      "target_kind": [
-        "global",
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E39": {
-      "name": "Riempi corsia vuota [LANE]",
-      "class": [
-        "T"
-      ],
-      "description": "Riempi la corsia params.lane con una carta dal mazzo, secondo le regole del Rifornimento.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      },
-      "target_kind": [
-        "empty_lane"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E40": {
-      "name": "Svuota corsia [LANE]",
-      "class": [
-        "T"
-      ],
-      "description": "Svuota la corsia params.lane. La creatura presente viene spostata o distrutta secondo params.mode. Valori ammessi per params.mode: 'distruggi', 'scarta'.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        },
-        "mode": {
-          "type": "enum",
-          "values": [
-            "distruggi",
-            "scarta"
-          ]
-        }
-      },
-      "target_kind": [
-        "lane"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E41": {
-      "name": "Copia effetto della pila",
-      "class": [
-        "T"
-      ],
-      "description": "Copia l'effetto della pila indicato da params.stack_ref. La copia si risolve dopo l'originale.",
-      "target_kind": [
-        "stack"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E42": {
-      "name": "Annulla effetto della pila",
-      "class": [
-        "T"
-      ],
-      "description": "Annulla l'effetto della pila indicato da params.stack_ref. L'effetto rimosso non si risolve.",
-      "target_kind": [
-        "stack"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E43": {
-      "name": "Aggiungi effetto innescato alla pila",
-      "class": [
-        "T"
-      ],
-      "description": "Aggiungi alla pila l'effetto params.effect_ref con il bersaglio params.target_id. Utile per effetti condizionali.",
-      "target_kind": [
-        "global"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E44": {
-      "name": "Imposta vita del giocatore [VALUE]",
-      "class": [
-        "T"
-      ],
-      "description": "Imposta la vita del giocatore bersaglio a params.value. Si applica dopo i modificatori. Da usare con cautela.",
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E45": {
-      "name": "Modifica conteggio semi per tier [SUIT] [DELTA]",
-      "class": [
-        "C"
-      ],
-      "description": "Modifica il conteggio del seme params.suit di params.delta per la determinazione dei tier attivi. Può attivare o disattivare sinergie.",
-      "params": {
-        "suit": {
-          "type": "enum",
-          "values": [
-            "Vincolo",
-            "Frattura",
-            "Spira",
-            "Vestigio"
-          ]
-        },
-        "delta": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "global"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E46": {
-      "name": "Modifica tier attivo o sostituito [SUIT] [TIER] [MODE]",
-      "class": [
-        "C"
-      ],
-      "description": "Modifica l'attivazione del tier params.tier del seme params.suit. params.mode: 'attiva', 'disattiva', 'sostituisci' (con params.replaced_tier).",
-      "params": {
-        "suit": {
-          "type": "enum",
-          "values": [
-            "Vincolo",
-            "Frattura",
-            "Spira",
-            "Vestigio"
-          ]
-        },
-        "tier": {
-          "type": "enum",
-          "values": [
-            3,
-            4,
-            5
-          ]
-        },
-        "mode": {
-          "type": "enum",
-          "values": [
-            "attiva",
-            "disattiva",
-            "sostituisci"
-          ]
-        },
-        "replaced_tier": {
-          "type": "enum",
-          "values": [
-            3,
-            4,
-            5
-          ],
-          "optional": true
-        }
-      },
-      "target_kind": [
-        "global"
-      ],
-      "duration_mode": "sustained_only"
-    },
-    "E47": {
-      "name": "Previeni rifornimento [LANE o GIOCATORE]",
-      "class": [
-        "R",
-        "T"
-      ],
-      "description": "Impedisci il rifornimento della corsia params.lane o del giocatore params.player. Se params.lane è assente, vale per tutte le corsie vuote.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ],
-          "optional": true
-        },
-        "player": {
-          "type": "enum",
-          "values": [
-            "controllore",
-            "avversario"
-          ],
-          "optional": true
-        }
-      },
-      "target_kind": [
-        "lane",
-        "player"
-      ],
-      "duration_mode": "any"
-    },
-    "E48": {
-      "name": "Rimescola mazzo",
-      "class": [
-        "I"
-      ],
-      "description": "Rimescola il mazzo del giocatore bersaglio usando il seed registrato.",
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E49": {
-      "name": "Metti carta in cima o in fondo al mazzo [POSITION]",
-      "class": [
-        "I"
-      ],
-      "description": "Metti la carta bersaglio in cima ('top') o in fondo ('bottom') al mazzo. params.position: 'top' o 'bottom'.",
-      "params": {
-        "position": {
-          "type": "enum",
-          "values": [
-            "top",
-            "bottom"
-          ]
-        }
-      },
-      "target_kind": [
-        "card"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E50": {
-      "name": "Rivela la prima carta [DEPRECATA]",
-      "class": [],
-      "deprecated": true,
-      "replaced_by": "E57",
-      "description": "DEPRECATA. Non fa nulla: i giocatori non prendono decisioni in partita, quindi rivelare una carta non cambia l'esito. L'ID resta riservato e non va riusato. Usare E57.",
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
-    },
-    "E51": {
-      "name": "Modifica cura ricevuta [PERMILLE]",
-      "class": [
-        "R"
-      ],
-      "description": "Modifica la cura che il bersaglio sta per ricevere moltiplicandola per params.permille (1000 = invariata, 0 = prevenuta).",
-      "params": {
-        "permille": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "any"
-    },
     "E52": {
       "name": "Impedisci riduzione ATK",
       "class": [
@@ -1506,47 +478,6 @@
         "creature"
       ],
       "duration_mode": "sustained_only"
-    },
-    "E53": {
-      "name": "Attacco extra nel Ciclo 2",
-      "class": [
-        "C"
-      ],
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only",
-      "description": "Se il bersaglio ha attaccato nel Ciclo 1 ed è sopravvissuto, nel Ciclo 2 attacca di nuovo lo stesso bersaglio (se ancora vivo). Lo spill e gli effetti dell'attacco si risolvono per ciascun colpo."
-    },
-    "E54": {
-      "name": "Conta come rango adiacente [STEP]",
-      "class": [
-        "C",
-        "R"
-      ],
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only",
-      "description": "Per formare scale e scale colore il bersaglio può contare come il suo rango reale ±params.step (default 1). Non influisce su coppie o gruppi.",
-      "params": {
-        "step": {
-          "type": "int",
-          "default": 1
-        }
-      }
-    },
-    "E55": {
-      "name": "Conta come qualsiasi seme per la mano",
-      "class": [
-        "C",
-        "R"
-      ],
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only",
-      "description": "Per colore, scala colore e quattro dello stesso seme il bersaglio conta come qualsiasi seme. Non influisce sulle sinergie dei semi."
     },
     "E56": {
       "name": "Ignora mitigazione [PCT]",
@@ -1563,22 +494,6 @@
           "type": "int"
         }
       }
-    },
-    "E57": {
-      "name": "Scarta le prime carte del mazzo [COUNT]",
-      "class": [
-        "I"
-      ],
-      "description": "Sposta le prime params.count carte del mazzo del giocatore bersaglio nella pila degli scarti, nell'ordine del mazzo. Le magie e gli equipaggiamenti scartati in questo modo non hanno effetto. Se il mazzo ha meno carte, scarta quelle rimaste.",
-      "params": {
-        "count": {
-          "type": "int"
-        }
-      },
-      "target_kind": [
-        "player"
-      ],
-      "duration_mode": "instant_only"
     }
   },
   "triggers": {
@@ -1588,15 +503,6 @@
       "uses_stack": false,
       "description": "Effetto sempre attivo. Non usa la pila.",
       "provides": []
-    },
-    "T1": {
-      "name": "All'ingresso in una corsia",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la carta viene piazzata in una corsia durante il setup o il rifornimento.",
-      "provides": [
-        "triggerer"
-      ]
     },
     "T2": {
       "name": "All'inizio della fase [PHASE]",
@@ -1618,35 +524,6 @@
           ]
         }
       },
-      "provides": []
-    },
-    "T3": {
-      "name": "Alla fine della fase [PHASE]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Alla fine della fase indicata da params.phase. Valori ammessi per params.phase: 'Valutazione', 'Dichiarazione', 'Inizio del combattimento', 'Ciclo 1', 'Ciclo 2', 'Fine del combattimento', 'Rifornimento', 'Fine del turno'.",
-      "params": {
-        "phase": {
-          "type": "enum",
-          "values": [
-            "Valutazione",
-            "Dichiarazione",
-            "Inizio del combattimento",
-            "Ciclo 1",
-            "Ciclo 2",
-            "Fine del combattimento",
-            "Rifornimento",
-            "Fine del turno"
-          ]
-        }
-      },
-      "provides": []
-    },
-    "T4": {
-      "name": "Fase di Valutazione (mano di poker)",
-      "class": "R",
-      "uses_stack": false,
-      "description": "Modifica il modo in cui la mano di poker viene determinata. Sostituzione, non usa la pila.",
       "provides": []
     },
     "T5": {
@@ -1675,165 +552,6 @@
       },
       "provides": []
     },
-    "T6": {
-      "name": "Quando attacca (Ciclo 1 o Ciclo 2)",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la creatura effettua un attacco durante il combattimento.",
-      "provides": [
-        "triggerer",
-        "declared_target"
-      ]
-    },
-    "T7": {
-      "name": "Quando è attaccata",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la creatura è bersaglio di un attacco durante il combattimento.",
-      "provides": [
-        "triggerer"
-      ]
-    },
-    "T8": {
-      "name": "Quando un attacco viene dichiarato",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Durante la fase di Dichiarazione, dopo che bersagli e attaccanti sono fissati.",
-      "provides": [
-        "triggerer",
-        "declared_target"
-      ]
-    },
-    "T9": {
-      "name": "Quando è bersaglio di un attacco dichiarato",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Durante la fase di Dichiarazione, quando la creatura è scelta come bersaglio.",
-      "provides": [
-        "triggerer"
-      ]
-    },
-    "T10": {
-      "name": "Quando viene distrutta",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la creatura viene distrutta e andrà nella pila degli scarti durante il rifornimento.",
-      "provides": [
-        "destroyed",
-        "killed",
-        "killer",
-        "triggerer"
-      ]
-    },
-    "T11": {
-      "name": "Quando viene inflitto danno da traboccamento (spill)",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando viene inflitto danno da traboccamento a un giocatore.",
-      "provides": [
-        "triggerer",
-        "damager"
-      ]
-    },
-    "T12": {
-      "name": "Quando sopravvive a danno da combattimento",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la creatura subisce danno da combattimento e rimane in gioco.",
-      "provides": [
-        "damaged",
-        "damager",
-        "triggerer"
-      ]
-    },
-    "T13": {
-      "name": "Quando subisce danno [SOURCE]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la creatura subisce danno dalla fonte indicata da params.source. Valori ammessi per params.source: 'combattimento', 'effetto', 'qualsiasi'.",
-      "params": {
-        "source": {
-          "type": "enum",
-          "values": [
-            "combattimento",
-            "effetto",
-            "qualsiasi"
-          ]
-        }
-      },
-      "provides": [
-        "damaged",
-        "damager",
-        "triggerer"
-      ]
-    },
-    "T14": {
-      "name": "Quando viene curata",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la difesa della creatura viene aumentata da un effetto di cura.",
-      "provides": [
-        "triggerer"
-      ]
-    },
-    "T15": {
-      "name": "Quando un'evoluzione viene innescata",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando un effetto Evoluzione della creatura viene innescato.",
-      "provides": [
-        "triggerer"
-      ]
-    },
-    "T16": {
-      "name": "Quando riceve un equipaggiamento [GEAR_ID]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando un equipaggiamento viene applicato alla creatura. params.gear_id è opzionale: se presente, il trigger scatta solo per quell'equipaggiamento; se assente, scatta per qualsiasi equipaggiamento.",
-      "params": {
-        "gear_id": {
-          "type": "string",
-          "optional": true
-        }
-      },
-      "provides": [
-        "triggerer",
-        "trigger_card",
-        "drawn_card"
-      ]
-    },
-    "T17": {
-      "name": "Quando perde un equipaggiamento [GEAR_ID]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando un equipaggiamento smette di applicarsi alla creatura. params.gear_id è opzionale: se presente, il trigger scatta solo per quell'equipaggiamento; se assente, scatta per qualsiasi equipaggiamento.",
-      "params": {
-        "gear_id": {
-          "type": "string",
-          "optional": true
-        }
-      },
-      "provides": [
-        "triggerer",
-        "trigger_card"
-      ]
-    },
-    "T18": {
-      "name": "Quando una magia viene risolta [SPELL_ID]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando una magia viene pescata e il suo effetto viene risolto. params.spell_id è opzionale: se presente, il trigger scatta solo per quella magia; se assente, scatta per qualsiasi magia.",
-      "params": {
-        "spell_id": {
-          "type": "string",
-          "optional": true
-        }
-      },
-      "provides": [
-        "trigger_card",
-        "drawn_card"
-      ]
-    },
     "T19": {
       "name": "Quando uccide una creatura",
       "class": "T",
@@ -1856,73 +574,6 @@
         "triggerer"
       ]
     },
-    "T21": {
-      "name": "Quando sta per subire danno",
-      "class": "R",
-      "uses_stack": false,
-      "description": "Sostituzione: la creatura sta per subire danno. Non usa la pila.",
-      "provides": [
-        "damaged",
-        "damager",
-        "triggerer"
-      ]
-    },
-    "T22": {
-      "name": "Quando sta per attaccare",
-      "class": "R",
-      "uses_stack": false,
-      "description": "Sostituzione: la creatura sta per effettuare un attacco. Non usa la pila.",
-      "provides": [
-        "triggerer",
-        "declared_target"
-      ]
-    },
-    "T23": {
-      "name": "Quando sta per essere curata",
-      "class": "R",
-      "uses_stack": false,
-      "description": "Sostituzione: la creatura sta per ricevere cura. Non usa la pila.",
-      "provides": [
-        "triggerer"
-      ]
-    },
-    "T24": {
-      "name": "Quando una carta sta per essere pescata",
-      "class": "R",
-      "uses_stack": false,
-      "description": "Sostituzione: una carta sta per essere pescata dal mazzo. Non usa la pila.",
-      "provides": []
-    },
-    "T25": {
-      "name": "Quando una creatura sta per essere piazzata in una corsia",
-      "class": "R",
-      "uses_stack": false,
-      "description": "Sostituzione: una creatura sta per essere piazzata in una corsia durante setup o rifornimento. Non usa la pila.",
-      "provides": [
-        "triggerer"
-      ]
-    },
-    "T26": {
-      "name": "Alla fine del turno",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Durante la fase di Fine del turno, dopo i controlli di sconfitta.",
-      "provides": []
-    },
-    "T27": {
-      "name": "Quando il mazzo è vuoto",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando un giocatore non può pescare perché il mazzo è vuoto.",
-      "provides": []
-    },
-    "T28": {
-      "name": "Quando una corsia si svuota",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando una creatura lascia la sua corsia e la corsia rimane vuota.",
-      "provides": []
-    },
     "T29": {
       "name": "Quando una carta sostitutiva viene piazzata",
       "class": "T",
@@ -1933,59 +584,6 @@
         "triggerer",
         "drawn_card"
       ]
-    },
-    "T30": {
-      "name": "Quando il giocatore perde vita",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando il controllore perde punti vita.",
-      "provides": []
-    },
-    "T31": {
-      "name": "Quando il giocatore guadagna vita",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando il controllore guadagna punti vita.",
-      "provides": []
-    },
-    "T32": {
-      "name": "Quando un effetto della pila viene risolto",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando un effetto viene risolto dalla pila.",
-      "provides": [
-        "stack_effect"
-      ]
-    },
-    "T33": {
-      "name": "Quando un effetto della pila viene annullato",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando un effetto della pila viene annullato o rimosso senza risolversi.",
-      "provides": [
-        "stack_effect"
-      ]
-    },
-    "T_EVO": {
-      "name": "Evoluzione [TRIGGER]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Wrapper: il trigger indicato da params.trigger_id conta come trigger di Evoluzione per le sinergie Spira. Un'Evoluzione si innesca al massimo UNA volta per istanza di carta in gioco (max_triggers = 1, vedi evolution_rules). Valori ammessi per params.trigger_id: qualsiasi trigger di classe T.",
-      "params": {
-        "trigger_id": {
-          "type": "trigger_id"
-        },
-        "trigger_params": {
-          "type": "object",
-          "optional": true
-        },
-        "max_triggers": {
-          "type": "int",
-          "const": 1,
-          "description": "Fisso a 1 per regola."
-        }
-      },
-      "provides": "inherit:params.trigger_id"
     },
     "T34": {
       "name": "Quando sta per infliggere spill",
@@ -1998,147 +596,12 @@
         "declared_target"
       ],
       "description": "Sostituzione: l'attaccante ha ucciso il bersaglio e sta per infliggere spill al giocatore avversario. Permette di modificare moltiplicatore della mano, DEF considerata o altri valori dello spill di quell'attacco. Non usa la pila."
-    },
-    "T35": {
-      "name": "Quando una creatura alleata adiacente è bersaglio di un attacco dichiarato",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Durante la Dichiarazione, quando un attaccante avversario ha come bersaglio una creatura alleata in corsia adiacente a quella della sorgente. Ordine: corsia crescente.",
-      "provides": [
-        "triggerer",
-        "attacked_ally",
-        "declared_target"
-      ]
-    },
-    "T36": {
-      "name": "Quando una tua creatura viene distrutta",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando una qualsiasi creatura del controllore (non solo la sorgente) viene distrutta.",
-      "provides": [
-        "destroyed",
-        "killed",
-        "killer"
-      ]
-    },
-    "T37": {
-      "name": "Quando una creatura avversaria viene distrutta",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando una qualsiasi creatura dell'avversario viene distrutta.",
-      "provides": [
-        "destroyed",
-        "killed",
-        "killer"
-      ]
     }
   },
   "targets": {
-    "S0": {
-      "name": "Globale",
-      "description": "Nessun bersaglio specifico: l'effetto si applica globalmente.",
-      "kind": [
-        "global"
-      ],
-      "requires_context": null
-    },
     "S1": {
       "name": "Sé stessa",
       "description": "La creatura che possiede l'effetto.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S2": {
-      "name": "Creatura che ha innescato l'effetto",
-      "description": "La creatura che ha causato il trigger.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "triggerer"
-    },
-    "S3": {
-      "name": "Carta che ha innescato l'effetto",
-      "description": "La carta (creatura, magia o equipaggiamento) che ha causato il trigger.",
-      "kind": [
-        "creature",
-        "card"
-      ],
-      "requires_context": "trigger_card"
-    },
-    "S4": {
-      "name": "Corsia della sorgente",
-      "description": "La corsia in cui si trova la creatura che ha innescato l'effetto.",
-      "kind": [
-        "lane"
-      ],
-      "requires_context": null
-    },
-    "S5": {
-      "name": "Creatura nella corsia [LANE]",
-      "description": "La creatura presente nella corsia specificata da params.lane. Valori ammessi per params.lane: 1, 2, 3, 4, 5.",
-      "params": {
-        "lane": {
-          "type": "enum",
-          "values": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        }
-      },
-      "kind": [
-        "creature",
-        "lane"
-      ],
-      "requires_context": null
-    },
-    "S6": {
-      "name": "Creatura avversaria nella stessa corsia",
-      "description": "La creatura nemica nella stessa corsia della sorgente.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S7": {
-      "name": "Creatura adiacente a sé stessa",
-      "description": "Una creatura dello stesso giocatore in una corsia adiacente (differenza di 1). Se più di una, si applica l'ordine deterministico: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S8": {
-      "name": "Creatura adiacente a quella che ha innescato l'effetto",
-      "description": "Una creatura dello stesso giocatore in una corsia adiacente a quella della creatura che ha innescato l'effetto. Se più di una, si applica l'ordine deterministico.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "triggerer"
-    },
-    "S9": {
-      "name": "Tutte le tue creature",
-      "description": "Tutte le creature controllate dal giocatore che possiede l'effetto.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S10": {
-      "name": "Tutte le creature avversarie",
-      "description": "Tutte le creature controllate dall'avversario.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S11": {
-      "name": "Tutte le creature",
-      "description": "Tutte le creature in gioco, di entrambi i giocatori. Per l'ordine di risoluzione: corsia crescente, poi Potenze Artificiali prima di Resistenza Umana.",
       "kind": [
         "creature"
       ],
@@ -2163,170 +626,6 @@
       ],
       "requires_context": null
     },
-    "S13": {
-      "name": "Creature avversarie di seme [SUIT]",
-      "description": "Tutte le creature controllate dall'avversario con il seme specificato da params.suit.",
-      "params": {
-        "suit": {
-          "type": "enum",
-          "values": [
-            "Vincolo",
-            "Frattura",
-            "Spira",
-            "Vestigio"
-          ]
-        }
-      },
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S14": {
-      "name": "Tutte le creature di seme [SUIT]",
-      "description": "Tutte le creature in gioco (entrambi i giocatori) con il seme specificato da params.suit.",
-      "params": {
-        "suit": {
-          "type": "enum",
-          "values": [
-            "Vincolo",
-            "Frattura",
-            "Spira",
-            "Vestigio"
-          ]
-        }
-      },
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S15": {
-      "name": "Tue creature di sottofazione [SUBFACTION]",
-      "description": "Tutte le creature controllate dal giocatore che possiede l'effetto con la sottofazione specificata da params.subfaction. Valori ammessi: 'Adattati', 'Spezzasigilli', 'Portanome', 'Segnaterra', 'SEKTAC', 'MEROZYN', 'EFFRIX', 'YLMOR'.",
-      "params": {
-        "subfaction": {
-          "type": "enum",
-          "values": [
-            "Adattati",
-            "Spezzasigilli",
-            "Portanome",
-            "Segnaterra",
-            "SEKTAC",
-            "MEROZYN",
-            "EFFRIX",
-            "YLMOR"
-          ]
-        }
-      },
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S16": {
-      "name": "Creature avversarie di sottofazione [SUBFACTION]",
-      "description": "Tutte le creature controllate dall'avversario con la sottofazione specificata da params.subfaction.",
-      "params": {
-        "subfaction": {
-          "type": "enum",
-          "values": [
-            "Adattati",
-            "Spezzasigilli",
-            "Portanome",
-            "Segnaterra",
-            "SEKTAC",
-            "MEROZYN",
-            "EFFRIX",
-            "YLMOR"
-          ]
-        }
-      },
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S17": {
-      "name": "I tuoi attaccanti",
-      "description": "Le creature del giocatore che possiede l'effetto selezionate dalla mano di poker come attaccanti.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S18": {
-      "name": "Gli attaccanti avversari",
-      "description": "Le creature dell'avversario selezionate dalla mano di poker come attaccanti.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S19": {
-      "name": "I tuoi non-attaccanti",
-      "description": "Le creature del giocatore che possiede l'effetto non selezionate come attaccanti.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S20": {
-      "name": "Creature accoppiate",
-      "description": "Le creature che formano la combinazione di mano (coppia, doppia coppia, tris, poker, full, ecc.).",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S21": {
-      "name": "Creature della mano",
-      "description": "Tutte le creature che contano per la mano di poker del giocatore.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S22": {
-      "name": "Creatura distrutta",
-      "description": "La creatura che è stata distrutta (ultime informazioni note).",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "destroyed"
-    },
-    "S23": {
-      "name": "Creatura che ha ucciso",
-      "description": "La creatura che ha causato la distruzione di un'altra creatura.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "killer"
-    },
-    "S24": {
-      "name": "Creatura uccisa",
-      "description": "La creatura che è stata distrutta.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "killed"
-    },
-    "S25": {
-      "name": "Creatura danneggiata",
-      "description": "La creatura che ha subito danno.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "damaged"
-    },
-    "S26": {
-      "name": "Creatura che ha inflitto danno",
-      "description": "La creatura che ha inflitto danno.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "damager"
-    },
     "S27": {
       "name": "Creatura sostitutiva",
       "description": "La creatura piazzata come sostituto durante la fase di Rifornimento.",
@@ -2335,111 +634,6 @@
       ],
       "requires_context": "replacement"
     },
-    "S28": {
-      "name": "Carta pescata",
-      "description": "La carta appena pescata dal mazzo.",
-      "kind": [
-        "card"
-      ],
-      "requires_context": "drawn_card"
-    },
-    "S29": {
-      "name": "Effetto della pila",
-      "description": "L'effetto attualmente sulla pila (per annullamento o copia).",
-      "kind": [
-        "stack"
-      ],
-      "requires_context": null
-    },
-    "S30": {
-      "name": "Giocatore avversario",
-      "description": "Il giocatore avversario (per perdita o guadagno di vita).",
-      "kind": [
-        "player"
-      ],
-      "requires_context": null
-    },
-    "S31": {
-      "name": "Giocatore controllore",
-      "description": "Il giocatore che controlla la carta con l'effetto.",
-      "kind": [
-        "player"
-      ],
-      "requires_context": null
-    },
-    "S32": {
-      "name": "Corsia vuota",
-      "description": "Una corsia vuota. Se più di una, si applica l'ordine deterministico: corsia più bassa.",
-      "kind": [
-        "lane",
-        "empty_lane"
-      ],
-      "requires_context": null
-    },
-    "S33": {
-      "name": "Creatura con corsia più bassa nell'insieme",
-      "description": "Tra le creature selezionate, quella nella corsia con numero più basso. Se parità, Potenze Artificiali prima di Resistenza Umana.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S34": {
-      "name": "Creatura con corsia più alta nell'insieme",
-      "description": "Tra le creature selezionate, quella nella corsia con numero più alto. Se parità, Potenze Artificiali prima di Resistenza Umana.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S35": {
-      "name": "Creatura con ATK più alto nell'insieme",
-      "description": "Tra le creature selezionate, quella con ATK più alto. Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi rango più alto, poi ordine dei semi.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S36": {
-      "name": "Creatura con ATK più basso nell'insieme",
-      "description": "Tra le creature selezionate, quella con ATK più basso. Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi rango più basso, poi ordine dei semi.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S37": {
-      "name": "Creatura con DEF più alta nell'insieme",
-      "description": "Tra le creature selezionate, quella con DEF più alta. Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi rango più alto, poi ordine dei semi.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S38": {
-      "name": "Creatura con DEF più bassa nell'insieme",
-      "description": "Tra le creature selezionate, quella con DEF più bassa. Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi rango più basso, poi ordine dei semi.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S39": {
-      "name": "Creatura con rango più alto nell'insieme",
-      "description": "Tra le creature selezionate, quella con rango più alto (A > K > Q > J > 10 > ... > 2). Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi ordine dei semi.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S40": {
-      "name": "Creatura con rango più basso nell'insieme",
-      "description": "Tra le creature selezionate, quella con rango più basso (2 < 3 < ... < A). Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi ordine dei semi.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
     "S41": {
       "name": "Tutte le creature adiacenti a sé stessa",
       "description": "Tutte le creature dello stesso giocatore in corsie adiacenti (differenza di 1) alla sorgente. Usare params.filters per restringere (es. solo attaccanti). Rispetta E34.",
@@ -2447,22 +641,6 @@
         "creature"
       ],
       "requires_context": null
-    },
-    "S42": {
-      "name": "Creatura alleata attaccata",
-      "description": "La creatura alleata che è il bersaglio dichiarato nel trigger T35.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "attacked_ally"
-    },
-    "S43": {
-      "name": "Bersaglio dichiarato della sorgente",
-      "description": "La creatura che la sorgente ha dichiarato come bersaglio (può non essere nella corsia opposta se questa era vuota). Preferire a S6 per gli effetti di combattimento.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": "declared_target"
     }
   },
   "target_selection_rules": {
@@ -2483,7 +661,7 @@
     "max_triggers": {
       "type": "int",
       "optional": true,
-      "description": "Numero massimo di risoluzioni dell'effetto per istanza di carta in gioco, per tutta la partita. Le Evoluzioni (T_EVO) hanno max_triggers = 1 per regola."
+      "description": "Numero massimo di risoluzioni dell'effetto per istanza di carta in gioco, per tutta la partita."
     },
     "once_per_turn": {
       "type": "bool",
@@ -2504,24 +682,15 @@
   "stacking_modes": {
     "unique": "Una sola istanza si applica; le altre sono ignorate.",
     "additive": "I valori si sommano (Regola d'Oro 2).",
-    "multiplicative": "I fattori in per-mille si moltiplicano, soggetti ai tetti di balance.json globals.",
-    "max_with": "Con un'altra fonte indicata si applica solo il valore maggiore."
+    "multiplicative": "I fattori in per-mille si moltiplicano, soggetti ai tetti di balance.json globals."
   },
-  "evolution_rules": [
-    "Un'Evoluzione NON è una keyword: è un wrapper (evolutions.json) che, quando il suo trigger scatta, concede keyword (E14) o altri effetti alla creatura.",
-    "Nessuna keyword in keyword.json è un'Evoluzione.",
-    "Ogni Evoluzione si innesca al massimo UNA volta per istanza di carta in gioco, per tutta la partita (max_triggers = 1).",
-    "Un'Evoluzione innescata forzatamente (E17, sinergia Spira 5) consuma l'unico innesco; se già consumato non succede nulla.",
-    "Spira 3 conta ogni Evoluzione innescata su una tua creatura; Spira 4 / E19 moltiplicano i valori numerici concessi.",
-    "Gli effetti di crescita ripetibile usano un trigger normale con max_stacks, non un'Evoluzione."
-  ],
   "condition_semantics": [
-    "Nelle espansioni il campo 'conditions' è una lista di oggetti {id, params?} valutata in AND. Lista vuota = sempre vera (equivale a C0).",
+    "Nelle espansioni il campo 'conditions' è una lista di oggetti {id, params?} valutata in AND. Lista vuota = sempre vera.",
     "Le condizioni si valutano sulla sorgente dell'effetto, salvo diversa indicazione nella descrizione.",
     "Le condizioni marcate 'snapshot: cycle_start' usano i valori presi all'inizio del ciclo di combattimento."
   ],
   "target_filters": {
-    "description": "Filtri componibili ammessi in target_params.filters (lista in AND) su qualsiasi bersaglio multiplo (S9–S21, S41) e come pre-selezione per S33–S40. 'own' e 'enemy' restringono l'insieme alle creature del controllore o dell'avversario (utile con S33-S40, che altrimenti scelgono tra tutte le creature in gioco).",
+    "description": "Filtri componibili ammessi in target_params.filters (lista in AND) su qualsiasi bersaglio multiplo (oggi S41). 'own' e 'enemy' restringono l'insieme alle creature del controllore o dell'avversario.",
     "values": [
       "attacker",
       "non_attacker",
@@ -2564,33 +733,5 @@
         }
       ]
     }
-  },
-  "evolution_schema": {
-    "file": "evolutions.json",
-    "fields": {
-      "name": "string, OPZIONALE: solo etichetta per UI e log. L'identità è la chiave (id); il testo della carta mostra sempre condizione e risultato per esteso.",
-      "balance_ref": "chiave in balance.json evolutions",
-      "description": "testo",
-      "params": "parametri per carta, opzionali",
-      "expands_to": "espansioni con trigger_id T_EVO (trigger interno in trigger_params.trigger_id) ed effetto E14 o altro"
-    },
-    "card_usage": {
-      "evolutions": [
-        {
-          "id": "EVO_SOPRAVVISSUTO",
-          "params": {}
-        }
-      ]
-    }
-  },
-  "card_contexts": {
-    "description": "Contesto fornito alle espansioni di magie ed equipaggiamenti (carte non ancora definite), che non hanno un trigger. Serve al controllo 4 del validatore (requires_context dei bersagli).",
-    "spell": [
-      "drawn_card"
-    ],
-    "equipment": [
-      "replacement",
-      "drawn_card"
-    ]
   }
 }

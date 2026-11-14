@@ -27,6 +27,21 @@
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Test only: checks every MatchLog against its JSON Schema (decision 2026-11-14-schema-validator-test-only).
+             3.x is built on Jackson 3 (tools.jackson), like the engine. Never reaches the jar. -->
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>3.0.8</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Test only: the validator logs through SLF4J. A no-op backend keeps test runs quiet (otherwise SLF4J warns
+             "No SLF4J providers were found"). Version from the BOM, the same as slf4j-api. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -34,12 +49,21 @@
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-            <!-- Bundle the rules data into the jar, re-copied on every build so a rebalance in data/ is picked up. -->
+            <!-- Only this folder is filtered: it gives the engine its own version (${project.version}) for the MatchLog. -->
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <!-- Bundle the rules data into the jar, re-copied on every build so a rebalance in data/ is picked up.
+                 data/parked/ is never shipped: it holds abilities and vocab kept out of the game until needed. -->
             <resource>
                 <directory>../data</directory>
                 <includes>
                     <include>*.json</include>
                 </includes>
+                <excludes>
+                    <exclude>parked/**</exclude>
+                </excludes>
                 <targetPath>ruleset</targetPath>
                 <filtering>false</filtering>
             </resource>

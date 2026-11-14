@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "seed": 7,
+  "ruleset_version": "1.0-alpha",
+  "players": {
+    "A": {
+      "faction": "RESISTENZA_UMANA",
+      "deck": [
+        {
+          "id": "RU-FRA-5",
+          "kind": "CREATURE",
+          "rank": 5,
+          "suit": "FRATTURA",
+          "subfaction": "ADATTATI",
+          "atk": 3000,
+          "def": 2000,
+          "abilities": [
+            {
+              "id": "K_TRABOCCANTE"
+            }
+          ]
+        }
+      ]
+    },
+    "B": {
+      "faction": "POTENZE_ARTIFICIALI",
+      "deck": [
+        {
+          "id": "PA-VES-5",
+          "kind": "CREATURE",
+          "rank": 5,
+          "suit": "VESTIGIO",
+          "subfaction": "SEKTAC",
+          "atk": 2500,
+          "def": 2500,
+          "abilities": [
+            {
+              "id": "K_SCUDO",
+              "params": {
+                "x": 400,
+                "kind": "flat"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
