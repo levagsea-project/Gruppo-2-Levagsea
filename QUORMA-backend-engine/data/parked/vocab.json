@@ -1872,5 +1872,8 @@
     "common_params.max_triggers.description": "Numero massimo di risoluzioni dell'effetto per istanza di carta in gioco, per tutta la partita. Le Evoluzioni (T_EVO) hanno max_triggers = 1 per regola.",
     "target_filters.description": "Filtri componibili ammessi in target_params.filters (lista in AND) su qualsiasi bersaglio multiplo (S9–S21, S41) e come pre-selezione per S33–S40. 'own' e 'enemy' restringono l'insieme alle creature del controllore o dell'avversario (utile con S33-S40, che altrimenti scelgono tra tutte le creature in gioco).",
     "condition_semantics[0]": "Nelle espansioni il campo 'conditions' è una lista di oggetti {id, params?} valutata in AND. Lista vuota = sempre vera (equivale a C0)."
+  },
+  "stacking_modes": {
+    "max_with": "Con un'altra fonte indicata si applica solo il valore maggiore."
   }
 }

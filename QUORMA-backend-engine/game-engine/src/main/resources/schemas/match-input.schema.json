@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QUORMA match input",
+  "description": "What the engine needs to play one match: the seed, the ruleset the caller expects and both decks with full card definitions. Player A is shuffled first (ruleset 12.2). The engine also checks what a schema cannot: card ids unique within a deck, every card of the player's faction, abilities known and implemented.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "seed", "ruleset_version", "players"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "seed": {
+      "description": "Shuffle seed, a signed 64-bit integer (backend matches.seed is bigint).",
+      "type": "integer",
+      "minimum": -9223372036854775808,
+      "maximum": 9223372036854775807
+    },
+    "ruleset_version": {
+      "description": "Ruleset the caller expects, e.g. 1.0-alpha. The engine refuses a different one.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "ruleset_hash": {
+      "description": "Optional. SHA-256 of the rule pack the caller expects (a replay must send it). The engine refuses a mismatch.",
+      "$ref": "#/$defs/sha256"
+    },
+    "players": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A", "B"],
+      "properties": {
+        "A": { "$ref": "#/$defs/player" },
+        "B": { "$ref": "#/$defs/player" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "faction": {
+      "description": "Language-neutral code: the engine's Faction constant. Label key: game.faction.<code in lower case>.",
+      "enum": ["RESISTENZA_UMANA", "POTENZE_ARTIFICIALI"]
+    },
+    "subfaction": {
+      "description": "Language-neutral code: the engine's Subfaction constant. Label key: game.subfaction.<code in lower case>.",
+      "enum": ["ADATTATI", "SPEZZASIGILLI", "PORTANOME", "SEGNATERRA", "SEKTAC", "MEROZYN", "EFFRIX", "YLMOR"]
+    },
+    "suit": {
+      "description": "Language-neutral code: the engine's Suit constant. Label key: game.suit.<code in lower case>.",
+      "enum": ["VINCOLO", "FRATTURA", "SPIRA", "VESTIGIO"]
+    },
+    "card_id": {
+      "description": "Stable card id (backend cards.id or card code). Unique within a deck.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "player": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["faction", "deck"],
+      "properties": {
+        "faction": { "$ref": "#/$defs/faction" },
+        "pool_snapshot_id": {
+          "description": "Optional. Opaque pool snapshot id, echoed in the log header.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "deck": {
+          "description": "The deck before shuffling. Deck-building rules (32 cards, faction quotas) are the backend's job; the engine only needs at least one card.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": { "$ref": "#/$defs/card" }
+        }
+      }
+    },
+    "card": {
+      "oneOf": [
+        { "$ref": "#/$defs/creature_card" },
+        { "$ref": "#/$defs/spell_or_equipment_card" }
+      ]
+    },
+    "creature_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "rank", "suit", "subfaction", "atk", "def", "abilities"],
+      "properties": {
+        "id": { "$ref": "#/$defs/card_id" },
+        "kind": { "const": "CREATURE" },
+        "rank": { "description": "1..13, Ace = 1, Jack = 11, Queen = 12, King = 13.", "type": "integer", "minimum": 1, "maximum": 13 },
+        "suit": { "$ref": "#/$defs/suit" },
+        "subfaction": { "$ref": "#/$defs/subfaction" },
+        "atk": { "type": "integer", "minimum": 0 },
+        "def": { "type": "integer", "minimum": 1 },
+        "abilities": { "$ref": "#/$defs/abilities" }
+      }
+    },
+    "spell_or_equipment_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "faction", "abilities"],
+      "properties": {
+        "id": { "$ref": "#/$defs/card_id" },
+        "kind": { "enum": ["SPELL", "EQUIPMENT"] },
+        "faction": { "$ref": "#/$defs/faction" },
+        "abilities": { "$ref": "#/$defs/abilities" }
+      }
+    },
+    "abilities": {
+      "description": "Ordered list (decision 2026-11-07-cards-share-abilities). Several keywords resolve in list order.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/ability_ref" },
+          { "$ref": "#/$defs/inline_effect" }
+        ]
+      }
+    },
+    "ability_ref": {
+      "description": "A keyword or evolution by id with the card's own params, e.g. {\"id\": \"K_SCUDO\", \"params\": {\"x\": 25}}.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^(K|EVO)_[A-Z0-9_]+$" },
+        "params": {
+          "type": "object",
+          "additionalProperties": { "type": ["integer", "string", "boolean"] }
+        }
+      }
+    },
+    "inline_effect": {
+      "description": "A whole effect written on the card as expansions (data/AGENTS.md section 2).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expansions"],
+      "properties": {
+        "expansions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/expansion" }
+        }
+      }
+    },
+    "expansion": {
+      "type": "object",
+      "required": ["trigger_id", "effect_id", "target_id", "duration", "class"],
+      "properties": {
+        "trigger_id": { "type": "string" },
+        "trigger_params": { "type": "object" },
+        "effect_id": { "type": "string" },
+        "effect_params": { "type": "object" },
+        "target_id": { "type": "string" },
+        "target_params": { "type": "object" },
+        "duration": { "type": "string" },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "properties": { "id": { "type": "string" }, "params": { "type": "object" } }
+          }
+        },
+        "class": { "enum": ["C", "T", "R", "I"] }
+      }
+    }
+  }
+}

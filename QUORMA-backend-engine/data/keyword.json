@@ -72,13 +72,7 @@
     "name": "Traboccante",
     "class": "R",
     "balance_ref": "K_TRABOCCANTE",
-    "description": "Quando questa creatura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill è {multiplier} per quell'attacco. Non cumulativo con Frattura 4: si applica il fattore maggiore.",
-    "stacking": {
-      "mode": "max_with",
-      "with": [
-        "SYNERGY:FRATTURA_4"
-      ]
-    },
+    "description": "Quando questa creatura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per {multiplier} per quell'attacco.",
     "expands_to": [
       {
         "trigger_id": "T34",

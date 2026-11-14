@@ -1,0 +1,482 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QUORMA match log",
+  "description": "Everything that happened in one match, turn by turn: the source for the replay (frontend) and for telemetry (backend). Owned by the Software team (decision 2026-11-14-match-log-schema). Canonical form: UTF-8, LF, 2-space indent, keys in the order of this schema, trailing newline, integers only. result_hash = SHA-256 of the canonical bytes without the result_hash key. Lanes are 1..5. Per-mille values: 1000 = x1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "header", "setup", "turns", "result", "totals", "result_hash"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "header": { "$ref": "#/$defs/header" },
+    "setup": {
+      "description": "Ruleset 5: initial draws (player A first), spells and equipment set aside and shuffled back.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "board"],
+      "properties": {
+        "events": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "board": { "$ref": "#/$defs/board" }
+      }
+    },
+    "turns": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/turn" }
+    },
+    "result": { "$ref": "#/$defs/result" },
+    "totals": { "$ref": "#/$defs/totals" },
+    "result_hash": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "side": { "enum": ["A", "B"] },
+    "lane": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "card_id": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "ability_id": { "type": "string", "pattern": "^(K|EVO)_[A-Z0-9_]+$" },
+    "effect_id": { "type": "string", "pattern": "^E[0-9]+$" },
+    "trigger_id": { "type": "string", "pattern": "^(T[0-9]+|T_EVO)$" },
+    "permille": { "type": "integer", "minimum": 0 },
+    "per_side": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A", "B"],
+      "properties": { "A": { "type": "integer" }, "B": { "type": "integer" } }
+    },
+    "creature_ref": {
+      "description": "A creature in play, by owner, lane and card.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "lane", "card_id"],
+      "properties": {
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "$ref": "#/$defs/lane" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine_version", "ruleset_version", "ruleset_hash", "prng", "shuffle", "seed", "starting_life", "players"],
+      "properties": {
+        "engine_version": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "ruleset_version": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "ruleset_hash": { "$ref": "#/$defs/sha256" },
+        "prng": { "const": "SplitMix64" },
+        "shuffle": { "const": "FISHER_YATES" },
+        "seed": { "type": "integer", "minimum": -9223372036854775808, "maximum": 9223372036854775807 },
+        "starting_life": { "type": "integer", "minimum": 1 },
+        "players": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A", "B"],
+          "properties": {
+            "A": { "$ref": "#/$defs/header_player" },
+            "B": { "$ref": "#/$defs/header_player" }
+          }
+        }
+      }
+    },
+    "header_player": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["faction", "deck", "draw_order"],
+      "properties": {
+        "faction": { "$ref": "match-input.schema.json#/$defs/faction" },
+        "pool_snapshot_id": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "deck": {
+          "description": "The deck as received, with full card definitions (base stats and abilities).",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "match-input.schema.json#/$defs/card" }
+        },
+        "draw_order": {
+          "description": "Card ids after the initial shuffle, top of the deck first.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/card_id" }
+        }
+      }
+    },
+
+    "turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turn", "evaluation", "declarations", "cycle_1", "cycle_2", "refill", "board"],
+      "properties": {
+        "turn": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "evaluation": {
+          "description": "Ruleset 7: hands and multipliers, fixed for the whole turn.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A", "B"],
+          "properties": { "A": { "$ref": "#/$defs/hand" }, "B": { "$ref": "#/$defs/hand" } }
+        },
+        "declarations": {
+          "description": "Ruleset 8: attacks and their frozen targets, in resolution order.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/declaration" }
+        },
+        "cycle_1": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "cycle_2": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "refill": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "board": { "description": "State at the end of the turn, after Refill.", "$ref": "#/$defs/board" }
+      }
+    },
+    "hand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hand_type", "attacker_lanes", "tiebreak", "multiplier_permille"],
+      "properties": {
+        "hand_type": {
+          "enum": ["FIVE_OF_A_KIND", "ROYAL_FLUSH", "STRAIGHT_FLUSH", "FOUR_OF_A_KIND", "FULL_HOUSE", "FLUSH", "STRAIGHT",
+                   "THREE_OF_A_KIND", "FOUR_OF_A_SUIT", "TWO_PAIR", "PAIR", "HIGH_CARD", "NONE"]
+        },
+        "attacker_lanes": { "type": "array", "items": { "$ref": "#/$defs/lane" } },
+        "tiebreak": { "description": "Ace = 14.", "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 14 } },
+        "multiplier_permille": { "$ref": "#/$defs/permille" }
+      }
+    },
+    "declaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attacker", "target", "cycle"],
+      "properties": {
+        "attacker": { "$ref": "#/$defs/creature_ref" },
+        "target": { "description": "null when the opponent had nothing to target.", "oneOf": [{ "$ref": "#/$defs/creature_ref" }, { "type": "null" }] },
+        "cycle": { "enum": [1, 2] }
+      }
+    },
+
+    "board": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A", "B"],
+      "properties": { "A": { "$ref": "#/$defs/player_board" }, "B": { "$ref": "#/$defs/player_board" } }
+    },
+    "player_board": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["life", "deck_count", "discard_count", "lanes"],
+      "properties": {
+        "life": { "type": "integer" },
+        "deck_count": { "type": "integer", "minimum": 0 },
+        "discard_count": { "type": "integer", "minimum": 0 },
+        "lanes": {
+          "description": "Exactly 5 entries, lane 1 first. null = empty lane.",
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": { "oneOf": [{ "$ref": "#/$defs/lane_state" }, { "type": "null" }] }
+        }
+      }
+    },
+    "lane_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["card_id", "atk", "def", "destroyed", "stacks"],
+      "properties": {
+        "card_id": { "$ref": "#/$defs/card_id" },
+        "atk": { "description": "Current ATK, modifiers included, before the subfaction advantage.", "type": "integer", "minimum": 0 },
+        "def": { "description": "Current DEF. 0 or less only for a destroyed creature.", "type": "integer" },
+        "destroyed": { "type": "boolean" },
+        "stacks": {
+          "description": "Applied stacks per stack_key, e.g. {\"K_INSAZIABILE\": 2}. Keys in the order they were first applied.",
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+
+    "modifier": {
+      "description": "An ability that changed an attack's numbers.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "ability_id", "effect_id", "kind", "value"],
+      "properties": {
+        "source": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "effect_id": { "$ref": "#/$defs/effect_id" },
+        "kind": {
+          "description": "damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante).",
+          "enum": ["damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier"]
+        },
+        "value": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "stat_change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stat", "before", "after"],
+      "properties": {
+        "stat": { "enum": ["atk", "def"] },
+        "before": { "type": "integer" },
+        "after": { "type": "integer" }
+      }
+    },
+
+    "event": {
+      "description": "One thing that happened. Discriminated by type.",
+      "oneOf": [
+        { "$ref": "#/$defs/ev_attack_resolved" },
+        { "$ref": "#/$defs/ev_attack_skipped" },
+        { "$ref": "#/$defs/ev_creature_destroyed" },
+        { "$ref": "#/$defs/ev_effect_triggered" },
+        { "$ref": "#/$defs/ev_effect_resolved" },
+        { "$ref": "#/$defs/ev_effect_fizzled" },
+        { "$ref": "#/$defs/ev_creature_discarded" },
+        { "$ref": "#/$defs/ev_card_drawn" },
+        { "$ref": "#/$defs/ev_card_set_aside" },
+        { "$ref": "#/$defs/ev_deck_reshuffled" },
+        { "$ref": "#/$defs/ev_spell_resolved" },
+        { "$ref": "#/$defs/ev_equipment_pending" },
+        { "$ref": "#/$defs/ev_equipment_applied" },
+        { "$ref": "#/$defs/ev_equipment_lost" },
+        { "$ref": "#/$defs/ev_lane_left_empty" }
+      ]
+    },
+    "ev_attack_resolved": {
+      "description": "Ruleset 9. damage = floor(effective_atk x mitigation_permille / 1000) after flat reductions (minimum 1). spill = floor(max(0, damage - def_before) x spill_multiplier_permille / 1000) when killed and not mutual_kill, else 0.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "cycle", "attacker", "target", "atk", "advantage_permille", "effective_atk", "mitigation_permille",
+                   "damage", "def_before", "def_after", "killed", "mutual_kill", "hand_multiplier_permille",
+                   "spill_multiplier_permille", "spill", "modifiers"],
+      "properties": {
+        "type": { "const": "attack_resolved" },
+        "cycle": { "enum": [1, 2] },
+        "attacker": { "$ref": "#/$defs/creature_ref" },
+        "target": { "$ref": "#/$defs/creature_ref" },
+        "atk": { "description": "Attacker's current ATK at the blow.", "type": "integer", "minimum": 0 },
+        "advantage_permille": { "description": "Subfaction advantage: 1100 strong, 900 weak, 1000 neutral.", "$ref": "#/$defs/permille" },
+        "effective_atk": { "type": "integer", "minimum": 0 },
+        "mitigation_permille": { "description": "Share of the damage that goes through after percentage reductions (floor 700).", "$ref": "#/$defs/permille" },
+        "damage": { "description": "Damage dealt to the target.", "type": "integer", "minimum": 0 },
+        "def_before": { "type": "integer" },
+        "def_after": { "type": "integer" },
+        "killed": { "type": "boolean" },
+        "mutual_kill": { "description": "Cycle 1 only: both creatures killed each other, no spill (ruleset 9.7).", "type": "boolean" },
+        "hand_multiplier_permille": { "$ref": "#/$defs/permille" },
+        "spill_multiplier_permille": { "description": "Multiplier used for spill after replacement effects (Traboccante).", "$ref": "#/$defs/permille" },
+        "spill": { "description": "Damage to the opponent's life.", "type": "integer", "minimum": 0 },
+        "modifiers": { "type": "array", "items": { "$ref": "#/$defs/modifier" } }
+      }
+    },
+    "ev_attack_skipped": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "cycle", "attacker", "reason"],
+      "properties": {
+        "type": { "const": "attack_skipped" },
+        "cycle": { "enum": [1, 2] },
+        "attacker": { "$ref": "#/$defs/creature_ref" },
+        "reason": { "enum": ["NO_TARGET", "TARGET_DESTROYED", "ATTACKER_DESTROYED"] }
+      }
+    },
+    "ev_creature_destroyed": {
+      "description": "The creature is flagged destroyed and stays in its lane until Refill.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "creature"],
+      "properties": {
+        "type": { "const": "creature_destroyed" },
+        "creature": { "$ref": "#/$defs/creature_ref" }
+      }
+    },
+    "ev_effect_triggered": {
+      "description": "A triggered ability was put on the stack. stack_size counts the stack after the push.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "source", "ability_id", "trigger_id", "effect_id", "stack_size"],
+      "properties": {
+        "type": { "const": "effect_triggered" },
+        "source": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "trigger_id": { "$ref": "#/$defs/trigger_id" },
+        "effect_id": { "$ref": "#/$defs/effect_id" },
+        "stack_size": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ev_effect_resolved": {
+      "description": "The top of the stack resolved. stacks is the count for the effect's stack_key after resolving (present only if it has one); at max_stacks the effect resolves with no change.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "source", "ability_id", "effect_id", "target", "changes"],
+      "properties": {
+        "type": { "const": "effect_resolved" },
+        "source": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "effect_id": { "$ref": "#/$defs/effect_id" },
+        "target": { "$ref": "#/$defs/creature_ref" },
+        "changes": { "type": "array", "items": { "$ref": "#/$defs/stat_change" } },
+        "stacks": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ev_effect_fizzled": {
+      "description": "The top of the stack did nothing: its target was destroyed (decision 2026-11-14-stack-resolves-when-quiet).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "source", "ability_id", "effect_id", "reason"],
+      "properties": {
+        "type": { "const": "effect_fizzled" },
+        "source": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "effect_id": { "$ref": "#/$defs/effect_id" },
+        "reason": { "enum": ["TARGET_DESTROYED"] }
+      }
+    },
+    "ev_creature_discarded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "creature"],
+      "properties": {
+        "type": { "const": "creature_discarded" },
+        "creature": { "$ref": "#/$defs/creature_ref" }
+      }
+    },
+    "ev_card_drawn": {
+      "description": "A creature was drawn and placed in a lane (setup or Refill).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "lane", "card_id"],
+      "properties": {
+        "type": { "const": "card_drawn" },
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "$ref": "#/$defs/lane" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_card_set_aside": {
+      "description": "Setup only: a spell or equipment drawn while filling lanes, set aside with no effect (ruleset 5.4).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "card_id"],
+      "properties": {
+        "type": { "const": "card_set_aside" },
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_deck_reshuffled": {
+      "description": "Setup only: the set-aside cards went back into the deck, which was shuffled again (ruleset 5.4 and 12.2).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "cards_returned", "draw_order"],
+      "properties": {
+        "type": { "const": "deck_reshuffled" },
+        "side": { "$ref": "#/$defs/side" },
+        "cards_returned": { "type": "integer", "minimum": 1 },
+        "draw_order": { "description": "Card ids after the reshuffle, top first.", "type": "array", "items": { "$ref": "#/$defs/card_id" } }
+      }
+    },
+    "ev_spell_resolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "lane", "card_id"],
+      "properties": {
+        "type": { "const": "spell_resolved" },
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "description": "The lane being refilled when it was drawn.", "$ref": "#/$defs/lane" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_equipment_pending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "card_id"],
+      "properties": {
+        "type": { "const": "equipment_pending" },
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_equipment_applied": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "lane", "equipment_id", "creature_id"],
+      "properties": {
+        "type": { "const": "equipment_applied" },
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "$ref": "#/$defs/lane" },
+        "equipment_id": { "$ref": "#/$defs/card_id" },
+        "creature_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_equipment_lost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "card_id"],
+      "properties": {
+        "type": { "const": "equipment_lost" },
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_lane_left_empty": {
+      "description": "The deck was empty: the lane stays empty (ruleset 10.8).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "lane"],
+      "properties": {
+        "type": { "const": "lane_left_empty" },
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "$ref": "#/$defs/lane" }
+      }
+    },
+
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "reason", "turns_played", "life"],
+      "properties": {
+        "outcome": { "enum": ["A_WIN", "B_WIN", "DRAW"] },
+        "reason": { "enum": ["NO_CREATURES", "LIFE_ZERO", "BOTH_LOST", "TURN_50_LIFE", "TURN_50_HAND", "TURN_50_DRAW"] },
+        "turns_played": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "life": { "$ref": "#/$defs/per_side" }
+      }
+    },
+    "totals": {
+      "description": "Sums of the events, for telemetry (backend migration V7). damage_dealt sums attack_resolved.damage, spill_damage sums spill, kills counts killed attacks.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["players", "cards"],
+      "properties": {
+        "players": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A", "B"],
+          "properties": { "A": { "$ref": "#/$defs/player_totals" }, "B": { "$ref": "#/$defs/player_totals" } }
+        },
+        "cards": {
+          "description": "One entry per card in the decks, player A first, each in header deck order.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/card_totals" }
+        }
+      }
+    },
+    "player_totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["damage_dealt", "spill_damage", "kills", "creatures_lost"],
+      "properties": {
+        "damage_dealt": { "type": "integer", "minimum": 0 },
+        "spill_damage": { "type": "integer", "minimum": 0 },
+        "kills": { "type": "integer", "minimum": 0 },
+        "creatures_lost": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "card_totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "card_id", "times_drawn", "damage_dealt", "spill_damage", "kills"],
+      "properties": {
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" },
+        "times_drawn": { "type": "integer", "minimum": 0 },
+        "damage_dealt": { "type": "integer", "minimum": 0 },
+        "spill_damage": { "type": "integer", "minimum": 0 },
+        "kills": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

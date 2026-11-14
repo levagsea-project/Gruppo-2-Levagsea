@@ -27,6 +27,12 @@ Anything may change until 1.0 is released. Changes before this log started are i
 | 2026-11-07 | engine | Task 2 contract: packages `model`, `turn`, `log` (match state, targeting, damage, turn phases, events); the turn logic is not implemented yet | `docs/plans/game-loop.md` |
 | 2026-11-07 | engine | `quorma.gameengine.hand` contract (`Suit`, `HandType`, `HandCard`, `HandResult`, `HandEvaluator`); `evaluate` and `compare` not implemented yet | `docs/plans/hand-evaluator.md` |
 | 2026-11-14 | data | Live abilities reduced to Scudo, Perforante, Insaziabile and Traboccante (no Evolutions); the rest of the keywords, all 16 Evolutions, the unused vocab entries, their class and combination rules, role affinities and open decisions moved unchanged to `data/parked/`, which is not bundled in the jar. Numbers and IDs unchanged | `2026-11-14-mvp-ability-set` |
+| 2026-11-14 | rules | 9.6: spill uses the damage actually dealt (after the target's damage reductions such as Scudo), not the effective ATK. Rulebook text pending | `2026-11-14-spill-after-mitigation` |
+| 2026-11-14 | rules | 4: the stack resolves once nothing more is added (after all Cycle 1 blows, each Cycle 2 attack, each card drawn); effects triggered during resolution go on top; an effect on a destroyed target does nothing. Rulebook text pending | `2026-11-14-stack-resolves-when-quiet` |
+| 2026-11-14 | erratum | `keyword.json` Traboccante: the hand multiplier "viene moltiplicato per" ×1.2 (was "è ×1.2"), as `E21` already did. No outcome changes | `2026-11-14-traboccante-multiplies` |
+| 2026-11-14 | data | Traboccante stacks with Frattura 4 and 5 (factors multiply); removed `stacking: max_with` from `keyword.json` (the `max_with` stacking mode moved to `data/parked/vocab.json`: only the parked Rigenerante uses it), description and `intrinsic_limit` updated, new open decision to simulate it. Numbers unchanged | `2026-11-14-traboccante-stacks-with-frattura` |
+| 2026-11-14 | engine | New JSON Schemas for the match input and the MatchLog in `game-engine/src/main/resources/schemas/`, with an example log | `2026-11-14-match-log-schema` |
+| 2026-11-14 | data | `labels/*.json`: hand-type keys renamed to the engine code (`game.hand_type.high_card`, was `carta_alta`), new `game.hand_type.none`; texts unchanged. Match input uses codes for faction and subfaction (`RESISTENZA_UMANA`, `ADATTATI`) | `2026-11-14-hand-type-label-keys` |
 
 ## Released versions
 

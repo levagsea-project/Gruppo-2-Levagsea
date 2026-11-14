@@ -682,8 +682,7 @@
   "stacking_modes": {
     "unique": "Una sola istanza si applica; le altre sono ignorate.",
     "additive": "I valori si sommano (Regola d'Oro 2).",
-    "multiplicative": "I fattori in per-mille si moltiplicano, soggetti ai tetti di balance.json globals.",
-    "max_with": "Con un'altra fonte indicata si applica solo il valore maggiore."
+    "multiplicative": "I fattori in per-mille si moltiplicano, soggetti ai tetti di balance.json globals."
   },
   "condition_semantics": [
     "Nelle espansioni il campo 'conditions' è una lista di oggetti {id, params?} valutata in AND. Lista vuota = sempre vera.",

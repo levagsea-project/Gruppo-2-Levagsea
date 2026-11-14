@@ -20,7 +20,7 @@ All game text is in Italian. IDs, field names and this guide are in English. Eve
 | `ranks.json` | The rank ladder (Tier names, roles per rank and faction, naming rules) and `role_affinity`. Lore plus pool-generation hints, no rules. | You change the lore of the ranks. |
 | `invalid-combinations.json` | Class rules per trigger, a description of the derived rules, and the few hand-written exceptions. | You find a combination that should be illegal. |
 | `parked/*.json` | Abilities, vocab entries and rules kept out of the game until needed (section 13). Same shapes as the live files. Not loaded by the engine, not bundled in the jar. | You park or restore an ability. |
-| `labels/<locale>.json` | Player-facing text in Italian (`it`) and English (`en`): API error codes and base game vocabulary. Flat `"dotted.key": "text"`, `{name}` placeholders. Effect text (keywords, evolutions, synergies) is not translated yet. | You add an error code or a game term, or a language. |
+| `labels/<locale>.json` | Player-facing text in Italian (`it`) and English (`en`): API error codes and base game vocabulary. Flat `"dotted.key": "text"`, `{name}` placeholders. Game terms use `game.<group>.<code in lower case>`, where the code is the language-neutral identifier the API and the MatchLog send (`game.faction.resistenza_umana`, `game.hand_type.high_card`). Effect text (keywords, evolutions, synergies) is not translated yet. | You add an error code or a game term, or a language. |
 
 **Golden rule: structure lives in the structure files, numbers live in `balance.json`.** A designer should be able to retune the game by editing only `balance.json`.
 

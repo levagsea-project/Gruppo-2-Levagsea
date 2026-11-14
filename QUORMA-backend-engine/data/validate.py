@@ -404,7 +404,13 @@ if labels_dir.is_dir():
                     err(f"labels/{loc}.json", f"'{k}' placeholders {sorted(placeholders(table[k]))} differ from {base_name}.json {sorted(placeholders(base[k]))}")
         slug = lambda s: re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
         c = vocab["constants"]
-        wanted = [("faction", c["factions"]), ("suit", c["suits"]), ("phase", c["phases"]), ("hand_type", c["hand_types"]),
+        # Hand types are keyed by the engine's HandType code (the keys of hand_multipliers_permille), as the
+        # MatchLog writes them; the other groups by the slug of the data name, which equals the constant in lower case.
+        hand_codes = [k for k in bal["hand_multipliers_permille"] if not k.startswith("_")]
+        for code in hand_codes:
+            if f"game.hand_type.{code.lower()}" not in base:
+                err(f"labels/{base_name}.json", f"no label 'game.hand_type.{code.lower()}' for hand type '{code}'")
+        wanted = [("faction", c["factions"]), ("suit", c["suits"]), ("phase", c["phases"]),
                   ("subfaction", [s_ for v_ in c["subfactions"].values() for s_ in v_])]
         for group, names in wanted:
             for n in names:

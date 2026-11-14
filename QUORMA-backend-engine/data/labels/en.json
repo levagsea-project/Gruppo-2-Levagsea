@@ -39,15 +39,16 @@
   "game.phase.fine_del_turno": "End of turn",
 
   "game.hand_type.five_of_a_kind": "Five of a kind",
-  "game.hand_type.scala_reale": "Royal flush",
-  "game.hand_type.scala_colore": "Straight flush",
-  "game.hand_type.poker": "Four of a kind",
-  "game.hand_type.full": "Full house",
-  "game.hand_type.colore": "Flush",
-  "game.hand_type.scala": "Straight",
-  "game.hand_type.tris": "Three of a kind",
-  "game.hand_type.quattro_dello_stesso_seme": "Four of the same suit",
-  "game.hand_type.doppia_coppia": "Two pair",
-  "game.hand_type.coppia": "Pair",
-  "game.hand_type.carta_alta": "High card"
+  "game.hand_type.royal_flush": "Royal flush",
+  "game.hand_type.straight_flush": "Straight flush",
+  "game.hand_type.four_of_a_kind": "Four of a kind",
+  "game.hand_type.full_house": "Full house",
+  "game.hand_type.flush": "Flush",
+  "game.hand_type.straight": "Straight",
+  "game.hand_type.three_of_a_kind": "Three of a kind",
+  "game.hand_type.four_of_a_suit": "Four of the same suit",
+  "game.hand_type.two_pair": "Two pair",
+  "game.hand_type.pair": "Pair",
+  "game.hand_type.high_card": "High card",
+  "game.hand_type.none": "No hand"
 }

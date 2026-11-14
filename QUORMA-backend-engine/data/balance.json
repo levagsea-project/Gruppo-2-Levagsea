@@ -148,7 +148,7 @@
         "breakthrough"
       ],
       "cap_class": "open",
-      "intrinsic_limit": "stacking max_with Frattura 4: non cumulativo",
+      "intrinsic_limit": "agisce solo sugli attacchi con cui questa creatura uccide; una carta non puo' averla due volte, quindi piu' copie non si moltiplicano tra loro",
       "tier_scaled": []
     },
     "K_INSAZIABILE": {
@@ -302,7 +302,8 @@
     "Vincolo 4 riscritto: ogni Vincolo (anche attaccante) concede +[400] ATK a ogni attaccante adiacente. Il testo originale richiedeva un Vincolo non attaccante, quindi era inerte nelle mani Vincolo (Colore, Quattro dello stesso seme). Il Regolamento 7.10.6 e' allineato (2026-11-01). Con Vincolo 3 e 5 attivi una fila piena puo' superare il tetto di potenza: simulare la build un-seme.",
     "tier_scaling.permille (800/1000/1200/1500) e' un segnaposto: un Asso con Scudo scalato supera il Tier 2 del 50%. Simulare le build un-seme e pair-heavy con Assi pieni di abilita' open.",
     "ranks.json e' una proposta di lore: Assi, Comandanti e Campioni con nome proprio sono canone nuovo (il dossier tiene aperti 'protagonisti ed episodi'). Va approvata dal team narrativo.",
-    "Scala delle statistiche (ipotesi di lavoro per la taratura, nessuna carta esiste ancora): ATK intorno a 4000, DEF 1.5-2.5 volte l'ATK, vita 12000, circa 9 turni a partita. I valori flat delle sinergie sono stati riscalati su questa ipotesi (Vincolo 600/400/1000, Frattura 1200, Spira 200 per Evoluzione, Vestigio 1000 e cura 1400); ricontrollarli quando esistono le carte."
+    "Scala delle statistiche (ipotesi di lavoro per la taratura, nessuna carta esiste ancora): ATK intorno a 4000, DEF 1.5-2.5 volte l'ATK, vita 12000, circa 9 turni a partita. I valori flat delle sinergie sono stati riscalati su questa ipotesi (Vincolo 600/400/1000, Frattura 1200, Spira 200 per Evoluzione, Vestigio 1000 e cura 1400); ricontrollarli quando esistono le carte.",
+    "Traboccante si cumula con Frattura 4 e 5 (fattore 1200 x 1200 = 1440, con la DEF all'80% o al 50%). Simulare le build Frattura con Traboccante: se lo spill accorcia le partite sotto i 7 turni, abbassare il fattore di Traboccante invece di renderlo non cumulativo."
   ],
   "evolutions": {},
   "suit_themes": {

@@ -11,6 +11,14 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 ## Fix before use
 
 
+### `2026-11-14-ruleset-wording-spill-stack`: Ruleset 4 and 9.6 do not match the engine yet
+
+The rulebook text must be updated (data and engine already follow the decisions):
+
+- **9.6** (`2026-11-14-spill-after-mitigation`): spill is (damage dealt − DEF before the killing blow), minimum 0, × multiplier, floored, where damage dealt is the effective ATK after the target's damage reductions. The current text says "ATK Effettivo − DEF".
+- **4** (`2026-11-14-stack-resolves-when-quiet`): add when the stack resolves (after all Cycle 1 blows, after each Cycle 2 attack, after each card drawn or placed), that effects triggered during resolution go on top, that the game goes on only with an empty stack, and that an effect whose target is destroyed does nothing.
+
+
 ## Gaps
 
 
