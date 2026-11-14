@@ -1,6 +1,8 @@
 package quorma.gameengine.log;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.OptionalInt;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.MatchResult;
@@ -58,6 +60,29 @@ public sealed interface MatchEvent {
 
     /** A creature was flagged destroyed. It stays in its lane until Refill. */
     record CreatureDestroyed(Side side, int lane, String cardId) implements MatchEvent {}
+
+    /** A triggered ability was put on the stack. {@code stackSize} counts the stack after the push. */
+    record EffectTriggered(CreatureRef source, String abilityId, String triggerId, String effectId, int stackSize)
+            implements MatchEvent {}
+
+    /**
+     * The top of the stack resolved. {@code stacks} is the count for the effect's stack key after resolving,
+     * empty if it has none; at {@code max_stacks} the effect resolves with no change.
+     */
+    record EffectResolved(
+            CreatureRef source, String abilityId, String effectId, CreatureRef target, List<StatChange> changes,
+            OptionalInt stacks)
+            implements MatchEvent {
+
+        public EffectResolved {
+            changes = List.copyOf(changes);
+            Objects.requireNonNull(stacks, "stacks");
+        }
+    }
+
+    /** The top of the stack did nothing (decision {@code 2026-11-14-stack-resolves-when-quiet}). */
+    record EffectFizzled(CreatureRef source, String abilityId, String effectId, FizzleReason reason)
+            implements MatchEvent {}
 
     /** Refill: a destroyed creature went to the discard pile and its lane is empty. */
     record CreatureDiscarded(Side side, int lane, String cardId) implements MatchEvent {}

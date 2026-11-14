@@ -10,6 +10,7 @@ Anything may change until 1.0 is released. Changes before this log started are i
 
 | Date | Area | Change | Reference |
 |---|---|---|---|
+| 2026-11-14 | engine | Effect stack and Insaziabile: a kill triggers the killer's T19 abilities, resolved LIFO once all Cycle 1 blows have landed or right after the Cycle 2 attack (Potenze Artificiali pushed first); Insaziabile adds 15% of base ATK, at most 3 times; an effect whose creature is destroyed fizzles. | `2026-11-14-stack-resolves-when-quiet`, `2026-11-14-mvp-ability-set` |
 | 2026-11-14 | engine | Scudo, Perforante and Traboccante change combat: Scudo reduces the damage taken (percentage reductions multiply, capped at 30%; flat leaves at least 1), Perforante ignores part of the target's reductions, Traboccante multiplies the spill multiplier on a kill. Spill comes from the damage dealt. A card with an ability the engine cannot play is refused instead of ignored | `2026-11-14-damage-modifiers`, `2026-11-14-mvp-ability-set` |
 | 2026-11-07 | rules | Added the development status note and sections 12.4 to 12.6 (versions, immutability after release, replayability) to the rulebook | `VERSIONING.md` (proposed) |
 | 2026-11-07 | rules | 7.5: a missing kicker counts as 0; Ace is high in comparisons except in A-2-3-4-5; suits and lanes never break ties; the hand of a board with no creatures has no attackers and multiplier 0 (7.3) | `2026-11-07-missing-kicker-is-zero` |

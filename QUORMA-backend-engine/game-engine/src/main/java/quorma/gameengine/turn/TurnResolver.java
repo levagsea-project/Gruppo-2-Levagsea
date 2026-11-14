@@ -9,6 +9,8 @@ import java.util.OptionalInt;
 import java.util.function.Function;
 import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.effects.AbilityBinder;
+import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.EffectStack;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
@@ -150,7 +152,10 @@ public final class TurnResolver {
         return List.copyOf(attacks);
     }
 
-    /** Cycle 1 (9.2, 9.5 to 9.7): attacks on the opposite lane, simultaneous. Appends events to {@code log}. */
+    /**
+     * Cycle 1 (9.2, 9.5 to 9.7): attacks on the opposite lane, simultaneous. Once every blow has landed, the
+     * kills trigger and the stack resolves. Appends events to {@code log}.
+     */
     public void cycle1(MatchState state, Evaluation evaluation, List<Attack> attacks, List<MatchEvent> log) {
         record Blow(Attack attack, Creature attacker, Creature target, Strike strike) {}
 
@@ -170,6 +175,7 @@ public final class TurnResolver {
             blows.add(new Blow(attack, attacker, target, strike));
         }
 
+        List<Kill> kills = new ArrayList<>();
         for (Blow blow : blows) {
             boolean mutualKill = blow.strike().killed() && blows.stream().anyMatch(other ->
                     other != blow && other.strike().killed()
@@ -184,11 +190,16 @@ public final class TurnResolver {
             if (strike.killed()) {
                 Target targetRef = blow.attack().target().orElseThrow();
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), blow.target().card().id()));
+                kills.add(new Kill(blow.attack().attacker(), blow.attacker()));
             }
         }
+        triggerKills(state, kills, log);
     }
 
-    /** Cycle 2 (9.3): the other attacks, one at a time in attacker lane order. Appends events to {@code log}. */
+    /**
+     * Cycle 2 (9.3): the other attacks, one at a time in attacker lane order. After an attack that kills, the kill
+     * triggers and the stack resolves before the next attack. Appends events to {@code log}.
+     */
     public void cycle2(MatchState state, Evaluation evaluation, List<Attack> attacks, List<MatchEvent> log) {
         for (Attack attack : attacks) {
             if (attack.inCycle1()) continue;
@@ -218,18 +229,50 @@ public final class TurnResolver {
             log.add(strike.event(attack, 2, false));
             if (strike.killed()) {
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), target.card().id()));
+                triggerKills(state, List.of(new Kill(attack.attacker(), attacker)), log);
             }
         }
     }
 
+    /** A creature that destroyed another with an attack. */
+    private record Kill(Side side, Creature killer) {}
+
+    /**
+     * T19 "when it kills a creature": pushes the killers' triggered abilities, then resolves the stack (decision
+     * {@code 2026-11-14-stack-resolves-when-quiet}). Pushed in ruleset 4.3 order: Potenze Artificiali first, each
+     * side in lane order, a creature's abilities in card order, so the Resistenza Umana resolves first. A killer
+     * destroyed in the same exchange still triggers; its effect fizzles.
+     */
+    private static void triggerKills(MatchState state, List<Kill> kills, List<MatchEvent> log) {
+        EffectStack stack = new EffectStack(log);
+        for (Side side : prioritySides(state)) {
+            kills.stream()
+                    .filter(kill -> kill.side() == side)
+                    .sorted(Comparator.comparingInt(kill -> kill.killer().lane()))
+                    .forEach(kill -> {
+                        for (BoundExpansion ability : kill.killer().abilities("T19")) {
+                            stack.push(side, kill.killer(), ability);
+                        }
+                    });
+        }
+        stack.resolveAll();
+    }
+
+    /**
+     * The two sides in resolution order (ruleset 4.3 and 10.3): Potenze Artificiali first; with the same faction,
+     * {@code Side.A} first.
+     */
+    static Side[] prioritySides(MatchState state) {
+        boolean bFirst = state.player(Side.B).faction() == Faction.POTENZE_ARTIFICIALI
+                && state.player(Side.A).faction() != Faction.POTENZE_ARTIFICIALI;
+        return bFirst ? new Side[] {Side.B, Side.A} : new Side[] {Side.A, Side.B};
+    }
+
     /** Refill (10): discard destroyed creatures, draw replacements in lane order. Appends events to {@code log}. */
     public void refill(MatchState state, List<MatchEvent> log) {
-        Side first = state.player(Side.A).faction() == Faction.POTENZE_ARTIFICIALI
-                ? Side.A
-                : state.player(Side.B).faction() == Faction.POTENZE_ARTIFICIALI ? Side.B : Side.A;
-        Side second = first.other();
+        Side[] order = prioritySides(state);
 
-        for (Side side : new Side[] {first, second}) {
+        for (Side side : order) {
             var player = state.player(side);
             for (int lane = 1; lane <= 5; lane++) {
                 Creature creature = player.creatureAt(lane).orElse(null);
@@ -241,7 +284,7 @@ public final class TurnResolver {
             }
         }
 
-        for (Side side : new Side[] {first, second}) {
+        for (Side side : order) {
             var player = state.player(side);
             EquipmentCard pendingEquipment = null;
             for (int lane = 1; lane <= 5; lane++) {
