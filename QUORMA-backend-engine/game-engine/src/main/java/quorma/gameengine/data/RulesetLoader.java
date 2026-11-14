@@ -25,7 +25,8 @@ public final class RulesetLoader {
 
     /** The files of the rule pack hash, in hash order (decision {@code 2026-11-14-match-log-schema}). */
     public static final List<String> HASHED_FILES = List.of(
-            "vocab.json", "keyword.json", "evolutions.json", "synergies.json", "balance.json", "invalid-combinations.json");
+            "vocab.json", "keyword.json", "evolutions.json", "synergies.json", "balance.json", "invalid-combinations.json",
+            "subfactions.json");
 
     private RulesetLoader() {}
 
