@@ -1,0 +1,254 @@
+{
+  "_note": "Parked class rules and combination rules. Same shape as ../invalid-combinations.json.",
+  "class_rules": {
+    "trigger_allowed_effect_classes": {
+      "T1": [
+        "T"
+      ],
+      "T3": [
+        "T"
+      ],
+      "T4": [
+        "R"
+      ],
+      "T6": [
+        "T"
+      ],
+      "T7": [
+        "T"
+      ],
+      "T8": [
+        "T"
+      ],
+      "T9": [
+        "T"
+      ],
+      "T10": [
+        "T"
+      ],
+      "T11": [
+        "T"
+      ],
+      "T12": [
+        "T"
+      ],
+      "T13": [
+        "T"
+      ],
+      "T14": [
+        "T"
+      ],
+      "T15": [
+        "T"
+      ],
+      "T16": [
+        "T"
+      ],
+      "T17": [
+        "T"
+      ],
+      "T18": [
+        "T"
+      ],
+      "T21": [
+        "R"
+      ],
+      "T22": [
+        "R"
+      ],
+      "T23": [
+        "R"
+      ],
+      "T24": [
+        "R"
+      ],
+      "T25": [
+        "R"
+      ],
+      "T26": [
+        "T"
+      ],
+      "T27": [
+        "T"
+      ],
+      "T28": [
+        "T"
+      ],
+      "T30": [
+        "T"
+      ],
+      "T31": [
+        "T"
+      ],
+      "T32": [
+        "T"
+      ],
+      "T33": [
+        "T"
+      ],
+      "T_EVO": [
+        "T"
+      ],
+      "T35": [
+        "T"
+      ],
+      "T36": [
+        "T"
+      ],
+      "T37": [
+        "T"
+      ]
+    }
+  },
+  "combination_rules": [
+    {
+      "rule_id": "IC001",
+      "trigger_id": [
+        "T_EVO",
+        "T15"
+      ],
+      "effect_id": "E17",
+      "target_id": null,
+      "reason": "Un'Evoluzione che innesca Evoluzioni crea un ciclo. Usare un trigger diverso."
+    },
+    {
+      "rule_id": "IC002",
+      "trigger_id": "T30",
+      "effect_id": "E8",
+      "target_id": "S31",
+      "reason": "Perdere vita che fa perdere vita a sé stessi si innesca all'infinito."
+    },
+    {
+      "rule_id": "IC003",
+      "trigger_id": "T31",
+      "effect_id": "E9",
+      "target_id": "S31",
+      "reason": "Guadagnare vita che fa guadagnare vita a sé stessi si innesca all'infinito."
+    },
+    {
+      "rule_id": "IC004",
+      "trigger_id": "T32",
+      "effect_id": [
+        "E41",
+        "E43"
+      ],
+      "target_id": null,
+      "reason": "Un effetto che si innesca alla risoluzione e ne aggiunge o copia un altro si innesca all'infinito."
+    },
+    {
+      "rule_id": "IC005",
+      "trigger_id": "T33",
+      "effect_id": "E42",
+      "target_id": null,
+      "reason": "Annullare un effetto in risposta a un annullamento crea un ciclo."
+    },
+    {
+      "rule_id": "IC006",
+      "trigger_id": "T10",
+      "effect_id": "E10",
+      "target_id": [
+        "S1",
+        "S22",
+        "S24"
+      ],
+      "reason": "La creatura è già distrutta; distruggerla di nuovo non ha senso."
+    },
+    {
+      "rule_id": "IC007",
+      "trigger_id": "T10",
+      "effect_id": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E14",
+        "E15",
+        "E16",
+        "E27",
+        "E28"
+      ],
+      "target_id": [
+        "S1",
+        "S22",
+        "S24"
+      ],
+      "reason": "Le creature distrutte non sono influenzate: un effetto su sé stessa dopo la distruzione non ha bersaglio vivo. Usare S7/S8 o un bersaglio diverso."
+    },
+    {
+      "rule_id": "IC008",
+      "trigger_id": "T28",
+      "effect_id": [
+        "E39",
+        "E40"
+      ],
+      "target_id": null,
+      "reason": "Svuotare o riempire una corsia in risposta a una corsia che si svuota crea un ciclo con il Rifornimento."
+    },
+    {
+      "rule_id": "IC009",
+      "trigger_id": [
+        "T1",
+        "T29"
+      ],
+      "effect_id": [
+        "E36",
+        "E39"
+      ],
+      "target_id": null,
+      "reason": "Piazzare una carta in risposta a un piazzamento crea un ciclo."
+    },
+    {
+      "rule_id": "IC010",
+      "trigger_id": "T27",
+      "effect_id": "E35",
+      "target_id": null,
+      "reason": "Il mazzo è vuoto: la pesca non può riuscire."
+    },
+    {
+      "rule_id": "IC011",
+      "trigger_id": [
+        "T6",
+        "T7",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T19"
+      ],
+      "effect_id": [
+        "E36",
+        "E37",
+        "E38",
+        "E39",
+        "E40"
+      ],
+      "target_id": null,
+      "reason": "I bersagli sono fissati alla Dichiarazione: spostare o svuotare corsie durante il combattimento romperebbe la risoluzione. Usare T2/T3 di una fase non di combattimento."
+    },
+    {
+      "rule_id": "IC012",
+      "trigger_id": null,
+      "effect_id": "E24",
+      "target_id": null,
+      "allowed_triggers": [
+        "T8",
+        "T9",
+        "T35"
+      ],
+      "reason": "E24 reindirizza un attacco già dichiarato: è valido solo con T8, T9 o T35."
+    },
+    {
+      "rule_id": "IC013",
+      "trigger_id": [
+        "T36",
+        "T37"
+      ],
+      "effect_id": "E10",
+      "target_id": null,
+      "reason": "Distruggere una creatura in risposta a una distruzione crea reazioni a catena senza fine."
+    }
+  ]
+}

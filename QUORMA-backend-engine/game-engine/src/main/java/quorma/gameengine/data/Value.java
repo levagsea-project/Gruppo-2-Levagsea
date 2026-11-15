@@ -42,5 +42,38 @@ public sealed interface Value {
     enum RefKind { PARAM, TUNE }
 
     /** {@code $param.x} or {@code $tune.K_SCUDO.x}; {@code path} is what follows the first dot. */
-    record Ref(RefKind kind, String path) implements Value {}
+    record Ref(RefKind kind, String path) implements Value {
+
+        /** The reference as written in JSON, for example {@code $tune.K_SCUDO.x}. */
+        public String text() {
+            return "$" + kind.name().toLowerCase(java.util.Locale.ROOT) + (path.isEmpty() ? "" : "." + path);
+        }
+    }
+
+    /**
+     * {@code value} as plain Java values for {@code CanonicalJson}: maps keep their order, a {@link DecV} becomes a
+     * {@link java.math.BigDecimal} with its exact text, a {@link Ref} becomes its JSON text again.
+     */
+    static Object toJson(Value value) {
+        return switch (value) {
+            case IntV n -> n.v();
+            case DecV d -> new java.math.BigDecimal(d.text());
+            case StrV s -> s.v();
+            case BoolV b -> b.v();
+            case NullV n -> null;
+            case Ref r -> r.text();
+            case ListV l -> {
+                List<Object> out = new java.util.ArrayList<>();
+                for (Value item : l.items()) {
+                    out.add(toJson(item));
+                }
+                yield out;
+            }
+            case MapV m -> {
+                Map<String, Object> out = new LinkedHashMap<>();
+                m.fields().forEach((k, v) -> out.put(k, toJson(v)));
+                yield out;
+            }
+        };
+    }
 }

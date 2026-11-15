@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import quorma.gameengine.json.CanonicalJson;
 
 /**
  * Builds a {@link Ruleset} from {@code vocab.json}, {@code keyword.json}, {@code subfactions.json} and
@@ -22,20 +23,33 @@ public final class RulesetLoader {
 
     private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json");
 
+    /** The files of the rule pack hash, in hash order (decision {@code 2026-11-14-match-log-schema}). */
+    public static final List<String> HASHED_FILES = List.of(
+            "vocab.json", "keyword.json", "evolutions.json", "synergies.json", "balance.json", "invalid-combinations.json",
+            "subfactions.json");
+
     private RulesetLoader() {}
 
     public static Ruleset fromDirectory(Path dir) {
-        return build(name -> {
+        return build(directory(dir));
+    }
+
+    public static Ruleset fromClasspath() {
+        return build(classpath());
+    }
+
+    private static Source directory(Path dir) {
+        return name -> {
             try {
                 return Files.readAllBytes(dir.resolve(name));
             } catch (IOException e) {
                 throw new RulesetException(name + ": cannot read from " + dir + ": " + e.getMessage(), e);
             }
-        });
+        };
     }
 
-    public static Ruleset fromClasspath() {
-        return build(name -> {
+    private static Source classpath() {
+        return name -> {
             try (InputStream in = RulesetLoader.class.getResourceAsStream("/ruleset/" + name)) {
                 if (in == null) {
                     throw new RulesetException(name + ": not found on the classpath under /ruleset/");
@@ -44,7 +58,29 @@ public final class RulesetLoader {
             } catch (IOException e) {
                 throw new RulesetException(name + ": cannot read: " + e.getMessage(), e);
             }
-        });
+        };
+    }
+
+    /** {@link #rulesetHash} of the rule pack bundled in the jar. */
+    public static String rulesetHashFromClasspath() {
+        return rulesetHash(classpath());
+    }
+
+    /** {@link #rulesetHash} of the rule pack in {@code dir}, for example {@code data/}. */
+    public static String rulesetHashFromDirectory(Path dir) {
+        return rulesetHash(directory(dir));
+    }
+
+    /**
+     * SHA-256 of the canonical JSON of an object whose keys are the {@link #HASHED_FILES} names, in that order, and
+     * whose values are the parsed files. The MatchLog records it; a replay must match it (ruleset 12.6).
+     */
+    private static String rulesetHash(Source source) {
+        Map<String, Object> pack = new LinkedHashMap<>();
+        for (String f : HASHED_FILES) {
+            pack.put(f, Value.toJson(JsonReader.parse(source.read(f), f)));
+        }
+        return CanonicalJson.sha256(pack);
     }
 
     private interface Source {
@@ -135,7 +171,14 @@ public final class RulesetLoader {
         return new ParamSpec(optString(m, "type"), required, m.get("default"), values);
     }
 
-    private static ExpansionDef expansion(Value.MapV m, String path) {
+    /**
+     * Reads one expansion as written in the data files and in a card's inline abilities. Keys other than the
+     * expansion's own and the common params are ignored: the caller checks them if it needs to.
+     *
+     * @param path names the expansion in error messages
+     * @throws RulesetException naming the path of the problem
+     */
+    public static ExpansionDef expansion(Value.MapV m, String path) {
         List<ConditionDef> conditions = new ArrayList<>();
         if (m.get("conditions") != null) {
             List<Value> raw = asList(m.get("conditions"), path + ".conditions");
@@ -145,13 +188,20 @@ public final class RulesetLoader {
                         requireString(c, "id", path + ".conditions[" + i + "]"), params(c.get("params"))));
             }
         }
+        Map<String, Value> common = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> field : m.fields().entrySet()) {
+            if (ExpansionDef.COMMON_KEYS.contains(field.getKey())) {
+                common.put(field.getKey(), field.getValue());
+            }
+        }
         return new ExpansionDef(
                 requireString(m, "trigger_id", path), params(m.get("trigger_params")),
                 requireString(m, "effect_id", path), params(m.get("effect_params")),
                 requireString(m, "target_id", path), params(m.get("target_params")),
                 requireString(m, "duration", path),
                 List.copyOf(conditions),
-                resClass(requireString(m, "class", path), path + ".class"));
+                resClass(requireString(m, "class", path), path + ".class"),
+                common);
     }
 
     // ---- subfactions ----

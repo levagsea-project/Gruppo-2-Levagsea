@@ -91,6 +91,22 @@ public record Ruleset(
         throw new RulesetException("balance.json#subfaction_advantage_permille." + key + ": missing or not an integer");
     }
 
+    /** {@code balance.ruleset_version}, for example {@code 1.0-alpha}. */
+    public String rulesetVersion() {
+        if (balance.get("ruleset_version") instanceof Value.StrV v) {
+            return v.v();
+        }
+        throw new RulesetException("balance.json#ruleset_version: missing or not a string");
+    }
+
+    /** Each player's life at the start of the match (ruleset 5.2), from {@code balance.globals.starting_life}. */
+    public int startingLife() {
+        if (global("starting_life").orElse(null) instanceof Value.IntV n && n.v() > 0) {
+            return Math.toIntExact(n.v());
+        }
+        throw new RulesetException("balance.json#globals.starting_life: missing or not a positive integer");
+    }
+
     /** A global number from {@code balance.globals}, for example {@code mitigation_floor_permille}. */
     public Optional<Value> global(String name) {
         if (balance.get("globals") instanceof Value.MapV g && g.get(name) != null) {

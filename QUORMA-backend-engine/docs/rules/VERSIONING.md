@@ -10,7 +10,7 @@ A version of the game is three things that must always travel together:
 | Part | Where | Identified by |
 |---|---|---|
 | Rulebook | `docs/rules/regolamento-*.md` | the ruleset version string |
-| Rule pack | `data/*.json` (`vocab`, `keyword`, `evolutions`, `synergies`, `balance`, `invalid-combinations`) | **rule pack hash**: SHA-256 of the canonical re-serialization (`docs/plans/ruleset-loader.md` section 5) |
+| Rule pack | `data/*.json` (`vocab`, `keyword`, `evolutions`, `synergies`, `balance`, `invalid-combinations`, `subfactions`) | **rule pack hash**: SHA-256 of the canonical re-serialization (`docs/plans/ruleset-loader.md` section 5) |
 | Engine | `game-engine` code | **engine version** (the Maven version plus the git commit) |
 
 A match already records all of them: `matches.ruleset_version`, `matches.ruleset_hash`, `matches.engine_version` (backend migration V6), and ruleset 12.2 requires the same. Nothing in the schema has to change for this policy.

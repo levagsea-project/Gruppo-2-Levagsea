@@ -39,15 +39,16 @@
   "game.phase.fine_del_turno": "Fine del turno",
 
   "game.hand_type.five_of_a_kind": "Five of a kind",
-  "game.hand_type.scala_reale": "Scala reale",
-  "game.hand_type.scala_colore": "Scala colore",
-  "game.hand_type.poker": "Poker",
-  "game.hand_type.full": "Full",
-  "game.hand_type.colore": "Colore",
-  "game.hand_type.scala": "Scala",
-  "game.hand_type.tris": "Tris",
-  "game.hand_type.quattro_dello_stesso_seme": "Quattro dello stesso seme",
-  "game.hand_type.doppia_coppia": "Doppia coppia",
-  "game.hand_type.coppia": "Coppia",
-  "game.hand_type.carta_alta": "Carta alta"
+  "game.hand_type.royal_flush": "Scala reale",
+  "game.hand_type.straight_flush": "Scala colore",
+  "game.hand_type.four_of_a_kind": "Poker",
+  "game.hand_type.full_house": "Full",
+  "game.hand_type.flush": "Colore",
+  "game.hand_type.straight": "Scala",
+  "game.hand_type.three_of_a_kind": "Tris",
+  "game.hand_type.four_of_a_suit": "Quattro dello stesso seme",
+  "game.hand_type.two_pair": "Doppia coppia",
+  "game.hand_type.pair": "Coppia",
+  "game.hand_type.high_card": "Carta alta",
+  "game.hand_type.none": "Nessuna mano"
 }

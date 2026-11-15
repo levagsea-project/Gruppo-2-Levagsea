@@ -26,6 +26,24 @@ E, T, S = vocab["effects"], vocab["triggers"], vocab["targets"]
 D, C = vocab["durations"], vocab["conditions"]
 as_list = lambda x: x if isinstance(x, list) else [x]
 
+# parked/: abilities, vocab and rules taken out of the live files until needed. Never loaded by the engine.
+parked_dir = root / "parked"
+load_parked = lambda n: json.loads((parked_dir / n).read_text(encoding="utf-8")) if (parked_dir / n).exists() else {}
+p_vocab, p_kw, p_evo = load_parked("vocab.json"), load_parked("keyword.json"), load_parked("evolutions.json")
+p_bal, p_inv = load_parked("balance.json"), load_parked("invalid-combinations.json")
+VOCAB_SECTIONS = ("effects", "triggers", "targets", "conditions", "durations")
+parked_ids = {i: s for s in VOCAB_SECTIONS for i in p_vocab.get(s, {})}
+parked_abilities = set(p_kw) | set(p_evo)
+
+
+def unknown(kind, key):
+    """Error text for a missing id: says where to restore it from when it is parked."""
+    if key in parked_ids:
+        return f"{kind} {key} is parked: move it back from parked/vocab.json ({parked_ids[key]})"
+    if key in parked_abilities:
+        return f"{kind} {key} is parked: move it back from parked/ (see data/AGENTS.md section 13)"
+    return f"unknown {kind} {key}"
+
 
 def provides_of(trigger_id, trigger_params):
     if trigger_id == "T_EVO":
@@ -59,11 +77,11 @@ def check_expansion(where, x, origin):
     # 1 ids exist
     for kind, key, table in (("trigger", t, T), ("effect", e, E), ("target", s, S), ("duration", d, D)):
         if key not in table:
-            err(where, f"unknown {kind} {key}")
+            err(where, unknown(kind, key))
             return
     for c in x.get("conditions", []):
         if c["id"] not in C:
-            err(where, f"unknown condition {c['id']}")
+            err(where, unknown("condition", c["id"]))
     # 2 class
     cls = x["class"]
     tcls = class_of_trigger(t, tp)
@@ -100,7 +118,7 @@ def check_expansion(where, x, origin):
         p = x["effect_params"]
         k = kw.get(p.get("keyword"))
         if not k:
-            err(where, f"E14 grants unknown keyword {p.get('keyword')}")
+            err(where, "E14 grants " + unknown("keyword", p.get("keyword")))
         else:
             schema, given = k.get("params", {}), p.get("keyword_params", {})
             for n, spec in schema.items():
@@ -118,7 +136,7 @@ def check_expansion(where, x, origin):
             ent = bal["keywords"].get(parts[0]) or bal["evolutions"].get(parts[0])
             ok = bool(ent) and (parts[1] in ent.get("params", {}) or parts[1] in ent)
         if not ok:
-            err(where, f"unresolved $tune.{ref}")
+            err(where, f"unresolved $tune.{ref}" + (f" ({parts[0]} is parked)" if parts[0] in parked_abilities else ""))
     for ref in re.findall(r"\$param\.([a-z_]+)", json.dumps(x)):
         if ref not in kw.get(origin, {}).get("params", {}):
             err(where, f"$param.{ref} not declared by {origin}")
@@ -230,7 +248,7 @@ if ranks_doc:
             continue
         for i in ids:
             if i not in bal["keywords"] and i not in bal["evolutions"]:
-                err(f"ranks.json role_affinity {t}", f"unknown ability {i}")
+                err(f"ranks.json role_affinity {t}", unknown("ability", i))
 
 # Theme lint (balance.json -> suit_themes / themes)
 suit_themes = bal.get("suit_themes", {})
@@ -280,6 +298,9 @@ if ranks_doc and "themed_draw_pct" in bal.get("pool_generation", {}):
     ft = bal["pool_generation"]["fit_targets"]
     lo_s = lo_r = 100.0
     for slot in ("keywords", "evolutions"):
+        if not bal[slot]:
+            print(f"INFO  fit {slot}: skipped, no live {slot}")
+            continue
         for suit in bal["suit_themes"]:
             if suit.startswith("_"):
                 continue
@@ -334,6 +355,30 @@ for key, ok in (("strong", lambda x: x > 1000), ("weak", lambda x: 0 < x < 1000)
     if not isinstance(val, int) or isinstance(val, bool) or not ok(val):
         err("balance.json subfaction_advantage_permille", f"'{key}' must be an integer per-mille ({'> 1000' if key == 'strong' else 'between 1 and 999'}), got {val!r}")
 
+# Parked (parked/*.json): an id lives in exactly one place, and new ids never reuse a parked one
+for name, live_t, park_t in [(s, vocab[s], p_vocab.get(s, {})) for s in VOCAB_SECTIONS] + [
+        ("keyword.json", kw, p_kw), ("evolutions.json", evo, p_evo),
+        ("balance.json keywords", bal["keywords"], p_bal.get("keywords", {})),
+        ("balance.json evolutions", bal["evolutions"], p_bal.get("evolutions", {})),
+        ("class_rules", inv["class_rules"]["trigger_allowed_effect_classes"],
+         p_inv.get("class_rules", {}).get("trigger_allowed_effect_classes", {}))]:
+    for i in sorted(set(live_t) & set(park_t)):
+        err(f"parked {name}", f"{i} is both live and parked")
+for k in p_kw:
+    if k not in p_bal.get("keywords", {}):
+        err(f"parked keyword {k}", "no matching entry in parked/balance.json keywords")
+for k in p_evo:
+    if k not in p_bal.get("evolutions", {}):
+        err(f"parked evolution {k}", "no matching entry in parked/balance.json evolutions")
+live_rules = {r["rule_id"] for r in inv["combination_rules"]}
+for r in p_inv.get("combination_rules", []):
+    if r["rule_id"] in live_rules:
+        err("parked invalid-combinations.json", f"{r['rule_id']} is both live and parked")
+for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targets",)), ("C", ("conditions",))):
+    nums = [int(i[1:]) for s in sections for i in list(vocab[s]) + list(p_vocab.get(s, {}))
+            if i[1:].isdigit() and i.startswith(prefix)]
+    print(f"INFO  next free {prefix} id: {prefix}{max(nums) + 1 if nums else 0} (live and parked counted)")
+
 # Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
 # Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.
 labels_dir = root / "labels"
@@ -359,7 +404,13 @@ if labels_dir.is_dir():
                     err(f"labels/{loc}.json", f"'{k}' placeholders {sorted(placeholders(table[k]))} differ from {base_name}.json {sorted(placeholders(base[k]))}")
         slug = lambda s: re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
         c = vocab["constants"]
-        wanted = [("faction", c["factions"]), ("suit", c["suits"]), ("phase", c["phases"]), ("hand_type", c["hand_types"]),
+        # Hand types are keyed by the engine's HandType code (the keys of hand_multipliers_permille), as the
+        # MatchLog writes them; the other groups by the slug of the data name, which equals the constant in lower case.
+        hand_codes = [k for k in bal["hand_multipliers_permille"] if not k.startswith("_")]
+        for code in hand_codes:
+            if f"game.hand_type.{code.lower()}" not in base:
+                err(f"labels/{base_name}.json", f"no label 'game.hand_type.{code.lower()}' for hand type '{code}'")
+        wanted = [("faction", c["factions"]), ("suit", c["suits"]), ("phase", c["phases"]),
                   ("subfaction", [s_ for v_ in c["subfactions"].values() for s_ in v_])]
         for group, names in wanted:
             for n in names:

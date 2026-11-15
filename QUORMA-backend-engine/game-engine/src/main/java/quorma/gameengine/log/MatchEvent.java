@@ -1,5 +1,8 @@
 package quorma.gameengine.log;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.OptionalInt;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.MatchResult;
@@ -21,23 +24,80 @@ public sealed interface MatchEvent {
     record AttackSkipped(Attack attack, int cycle, SkipReason reason) implements MatchEvent {}
 
     /**
-     * An attack that happened. {@code defBefore} is the target DEF just before this blow (the value spill uses),
-     * {@code spill} is damage to the opponent's life, 0 unless the attack killed.
+     * An attack that happened.
+     *
+     * @param atk                     the attacker's current ATK at the blow
+     * @param mitigationPermille      share of the damage that goes through the target's percentage reductions
+     * @param damage                  damage dealt to the target
+     * @param defBefore               the target DEF just before this blow, the value spill uses
+     * @param handMultiplierPermille  the attacker's hand multiplier
+     * @param spillMultiplierPermille the multiplier spill used
+     * @param spill                   damage to the opponent's life, 0 unless the attack killed
+     * @param modifiers               the abilities that changed the numbers
      */
     record AttackResolved(
             Attack attack,
             int cycle,
-            int effectiveAtk,
+            int atk,
             int advantagePermille,
+            int effectiveAtk,
+            int mitigationPermille,
+            int damage,
             int defBefore,
             int defAfter,
             boolean killed,
+            boolean mutualKill,
+            int handMultiplierPermille,
+            int spillMultiplierPermille,
             int spill,
-            boolean mutualKill)
-            implements MatchEvent {}
+            List<Modifier> modifiers)
+            implements MatchEvent {
+
+        public AttackResolved {
+            modifiers = List.copyOf(modifiers);
+        }
+    }
 
     /** A creature was flagged destroyed. It stays in its lane until Refill. */
     record CreatureDestroyed(Side side, int lane, String cardId) implements MatchEvent {}
+
+    /** A triggered ability was put on the stack. {@code stackSize} counts the stack after the push. */
+    record EffectTriggered(CreatureRef source, String abilityId, String triggerId, String effectId, int stackSize)
+            implements MatchEvent {}
+
+    /**
+     * The top of the stack resolved. {@code stacks} is the count for the effect's stack key after resolving,
+     * empty if it has none; at {@code max_stacks} the effect resolves with no change.
+     */
+    record EffectResolved(
+            CreatureRef source, String abilityId, String effectId, CreatureRef target, List<StatChange> changes,
+            OptionalInt stacks)
+            implements MatchEvent {
+
+        public EffectResolved {
+            changes = List.copyOf(changes);
+            Objects.requireNonNull(stacks, "stacks");
+        }
+    }
+
+    /** The top of the stack did nothing (decision {@code 2026-11-14-stack-resolves-when-quiet}). */
+    record EffectFizzled(CreatureRef source, String abilityId, String effectId, FizzleReason reason)
+            implements MatchEvent {}
+
+    /** Setup: a spell or equipment drawn while filling the lanes, set aside with no effect (ruleset 5.4). */
+    record CardSetAside(Side side, String cardId) implements MatchEvent {}
+
+    /**
+     * Setup: the set-aside cards went back into the deck, which was shuffled again (ruleset 5.4 and 12.2).
+     *
+     * @param drawOrder card ids after the reshuffle, top first
+     */
+    record DeckReshuffled(Side side, int cardsReturned, List<String> drawOrder) implements MatchEvent {
+
+        public DeckReshuffled {
+            drawOrder = List.copyOf(drawOrder);
+        }
+    }
 
     /** Refill: a destroyed creature went to the discard pile and its lane is empty. */
     record CreatureDiscarded(Side side, int lane, String cardId) implements MatchEvent {}
