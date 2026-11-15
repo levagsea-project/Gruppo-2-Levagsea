@@ -37,10 +37,10 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest req) {
         if (users.existsByUsernameIgnoreCase(req.username())) {
-            throw new AuthException(HttpStatus.CONFLICT, "Username already taken");
+            throw new AuthException(HttpStatus.CONFLICT, ErrorCodes.USERNAME_TAKEN);
         }
         if (users.existsByEmailIgnoreCase(req.email())) {
-            throw new AuthException(HttpStatus.CONFLICT, "Email already registered");
+            throw new AuthException(HttpStatus.CONFLICT, ErrorCodes.EMAIL_TAKEN);
         }
         long bonus = Math.max(0, props.registrationBonus());
         User user = new User(req.username(), req.email(), encoder.encode(req.password()), Role.PLAYER, bonus);
@@ -48,7 +48,7 @@ public class AuthService {
             users.saveAndFlush(user);
         } catch (DataIntegrityViolationException e) {
             // Lost a race with a concurrent registration (unique indexes on lower(username) and lower(email)).
-            throw new AuthException(HttpStatus.CONFLICT, "Username or email already in use");
+            throw new AuthException(HttpStatus.CONFLICT, ErrorCodes.CREDENTIALS_TAKEN);
         }
         if (bonus > 0) {
             ledger.save(new CreditTransaction(user.getId(), bonus, bonus, CreditTransactionType.REGISTRATION_BONUS, null, null));
@@ -61,7 +61,7 @@ public class AuthService {
         User user = users.findByUsernameIgnoreCase(req.username()).orElse(null);
         boolean ok = encoder.matches(req.password(), user == null ? dummyHash : user.getPasswordHash());
         if (user == null || !ok) {
-            throw new AuthException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+            throw new AuthException(HttpStatus.UNAUTHORIZED, ErrorCodes.INVALID_CREDENTIALS);
         }
         return respond(user);
     }

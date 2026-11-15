@@ -3,6 +3,7 @@ package quorma.gameengine.turn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static quorma.gameengine.testkit.Attacks.hit;
+import static quorma.gameengine.testkit.Blows.plain;
 import static quorma.gameengine.testkit.Evaluators.hand;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
 import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.MatchEvent;
-import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
@@ -110,12 +110,12 @@ class TurnResolverTest {
                 new TargetDeclared(hit(Side.A, 2, 2)),
                 new TargetDeclared(hit(Side.B, 3, 3)),
                 // Cycle 1. A1: ATK 4000 against DEF 1200 kills, spill (4000 - 1200) * 1100 / 1000 = 3080
-                new AttackResolved(hit(Side.A, 1, 1), 1, 4000, 1000, 1200, -2800, true, 3080, false),
+                plain(hit(Side.A, 1, 1), 1, 4000, 1000, 4000, 1200, -2800, true, 3080, false, 1100),
                 new CreatureDestroyed(Side.B, 1, "2V"),
                 // A2: ATK 3500 against DEF 4000 leaves 500, no spill
-                new AttackResolved(hit(Side.A, 2, 2), 1, 3500, 1000, 4000, 500, false, 0, false),
+                plain(hit(Side.A, 2, 2), 1, 3500, 1000, 3500, 4000, 500, false, 0, false, 1100),
                 // B3: ATK 5000 against DEF 5000 kills, spill (5000 - 5000) * 1000 / 1000 = 0
-                new AttackResolved(hit(Side.B, 3, 3), 1, 5000, 1000, 5000, 0, true, 0, false),
+                plain(hit(Side.B, 3, 3), 1, 5000, 1000, 5000, 5000, 0, true, 0, false, 1000),
                 new CreatureDestroyed(Side.A, 3, "7S"),
                 // Cycle 2: nothing. Refill: B (Potenze Artificiali) first
                 new CreatureDiscarded(Side.B, 1, "2V"),
@@ -215,9 +215,9 @@ class TurnResolverTest {
                         new TargetDeclared(hit(Side.A, 1, 3)),
                         new TargetDeclared(hit(Side.B, 3, 3)),
                         // Cycle 1: B3 (ATK 1000) hits A3 (DEF 5000), no kill
-                        new AttackResolved(hit(Side.B, 3, 3), 1, 1000, 1000, 5000, 4000, false, 0, false),
+                        plain(hit(Side.B, 3, 3), 1, 1000, 1000, 1000, 5000, 4000, false, 0, false, 1000),
                         // Cycle 2: A1 (ATK 4000) kills B3 (DEF 1500), spill (4000 - 1500) * 1000 / 1000 = 2500
-                        new AttackResolved(hit(Side.A, 1, 3), 2, 4000, 1000, 1500, -2500, true, 2500, false),
+                        plain(hit(Side.A, 1, 3), 2, 4000, 1000, 4000, 1500, -2500, true, 2500, false, 1000),
                         new CreatureDestroyed(Side.B, 3, "KS"),
                         // Refill: B's only creature is discarded and nothing is left to draw (both decks are empty)
                         new CreatureDiscarded(Side.B, 3, "KS"),

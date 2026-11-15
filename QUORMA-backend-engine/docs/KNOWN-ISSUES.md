@@ -11,6 +11,11 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 ## Fix before use
 
 
+### `2026-11-14-suit-synergies-not-in-engine`: The engine does not apply suit synergies
+
+Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures, and `synergies.json` keeps all twelve tiers live (`2026-11-14-mvp-ability-set`), but the engine has no code for them: Evaluate counts no suits and no synergy effect is ever applied. A match with three or more creatures of one suit therefore differs from the rulebook, silently. The golden files avoid such boards. Before real decks are simulated: implement the synergies on the live vocabulary (Vincolo, Frattura and Vestigio need new effects in `EffectRegistry`; Spira is inert anyway, `2026-11-14-spira-inert-without-evolutions`), or refuse to play a board that would trigger one.
+
+
 ## Gaps
 
 
@@ -52,6 +57,21 @@ Without effects, two attackers of different players on the same lane number cann
 ### `2026-11-07-spell-equipment-hooks-no-data`: Spell and equipment hooks do nothing
 
 `CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves, discards and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`, `2026-11-08-equipment-discard-after-use`) and `RefillTest` covers that flow with a recording hook. When cards exist: replace the no-op default and test what the effects do.
+
+
+### `2026-11-14-demo-uses-parked-abilities`: The 3-turn demo uses parked abilities
+
+`docs/pdf/demo-gameplay-3-turni.pdf` plays Letale, Primo Colpo, Rigenerante and the Evolution Temprato (and mentions Predatore). Since `2026-11-14-mvp-ability-set` these are in `data/parked/`, so the engine cannot replay the demo. Not decided: restore the abilities the demo needs, or redo the demo with the live set (Scudo, Perforante, Insaziabile, Traboccante).
+
+
+### `2026-11-14-spira-inert-without-evolutions`: Spira synergies do nothing while every Evolution is parked
+
+Spira 3 counts triggered Evolutions, Spira 4 multiplies their values (`E19`) and Spira 5 forces them (`E17`). With no live Evolution (`2026-11-14-mvp-ability-set`) all three tiers are inert, so Spira decks only get hand value. The synergies stay live because they are ruleset 7.10. Restore at least one Evolution before Spira is balanced or tested.
+
+
+### `2026-11-14-vincolo-no-themed-ability`: No live ability carries Vincolo's theme
+
+None of the four live keywords has the `adjacency` theme (Sostegno and Vendicativo did, both parked). `make validate` warns that Vincolo has no themed ability at any rank, so pool generation falls back to unthemed abilities for Vincolo cards. Acceptable for the MVP; restore an adjacency ability before pool generation is tuned.
 
 
 ## Resolved (only list those with future impact)

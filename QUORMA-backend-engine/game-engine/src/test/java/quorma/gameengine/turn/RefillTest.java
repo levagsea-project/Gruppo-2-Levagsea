@@ -3,11 +3,17 @@ package quorma.gameengine.turn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import quorma.gameengine.data.Value;
+import quorma.gameengine.effects.AbilityException;
+import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
@@ -16,7 +22,9 @@ import quorma.gameengine.log.MatchEvent.EquipmentLost;
 import quorma.gameengine.log.MatchEvent.EquipmentPending;
 import quorma.gameengine.log.MatchEvent.LaneLeftEmpty;
 import quorma.gameengine.log.MatchEvent.SpellResolved;
+import quorma.gameengine.model.AbilityRef;
 import quorma.gameengine.model.Creature;
+import quorma.gameengine.model.CreatureCard;
 import quorma.gameengine.model.EquipmentCard;
 import quorma.gameengine.model.MatchState;
 import quorma.gameengine.model.PlayerState;
@@ -92,6 +100,29 @@ class RefillTest {
         assertEquals(6000, drawn.currentDef());
         assertFalse(drawn.destroyed());
         assertEquals(2, drawn.lane());
+    }
+
+    @Test
+    void aDrawnCreatureEntersPlayWithItsAbilitiesBound() {
+        PlayerState a = Boards.side(Subfaction.ADATTATI, 12000, board(2));
+        a.deck().add(new CreatureCard("KV", 13, Suit.VINCOLO, Subfaction.ADATTATI, 4000, 6000,
+                List.of(new AbilityRef("K_SCUDO", Map.of("x", new Value.IntV(25))), new AbilityRef("K_INSAZIABILE"))));
+        PlayerState b = Boards.side(Subfaction.SEKTAC, 12000, board());
+
+        refill(match(a, b));
+
+        Creature drawn = Boards.creature(a, 2);
+        assertEquals(List.of("E28", "E1"), drawn.abilities().stream().map(BoundExpansion::effectId).toList());
+    }
+
+    @Test
+    void drawingACreatureWithAnAbilityTheEngineCannotPlayFails() {
+        PlayerState a = Boards.side(Subfaction.ADATTATI, 12000, board(2));
+        a.deck().add(new CreatureCard("KV", 13, Suit.VINCOLO, Subfaction.ADATTATI, 4000, 6000,
+                List.of(new AbilityRef("K_LETALE"))));
+        PlayerState b = Boards.side(Subfaction.SEKTAC, 12000, board());
+
+        assertThrows(AbilityException.class, () -> refill(match(a, b)));
     }
 
     @Test

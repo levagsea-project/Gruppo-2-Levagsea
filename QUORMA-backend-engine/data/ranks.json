@@ -140,68 +140,24 @@
     "_note": "Abilita' che il pool favorisce per Tier (role_weight_pct). Un suggerimento, non un limite: ogni abilita' open resta idonea a ogni rango.",
     "1": [
       "K_SCUDO",
-      "K_MURO",
-      "K_SOSTEGNO",
-      "K_RIGENERANTE",
-      "K_FLESSIBILE",
-      "K_CAMALEONTE",
-      "EVO_CRESCITA",
-      "EVO_SOPRAVVISSUTO",
-      "EVO_TEMPRATO",
-      "EVO_TRINCEA",
-      "EVO_MATURAZIONE",
-      "EVO_MIMETICO",
-      "K_PERFORANTE",
-      "EVO_SFONDAMENTO",
-      "EVO_INTRECCIO"
+      "K_PERFORANTE"
     ],
     "2": [
       "K_PERFORANTE",
       "K_TRABOCCANTE",
       "K_INSAZIABILE",
-      "K_PROVOCAZIONE",
-      "EVO_PREDATORE",
-      "EVO_SFONDAMENTO",
-      "EVO_SENTINELLA",
-      "EVO_FURIA",
-      "EVO_CAPITANO",
-      "K_SCUDO",
-      "K_SOSTEGNO",
-      "EVO_TRINCEA",
-      "EVO_SOPRAVVISSUTO",
-      "EVO_TEMPRATO"
+      "K_SCUDO"
     ],
     "3": [
-      "K_PRIMO_COLPO",
-      "K_CUSTODE",
-      "K_VENDICATIVO",
-      "EVO_VENDETTA",
-      "EVO_EREDITA",
-      "EVO_INTRECCIO",
-      "EVO_CAPITANO",
       "K_PERFORANTE",
       "K_TRABOCCANTE",
-      "K_INSAZIABILE",
-      "EVO_PREDATORE",
-      "EVO_SACCHEGGIO",
-      "EVO_CRESCITA",
-      "EVO_TEMPRATO"
+      "K_INSAZIABILE"
     ],
     "4": [
-      "K_LETALE",
-      "K_DOPPIO_COLPO",
-      "EVO_CARNEFICE",
-      "EVO_SACCHEGGIO",
       "K_INSAZIABILE",
       "K_PERFORANTE",
       "K_TRABOCCANTE",
-      "K_SOSTEGNO",
-      "K_SCUDO",
-      "K_VENDICATIVO",
-      "EVO_INTRECCIO",
-      "EVO_CAPITANO",
-      "EVO_EREDITA",
-      "EVO_SOPRAVVISSUTO"
+      "K_SCUDO"
     ]
   }
 }
