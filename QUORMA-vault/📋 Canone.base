@@ -1,0 +1,58 @@
+filters:
+  and:
+    - file.hasProperty("can")
+    - not:
+        - file.inFolder("Strumenti")
+properties:
+  note.can:
+    displayName: CAN
+  note.definizione:
+    displayName: Definizione
+views:
+  - type: table
+    name: Registro
+    order:
+      - can
+      - file.name
+      - categoria
+      - definizione
+      - fonte
+      - stato
+    sort:
+      - property: can
+        direction: ASC
+  - type: table
+    name: Per categoria
+    groupBy:
+      property: categoria
+      direction: ASC
+    order:
+      - file.name
+      - can
+      - definizione
+      - fonte
+    sort:
+      - property: file.name
+        direction: ASC
+  - type: table
+    name: Glossario
+    order:
+      - file.name
+      - definizione
+      - categoria
+    sort:
+      - property: file.name
+        direction: ASC
+  - type: table
+    name: Da approvare
+    filters:
+      and:
+        - note.stato == "Proposta"
+    order:
+      - can
+      - file.name
+      - definizione
+      - fonte
+    sort:
+      - property: can
+        direction: ASC
