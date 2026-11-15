@@ -39,6 +39,7 @@ public class DeckController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get one of my decks with its cards")
+    @ApiResponse(responseCode = "200", description = "The deck with its cards")
     @ApiResponse(responseCode = "404", description = "Not found, or not mine", content = @Content)
     public DeckResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
         return decks.get(userId(jwt), id);
@@ -56,6 +57,7 @@ public class DeckController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Replace name, snapshot and cards of a deck", description = "Same validation as creation. The faction cannot change.")
+    @ApiResponse(responseCode = "200", description = "Deck updated")
     @ApiResponse(responseCode = "400", description = "Invalid deck (structure, ownership or snapshot)")
     @ApiResponse(responseCode = "404", description = "Not found, or not mine", content = @Content)
     @ApiResponse(responseCode = "409", description = "Deck name already used")
