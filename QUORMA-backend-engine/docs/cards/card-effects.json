@@ -70,7 +70,72 @@
         "C26"
       ]
     },
-    "duplicate_card_ids": []
+    "duplicate_card_ids": [],
+    "forms": {
+      "ability_slots_by_form": {
+        "keyword": 54,
+        "inline": 45
+      },
+      "keywords_in_use": [
+        "EVO_CRESCITA",
+        "EVO_TEMPRATO",
+        "K_ACCUMULO",
+        "K_ALLONTANA",
+        "K_ASSIMILA",
+        "K_CATENA",
+        "K_CONTA_COME",
+        "K_CUSTODE",
+        "K_DOPPIO_COLPO",
+        "K_ECO",
+        "K_INSAZIABILE",
+        "K_ISOLA",
+        "K_LASCITO",
+        "K_LETALE",
+        "K_NON_RISCRIVIBILE",
+        "K_PERFORANTE",
+        "K_PROVOCAZIONE",
+        "K_SCUDO",
+        "K_SCUDO_COMUNITA",
+        "K_SLANCIO",
+        "K_SOSTEGNO",
+        "K_TRABOCCANTE"
+      ],
+      "merged_families": {
+        "K_LASCITO": [
+          "K_LASCITO_DIFESA",
+          "K_VENDICATIVO",
+          "K_LASCITO_CURA",
+          "K_RELIQUIA",
+          "K_ULTIMO_GESTO"
+        ],
+        "K_ASSIMILA": [
+          "K_ASSIMILA",
+          "K_INNESTO",
+          "K_INDURISCE",
+          "K_PORTA_AVANTI"
+        ],
+        "K_ACCUMULO": [
+          "K_ACCUMULO",
+          "K_SALITA"
+        ],
+        "K_SLANCIO": [
+          "K_APRI_STRADA",
+          "K_SLANCIO"
+        ],
+        "K_SCUDO_COMUNITA": [
+          "K_SCUDO_COMUNITA",
+          "K_SCUDO_ADIACENTI"
+        ],
+        "K_CATENA": [
+          "K_CATENA",
+          "K_TAGLIO_LEGAMI"
+        ],
+        "K_CONTA_COME": [
+          "K_SINODO",
+          "K_QUASI_UGUALE"
+        ]
+      }
+    }
   },
   "vocab_proposed": {
     "effects": {
@@ -1969,11 +2034,13 @@
       "abilities": [
         {
           "ref": "K_LETALE",
-          "status": "parked"
+          "status": "parked",
+          "form": "keyword"
         },
         {
           "ref": "K_DOPPIO_COLPO",
-          "status": "parked"
+          "status": "parked",
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2025,6 +2092,14 @@
           "status": "proposed",
           "params": {
             "permille": 200
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "bonus_atk",
+              "target": "all_adjacent"
+            }
           }
         }
       ],
@@ -2072,6 +2147,11 @@
           "status": "proposed",
           "params": {
             "permille": 80
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ACCUMULO",
+            "params": {}
           }
         }
       ],
@@ -2118,7 +2198,8 @@
           "status": "proposed",
           "params": {
             "x": 3
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2164,7 +2245,8 @@
           "status": "proposed",
           "params": {
             "permille": 480
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2213,6 +2295,13 @@
           "status": "proposed",
           "params": {
             "x": 9
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_SCUDO_COMUNITA",
+            "params": {
+              "mode": "per_adjacent"
+            }
           }
         }
       ],
@@ -2259,7 +2348,8 @@
           "status": "parked",
           "params": {
             "permille": 150
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2305,6 +2395,13 @@
           "status": "proposed",
           "params": {
             "permille": 300
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "heal"
+            }
           }
         }
       ],
@@ -2351,6 +2448,13 @@
           "status": "proposed",
           "params": {
             "permille": 300
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_CATENA",
+            "params": {
+              "effect": "spill_damage"
+            }
           }
         }
       ],
@@ -2399,7 +2503,8 @@
           "status": "live",
           "params": {
             "x": 30
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2440,7 +2545,8 @@
       "abilities": [
         {
           "ref": "K_CONFORMITA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2489,7 +2595,8 @@
           "status": "parked",
           "params": {
             "amount": 480
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2536,7 +2643,8 @@
           "params": {
             "permille": 240,
             "amount": 800
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2584,7 +2692,8 @@
           "status": "proposed",
           "params": {
             "permille": 200
-          }
+          },
+          "form": "inline"
         },
         {
           "ref": "K_ALLONTANA",
@@ -2592,7 +2701,8 @@
           "params": {
             "permille": 150,
             "on": "attack"
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2647,6 +2757,13 @@
           "status": "proposed",
           "params": {
             "x": 14
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_SCUDO_COMUNITA",
+            "params": {
+              "mode": "to_adjacent"
+            }
           }
         }
       ],
@@ -2688,7 +2805,8 @@
       "abilities": [
         {
           "ref": "K_CONFINE",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2736,6 +2854,13 @@
           "params": {
             "permille": 96,
             "scope": "allies"
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ASSIMILA",
+            "params": {
+              "mode": "atk"
+            }
           }
         }
       ],
@@ -2780,7 +2905,8 @@
       "abilities": [
         {
           "ref": "K_MAESTRA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2826,7 +2952,8 @@
           "status": "proposed",
           "params": {
             "permille": 300
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -2870,6 +2997,13 @@
           "status": "proposed",
           "params": {
             "permille": 700
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "damage_lane_enemy"
+            }
           }
         }
       ],
@@ -2916,7 +3050,8 @@
       "abilities": [
         {
           "ref": "EVO_TEMPRATO",
-          "status": "parked"
+          "status": "parked",
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2959,7 +3094,8 @@
       "abilities": [
         {
           "ref": "K_PONTE",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3003,7 +3139,8 @@
           "status": "parked",
           "params": {
             "permille": 160
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3049,14 +3186,16 @@
           "status": "parked",
           "params": {
             "x": 15
-          }
+          },
+          "form": "keyword"
         },
         {
           "ref": "EVO_INTRECCIO",
           "status": "parked",
           "params": {
             "permille": 100
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3108,7 +3247,8 @@
           "status": "proposed",
           "params": {
             "scope": "self_adjacent"
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3153,6 +3293,13 @@
           "params": {
             "permille": 120,
             "def_permille": 100
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ASSIMILA",
+            "params": {
+              "mode": "atk_def"
+            }
           }
         }
       ],
@@ -3197,7 +3344,8 @@
       "abilities": [
         {
           "ref": "K_RICADUTA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3243,7 +3391,8 @@
           "status": "proposed",
           "params": {
             "permille": 240
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3288,7 +3437,8 @@
           "params": {
             "x": 640,
             "kind": "flat"
-          }
+          },
+          "form": "keyword"
         },
         {
           "ref": "K_ALLONTANA",
@@ -3296,7 +3446,8 @@
           "params": {
             "permille": 150,
             "on": "attacked"
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3349,14 +3500,16 @@
           "status": "live",
           "params": {
             "x": 20
-          }
+          },
+          "form": "keyword"
         },
         {
           "ref": "K_SOSTEGNO",
           "status": "parked",
           "params": {
             "x": 12
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3407,7 +3560,8 @@
           "status": "live",
           "params": {
             "factor": 1200
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3451,6 +3605,13 @@
           "status": "proposed",
           "params": {
             "x": 12
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "shield"
+            }
           }
         }
       ],
@@ -3496,7 +3657,8 @@
       "abilities": [
         {
           "ref": "K_PORTA_CHIUSA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3542,7 +3704,8 @@
       "abilities": [
         {
           "ref": "K_RITARDO",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3586,7 +3749,8 @@
       "abilities": [
         {
           "ref": "K_ISOLA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3634,6 +3798,14 @@
           "status": "proposed",
           "params": {
             "permille": 160
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "bonus_atk",
+              "target": "all_adjacent"
+            }
           }
         }
       ],
@@ -3681,14 +3853,16 @@
           "status": "parked",
           "params": {
             "x": 10
-          }
+          },
+          "form": "inline"
         },
         {
           "ref": "K_PERFORANTE",
           "status": "live",
           "params": {
             "x": 30
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3739,6 +3913,11 @@
           "status": "proposed",
           "params": {
             "permille": 100
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ACCUMULO",
+            "params": {}
           }
         }
       ],
@@ -3782,14 +3961,16 @@
       "abilities": [
         {
           "ref": "K_ISOLA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "keyword"
         },
         {
           "ref": "K_PERFORANTE",
           "status": "live",
           "params": {
             "x": 30
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3842,6 +4023,13 @@
           "status": "proposed",
           "params": {
             "permille": 300
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "heal"
+            }
           }
         }
       ],
@@ -3885,14 +4073,16 @@
       "abilities": [
         {
           "ref": "EVO_TEMPRATO",
-          "status": "parked"
+          "status": "parked",
+          "form": "keyword"
         },
         {
           "ref": "K_SCUDO",
           "status": "live",
           "params": {
             "x": 20
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -3940,7 +4130,8 @@
       "abilities": [
         {
           "ref": "EVO_SFONDAMENTO",
-          "status": "parked"
+          "status": "parked",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -3987,7 +4178,8 @@
           "params": {
             "permille": 120,
             "max_stacks": 3
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -4028,7 +4220,8 @@
       "abilities": [
         {
           "ref": "EVO_MIMETICO",
-          "status": "parked"
+          "status": "parked",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -4071,11 +4264,19 @@
       "abilities": [
         {
           "ref": "K_CUSTODE",
-          "status": "parked"
+          "status": "parked",
+          "form": "keyword"
         },
         {
           "ref": "K_SINODO",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_CONTA_COME",
+            "params": {
+              "rank": "Q"
+            }
+          }
         }
       ],
       "ability_costs": [
@@ -4127,7 +4328,8 @@
           "status": "proposed",
           "params": {
             "permille": 64
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -4174,7 +4376,8 @@
           "status": "proposed",
           "params": {
             "permille": 32
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -4220,6 +4423,13 @@
           "status": "proposed",
           "params": {
             "permille": 120
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_SLANCIO",
+            "params": {
+              "on": "kill"
+            }
           }
         }
       ],
@@ -4266,6 +4476,14 @@
           "status": "parked",
           "params": {
             "permille": 80
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_LASCITO",
+            "params": {
+              "mode": "bonus_atk",
+              "target": "one_adjacent"
+            }
           }
         }
       ],
@@ -4309,7 +4527,8 @@
       "abilities": [
         {
           "ref": "K_CONTA_CHI_CONTA",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -4359,11 +4578,13 @@
           "status": "proposed",
           "params": {
             "scope": "adjacent"
-          }
+          },
+          "form": "keyword"
         },
         {
           "ref": "K_PROVOCAZIONE",
-          "status": "parked"
+          "status": "parked",
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -4414,6 +4635,13 @@
           "status": "proposed",
           "params": {
             "permille": 200
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_CATENA",
+            "params": {
+              "effect": "def_debuff"
+            }
           }
         }
       ],
@@ -4465,6 +4693,13 @@
           "params": {
             "permille": 96,
             "scope": "any"
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ASSIMILA",
+            "params": {
+              "mode": "atk"
+            }
           }
         }
       ],
@@ -4512,6 +4747,13 @@
           "status": "proposed",
           "params": {
             "permille": 160
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ASSIMILA",
+            "params": {
+              "mode": "def"
+            }
           }
         }
       ],
@@ -4560,14 +4802,16 @@
           "params": {
             "permille": 150,
             "max_stacks": 3
-          }
+          },
+          "form": "keyword"
         },
         {
           "ref": "EVO_CRESCITA",
           "status": "parked",
           "params": {
             "permille": 150
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -4615,7 +4859,14 @@
       "abilities": [
         {
           "ref": "K_QUASI_UGUALE",
-          "status": "proposed"
+          "status": "proposed",
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_CONTA_COME",
+            "params": {
+              "rank": "8"
+            }
+          }
         }
       ],
       "ability_costs": [
@@ -4661,7 +4912,8 @@
           "status": "parked",
           "params": {
             "permille": 120
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -4707,7 +4959,8 @@
           "status": "parked",
           "params": {
             "x": 20
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -4754,14 +5007,16 @@
           "params": {
             "permille": 150,
             "max_stacks": 3
-          }
+          },
+          "form": "keyword"
         },
         {
           "ref": "K_FURIA_CIECA",
           "status": "proposed",
           "params": {
             "amount": 600
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -4813,6 +5068,13 @@
           "status": "proposed",
           "params": {
             "permille": 300
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ASSIMILA",
+            "params": {
+              "mode": "heal"
+            }
           }
         }
       ],
@@ -4859,7 +5121,8 @@
           "status": "live",
           "params": {
             "x": 40
-          }
+          },
+          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -4904,6 +5167,13 @@
           "params": {
             "permille": 150,
             "cost_permille": 100
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ACCUMULO",
+            "params": {
+              "cost_pct": "on"
+            }
           }
         }
       ],
@@ -4951,6 +5221,13 @@
           "status": "proposed",
           "params": {
             "x": 12
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_SCUDO_COMUNITA",
+            "params": {
+              "mode": "per_adjacent"
+            }
           }
         }
       ],
@@ -4998,6 +5275,14 @@
           "params": {
             "permille": 150,
             "cost_permille": 100
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_SLANCIO",
+            "params": {
+              "on": "attack",
+              "cost_pct": "on"
+            }
           }
         }
       ],
@@ -5047,6 +5332,13 @@
           "params": {
             "permille": 150,
             "def_permille": 100
+          },
+          "form": "keyword",
+          "becomes": {
+            "ref": "K_ASSIMILA",
+            "params": {
+              "mode": "atk_def"
+            }
           }
         }
       ],
@@ -5094,7 +5386,8 @@
           "status": "proposed",
           "params": {
             "permille": 150
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -5143,7 +5436,8 @@
           "status": "proposed",
           "params": {
             "permille": 40
-          }
+          },
+          "form": "inline"
         }
       ],
       "ability_costs": [
@@ -5206,7 +5500,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5252,7 +5547,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5298,7 +5594,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5342,7 +5639,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5386,7 +5684,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5423,7 +5722,8 @@
               "class": "T",
               "max_triggers": 3
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5472,7 +5772,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5520,7 +5821,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5569,7 +5871,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5613,7 +5916,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5659,7 +5963,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5714,7 +6019,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5765,7 +6071,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5811,7 +6118,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5864,7 +6172,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5899,7 +6208,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5944,7 +6254,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -5995,7 +6306,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -6046,7 +6358,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -6096,7 +6409,8 @@
               "conditions": [],
               "class": "I"
             }
-          ]
+          ],
+          "form": "inline"
         }
       ],
       "needs_restore": [
@@ -6107,5 +6421,387 @@
       "fit": "medio",
       "note": "Il gruppo regge perche' qualcuno paga per tutti: cura per tutte, ATK perso dalla creatura di rango piu' basso (il 'contatore')."
     }
-  ]
+  ],
+  "form_policy": {
+    "rule": "Una keyword e un effetto completo che il giocatore riconosce con una parola e che le espansioni riusano. Un effetto esteso e scritto per intero sulla carta (ability inline_effect) e non ha nome nel vocabolario.",
+    "keyword_if": [
+      "compare su 3 o piu carte del set base (o 2 se e identita di una sottofazione o di un seme)",
+      "e parametrica: stessa meccanica, numeri o modalita diverse",
+      "e un effetto classico che ogni espansione vorra (Scudo, Letale, Eco)",
+      "gia consolidata nel regolamento"
+    ],
+    "inline_if": [
+      "compare su una carta sola e non e un effetto classico",
+      "e legata a una creatura precisa o a una scelta narrativa",
+      "e una risposta situazionale (contro bonus, Evoluzioni, ecc)",
+      "Evoluzione usata da una sola carta"
+    ],
+    "merge_rule": "Abilita quasi uguali diventano una keyword con parametro `mode` (come Scudo ha pct e flat), per non moltiplicare le parole.",
+    "promotion": "Un effetto esteso che appare su 3 carte (set + espansioni gia decise) diventa keyword: si crea la voce in keyword.json e balance.json e le carte passano da inline_effect a ability_ref.",
+    "demotion": "Una keyword usata da una sola carta dopo l'ultima espansione decisa torna estesa.",
+    "costs": "Il costo di statistiche resta per carta (tarato dal simulatore) sia per keyword sia per effetti estesi. Solo le keyword hanno cap_class e max_built_in; un effetto esteso e per definizione una sola carta (nessun cap necessario, un solo rango/seme/versione)."
+  },
+  "ability_forms": {
+    "EVO_CAPITANO": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "EVO_CARNEFICE": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "EVO_CRESCITA": {
+      "form": "keyword",
+      "why": "3 carte, base di Spira"
+    },
+    "EVO_EREDITA": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_FURIA": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "EVO_INTRECCIO": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_MATURAZIONE": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "EVO_MIMETICO": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_PREDATORE": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_SACCHEGGIO": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "EVO_SENTINELLA": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "EVO_SFONDAMENTO": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_SOPRAVVISSUTO": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_TEMPRATO": {
+      "form": "keyword",
+      "why": "2 carte, molto generico"
+    },
+    "EVO_TRINCEA": {
+      "form": "inline",
+      "why": "Evoluzione che compare su una carta sola: scritta per esteso sulla carta (T_EVO inline), conta comunque per Spira"
+    },
+    "EVO_VENDETTA": {
+      "form": "inline",
+      "why": "parcheggiata e non usata dal set: se torna, inline salvo che il set la riusi 3 volte"
+    },
+    "K_ACCUMULO": {
+      "form": "merged",
+      "becomes": "K_ACCUMULO",
+      "mode": {},
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_ALLONTANA": {
+      "form": "keyword",
+      "why": "adiacenza, 2 carte"
+    },
+    "K_APPRENDE": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_APRI_STRADA": {
+      "form": "merged",
+      "becomes": "K_SLANCIO",
+      "mode": {
+        "on": "kill"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_ASSENSO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_ASSIMILA": {
+      "form": "merged",
+      "becomes": "K_ASSIMILA",
+      "mode": {
+        "mode": "atk"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_CAMALEONTE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_CAMPI_VUOTI": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_CATENA": {
+      "form": "merged",
+      "becomes": "K_CATENA",
+      "mode": {
+        "effect": "spill_damage"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_CONFINE": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_CONFORMITA": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_CONTA_CHI_CONTA": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_CUSTODE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_DICHIARA_PERDUTO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_DOPPIO_COLPO": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_ECO": {
+      "form": "keyword",
+      "why": "danno riflesso: effetto classico, atteso in piu espansioni"
+    },
+    "K_FLESSIBILE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_FURIA_CIECA": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_INDURISCE": {
+      "form": "merged",
+      "becomes": "K_ASSIMILA",
+      "mode": {
+        "mode": "def"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_INNESTO": {
+      "form": "merged",
+      "becomes": "K_ASSIMILA",
+      "mode": {
+        "mode": "atk_def"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_INSAZIABILE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_ISOLA": {
+      "form": "keyword",
+      "why": "identita SEKTAC (esclusione), 2 carte"
+    },
+    "K_ISOLATO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_LASCITO_CURA": {
+      "form": "merged",
+      "becomes": "K_LASCITO",
+      "mode": {
+        "mode": "heal"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_LASCITO_DIFESA": {
+      "form": "merged",
+      "becomes": "K_LASCITO",
+      "mode": {
+        "mode": "bonus_atk",
+        "target": "all_adjacent"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_LESSICO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_LETALE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_MAESTRA": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_MONITO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_MURO": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_NON_RISCRIVIBILE": {
+      "form": "keyword",
+      "why": "protezione dei valori, 2 carte, Portanome e Adattati"
+    },
+    "K_ORDINE_PAGATO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_PERFORANTE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_PONTE": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_PORTA_AVANTI": {
+      "form": "merged",
+      "becomes": "K_ASSIMILA",
+      "mode": {
+        "mode": "heal"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_PORTA_CHIUSA": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_PRIMO_COLPO": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_PROVOCAZIONE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_QUASI_UGUALE": {
+      "form": "merged",
+      "becomes": "K_CONTA_COME",
+      "mode": {
+        "rank": "8"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_RELIQUIA": {
+      "form": "merged",
+      "becomes": "K_LASCITO",
+      "mode": {
+        "mode": "shield"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_RICADUTA": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_RIGENERANTE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_RITARDO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_SALITA": {
+      "form": "merged",
+      "becomes": "K_ACCUMULO",
+      "mode": {
+        "cost_pct": "on"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_SCUDO": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_SCUDO_ADIACENTI": {
+      "form": "merged",
+      "becomes": "K_SCUDO_COMUNITA",
+      "mode": {
+        "mode": "to_adjacent"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_SCUDO_COMUNITA": {
+      "form": "merged",
+      "becomes": "K_SCUDO_COMUNITA",
+      "mode": {
+        "mode": "per_adjacent"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_SGUARDO": {
+      "form": "inline",
+      "why": "effetto situazionale o di una carta sola: testo esteso sulla carta; se compare su 3 o piu carte si promuove a keyword"
+    },
+    "K_SINODO": {
+      "form": "merged",
+      "becomes": "K_CONTA_COME",
+      "mode": {
+        "rank": "Q"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_SLANCIO": {
+      "form": "merged",
+      "becomes": "K_SLANCIO",
+      "mode": {
+        "on": "attack",
+        "cost_pct": "on"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_SOSTEGNO": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_TAGLIO_LEGAMI": {
+      "form": "merged",
+      "becomes": "K_CATENA",
+      "mode": {
+        "effect": "def_debuff"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_TRABOCCANTE": {
+      "form": "keyword",
+      "why": "keyword consolidata del regolamento (sempre-verde)"
+    },
+    "K_ULTIMO_GESTO": {
+      "form": "merged",
+      "becomes": "K_LASCITO",
+      "mode": {
+        "mode": "damage_lane_enemy"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    },
+    "K_VENDICATIVO": {
+      "form": "merged",
+      "becomes": "K_LASCITO",
+      "mode": {
+        "mode": "bonus_atk",
+        "target": "one_adjacent"
+      },
+      "why": "quasi identica ad altre: una keyword con parametro invece di piu keyword da una carta"
+    }
+  }
 }
