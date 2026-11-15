@@ -23,7 +23,7 @@ public class DeckValidator {
      * cards share a {@link DeckCardResponse#deckSlot()} (one creature per suit and rank, one copy of each spell and
      * equipment).
      */
-     public List<String> validate(String faction, List<DeckCardResponse> cards) {
+    public List<String> validate(String faction, List<DeckCardResponse> cards) {
         List<String> errors = new ArrayList<>();
 
         if (cards.size() != DECK_SIZE) {
@@ -58,7 +58,6 @@ public class DeckValidator {
                 errors.add("Duplicate deck slot: " + card.deckSlot());
             }
         }
-
         return errors;
     }
 }

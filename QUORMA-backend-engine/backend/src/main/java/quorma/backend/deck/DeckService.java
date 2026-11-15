@@ -61,20 +61,19 @@ public class DeckService {
     /** One deck of the owner with its cards; 404 if it does not exist or belongs to someone else. */
     @Transactional(readOnly = true)
     public DeckResponse get(UUID ownerId, UUID deckId) {
-               Deck deck = find(ownerId, deckId);
+        Deck deck = find(ownerId, deckId);
         List<UUID> instanceIds = deckCards.findByDeckId(deckId).stream()
                 .map(dc -> dc.getId().cardInstanceId())
                 .toList();
-        List<DeckCardResponse> views =
-                load(ownerId, deck.getFaction(), deck.getSnapshotId(), instanceIds, new ArrayList<>());
+        List<DeckCardResponse> views = load(ownerId, deck.getFaction(), deck.getSnapshotId(), instanceIds,
+                new ArrayList<>());
         return toResponse(deck, views);
-    
     }
 
     /** Creates a deck; 409 if the owner already has a deck with that name. */
     @Transactional
     public DeckResponse create(UUID ownerId, DeckRequest req) {
-       String name = req.name().strip();
+        String name = req.name().strip();
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, new UUID(0, 0))) {
             throw new DeckException(HttpStatus.CONFLICT, "Deck name already in use");
         }
@@ -84,54 +83,48 @@ public class DeckService {
         save(deck);
         deckCards.saveAll(toRows(deck, views));
         return toResponse(deck, views);
-        
     }
 
     /** Replaces name, snapshot and cards of a deck (the faction never changes); same checks as {@link #create}. */
     @Transactional
     public DeckResponse update(UUID ownerId, UUID deckId, DeckUpdateRequest req) {
-           Deck existing = find(ownerId, deckId);
+        Deck deck = find(ownerId, deckId);
         String name = req.name().strip();
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, deckId)) {
             throw new DeckException(HttpStatus.CONFLICT, "Deck name already in use");
         }
-        List<DeckCardResponse> views =
-                validate(ownerId, existing.getFaction(), req.snapshotId(), req.cardInstanceIds());
+        List<DeckCardResponse> views = validate(ownerId, deck.getFaction(), req.snapshotId(), req.cardInstanceIds());
 
-        deckCards.deleteByDeckId(deckId);       
-        Deck deck = find(ownerId, deckId);     
+        deckCards.deleteByDeckId(deckId);
+        // The bulk delete clears the persistence context, so reload the deck before updating it.
+        deck = find(ownerId, deckId);
         deck.setName(name);
         deck.setSnapshotId(req.snapshotId());
         deck.setUpdatedAt(Instant.now());
-        save(deck);                            
+        save(deck);
         deckCards.saveAll(toRows(deck, views));
         return toResponse(deck, views);
-        
     }
 
     /** Deletes a deck of the owner; 409 for the defense deck. */
     @Transactional
     public void delete(UUID ownerId, UUID deckId) {
-          Deck deck = find(ownerId, deckId);
+        Deck deck = find(ownerId, deckId);
         if (deck.isDefense()) {
             throw new DeckException(HttpStatus.CONFLICT, "Cannot delete the defense deck");
         }
         decks.delete(deck);
-        throw notImplemented();
     }
 
     /** Runs {@link #load} then {@link DeckValidator}; throws 400 listing every broken rule. */
     private List<DeckCardResponse> validate(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds) {
-           List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
         List<DeckCardResponse> views = load(ownerId, faction, snapshotId, instanceIds, errors);
-        if (errors.isEmpty()) {
-            errors.addAll(validator.validate(faction, views));
-        }
+        errors.addAll(validator.validate(faction, views));
         if (!errors.isEmpty()) {
             throw new DeckException(HttpStatus.BAD_REQUEST, "Invalid deck", errors);
         }
         return views;
-    
     }
 
     /**
@@ -141,7 +134,7 @@ public class DeckService {
      * snapshot.
      */
     private List<DeckCardResponse> load(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds,
-                                    List<String> errors) {
+                                        List<String> errors) {
         // repeated instance ids (order of the request is kept)
         Set<UUID> unique = new LinkedHashSet<>();
         Set<UUID> reported = new HashSet<>();
@@ -162,7 +155,7 @@ public class DeckService {
         // instances: missing or not owned give the same message
         Map<UUID, CardInstance> instMap = instances.findAllById(unique).stream()
                 .filter(i -> Objects.equals(i.getOwnerId(), ownerId))
-            .collect(Collectors.toMap(CardInstance::getInstanceId, i -> i));
+                .collect(Collectors.toMap(CardInstance::getInstanceId, i -> i));
         for (UUID id : unique) {
             if (!instMap.containsKey(id)) {
                 errors.add("Card instance not found: " + id);
@@ -183,9 +176,13 @@ public class DeckService {
         List<DeckCardResponse> result = new ArrayList<>();
         for (UUID id : unique) {
             CardInstance inst = instMap.get(id);
-            if (inst == null) continue;
+            if (inst == null) {
+                continue;
+            }
             var card = cardMap.get(inst.getCardId());
-            if (card == null) continue;
+            if (card == null) {
+                continue;
+            }
             if (!Objects.equals(card.getFaction(), faction)) {
                 errors.add("Card " + card.getCardCode() + " belongs to another faction");
                 continue;
@@ -202,8 +199,6 @@ public class DeckService {
                     def.getAbilities(), card.getDeckSlot()));
         }
         return result;
-    
-
     }
 
     private Deck find(UUID ownerId, UUID deckId) {
@@ -230,9 +225,5 @@ public class DeckService {
     private DeckResponse toResponse(Deck d, List<DeckCardResponse> cards) {
         return new DeckResponse(d.getId(), d.getName(), d.getFaction(), d.getSnapshotId(), d.isDefense(), d.getVersion(),
                 d.getCreatedAt(), d.getUpdatedAt(), cards);
-    }
-
-    private static DeckException notImplemented() {
-        return new DeckException(HttpStatus.NOT_IMPLEMENTED, "Not implemented yet");
     }
 }
