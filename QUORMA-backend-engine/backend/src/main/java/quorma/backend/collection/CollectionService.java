@@ -37,8 +37,8 @@ public class CollectionService {
     /** Every instance owned by the user, newest first, with card data from the latest snapshot of each faction. */
     @Transactional(readOnly = true)
     public CollectionResponse get(UUID ownerId) {
-        // TODO(collection-get)
-        throw new UnsupportedOperationException("CollectionService.get");
+        Resolved resolved = resolve(instances.findByOwnerIdOrderByAcquiredAtDesc(ownerId));
+        return new CollectionResponse(resolved.snapshotIds(), resolved.views());
     }
 
     /**
