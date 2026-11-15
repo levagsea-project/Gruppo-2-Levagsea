@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import quorma.backend.common.ErrorCodes;
 import quorma.backend.user.CreditTransaction;
 import quorma.backend.user.CreditTransactionRepository;
 import quorma.backend.user.CreditTransactionType;
