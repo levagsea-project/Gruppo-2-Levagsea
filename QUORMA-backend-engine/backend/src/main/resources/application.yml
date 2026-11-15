@@ -34,6 +34,25 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     
+packs:
+  # Placeholders until balanced. slots = exact number of creatures per Tier; support-slots = extra cards that are a
+  # spell or an equipment (no Tier). The size of a pack is the sum. featured = the one the shop highlights.
+  # TIER_1 comune (ranks 2-6), TIER_2 non comune (7-10), TIER_3 rara (J/Q/K), TIER_4 epica (Ace).
+  types:
+    standard:
+      price: 200
+      slots: {TIER_1: 2, TIER_2: 2}
+      support-slots: 2
+    advanced:
+      price: 450
+      slots: {TIER_1: 2, TIER_2: 2, TIER_3: 1}
+      support-slots: 2
+      featured: true
+    elite:
+      price: 1000
+      slots: {TIER_2: 2, TIER_3: 2, TIER_4: 1}
+      support-slots: 3
+
 auth:
   # Registration bonus for new users
   registration-bonus: ${AUTH_REGISTRATION_BONUS:0}

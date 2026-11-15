@@ -1,6 +1,7 @@
 package quorma.backend.auth;
 
 import org.springframework.http.HttpStatus;
+import quorma.backend.common.ErrorCodes;
 
 /** An authentication failure. The message is an {@link ErrorCodes} code. */
 public class AuthException extends RuntimeException {

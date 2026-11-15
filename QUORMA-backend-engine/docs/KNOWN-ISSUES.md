@@ -73,6 +73,22 @@ Spira 3 counts triggered Evolutions, Spira 4 multiplies their values (`E19`) and
 
 None of the four live keywords has the `adjacency` theme (Sostegno and Vendicativo did, both parked). `make validate` warns that Vincolo has no themed ability at any rank, so pool generation falls back to unthemed abilities for Vincolo cards. Acceptable for the MVP; restore an adjacency ability before pool generation is tuned.
 
+### `2026-11-12-pack-odds`: Pack prices, sizes and Tier weights are placeholders
+
+The three pack types (`standard`, `advanced`, `elite`) in `application.yml`, with their prices and slots per Tier, are placeholders (`2026-11-12-pack-pricing-strategy`, from the team's first proposal). The mapping of rarity names to Tiers (comune, non comune, rara, epica = Tier 1 to 4) is an assumption to confirm. Spells and equipment have no Tier, so their pack slot is a plain uniform draw over all of them. No spell or equipment cards exist in the pool yet, so **packs cannot be opened until some do** (the drawer refuses to sell a pack short); to decide whether to relax that meanwhile. Not decided: spell/equipment rarity, and whether a pack type can be limited in time. Also: `auth.registration-bonus` is 0 by default, so a new player cannot buy a pack without a grant.
+
+### `2026-11-12-card-names-one-language`: Card names are stored in one language
+
+`card_definitions.name` holds a single text, so card names cannot follow the player's language like the rest of the interface (`2026-11-11-error-codes-not-text`). Not designed: a table of names per locale, or label keys per card code. To decide with the card pool, and before the card names are final.
+
+### `2026-11-12-faction-ids-db`: Faction and subfaction identifiers are not neutral everywhere yet
+
+The pack and collection endpoints use the `Faction` constant name (`2026-11-12-faction-ids-neutral`). Still to do:
+
+- **Other endpoints.** Decks (branch 21: `DeckRequest`, `DeckValidator`, deck responses) and any later endpoint still take and return `Resistenza Umana`. Switch them to `Faction.PATTERN` and the constant name.
+- **Database.** The `faction` columns and their CHECKs (`V2`, and the tables that repeat the column) store `Resistenza Umana`, unlike `suit`, which stores the constant name. Storing the constant too would remove the conversion, but it needs a new migration that rewrites CHECKs on append-only tables, and it reverses part of `2026-11-08-db-uses-engine-names`. Not decided.
+- **Subfaction.** Responses return it as stored (`Adattati`, `SEKTAC`). The same rule would give `ADATTATI`; needs a backend `Subfaction` enum like `Faction`.
+- **Labels.** `data/validate.py` (branch 76) builds label keys from the data name with a slug, which gives the same key as the constant in lower case, so no label changes.
 
 ## Resolved (only list those with future impact)
 
