@@ -52,14 +52,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** su una strada al crepuscolo avanza una figura umana di materia grigia e liscia, con abiti consunti addosso; alza una mano aperta in segno di saluto: le dita sono sei, due appena fuse alla base; il volto è liscio, con tratti solo accennati.
-> - **Inquadratura e composizione:** figura riconoscibile al centro, la mano alzata in primo piano e ben leggibile; margine attorno, leggibile in miniatura.
-> - **Ambiente:** strada sterrata tra campi incolti, in lontananza i fuochi di un presidio su un crinale.
+> - **Inquadratura e composizione:** mano in primo piano, ben leggibile; margine attorno, leggibile in miniatura.
+> - **Ambiente:** strada sterrata tra campi incolti, in lontananza i fuochi di un avamposto su un crinale.
 > - **Luce e atmosfera:** crepuscolo freddo, ultima luce radente che illumina la mano, nebbia bassa.
 > - **Palette:** grigio argilla, blu crepuscolo, il marrone degli abiti, l'arancio lontano dei fuochi.
-> - **Elementi del seme (Frattura):** crepe sottili sulla superficie della figura, da cui filtra una luce fredda; la materia che si sfalda sul polso.
+> - **Motivi visivi:** crepe sottili sulla superficie della figura, da cui filtra una luce fredda; la materia che si sfalda sul polso.
 > - **Da evitare:** sangue, volti realistici sulla figura, testo, estetica cartoon.
 >
-> **Versione condensata:** Su una strada sterrata al crepuscolo avanza una figura umana di materia grigia e liscia, con abiti consunti; alza una mano aperta in saluto, con sei dita, due fuse alla base; il volto è liscio, appena accennato. Crepe sottili sulla superficie lasciano filtrare luce fredda. Mano in primo piano, ben leggibile. Campi incolti, fuochi di un presidio lontano su un crinale. Luce radente, nebbia bassa. Palette grigio argilla, blu crepuscolo, arancio lontano. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Su una strada sterrata al crepuscolo avanza una figura umana di materia grigia e liscia, con abiti consunti; alza una mano aperta in saluto, con sei dita, due fuse alla base; il volto è liscio, appena accennato. Crepe sottili sulla superficie lasciano filtrare luce fredda. Mano in primo piano, ben leggibile. Campi incolti, fuochi di un avamposto lontano su un crinale. Luce radente, nebbia bassa. Palette grigio argilla, blu crepuscolo, arancio lontano. Senza sangue né volti realistici. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che il nemico più pericoloso è quello che somiglia quasi del tutto a uno dei tuoi.

@@ -51,15 +51,15 @@ tags:
 > - **CAN-021** [[Mettere a verbale]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** quattro Segnaterra su un crinale roccioso; uno ripassa con uno scalpello le tacche di una pietra confinaria, gli altri controllano cippi e annotano su un quaderno. Sullo sfondo, lontano, una struttura relè con luci fredde.
+> - **Soggetto e azione:** quattro persone con scalpelli e quaderni su un crinale roccioso; una ripassa con lo scalpello le tacche di una pietra grezza alta quanto una persona, le altre controllano altre pietre uguali sparse sul crinale e annotano su un quaderno. Sullo sfondo, lontano, una torre di trasmissione con luci fredde.
 > - **Inquadratura e composizione:** piano medio, soggetto centrato (la pietra e lo scalpello), figure disposte a semicerchio; margine attorno, leggibile in miniatura.
-> - **Ambiente:** crinale roccioso, erba secca, pietre confinarie, relè lontano.
-> - **Luce e atmosfera:** luce calda del tardo pomeriggio, ombre lunghe; il relè lontano ha una luce fredda che non arriva al confine.
+> - **Ambiente:** crinale roccioso, erba secca, pietre grezze con tacche incise a file regolari, una torre di trasmissione lontana.
+> - **Luce e atmosfera:** luce calda del tardo pomeriggio, ombre lunghe; la torre lontana ha una luce fredda che non arriva fin lì.
 > - **Palette:** ocra, ruggine, grigio pietra, un blu freddo lontano.
-> - **Elementi del seme (Vincolo):** le tacche come nodi, il confine come linea che lega, le mani che si passano gli strumenti.
+> - **Motivi visivi:** le tacche come nodi, la linea di pietre che lega il crinale, le mani che si passano gli strumenti.
 > - **Da evitare:** testo leggibile, simboli, mappe moderne, espressioni eroiche, estetica cartoon.
 >
-> **Versione condensata:** Quattro Segnaterra su un crinale roccioso: uno ripassa con lo scalpello le tacche di una pietra confinaria, gli altri controllano i cippi e annotano su un quaderno. Lontano, una struttura relè dalle luci fredde. Piano medio, centro sulla pietra e sullo scalpello. Luce calda del tardo pomeriggio, ombre lunghe. Palette ocra, ruggine, grigio pietra, blu freddo lontano. Vincolo: tacche come nodi, il confine come linea, strumenti passati di mano in mano. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Quattro persone con scalpelli e quaderni su un crinale roccioso: una ripassa con lo scalpello le tacche di una pietra grezza alta quanto una persona, le altre controllano pietre uguali sparse sul crinale e annotano su un quaderno. Lontano, una torre di trasmissione dalle luci fredde. Piano medio, centro sulla pietra e sullo scalpello. Luce calda del tardo pomeriggio, ombre lunghe. Palette ocra, ruggine, grigio pietra, blu freddo lontano. Senza testo leggibile né mappe. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che chi sta al loro fianco è dentro il confine, e lì il nemico non può crescere.

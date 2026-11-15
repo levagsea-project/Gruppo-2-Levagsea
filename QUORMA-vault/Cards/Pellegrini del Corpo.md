@@ -51,15 +51,15 @@ tags:
 > - **CAN-067** [[Corpo composito]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una fila di Adattati in cammino su una strada di terra battuta, visti di tre quarti da dietro; alcuni hanno innesti visibili, uno porta un fagotto avvolto in tela, un altro si appoggia a una stampella. Nessuno parla.
+> - **Soggetto e azione:** una fila di persone con placche e protesi di metallo cucite alla pelle in cammino su una strada di terra battuta, viste di tre quarti da dietro; uno porta un fagotto avvolto in tela, un altro si appoggia a una stampella. Nessuno parla.
 > - **Inquadratura e composizione:** piano medio, la fila in diagonale dal primo piano al fondo; soggetto centrato (il fagotto); margine attorno, leggibile in miniatura.
 > - **Ambiente:** strada di campagna in rovina, piloni spezzati, erba secca, un cielo basso; in fondo alla strada, una sagoma di edificio troppo lontana per essere letta.
 > - **Luce e atmosfera:** luce grigia di prima mattina, nebbia bassa; nessuna fonte calda, nessuna tecnologia visibile.
 > - **Palette:** ocra spento, grigio, verde-marrone dell'erba secca; un solo tocco di rosso su un nastro al fagotto.
-> - **Elementi del seme (Spira):** la fila che si trasforma mentre cammina, i corpi che cambiano assetto, il fagotto che contiene ciò che sarà installato.
+> - **Motivi visivi:** la fila che cambia mentre cammina, i corpi che cambiano assetto, il fagotto avvolto in tela.
 > - **Da evitare:** testo, simboli, sorrisi, posture eroiche, aureole, volti troppo definiti, estetica cartoon.
 >
-> **Versione condensata:** Fila di Adattati in cammino su una strada di terra battuta, di tre quarti da dietro; innesti visibili, uno porta un fagotto avvolto in tela, un altro si appoggia a una stampella. Piano medio, fila in diagonale, centro sul fagotto. Strada in rovina, piloni spezzati, erba secca, un edificio lontano all'orizzonte. Luce grigia di prima mattina, nebbia bassa. Palette ocra spento, grigio, verde-marrone, rosso sul fagotto. Spira: corpi che cambiano assetto lungo la fila. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Fila di persone con placche e protesi di metallo cucite alla pelle, in cammino su una strada di terra battuta, di tre quarti da dietro; uno porta un fagotto avvolto in tela, un altro si appoggia a una stampella. Piano medio, fila in diagonale, centro sul fagotto. Strada in rovina, piloni spezzati, erba secca, un edificio lontano all'orizzonte. Luce grigia di prima mattina, nebbia bassa. Palette ocra spento, grigio, verde-marrone, un tocco di rosso. Senza sorrisi, posture eroiche o aureole. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che a ogni compagno perso cambiano forma, e arrivano diversi da come sono partiti.

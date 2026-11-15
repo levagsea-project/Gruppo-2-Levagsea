@@ -57,10 +57,10 @@ tags:
 > - **Ambiente:** una sala d'archivio alta e spoglia, altre lastre appoggiate alle pareti.
 > - **Luce e atmosfera:** luce fredda e uniforme dall'alto, polvere sospesa.
 > - **Palette:** avorio, grigio pietra, azzurro freddo, il nero sottile della crepa.
-> - **Elementi del seme (Frattura):** la crepa che nasce dallo stilo e spacca la lastra, schegge di pietra a terra.
+> - **Motivi visivi:** la crepa che nasce dallo stilo e spacca la lastra, schegge di pietra a terra.
 > - **Da evitare:** lettere o parole leggibili, mappe riconoscibili, testo, estetica cartoon.
 >
-> **Versione condensata:** Una figura alta e sottile di materiale chiaro, con un volto umano ricostruito e imperfetto, china su un'enorme lastra di pietra levigata incisa di segni illeggibili; con uno stilo sottile cancella un segno, e dalla punta parte una crepa che attraversa tutta la lastra, schegge a terra. Sala d'archivio alta e spoglia, altre lastre alle pareti. Luce fredda dall'alto, polvere sospesa. Palette avorio, grigio pietra, azzurro freddo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Figura alta e sottile di materiale chiaro, con un volto umano ricostruito e imperfetto, china su un'enorme lastra di pietra levigata incisa di segni illeggibili; con uno stilo sottile cancella un segno, e dalla punta parte una crepa che attraversa tutta la lastra, schegge a terra. Sala d'archivio alta e spoglia, altre lastre alle pareti. Luce fredda dall'alto, polvere sospesa. Palette avorio, grigio pietra, azzurro freddo. Senza lettere o parole leggibili. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che un piccolo errore detto con certezza può spezzare qualcosa di grande.

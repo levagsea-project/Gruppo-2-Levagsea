@@ -54,15 +54,15 @@ tags:
 > - **Custode del Reliquiario** — Ruolo Spezzasigilli: chi tiene il reliquiario e lo sposta ogni nove cicli.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una scatola di metallo saldato a mano, legata con cinghie sul dorso del custode che scende un cunicolo verso il nuovo nascondiglio; il coperchio è chiuso, ma una luce sottile filtra dalle saldature, come se dentro ci fosse qualcosa di ancora attivo. Le mani guantate tengono le cinghie senza mai toccare la scatola.
-> - **Inquadratura e composizione:** piano medio di tre quarti da dietro, la scatola al centro sulle spalle del custode; margine attorno, leggibile anche in miniatura.
-> - **Ambiente:** cunicolo di pietra in discesa, gradini consumati, tacche di passaggio incise sulle pareti.
+> - **Soggetto e azione:** una scatola di metallo saldato a mano, legata con cinghie sul dorso di una figura che scende un cunicolo; il coperchio è chiuso, ma una luce sottile filtra dalle saldature, come se dentro ci fosse qualcosa di ancora attivo. Le mani guantate tengono le cinghie senza mai toccare la scatola.
+> - **Inquadratura e composizione:** piano medio di tre quarti da dietro, la scatola al centro; margine attorno, leggibile in miniatura.
+> - **Ambiente:** cunicolo di pietra in discesa, gradini consumati, tacche incise sulle pareti.
 > - **Luce e atmosfera:** lampada a olio tenuta in mano, calda e oscillante; il bagliore freddo che filtra dalle saldature; ombre nette.
 > - **Palette:** ruggine, grigio metallo, ocra della lampada, un bianco freddo sulle saldature.
-> - **Elementi del seme (Vestigio):** la scatola che conserva, le saldature come cicatrici, le tacche sulle pareti come memoria di chi è passato, il bagliore che resta.
-> - **Da evitare:** testo, simboli, scrigni decorati, reliquiari gotici riconoscibili, aureole, estetica cartoon, bagliori magici troppo forti.
+> - **Motivi visivi:** la scatola che conserva, le saldature come cicatrici, le tacche sulle pareti, il bagliore che resta.
+> - **Da evitare:** testo, simboli, scrigni decorati, reliquiari gotici riconoscibili, aureole, bagliori magici troppo forti, estetica cartoon.
 >
-> **Versione condensata:** Scatola di metallo saldato a mano legata con cinghie sul dorso di un custode che scende un cunicolo; coperchio chiuso, una luce sottile filtra dalle saldature, le mani guantate tengono le cinghie senza toccarla. Piano medio di tre quarti da dietro. Gradini consumati, tacche incise sulle pareti. Lampada a olio oscillante, bagliore freddo dalle saldature, ombre nette. Palette ruggine, grigio metallo, ocra, bianco freddo. Vestigio: scatola che conserva, saldature come cicatrici, tacche di chi è passato. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Scatola di metallo saldato a mano, legata con cinghie sul dorso di una figura che scende un cunicolo di pietra; coperchio chiuso, una luce sottile e fredda filtra dalle saldature, le mani guantate tengono le cinghie senza toccarla. Piano medio di tre quarti da dietro. Gradini consumati, tacche incise sulle pareti. Lampada a olio oscillante, ombre nette. Palette ruggine, grigio metallo, ocra, bianco freddo. Senza scrigni decorati, aureole o bagliori magici. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che custodisce sopravvive a chi lo porta e passa di mano.

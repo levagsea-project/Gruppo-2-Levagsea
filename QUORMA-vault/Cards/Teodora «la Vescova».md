@@ -53,15 +53,15 @@ tags:
 > - **CAN-137** [[Lettura del ciclo]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un'istanza EFFRIX alta, dalla forma vagamente femminile, il volto ricostruito e incompleto come un ritratto lasciato a metà, in piedi davanti a un muro di cassetti d'archivio; da una mano scorre un nastro di dati luminoso che si spegne a tratti.
-> - **Inquadratura e composizione:** ritratto a mezza figura, frontale, leggermente dal basso; margine attorno, leggibile in miniatura.
-> - **Ambiente:** archivio altissimo, file di cassetti metallici a perdita d'occhio, alcuni sigillati.
+> - **Soggetto e azione:** una figura alta e chiara, dalla forma vagamente femminile, il volto ricostruito e incompleto come un ritratto lasciato a metà, in piedi davanti a un muro di cassetti d'archivio; da una mano scorre un nastro di luce che si spegne a tratti.
+> - **Inquadratura e composizione:** mezza figura frontale, leggermente dal basso; margine attorno, leggibile in miniatura.
+> - **Ambiente:** archivio altissimo, file di cassetti metallici a perdita d'occhio, alcuni chiusi da placche circolari.
 > - **Luce e atmosfera:** luce fredda e uniforme dall'alto, il volto parzialmente in ombra.
 > - **Palette:** bianco freddo, grigio piombo, un rosso spento su un singolo cassetto aperto.
-> - **Elementi del seme (Vincolo):** il nastro che lega i cassetti, le file ordinate, catene sottili sulle maniglie.
+> - **Motivi visivi:** il nastro che lega i cassetti, le file ordinate, catene sottili sulle maniglie.
 > - **Da evitare:** abiti ecclesiastici, mitre, croci, aureole, testo leggibile, estetica cartoon.
 >
-> **Versione condensata:** Istanza EFFRIX alta, forma vagamente femminile, volto ricostruito e incompleto come un ritratto lasciato a metà, davanti a un muro di cassetti d'archivio; da una mano scorre un nastro di dati luminoso che si spegne a tratti. Mezza figura frontale, leggermente dal basso. Archivio altissimo, cassetti a perdita d'occhio. Luce fredda dall'alto, volto in parte in ombra. Palette bianco freddo, grigio piombo, rosso spento su un cassetto aperto. Vincolo: nastro, file ordinate, catene sottili. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Figura alta e chiara, forma vagamente femminile, volto ricostruito e incompleto come un ritratto lasciato a metà, davanti a un muro di cassetti d'archivio; da una mano scorre un nastro di luce che si spegne a tratti. Mezza figura frontale, leggermente dal basso. Archivio altissimo, cassetti a perdita d'occhio. Luce fredda dall'alto, volto in parte in ombra. Palette bianco freddo, grigio piombo, rosso spento su un cassetto aperto. Catene sottili sulle maniglie. Senza abiti ecclesiastici, croci, aureole o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** di decidere chi conta e chi no.

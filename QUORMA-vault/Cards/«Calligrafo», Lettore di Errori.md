@@ -54,13 +54,13 @@ tags:
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un uomo sulla trentina, largo di spalle, accovacciato davanti a un cancello di metallo liscio; copia su un quaderno logoro file di piccoli segni a spirale, mentre con l'altra mano tiene un orecchio vicino alla superficie del cancello.
 > - **Inquadratura e composizione:** figura a tre quarti al centro, il cancello alle sue spalle, il quaderno in primo piano; margine attorno, leggibile in miniatura.
-> - **Ambiente:** un corridoio di servizio in cemento, tubi sul soffitto, un secondo cancello più in fondo già chiuso.
+> - **Ambiente:** corridoio di servizio in cemento, tubi sul soffitto, un secondo cancello più in fondo, già chiuso.
 > - **Luce e atmosfera:** una lampada a olio appoggiata a terra, luce calda e bassa contro il grigio freddo del metallo.
 > - **Palette:** ocra, grigio cemento, bianco sporco del cancello, nero.
-> - **Elementi del seme (Spira):** le spirali ripetute sul quaderno, un segno che si ingrandisce di pagina in pagina, una spirale incisa nella polvere accanto al cancello.
-> - **Da evitare:** uomo anziano e magro, macchine alte e sottili, testo leggibile sul quaderno, estetica cartoon.
+> - **Motivi visivi:** le spirali ripetute sul quaderno, un segno che si ingrandisce di pagina in pagina, una spirale incisa nella polvere accanto al cancello.
+> - **Da evitare:** testo leggibile sul quaderno, estetica cartoon.
 >
-> **Versione condensata:** Un uomo sulla trentina, largo di spalle, accovacciato davanti a un cancello di metallo liscio in un corridoio di servizio; copia su un quaderno logoro file di piccoli segni a spirale e tiene un orecchio vicino al metallo. Una lampada a olio a terra, un secondo cancello chiuso in fondo. Figura a tre quarti, quaderno in primo piano. Luce calda e bassa contro grigio freddo. Palette ocra, grigio cemento, bianco sporco. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un uomo sulla trentina, largo di spalle, accovacciato davanti a un cancello di metallo liscio in un corridoio di servizio; copia su un quaderno logoro file di piccoli segni a spirale e tiene un orecchio vicino al metallo. Una lampada a olio a terra, un secondo cancello chiuso in fondo. Figura a tre quarti, quaderno in primo piano. Luce calda e bassa contro grigio freddo. Palette ocra, grigio cemento, bianco sporco. Spirali ripetute sul quaderno e incise nella polvere. Senza testo leggibile. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che osserva come sbaglia il nemico e, dopo un errore, sa come colpirlo.

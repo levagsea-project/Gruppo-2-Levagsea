@@ -54,10 +54,10 @@ tags:
 > - **Ambiente:** l'interno di una torre di trasmissione, pioggia scura che entra dalle fessure e scorre sul ferro; in alto una luce bianca e uniforme, senza sorgente visibile.
 > - **Luce e atmosfera:** buio umido in basso, luce piatta e pallida in alto, come di un cielo senza ore.
 > - **Palette:** ruggine, nero bagnato, grigio cemento, il bianco freddo in cima.
-> - **Elementi del seme (Spira):** la scala a chiocciola che sale, il corpo che si trasforma salendo (mani annerite, polvere sulle spalle), le incisioni di quota che si ripetono.
-> - **Da evitare:** la città o qualsiasi cosa sopra le nuvole, scritte sulle incisioni, uomo anziano e magro, estetica cartoon.
+> - **Motivi visivi:** la scala a chiocciola che sale, il corpo che cambia salendo (mani annerite, polvere sulle spalle), le incisioni che si ripetono sulla parete.
+> - **Da evitare:** la veduta oltre la luce in cima, scritte sulle incisioni, estetica cartoon.
 >
-> **Versione condensata:** Un uomo sui quarant'anni, tarchiato, sale una scala a chiocciola di ferro corroso attorno a un pilone dentro una torre; a una svolta incide la parete con un piccolo scalpello. Pioggia scura che entra dalle fessure; in alto una luce bianca, uniforme, senza sorgente. Ripresa dal basso, la spirale oltre il bordo. Palette ruggine, nero bagnato, grigio cemento, bianco freddo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un uomo sui quarant'anni, tarchiato, sale una scala a chiocciola di ferro corroso attorno a un pilone dentro una torre di trasmissione; a una svolta incide la parete di cemento con un piccolo scalpello. Pioggia scura che entra dalle fessure; in alto una luce bianca, uniforme, senza sorgente, senza mostrare ciò che sta oltre. Ripresa dal basso, la spirale oltre il bordo. Palette ruggine, nero bagnato, grigio cemento, bianco freddo. Incisioni ripetute sulla parete, senza scritte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che più sale, più perde: ogni gradino guadagnato ha un prezzo.

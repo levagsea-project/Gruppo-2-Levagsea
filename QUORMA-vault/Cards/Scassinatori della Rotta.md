@@ -51,15 +51,15 @@ tags:
 > - **CAN-193** [[Sigillo di rotta]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** tre Spezzasigilli chini su una vecchia console dentro uno scafo annerito; uno tiene un attrezzo da scasso infilato in un sigillo circolare che si apre a spirale e getta luce fredda sui loro volti; gli altri due reggono lampade e cavi.
-> - **Inquadratura e composizione:** il sigillo luminoso al centro, le figure attorno come una corona; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** tre persone con cesoie e grimaldelli chine su una vecchia console dentro uno scafo annerito; una tiene un attrezzo infilato in una placca circolare di metallo scuro che si apre a spirale e getta luce fredda sui loro volti; le altre due reggono lampade e cavi.
+> - **Inquadratura e composizione:** la placca al centro, le figure attorno come una corona; margine attorno, leggibile in miniatura.
 > - **Ambiente:** interno di uno scafo bruciato e spogliato, paratie contorte, sedili strappati, polvere.
-> - **Luce e atmosfera:** contrasto tra la luce bianca e fredda del sigillo e quella calda e tremante delle lampade.
-> - **Palette:** nero carbone, ambra delle lampade, bianco azzurro del sigillo, ruggine.
-> - **Elementi del seme (Spira):** il sigillo che si apre a spirale, linee di luce che si avvolgono e cambiano direzione.
+> - **Luce e atmosfera:** contrasto tra la luce bianca e fredda della placca e quella calda e tremante delle lampade.
+> - **Palette:** nero carbone, ambra delle lampade, bianco azzurro della placca, ruggine.
+> - **Motivi visivi:** la placca che si apre a spirale, linee di luce che si avvolgono e cambiano direzione.
 > - **Da evitare:** schermi con scritte o numeri, mappe stellari leggibili, pianeti, testo, estetica cartoon.
 >
-> **Versione condensata:** Tre Spezzasigilli chini su una vecchia console dentro uno scafo annerito e spogliato; uno infila un attrezzo da scasso in un sigillo circolare che si apre a spirale e getta luce fredda sui volti, gli altri reggono lampade e cavi. Sigillo al centro, figure attorno come una corona. Paratie contorte, sedili strappati, polvere. Contrasto tra luce bianca del sigillo e luce calda delle lampade. Palette nero carbone, ambra, bianco azzurro. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Tre persone con cesoie e grimaldelli chine su una vecchia console dentro uno scafo annerito e spogliato; una infila un attrezzo in una placca circolare di metallo scuro che si apre a spirale e getta luce fredda bianco azzurra sui loro volti; le altre reggono lampade e cavi. Placca al centro, figure attorno come una corona. Paratie contorte, sedili strappati, polvere. Contrasto tra luce bianca e luce calda. Palette nero carbone, ambra, bianco azzurro. Senza schermi o scritte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ogni apertura cambia ciò che si trova dall'altra parte.

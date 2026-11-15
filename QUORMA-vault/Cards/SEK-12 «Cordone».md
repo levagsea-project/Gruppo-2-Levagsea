@@ -52,15 +52,15 @@ tags:
 > - **CAN-017** [[Infestazione aracnide]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una macchina alta e sottile, con arti a lama e sensori, ferma davanti a un fascio di cavi recisi in un incrocio di condotti. Due cordoni di isolamento sono già tesi, uno dentro l'altro. Il taglio è netto, recente; accanto, graffiato nel metallo, un segno a otto tratti incrociati.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, il taglio in primo piano a destra; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** una macchina alta e sottile, con arti a lama e sensori, ferma davanti a un fascio di cavi recisi in un incrocio di condotti. Due cordoni di cavo teso sono già stesi, uno dentro l'altro. Il taglio è netto, recente; accanto, graffiato nel metallo, un segno a otto tratti incrociati.
+> - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, il taglio in primo piano; margine attorno, leggibile in miniatura.
 > - **Ambiente:** incrocio di condotti in rovina, pareti di metallo, cavi pendenti, una lampada di emergenza.
-> - **Luce e atmosfera:** luce bianca fredda dall'unità, una luce calda lontana dal condotto 12; polvere e scintille ferme.
+> - **Luce e atmosfera:** luce bianca fredda dalla macchina, una luce calda lontana; polvere e scintille ferme.
 > - **Palette:** grigio metallo, bianco freddo, un rosso spento sul cavo reciso.
-> - **Elementi del seme (Vincolo):** cavi, catene, il cordone di isolamento che l'unità sta per tendere; il nodo del condotto.
+> - **Motivi visivi:** cavi, catene, i due cordoni tesi uno dentro l'altro, il nodo del condotto.
 > - **Da evitare:** testo, simboli, ragni riconoscibili, occhi rossi, estetica cartoon.
 >
-> **Versione condensata:** Macchina alta e sottile con arti a lama e sensori, ferma davanti a un fascio di cavi recisi in un incrocio di condotti; accanto al taglio, graffiato nel metallo, un segno a otto tratti incrociati. Piano medio, soggetto centrato di tre quarti, taglio in primo piano. Ambiente: incrocio di condotti in rovina, metallo, cavi pendenti, lampada di emergenza. Luce bianca fredda dall'unità, punto caldo lontano. Palette grigio metallo, bianco freddo, rosso spento. Vincolo: cavi, catene, cordone di isolamento. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Macchina alta e sottile con arti a lama e sensori, ferma davanti a un fascio di cavi recisi in un incrocio di condotti; due cordoni di cavo teso stesi uno dentro l'altro. Accanto al taglio, graffiato nel metallo, un segno di otto tratti che si incrociano in un punto. Piano medio di tre quarti, taglio in primo piano. Condotti in rovina, cavi pendenti, lampada di emergenza. Luce bianca fredda dalla macchina, punto caldo lontano. Palette grigio metallo, bianco freddo, rosso spento. Senza ragni, occhi rossi o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** di separare il nemico dagli altri, a costo di esporsi.

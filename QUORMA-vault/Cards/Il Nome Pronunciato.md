@@ -53,11 +53,11 @@ tags:
 > - **Inquadratura e composizione:** piano medio, l'uomo a sinistra di tre quarti, la banchina che si allunga verso il fondo con le figure; margine attorno, leggibile in miniatura.
 > - **Ambiente:** banchina di una vecchia linea sotterranea, piastrelle spaccate, segni incisi illeggibili, un crollo di detriti sullo sfondo.
 > - **Luce e atmosfera:** lanterne portate dai passanti, lui fuori dal loro cerchio di luce; polvere sospesa.
-> - **Palette:** ocra, grigio cenere, rosso spento su un nastro al polso.
-> - **Elementi del seme (Frattura):** il vuoto attorno a lui, una crepa nel pavimento che lo separa dagli altri, il crollo sullo sfondo.
+> - **Palette:** ocra, grigio cenere, rosso spento su una striscia di stoffa al polso.
+> - **Motivi visivi:** il vuoto attorno a lui, una crepa nel pavimento che lo separa dagli altri, il crollo sullo sfondo.
 > - **Da evitare:** testo leggibile, catene, scene di punizione, aureole, estetica cartoon.
 >
-> **Versione condensata:** Uomo seduto sulla soglia di una nicchia in una galleria sotterranea, un pezzo di pane intatto accanto; lungo la banchina passano altre figure a distanza, testa bassa, senza guardarlo. Piano medio, uomo a sinistra di tre quarti, banchina che si allunga verso il fondo. Piastrelle spaccate, crollo di detriti sullo sfondo. Lanterne dei passanti, lui fuori dal cerchio di luce. Palette ocra, grigio cenere, rosso spento. Frattura: vuoto attorno, crepa che lo separa, il crollo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Uomo seduto sulla soglia di una nicchia in una galleria sotterranea, un pezzo di pane intatto accanto; lungo la banchina passano altre figure a distanza, testa bassa, senza guardarlo. Piano medio, uomo a sinistra di tre quarti, banchina che si allunga verso il fondo. Piastrelle spaccate, crollo di detriti sullo sfondo. Lanterne dei passanti, lui fuori dal cerchio di luce. Palette ocra, grigio cenere, rosso spento. Una crepa nel pavimento lo separa dagli altri. Senza catene né scene di punizione. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che colpisce più forte da solo, e che ogni suo colpo allontana chi gli sta accanto.

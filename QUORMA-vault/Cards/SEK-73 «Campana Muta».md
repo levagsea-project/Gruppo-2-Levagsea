@@ -52,14 +52,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un pilone liscio e chiaro, senza giunture, sormontato da un'unica grande parabola rivolta verso il cielo; una membrana al centro della parabola vibra appena.
-> - **Inquadratura e composizione:** dal basso, il pilone centrato e verticale, molto cielo sopra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** un'altura spoglia; ai piedi del pilone, cavi recisi che pendono tutt'intorno come capelli tagliati.
+> - **Inquadratura e composizione:** inquadratura dal basso, pilone centrato, molto cielo; margine attorno, leggibile in miniatura.
+> - **Ambiente:** un'altura spoglia; ai piedi del pilone, cavi recisi che pendono tutt'intorno come capelli tagliati; alla base, file ordinate di lastre scure identiche, impilate come lapidi.
 > - **Luce e atmosfera:** notte fredda e limpida, luce bianca e uniforme che sale dalla base del pilone.
 > - **Palette:** bianco osso, grigio acciaio, blu notte, un filo d'argento.
-> - **Elementi del seme (Vestigio):** alla base, file ordinate di lastre scure identiche, impilate come lapidi di un archivio; polvere chiara come cenere.
+> - **Motivi visivi:** le lastre impilate come lapidi di un archivio, polvere chiara come cenere.
 > - **Da evitare:** astronavi, pianeti visibili, figure umane, testo, estetica cartoon.
 >
-> **Versione condensata:** Un pilone liscio e chiaro, senza giunture, sormontato da un'unica grande parabola rivolta verso il cielo notturno; la membrana al centro vibra appena. Inquadratura dal basso, pilone centrato, molto cielo. Altura spoglia, cavi recisi che pendono tutt'intorno. Alla base file di lastre scure identiche impilate come lapidi, polvere chiara come cenere. Notte limpida, luce bianca dal basso. Palette bianco osso, grigio acciaio, blu notte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un pilone liscio e chiaro, senza giunture, sormontato da un'unica grande parabola rivolta verso il cielo notturno; la membrana al centro vibra appena. Inquadratura dal basso, pilone centrato, molto cielo. Altura spoglia, cavi recisi che pendono tutt'intorno. Alla base file di lastre scure identiche impilate come lapidi, polvere chiara come cenere. Notte limpida, luce bianca dal basso. Palette bianco osso, grigio acciaio, blu notte. Senza astronavi, pianeti o figure umane. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che ascolta in silenzio accumula qualcosa che prima o poi peserà.

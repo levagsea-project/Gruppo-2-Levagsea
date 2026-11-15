@@ -51,15 +51,15 @@ tags:
 > - **CAN-160** [[Cassetta delle lettere ferme]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un giovane Adattato seduto in una trincea allagata, le gambe rinforzate da innesti metallici, scrive con la mano di metallo su un foglio appoggiato a un elmo; una scheggia sporge dalla spalla fasciata.
+> - **Soggetto e azione:** un giovane seduto in una trincea allagata, le gambe rinforzate da placche di metallo cucite alla pelle, scrive con la mano di metallo su un foglio appoggiato a un elmo; una scheggia sporge dalla spalla fasciata.
 > - **Inquadratura e composizione:** piano medio di tre quarti, il foglio in primo piano, la trincea che si perde a sinistra; margine attorno, leggibile in miniatura.
 > - **Ambiente:** trincea scavata nel fango, teli tesi sopra, sacchi di terra.
 > - **Luce e atmosfera:** notte; una lampada schermata accanto al foglio; oltre i teli, la pioggia scura riflette lampi lontani.
 > - **Palette:** ocra della lampada, nero fango, grigio ferro, rosso spento sulla fasciatura.
-> - **Elementi del seme (Frattura):** la scheggia, il fango crepato, i lampi all'orizzonte.
+> - **Motivi visivi:** la scheggia, il fango crepato, i lampi all'orizzonte.
 > - **Da evitare:** pose eroiche, bandiere, testo leggibile sul foglio, sangue esplicito, estetica cartoon.
 >
-> **Versione condensata:** Giovane Adattato seduto in una trincea allagata, gambe rinforzate da innesti metallici, scrive con la mano di metallo su un foglio appoggiato a un elmo; una scheggia sporge dalla spalla fasciata. Piano medio di tre quarti, foglio in primo piano. Teli tesi, sacchi di terra, fango. Notte, lampada schermata; oltre i teli, pioggia scura e lampi lontani. Palette ocra, nero fango, grigio ferro, rosso spento. Frattura: scheggia, fango crepato, lampi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Giovane seduto in una trincea allagata, gambe rinforzate da placche di metallo cucite alla pelle, scrive con la mano di metallo su un foglio appoggiato a un elmo; una scheggia sporge dalla spalla fasciata. Piano medio di tre quarti, foglio in primo piano. Teli tesi, sacchi di terra, fango. Notte, lampada schermata; oltre i teli, pioggia scura e lampi lontani. Palette ocra, nero fango, grigio ferro, rosso spento. Fango crepato. Senza pose eroiche, bandiere o sangue esplicito. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** di aprire la strada: il suo slancio trascina chi viene dopo.

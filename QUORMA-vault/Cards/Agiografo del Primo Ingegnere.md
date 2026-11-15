@@ -61,10 +61,10 @@ tags:
 > - **Ambiente:** stanza ricavata da un condotto di manutenzione, pareti di lamiera, una lampada a olio, carte appese, nessun testo leggibile.
 > - **Luce e atmosfera:** luce calda bassa, ombre profonde, polvere ferma; il foglio più antico è più scuro, quello più nuovo più chiaro.
 > - **Palette:** ocra, grigio cenere, seppia spento, un rosso cupo sul foglio corretto.
-> - **Elementi del seme (Vestigio):** il foglio più antico che resta, le note a margine, la mano che trema, la scrittura che si sovrappone.
+> - **Motivi visivi:** il foglio più antico che resta, le note a margine, la mano che trema, la scrittura che si sovrappone.
 > - **Da evitare:** testo o nomi leggibili, simboli religiosi riconoscibili, aureole, biblioteche gotiche, espressioni estatiche, estetica cartoon.
 >
-> **Versione condensata:** Uomo di mezza età, corpulento, dita macchiate d'inchiostro, a un tavolo di fortuna; scrive con mano tremante su un quaderno e con l'altra tiene aperto un foglio antico pieno di correzioni; accanto, un foglio dalla scrittura più ordinata. Piano medio di tre quarti, fogli in primo piano. Stanza di lamiera, lampada a olio, carte appese. Luce calda bassa, ombre profonde. Palette ocra, grigio cenere, seppia, rosso cupo. Vestigio: foglio antico, note a margine, scritture sovrapposte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Uomo di mezza età, corpulento, dita macchiate d'inchiostro, a un tavolo di fortuna; scrive con mano tremante su un quaderno e con l'altra tiene aperto un foglio antico pieno di correzioni; accanto, un foglio dalla scrittura più ordinata. Piano medio di tre quarti, fogli in primo piano. Stanza di lamiera, lampada a olio, carte appese. Luce calda bassa, ombre profonde. Palette ocra, grigio cenere, seppia, rosso cupo. Senza testo leggibile, aureole o espressioni estatiche. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la sua fine mette al riparo i più fragili da chi vorrebbe riscriverli.

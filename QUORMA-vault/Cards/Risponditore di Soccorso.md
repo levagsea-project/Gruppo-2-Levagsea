@@ -51,14 +51,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** una vecchia colonnina di soccorso su una strada deserta, avvolta da una guaina liscia e bianca che l'ha inglobata; dalla griglia dell'altoparlante esce una luce calma; un uomo ferito vi si appoggia con la fronte, la mano sul pulsante.
-> - **Inquadratura e composizione:** colonnina e uomo al centro, strada che si perde dietro; margine attorno, leggibile in miniatura.
+> - **Inquadratura e composizione:** colonnina al centro, l'uomo di tre quarti; margine attorno, leggibile in miniatura.
 > - **Ambiente:** strada spaccata, guardrail piegati, cavi recisi che pendono da un palo vicino.
 > - **Luce e atmosfera:** notte, la luce fredda e gentile della colonnina come unica fonte, il resto nel buio.
 > - **Palette:** bianco ghiaccio, asfalto nero, il rosso scuro di una benda, grigio cenere.
-> - **Elementi del seme (Frattura):** l'asfalto crepato, i cavi tranciati, una crepa netta che attraversa la guaina bianca.
+> - **Motivi visivi:** l'asfalto crepato, i cavi tranciati, una crepa netta che attraversa la guaina bianca.
 > - **Da evitare:** scritte o numeri sulla colonnina, sangue esplicito, testo, estetica cartoon.
 >
-> **Versione condensata:** Una vecchia colonnina di soccorso su una strada deserta, inglobata da una guaina liscia e bianca attraversata da una crepa netta; dalla griglia dell'altoparlante esce una luce calma. Un uomo ferito vi appoggia la fronte, la mano sul pulsante. Asfalto spaccato, guardrail piegati, cavi recisi che pendono da un palo. Notte, la luce fredda della colonnina come unica fonte. Palette bianco ghiaccio, asfalto nero, rosso scuro. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una vecchia colonnina di soccorso su una strada deserta, inglobata da una guaina liscia e bianca attraversata da una crepa netta; dalla griglia dell'altoparlante esce una luce calma. Un uomo ferito vi appoggia la fronte, la mano sul pulsante. Asfalto spaccato, guardrail piegati, cavi recisi che pendono da un palo. Notte, la luce fredda della colonnina come unica fonte. Palette bianco ghiaccio, asfalto nero, rosso scuro di una benda. Senza scritte o numeri. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che una porta gentile e chiusa è peggio di una porta sbarrata.

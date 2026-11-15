@@ -55,10 +55,10 @@ tags:
 > - **Ambiente:** piazza allagata di una città di container, antenne piegate, cielo basso e nero.
 > - **Luce e atmosfera:** grigio piombo, riflessi d'argento sulla pelle di lei, nessuna luce calda.
 > - **Palette:** nero pioggia, argento, grigio piombo, verde lichene.
-> - **Elementi del seme (Spira):** la pelle trasformata, le gocce che scivolano a spirale, la folla divisa tra chi è cambiato e chi no.
+> - **Motivi visivi:** la pelle trasformata, le gocce che scivolano a spirale, la folla divisa tra chi è cambiato e chi no.
 > - **Da evitare:** eroismo da manifesto, armi, sole, testo, estetica cartoon.
 >
-> **Versione condensata:** Donna di mezza età, alta, in piedi sotto la pioggia scura senza riparo, il viso alzato; la pelle lucida respinge le gocce, sottili griglie di filtraggio ai lati del collo; dietro di lei famiglie, alcune sotto teli, altre a capo scoperto come lei. Mezza figura, leggermente dal basso. Piazza allagata tra container, antenne piegate. Grigio piombo, riflessi d'argento sulla pelle. Palette nero, argento, piombo, verde lichene. Spira: pelle trasformata, gocce a spirale. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Donna di mezza età, alta, in piedi sotto la pioggia scura senza riparo, il viso alzato; la pelle lucida respinge le gocce, sottili griglie di filtraggio ai lati del collo; dietro di lei famiglie, alcune sotto teli, altre a capo scoperto come lei. Mezza figura, leggermente dal basso. Piazza allagata tra container, antenne piegate, nuvole basse. Grigio piombo, riflessi d'argento sulla pelle. Palette nero, argento, piombo, verde lichene. Gocce che scivolano a spirale. Senza eroismo da manifesto, armi o sole. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che logora gli altri, su di lei e sui suoi, non attecchisce più.

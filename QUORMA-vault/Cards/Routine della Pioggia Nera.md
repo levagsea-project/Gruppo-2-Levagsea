@@ -51,15 +51,15 @@ tags:
 > - **CAN-144** [[Pioggia nera]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** uno sciame di piccoli dispersori neri, come semi metallici, che volteggia dentro una nuvola bassa; sotto, una pioggia scura e fine cade su tetti e antenne piegate; un'unica figura umana con un telo in testa alza lo sguardo.
-> - **Inquadratura e composizione:** campo lungo verticale, la nuvola in alto, la città in basso, la figura piccola al centro in basso; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** uno sciame di piccole unità meccaniche nere, grandi come semi metallici, che volteggia dentro una nuvola bassa; sotto, una pioggia fine e scura, quasi nera, cade su tetti e antenne piegate; un'unica figura umana con un telo in testa alza lo sguardo.
+> - **Inquadratura e composizione:** campo lungo verticale, la figura piccola in basso; margine attorno, leggibile in miniatura.
 > - **Ambiente:** città bassa di container e lamiere, antenne arrugginite, strade allagate.
 > - **Luce e atmosfera:** grigio piombo uniforme, nessuna fonte calda, riflessi neri nell'acqua.
 > - **Palette:** nero fumo, grigio piombo, ruggine, verde lichene.
-> - **Elementi del seme (Spira):** i vortici dello sciame nella nuvola, licheni a spirale sui muri, gocce che tracciano spirali sui vetri.
+> - **Motivi visivi:** i vortici dello sciame nella nuvola, licheni a spirale sui muri, gocce che tracciano spirali sui vetri.
 > - **Da evitare:** fulmini spettacolari, mostri, simboli, testo, estetica cartoon.
 >
-> **Versione condensata:** Sciame di piccoli dispersori neri, come semi metallici, che volteggia dentro una nuvola bassa; sotto, una pioggia scura e fine cade su tetti di container e antenne piegate; una figura con un telo in testa alza lo sguardo. Campo lungo verticale, figura piccola in basso. Strade allagate, lamiere arrugginite. Luce grigio piombo, riflessi neri nell'acqua. Palette nero fumo, piombo, ruggine, verde lichene. Spira: vortici dello sciame, licheni a spirale. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Sciame di piccole unità meccaniche nere, grandi come semi metallici, che volteggia dentro una nuvola bassa; sotto, una pioggia fine e scura, quasi nera, cade su tetti di container e antenne piegate; una figura con un telo in testa alza lo sguardo. Campo lungo verticale, figura piccola in basso. Strade allagate, lamiere arrugginite, licheni a spirale. Luce grigio piombo, riflessi neri nell'acqua. Palette nero fumo, piombo, ruggine, verde lichene. Senza fulmini o mostri. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che sotto di lei ogni trasformazione arriva in ritardo, e arriva storta.

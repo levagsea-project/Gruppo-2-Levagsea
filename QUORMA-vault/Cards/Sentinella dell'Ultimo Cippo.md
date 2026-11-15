@@ -47,15 +47,15 @@ tags:
 > - **CAN-113** [[Tornati]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una giovane sentinella avvolta in una coperta, la lancia appoggiata, seduta accanto a un cippo di pietra alto; dall'altra parte della pietra una figura magra in piedi, immobile, con una mano sulla pietra.
-> - **Inquadratura e composizione:** piano medio, il cippo al centro come linea divisoria, la sentinella a sinistra, la figura a destra in penombra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** altopiano spoglio, erba bruciata dal gelo, nebbia bassa oltre il cippo.
+> - **Soggetto e azione:** una giovane sentinella avvolta in una coperta, la lancia appoggiata, seduta accanto a un'alta pietra grezza con tacche incise; dall'altra parte della pietra una figura magra in piedi, immobile, con una mano sulla pietra.
+> - **Inquadratura e composizione:** piano medio, la pietra come linea divisoria; margine attorno, leggibile in miniatura.
+> - **Ambiente:** altopiano spoglio, erba bruciata dal gelo, nebbia bassa oltre la pietra.
 > - **Luce e atmosfera:** notte; un braciere piccolo dal lato della sentinella, dall'altro lato solo luce lunare fredda.
 > - **Palette:** ocra del fuoco, grigio pietra, blu notte.
-> - **Elementi del seme (Spira):** incisioni a spirale sulla pietra, licheni cresciuti in forme troppo regolari, la figura oltre il cippo con proporzioni appena sbagliate.
+> - **Motivi visivi:** incisioni a spirale sulla pietra, licheni cresciuti in forme troppo regolari, la figura oltre la pietra con proporzioni appena sbagliate.
 > - **Da evitare:** mostri, occhi luminosi, simboli leggibili, testo, estetica cartoon.
 >
-> **Versione condensata:** Giovane sentinella avvolta in una coperta, lancia appoggiata, seduta accanto a un alto cippo di pietra; dall'altra parte una figura magra, immobile, con una mano sulla pietra. Piano medio, il cippo come linea divisoria. Altopiano spoglio, erba gelata, nebbia bassa oltre il cippo. Notte: braciere dal lato della sentinella, luce lunare fredda dall'altro. Palette ocra, grigio pietra, blu notte. Spira: incisioni a spirale, licheni regolari, proporzioni appena sbagliate. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Giovane sentinella avvolta in una coperta, lancia appoggiata, seduta accanto a un'alta pietra grezza con tacche incise; dall'altra parte una figura magra, immobile, con una mano sulla pietra, dalle proporzioni appena sbagliate. Piano medio, la pietra come linea divisoria. Altopiano spoglio, erba gelata, nebbia bassa oltre la pietra. Notte: braciere dal lato della sentinella, luce lunare fredda dall'altro. Palette ocra, grigio pietra, blu notte. Incisioni a spirale e licheni troppo regolari. Senza mostri o occhi luminosi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che restare troppo a lungo ti cambia, e da un certo punto non si torna indietro.

@@ -47,15 +47,15 @@ tags:
 > - **CAN-132** [[Relè di Morvia]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una donna robusta con le maniche arrotolate incide una pietra appoggiata al ginocchio con una scheggia di selce; dietro di lei una torre di trasmissione arrugginita circondata da muri bassi di pietre diverse, senza tetto; in cima alla torre una lampada appena accesa.
+> - **Soggetto e azione:** una donna robusta con le maniche arrotolate incide una pietra appoggiata al ginocchio con una scheggia di selce; dietro di lei una torre di trasmissione di ferro arrugginito, alta e a traliccio, circondata da muri bassi di pietre diverse, senza tetto; in cima alla torre una lampada appena accesa.
 > - **Inquadratura e composizione:** piano americano, soggetto centrato di tre quarti, la torre sullo sfondo che sale oltre il bordo; margine attorno, leggibile in miniatura.
 > - **Ambiente:** brughiera aperta, erica, nebbia bassa.
 > - **Luce e atmosfera:** crepuscolo; luce calda di un braciere sulle pietre, un punto freddo e pallido in cima alla torre.
 > - **Palette:** grigio pietra, ruggine, ocra caldo, bianco freddo della lampada.
-> - **Elementi del seme (Vincolo):** le pietre di famiglia accostate, pile di pietre portate ai suoi piedi, corde che legano la torre ai muri.
+> - **Motivi visivi:** le pietre di famiglia accostate, pile di pietre portate ai suoi piedi, corde che legano la torre ai muri.
 > - **Da evitare:** simboli religiosi riconoscibili, aureole, testo, estetica cartoon.
 >
-> **Versione condensata:** Donna robusta con le maniche arrotolate incide una pietra sul ginocchio con una scheggia di selce; dietro, una torre di trasmissione arrugginita circondata da muri bassi di pietre diverse, in cima una lampada appena accesa. Piano americano, soggetto di tre quarti. Brughiera, erica, nebbia bassa. Crepuscolo: braciere caldo sulle pietre, punto freddo in cima alla torre. Palette grigio pietra, ruggine, ocra, bianco freddo. Vincolo: pietre accostate, pile ai suoi piedi, corde che legano torre e muri. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Donna robusta con le maniche arrotolate incide una pietra sul ginocchio con una scheggia di selce; dietro, una torre di trasmissione di ferro arrugginito, alta e a traliccio, circondata da muri bassi di pietre diverse senza tetto, in cima una lampada appena accesa. Piano americano, soggetto di tre quarti. Brughiera, erica, nebbia bassa. Crepuscolo: braciere caldo sulle pietre, punto freddo in cima alla torre. Palette grigio pietra, ruggine, ocra, bianco freddo. Pile di pietre ai suoi piedi, corde tra torre e muri. Senza simboli religiosi né aureole. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che più la comunità è unita attorno a lei, più è impossibile abbatterla.

@@ -51,13 +51,13 @@ tags:
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** uno sciame di piccole unità meccaniche bianche, simili a insetti, che scorre su una distesa di terra smossa formando un flusso verso un muro bianco in costruzione; nessun osso riconoscibile in primo piano.
 > - **Inquadratura e composizione:** campo medio, il flusso in diagonale verso il muro sullo sfondo; margine attorno, leggibile in miniatura.
-> - **Ambiente:** pianura spoglia, alberi morti, la fossa come una ferita aperta nel terreno.
+> - **Ambiente:** pianura spoglia, alberi morti, una fossa aperta come una ferita nel terreno.
 > - **Luce e atmosfera:** luce piatta di cielo coperto, polvere bianca sospesa.
 > - **Palette:** bianco calce, grigio terra, verde-marrone spento.
-> - **Elementi del seme (Frattura):** il terreno spaccato, crepe che si allargano lungo i bordi della fossa, frammenti chiari sbriciolati.
+> - **Motivi visivi:** il terreno spaccato, crepe che si allargano lungo i bordi della fossa, frammenti chiari sbriciolati.
 > - **Da evitare:** teschi, ossa esplicite in primo piano, sangue, testo, estetica cartoon.
 >
-> **Versione condensata:** Sciame di piccole unità meccaniche bianche simili a insetti che scorre su terra smossa verso un muro bianco in costruzione; nessun osso riconoscibile. Campo medio, flusso in diagonale verso il muro. Pianura spoglia, alberi morti, la fossa come una ferita nel terreno. Luce piatta di cielo coperto, polvere bianca sospesa. Palette bianco calce, grigio terra, verde-marrone spento. Frattura: terreno spaccato, crepe lungo i bordi, frammenti sbriciolati. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Sciame di piccole unità meccaniche bianche, simili a insetti, che scorre su terra smossa verso un muro bianco in costruzione; nessun osso riconoscibile. Campo medio, flusso in diagonale verso il muro. Pianura spoglia, alberi morti, una fossa aperta come una ferita nel terreno, crepe lungo i bordi. Luce piatta di cielo coperto, polvere bianca sospesa. Palette bianco calce, grigio terra, verde-marrone spento. Senza teschi, ossa in primo piano o sangue. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che abbatte non resta a terra: lo macina, e ci costruisce il colpo successivo.

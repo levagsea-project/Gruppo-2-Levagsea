@@ -49,10 +49,10 @@ tags:
 > - **Ambiente:** crinale spoglio, vento, nebbia che sale dalla valle.
 > - **Luce e atmosfera:** crepuscolo freddo, la lanterna calda solo dal lato interno del muro.
 > - **Palette:** grigio pietra, blu crepuscolo, ocra della lanterna.
-> - **Elementi del seme (Frattura):** il muro che divide, la porta stretta, le crepe nella pietra a secco.
+> - **Motivi visivi:** il muro che divide, la porta stretta, le crepe nella pietra a secco.
 > - **Da evitare:** armi puntate, violenza esplicita, testo, estetica cartoon.
 >
-> **Versione condensata:** Muro di pietra a secco su un crinale, una porta stretta sorvegliata da una sentinella con una lanterna che esamina il polso di una donna; fuori, al vento, persone avvolte in coperte aspettano, tra loro un bambino. Piano medio, il muro come linea che divide l'immagine. Crinale spoglio, nebbia dalla valle. Crepuscolo freddo, lanterna calda solo dal lato interno. Palette grigio pietra, blu, ocra. Frattura: muro che divide, porta stretta, crepe. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Muro di pietra a secco su un crinale, una porta stretta sorvegliata da una sentinella con una lanterna che esamina il polso di una donna; fuori, al vento, persone avvolte in coperte aspettano, tra loro un bambino. Piano medio, il muro come linea che divide l'immagine. Crinale spoglio, nebbia dalla valle. Crepuscolo freddo, lanterna calda solo dal lato interno. Palette grigio pietra, blu, ocra. Crepe nella pietra. Senza armi puntate né violenza. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che respinge con durezza chiunque gli si avvicini, nemico o alleato.

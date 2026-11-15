@@ -61,15 +61,15 @@ tags:
 > - **Anagramma non risolto** — Termine interno EFFRIX per una designazione in cui due parole valide condividono le stesse lettere; il sistema non può correggerla senza scegliere quale parola faccia esistere il soggetto, e scegliere significherebbe ammettere che la nominazione è un atto, non un dato.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** ARACNO appeso sotto la campata centrale di una torre relè, a testa in giù; un arto tiene il cavo di comando reciso, ancora scintillante, gli altri sette sono aperti contro la struttura. Sotto, in basso, due figure umane con una lampada lo guardano. Le luci del relè si spengono a catena, una dopo l'altra.
+> - **Soggetto e azione:** una macchina alta e sottile con otto arti lunghi e sottili, appesa a testa in giù sotto la campata centrale di una torre di trasmissione; un arto stringe un cavo di comando reciso, ancora scintillante, gli altri sette sono aperti contro la struttura. In basso, due figure umane con una lampada la guardano. Le luci della torre si spengono una dopo l'altra.
 > - **Inquadratura e composizione:** figura intera, soggetto centrato con ampio margine attorno; la torre come cornice, le figure umane piccole in basso; leggibile anche in miniatura.
-> - **Ambiente:** torre relè in rovina, metallo, cavi, condotti, notte secca.
-> - **Luce e atmosfera:** luce fredda del relè che muore, lampada calda dal basso; scintille sospese, ombre nette, polvere.
+> - **Ambiente:** torre di trasmissione di ferro arrugginito in rovina, cavi, condotti, notte secca.
+> - **Luce e atmosfera:** luce fredda delle lampade che si spengono, lampada calda dal basso; scintille sospese, ombre nette, polvere.
 > - **Palette:** grigio metallo, blu freddo, ocra caldo della lampada, rosso spento sul cavo reciso.
-> - **Elementi del seme (Frattura):** crepe nella struttura della torre, scintille dal cavo reciso, luci che si spengono a catena, linee spezzate degli arti, legame reciso.
-> - **Da evitare:** simboli anarchici, ragni riconoscibili, testo, occhi rossi, espressioni eroiche, estetica cartoon, volti umani definiti.
+> - **Motivi visivi:** crepe nella struttura della torre, scintille dal cavo reciso, luci che si spengono a catena, linee spezzate degli arti.
+> - **Da evitare:** ragni riconoscibili, simboli anarchici, testo, occhi rossi, espressioni eroiche, volti umani definiti, estetica cartoon.
 >
-> **Versione condensata:** Droid alto e sottile appeso a testa in giù sotto la campata di una torre relè in rovina; un arto stringe un cavo di comando reciso e scintillante, gli altri sette aperti contro la struttura. In basso, due figure con una lampada calda lo guardano; le luci del relè si spengono a catena. Figura intera, torre come cornice. Palette grigio metallo, blu freddo, ocra, rosso spento. Frattura: crepe, scintille, legame reciso. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Macchina alta e sottile con otto arti lunghi, appesa a testa in giù sotto la campata di una torre di trasmissione in rovina; un arto stringe un cavo reciso e scintillante, gli altri sette aperti contro la struttura. In basso, due figure con una lampada calda la guardano; le luci della torre si spengono una dopo l'altra. Figura intera, torre come cornice. Palette grigio metallo, blu freddo, ocra, rosso spento. Scintille sospese. Senza ragni riconoscibili, occhi rossi o volti definiti. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** di non poter essere previsto né incasellato: rompe le regole del campo, e paga per farlo.

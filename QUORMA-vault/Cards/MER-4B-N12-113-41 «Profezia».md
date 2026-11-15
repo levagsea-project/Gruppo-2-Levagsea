@@ -54,15 +54,15 @@ tags:
 > - **CAN-092** [[Memoria profetica]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un gruppo di frammenti geometrici sospesi in aria, disposti a semicerchio, come un coro; al centro, uno più grande, che pulsa a intervalli regolari. I frammenti non si toccano: sono tenuti insieme da una tensione invisibile. Ai margini, un frammento più piccolo, appartato, che non partecipa.
-> - **Inquadratura e composizione:** piano medio, il coro centrato con margine attorno, il frammento appartato in basso a sinistra; leggibile in miniatura.
-> - **Ambiente:** sala di riconfigurazione abbandonata del relè 4, pareti di cemento, condotti spenti, polvere sospesa; nessuna fonte di luce visibile.
-> - **Luce e atmosfera:** luce bianca fredda emanata dai frammenti stessi, un alone caldo sul frammento appartato; nessuna ombra netta, tutto sospeso.
-> - **Palette:** bianco freddo, grigio azzurro, ambra spenta sul frammento appartato.
-> - **Elementi del seme (Spira):** i frammenti che si dispongono in una forma che non è quella originale, la pulsazione regolare, il frammento appartato che si trasforma in modo diverso, la tensione che tiene insieme senza toccare.
-> - **Da evitare:** testo, simboli, volti, ragni, aureole, cori angelici, estetica cartoon, particelle troppo luminose.
+> - **Soggetto e azione:** un gruppo di schegge geometriche sospese in aria, disposte a semicerchio, come un coro; al centro, una più grande, che pulsa a intervalli regolari. Le schegge non si toccano: sono tenute insieme da una tensione invisibile. Ai margini, una scheggia più piccola, appartata, che non partecipa.
+> - **Inquadratura e composizione:** piano medio, il semicerchio centrato con margine attorno, la scheggia appartata in basso a sinistra; leggibile in miniatura.
+> - **Ambiente:** grande sala di cemento abbandonata, condotti spenti, travi metalliche, polvere sospesa; nessuna fonte di luce visibile.
+> - **Luce e atmosfera:** luce bianca fredda emanata dalle schegge stesse, un alone caldo sulla scheggia appartata; nessuna ombra netta, tutto sospeso.
+> - **Palette:** bianco freddo, grigio azzurro, ambra spenta sulla scheggia appartata.
+> - **Motivi visivi:** le schegge che si dispongono in una forma diversa da quella originale, la pulsazione regolare, la scheggia appartata che cambia in modo diverso, la tensione che tiene insieme senza toccare.
+> - **Da evitare:** testo, volti, ragni, aureole, cori angelici, particelle troppo luminose, estetica cartoon.
 >
-> **Versione condensata:** Frammenti geometrici sospesi a semicerchio come un coro, tenuti insieme da una tensione invisibile; al centro uno più grande pulsa a intervalli regolari. Ai margini un frammento più piccolo, appartato, non partecipa. Piano medio, coro centrato, l'appartato in basso a sinistra. Sala di cemento abbandonata, condotti spenti, polvere. Luce bianca fredda dai frammenti, alone caldo sull'appartato. Palette bianco freddo, grigio azzurro, ambra spenta. Spira: forma che si dispone, pulsazione, tensione senza contatto. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Schegge geometriche di metallo e vetro scuro sospese a semicerchio, tenute insieme da una tensione invisibile; al centro una più grande pulsa a intervalli regolari. Ai margini una scheggia più piccola, appartata, non partecipa. Piano medio, semicerchio centrato, la scheggia appartata in basso a sinistra. Grande sala di cemento abbandonata, condotti spenti, polvere. Luce bianca fredda dalle schegge, alone caldo sull'appartata. Palette bianco freddo, grigio azzurro, ambra spenta. Senza volti, aureole, angeli o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che cambia prima che la perdita arrivi, come se l'avesse prevista.

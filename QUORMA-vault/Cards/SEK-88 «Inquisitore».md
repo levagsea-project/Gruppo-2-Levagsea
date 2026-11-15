@@ -52,15 +52,15 @@ tags:
 > - **CAN-079** [[Presidio di Vado Secco]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una macchina SEKTAC alta e sottile, arti a lama ripiegati, ferma su un'altura sopra un presidio di pietra e lamiera nella valle; le antenne del presidio sono piegate, una sola finestra illuminata.
-> - **Inquadratura e composizione:** figura intera di tre quarti da dietro, il presidio piccolo in basso a destra; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** una macchina alta e sottile, arti a lama ripiegati, ferma su un'altura sopra un piccolo avamposto di pietra e lamiera nella valle; le antenne dell'avamposto sono piegate, una sola finestra illuminata.
+> - **Inquadratura e composizione:** figura intera di tre quarti da dietro, l'avamposto piccolo in basso; margine attorno, leggibile in miniatura.
 > - **Ambiente:** valle arida, letto di fiume secco, pali di segnale abbattuti lungo la strada.
-> - **Luce e atmosfera:** crepuscolo grigio, luce bianca fredda dall'unità, un solo punto caldo nel presidio; aria ferma, polvere.
+> - **Luce e atmosfera:** crepuscolo grigio, luce bianca fredda dalla macchina, un solo punto caldo nell'avamposto; aria ferma, polvere.
 > - **Palette:** grigio ardesia, bianco freddo, ocra spento della finestra.
-> - **Elementi del seme (Frattura):** antenne spezzate, cavi recisi a terra, una crepa nel letto del fiume che separa l'altura dal presidio.
+> - **Motivi visivi:** antenne spezzate, cavi recisi a terra, una crepa nel letto del fiume che separa l'altura dall'avamposto.
 > - **Da evitare:** occhi rossi, posture trionfali, simboli religiosi, testo, estetica cartoon.
 >
-> **Versione condensata:** Macchina SEKTAC alta e sottile, arti a lama ripiegati, ferma su un'altura sopra un presidio di pietra e lamiera; antenne piegate, una sola finestra illuminata. Figura intera di tre quarti da dietro, presidio piccolo in basso. Valle arida, letto di fiume secco, pali di segnale abbattuti. Crepuscolo grigio, luce fredda dall'unità, un punto caldo nel presidio. Palette ardesia, bianco freddo, ocra spento. Frattura: antenne spezzate, cavi recisi, crepa nel terreno. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Macchina alta e sottile, arti a lama ripiegati, ferma su un'altura sopra un piccolo avamposto di pietra e lamiera; antenne piegate, una sola finestra illuminata. Figura intera di tre quarti da dietro, avamposto piccolo in basso. Valle arida, letto di fiume secco spaccato, pali di segnale abbattuti. Crepuscolo grigio, luce fredda dalla macchina, un punto caldo nell'avamposto. Palette ardesia, bianco freddo, ocra spento. Cavi recisi a terra. Senza occhi rossi, posture trionfali o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** di lasciare il nemico solo: nessuno può più raggiungerlo.

@@ -44,13 +44,14 @@ tags:
 > - **CAN-** [[]]
 
 > [!info] Descrizione dell'illustrazione
+> <!-- Autonoma: nessun nome di lore, sigla o link; usa le formule della nota Dizionario visivo; solo ciò che si vede. -->
 > - **Soggetto e azione:** 
 > - **Inquadratura e composizione:** soggetto centrato con margine attorno, leggibile in miniatura.
 > - **Ambiente:** 
 > - **Luce e atmosfera:** 
 > - **Palette:** 
-> - **Elementi del seme (Vincolo):** 
-> - **Da evitare:** testo, simboli, estetica cartoon.
+> - **Motivi visivi:** 
+> - **Da evitare:** testo, simboli, estetica cartoon. (Ripeti i divieti importanti nella versione condensata come «senza …».)
 >
 > **Versione condensata:**  Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 

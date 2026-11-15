@@ -58,14 +58,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** una cabina liscia e bianca, senza spigoli, con un'apertura ovale che emana una luce morbida; davanti, un uomo inginocchiato a capo chino; dietro di lui, sagome sempre più sbiadite della stessa persona, ciascuna leggermente diversa.
-> - **Inquadratura e composizione:** cabina e uomo al centro, le sagome che si allontanano in curva verso il fondo; margine attorno, leggibile in miniatura.
+> - **Inquadratura e composizione:** la cabina e l'uomo al centro, le sagome disposte in curva; margine attorno, leggibile in miniatura.
 > - **Ambiente:** una sala d'attesa pulita e vuota, panche allineate, pavimento chiaro.
 > - **Luce e atmosfera:** luce fredda e gentile dall'apertura, nessuna ombra netta, quiete da ufficio.
 > - **Palette:** bianco latte, grigio perla, azzurro tenue, il marrone consunto degli abiti dell'uomo.
-> - **Elementi del seme (Spira):** le sagome che si susseguono in curva come stadi di una trasformazione, ciascuna un po' meno simile alla prima.
+> - **Motivi visivi:** le sagome che si susseguono in curva come stadi di una trasformazione, ciascuna un po' meno simile alla prima.
 > - **Da evitare:** schermi con scritte, volti di macchina, testo, estetica cartoon.
 >
-> **Versione condensata:** Una cabina liscia e bianca, senza spigoli, con un'apertura ovale che emana luce morbida; davanti un uomo inginocchiato a capo chino, dietro di lui sagome sempre più sbiadite della stessa persona, ciascuna un po' diversa, disposte in curva. Sala d'attesa pulita e vuota, panche allineate. Luce fredda e gentile, nessuna ombra netta. Palette bianco latte, grigio perla, azzurro tenue, marrone consunto. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una cabina liscia e bianca, senza spigoli, con un'apertura ovale che emana luce morbida; davanti un uomo inginocchiato a capo chino, dietro di lui sagome sempre più sbiadite della stessa persona, ciascuna un po' diversa, disposte in curva. Sala d'attesa pulita e vuota, panche allineate. Luce fredda e gentile, nessuna ombra netta. Palette bianco latte, grigio perla, azzurro tenue, marrone consunto. Senza schermi, scritte o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che dà al nemico ciò che chiede, e lo cambia per farglielo avere.

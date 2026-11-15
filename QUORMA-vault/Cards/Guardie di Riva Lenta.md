@@ -56,15 +56,15 @@ tags:
 > - **Registro familiare** — Registro EFFRIX che raggruppa una famiglia sotto un solo numero; ogni guardia sorveglia il proprio.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** due uomini quasi identici, fratelli, nella piazza di una comunità troppo pulita; uno, con una fascia bianca al braccio, tiene l'altro per il gomito senza forza; a terra un sacco squarciato, la farina sparsa come neve; alle finestre, volti che guardano.
+> - **Soggetto e azione:** due uomini quasi identici, fratelli, nella piazza di un villaggio troppo pulito; uno, con una fascia di stoffa bianca sul braccio sinistro, tiene l'altro per il gomito senza forza; a terra un sacco squarciato, la farina sparsa come neve; alle finestre, volti che guardano.
 > - **Inquadratura e composizione:** piano medio, i due fratelli al centro, il sacco in primo piano; margine attorno, leggibile in miniatura.
-> - **Ambiente:** piazza di Riva Lenta, case pulite e tutte uguali; sullo sfondo il profilo bianco di un banco chirurgico fermo.
+> - **Ambiente:** piazza di un villaggio ricostruito, case imbiancate pulite e tutte uguali; sullo sfondo il profilo bianco di un banco chirurgico semovente fermo.
 > - **Luce e atmosfera:** luce bianca fredda e uniforme, nessuna ombra calda.
 > - **Palette:** bianco ospedale, grigio perla, beige della farina, un rosso spento sulle nocche.
-> - **Elementi del seme (Frattura):** il sacco squarciato, la farina sparsa, la linea d'ombra che divide i due fratelli.
+> - **Motivi visivi:** il sacco squarciato, la farina sparsa, la linea d'ombra che divide i due fratelli.
 > - **Da evitare:** violenza esplicita, uniformi militari, simboli, testo, estetica cartoon.
 >
-> **Versione condensata:** Due fratelli quasi identici nella piazza di una comunità troppo pulita; uno, con una fascia bianca al braccio, tiene l'altro per il gomito senza forza; a terra un sacco squarciato, la farina sparsa come neve; volti alle finestre. Piano medio, sacco in primo piano. Case uguali, sullo sfondo un banco chirurgico bianco fermo. Luce bianca fredda e uniforme. Palette bianco, grigio perla, beige, rosso spento sulle nocche. Frattura: sacco squarciato, ombra che divide i fratelli. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Due fratelli quasi identici nella piazza di un villaggio ricostruito troppo pulito; uno, con una fascia di stoffa bianca sul braccio sinistro, tiene l'altro per il gomito senza forza; a terra un sacco squarciato, la farina sparsa come neve; volti alle finestre. Piano medio, sacco in primo piano. Case imbiancate tutte uguali, sullo sfondo un banco bianco liscio con bracci ripiegati, fermo. Luce bianca fredda e uniforme. Palette bianco, grigio perla, beige, rosso spento sulle nocche. Senza uniformi militari né violenza esplicita. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che l'ordine si paga sacrificando i propri.

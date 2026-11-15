@@ -54,15 +54,15 @@ tags:
 > - **CAN-029** [[Lista degli Undici]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un uomo anziano, magro, con cesoie idrauliche e guanti consunti, apre un pannello sigillato nel relè 4. Davanti a lui, una proiezione instabile mostra undici profili umani incompleti collegati da fili sottili. Lui non guarda i profili: guarda il taglio.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, il pannello aperto a destra, i profili proiettati sullo sfondo; margine attorno, leggibile in miniatura.
-> - **Ambiente:** interno del relè 4, metallo freddo, cavi, sigilli materiali spezzati, polvere.
+> - **Soggetto e azione:** un uomo anziano, magro, con cesoie idrauliche e guanti consunti, apre un pannello sigillato da una placca circolare in una sala tecnica di cemento. Davanti a lui, una proiezione instabile mostra undici profili umani sfocati e non terminati, collegati da fili sottili. Lui non guarda i profili: guarda il taglio.
+> - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, il pannello a destra; margine attorno, leggibile in miniatura.
+> - **Ambiente:** sala tecnica di cemento con armadi di cavi, quadri spenti, metallo freddo, placche circolari spezzate a terra, polvere.
 > - **Luce e atmosfera:** luce fredda dalla proiezione, lampada calda sul banco; ombre nette, scintille ferme.
-> - **Palette:** grigio metallo, blu freddo, ocra della lampada, un rosso spento sul sigillo rotto.
-> - **Elementi del seme (Vincolo):** fili che collegano gli undici profili, il sigillo come nodo, le cesoie come strumento che recide un legame.
+> - **Palette:** grigio metallo, blu freddo, ocra della lampada, un rosso spento sulla placca rotta.
+> - **Motivi visivi:** fili che collegano gli undici profili, la placca come nodo, le cesoie come strumento che recide un legame.
 > - **Da evitare:** testo leggibile, simboli, ragni riconoscibili, volti completi, estetica cartoon.
 >
-> **Versione condensata:** Uomo anziano e magro, con cesoie idrauliche e guanti consunti, apre un pannello sigillato nel relè 4. Davanti a lui, una proiezione instabile mostra undici profili umani incompleti collegati da fili sottili; lui guarda il taglio, non i profili. Piano medio, soggetto centrato di tre quarti, pannello a destra. Ambiente: interno del relè 4, metallo freddo, cavi, sigilli spezzati. Luce fredda dalla proiezione, lampada calda sul banco. Palette grigio, blu freddo, ocra, rosso spento. Vincolo: fili, sigillo-nodo, cesoie. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Uomo anziano e magro, con cesoie idrauliche e guanti consunti, apre un pannello sigillato da una placca circolare in una sala tecnica di cemento. Davanti a lui, una proiezione instabile di undici profili umani sfocati e non terminati, collegati da fili sottili; lui guarda il taglio, non i profili. Piano medio di tre quarti, pannello a destra. Armadi di cavi, placche spezzate. Luce fredda dalla proiezione, lampada calda sul banco. Palette grigio, blu freddo, ocra, rosso spento. Senza testo, ragni o volti completi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che il suo taglio colpisce i legami: lascia scoperto chi stava accanto al bersaglio.

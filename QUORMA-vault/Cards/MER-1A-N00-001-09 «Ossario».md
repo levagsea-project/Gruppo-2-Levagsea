@@ -52,15 +52,15 @@ tags:
 > - **CAN-117** [[Voci residue]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una struttura MEROZYN alta e cava, fatta di frammenti sovrapposti come costole, da cui pendono filamenti; dai varchi tra i frammenti esce una nebbia di luce debole; a distanza due figure umane accovacciate, una con un taccuino, in ascolto.
-> - **Inquadratura e composizione:** figura intera, l'istanza centrata, le figure piccole in basso a destra; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** una struttura alta e cava, fatta di schegge geometriche di metallo e vetro scuro sovrapposte come costole e tenute da filamenti sottili che pendono; dai varchi tra le schegge esce una nebbia di luce debole; a distanza due figure umane accovacciate, una con un taccuino, in ascolto.
+> - **Inquadratura e composizione:** figura intera, la struttura centrata, le figure piccole in basso a destra; margine attorno, leggibile in miniatura.
 > - **Ambiente:** campo di rovine di una città, scheletri di palazzi, polvere grigia a terra.
 > - **Luce e atmosfera:** luce fredda e diffusa, la nebbia luminosa e pallida, una lanterna schermata tra le due figure.
 > - **Palette:** grigio osso, bianco sporco, azzurro spento, ocra della lanterna.
-> - **Elementi del seme (Vestigio):** i frammenti come ossa, le rovine, la nebbia che resta, il taccuino di chi ascolta.
+> - **Motivi visivi:** le schegge come ossa, le rovine, la nebbia che resta, il taccuino di chi ascolta.
 > - **Da evitare:** teschi, fantasmi riconoscibili, volti nella nebbia, testo, estetica cartoon.
 >
-> **Versione condensata:** Struttura MEROZYN alta e cava di frammenti sovrapposti come costole, filamenti pendenti; dai varchi esce una nebbia di luce debole. A distanza, due figure accovacciate in ascolto, una con un taccuino. Figura intera, istanza centrata, figure piccole in basso. Rovine di città, polvere grigia. Luce fredda diffusa, lanterna schermata. Palette grigio osso, bianco sporco, azzurro spento, ocra. Vestigio: frammenti come ossa, nebbia che resta, taccuino. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Struttura alta e cava di schegge geometriche di metallo e vetro scuro sovrapposte come costole, con filamenti sottili pendenti; dai varchi esce una nebbia di luce debole. A distanza, due figure accovacciate in ascolto, una con un taccuino. Figura intera, struttura centrata, figure piccole in basso a destra. Rovine di città, polvere grigia. Luce fredda e diffusa, lanterna schermata. Palette grigio osso, bianco sporco, azzurro spento, ocra. Senza teschi, fantasmi o volti nella nebbia. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la sua fine non finisce: l'ultimo gesto si ripete.

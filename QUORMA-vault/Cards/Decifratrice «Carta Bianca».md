@@ -51,10 +51,10 @@ tags:
 > - **Ambiente:** archivio sotterraneo perfettamente conservato, etichette metalliche illeggibili, polvere intatta tranne dove lei è passata.
 > - **Luce e atmosfera:** una torcia appoggiata a terra con un fascio caldo; il resto in penombra fredda.
 > - **Palette:** grigio acciaio, ocra della torcia, bianco carta.
-> - **Elementi del seme (Spira):** i fogli che si moltiplicano sugli scaffali vicini a lei, le scaffalature che salgono a spirale, il sapere che cresce.
+> - **Motivi visivi:** i fogli che si moltiplicano sugli scaffali vicini a lei, le scaffalature che salgono a spirale.
 > - **Da evitare:** testo leggibile, libri antichi decorativi, estetica cartoon.
 >
-> **Versione condensata:** Donna magra con gli occhiali rattoppati seduta a terra tra scaffali altissimi e vuoti, scrive su un quaderno appoggiato a un ripiano; accanto a lei pochi fogli infilati negli scaffali, gli unici della sala. Campo medio, figura piccola in basso, scaffali che salgono e convergono. Archivio sotterraneo intatto, polvere smossa solo dove è passata. Torcia calda a terra, penombra fredda. Palette acciaio, ocra, bianco carta. Spira: fogli che si moltiplicano, scaffali a spirale. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Donna magra con gli occhiali rattoppati seduta a terra tra scaffali altissimi e vuoti, scrive su un quaderno appoggiato a un ripiano; accanto a lei pochi fogli infilati negli scaffali, gli unici della sala. Campo medio, figura piccola in basso, scaffali che salgono e convergono. Archivio sotterraneo intatto, polvere smossa solo dove è passata. Torcia calda a terra, penombra fredda. Palette acciaio, ocra, bianco carta. Senza testo leggibile. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che impara mentre resta in campo, e non sai mai che cosa.

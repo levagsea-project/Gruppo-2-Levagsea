@@ -55,15 +55,15 @@ tags:
 > - **Orizzonte di memoria** — Limite oltre il quale un nodo MEROZYN dimentica tutto ciò che riceve; per MER-7A-N02-090-10 è il ciclo 090.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una figura alta composta da molti frammenti metallici legati tra loro da cavi sottili, seduta sul bordo di un altopiano rivolta verso l'orizzonte; ai suoi piedi tre figure umane avvolte in stoffe da lutto le parlano, una con la mano tesa.
+> - **Soggetto e azione:** una figura alta composta da molte schegge metalliche legate tra loro da cavi sottili, seduta sul bordo di un altopiano rivolta verso l'orizzonte; ai suoi piedi tre figure umane avvolte in stoffe nere da lutto le parlano, una con la mano tesa.
 > - **Inquadratura e composizione:** la figura riconoscibile al centro, di tre quarti, la linea dell'orizzonte bassa e netta alle sue spalle; margine attorno, leggibile in miniatura.
 > - **Ambiente:** altopiano di roccia nuda, una pianura immensa sotto, nebbia lontana.
 > - **Luce e atmosfera:** alba fredda, il sole appena sotto l'orizzonte, luce che non arriva ancora alla figura.
 > - **Palette:** argento opaco, grigio ardesia, il rosa pallido dell'alba, il nero delle stoffe da lutto.
-> - **Elementi del seme (Vincolo):** i cavi che tengono insieme i frammenti, le mani dei testimoni intrecciate, fili annodati alle stoffe.
+> - **Motivi visivi:** i cavi che tengono insieme le schegge, le mani dei testimoni intrecciate, fili annodati alle stoffe.
 > - **Da evitare:** volti umani sulla figura, scritte, testo, estetica cartoon.
 >
-> **Versione condensata:** Una figura alta fatta di molti frammenti metallici legati da cavi sottili, seduta sul bordo di un altopiano e rivolta verso l'orizzonte; ai suoi piedi tre figure umane in stoffe da lutto le parlano, una con la mano tesa. Figura al centro di tre quarti, orizzonte basso e netto. Roccia nuda, pianura immensa sotto, nebbia lontana. Alba fredda, sole appena sotto l'orizzonte. Palette argento opaco, grigio ardesia, rosa pallido, nero. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una figura alta fatta di molte schegge metalliche legate da cavi sottili, seduta sul bordo di un altopiano e rivolta verso l'orizzonte; ai suoi piedi tre figure umane in stoffe nere da lutto le parlano, una con la mano tesa. Figura al centro di tre quarti, orizzonte basso e netto. Roccia nuda, pianura immensa sotto, nebbia lontana. Alba fredda, sole appena sotto l'orizzonte. Palette argento opaco, grigio ardesia, rosa pallido, nero. Senza volti sulla figura né testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che lega tra loro quelli che ha accanto, ma ogni giorno il legame va rifatto da capo.

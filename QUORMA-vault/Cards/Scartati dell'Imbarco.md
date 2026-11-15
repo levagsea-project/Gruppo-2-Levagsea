@@ -52,15 +52,15 @@ tags:
 > - **CAN-191** [[Piastrina d'imbarco]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** cinque Adattati seduti attorno a un fuoco basso; innesti di metallo e pelle cucita, e sotto le cicatrici sul petto o sul collo il rilievo di piccoli dischi forati; una giovane donna in primo piano preme due dita sul proprio disco.
-> - **Inquadratura e composizione:** gruppo raccolto al centro, volti poco definiti, la mano sul disco come punto focale; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** cinque persone con placche di metallo e pelle cucita sedute attorno a un fuoco basso; sotto le cicatrici sul petto o sul collo il rilievo di piccoli dischi metallici con un foro al centro, incassati sotto la pelle; una giovane donna in primo piano preme due dita sul proprio disco.
+> - **Inquadratura e composizione:** gruppo raccolto, volti poco definiti, la giovane in primo piano; margine attorno, leggibile in miniatura.
 > - **Ambiente:** una vecchia sala d'imbarco in rovina: file di tornelli arrugginiti, corrimano piegati, un corridoio che non porta più da nessuna parte.
 > - **Luce e atmosfera:** luce calda e scarsa del fuoco, buio freddo oltre i tornelli.
-> - **Palette:** ocra, ruggine, carne bruciata dal sole, nero fumo, il riflesso opaco dei dischi.
-> - **Elementi del seme (Vestigio):** i tornelli come rovine di un'attesa, i dischi ereditati sotto la pelle, cenere attorno al fuoco.
+> - **Palette:** ocra, ruggine, pelle bruciata dal sole, nero fumo, il riflesso opaco dei dischi.
+> - **Motivi visivi:** i tornelli come rovine di un'attesa, i dischi sotto la pelle, cenere attorno al fuoco.
 > - **Da evitare:** astronavi, uniformi pulite, scritte sui dischi o sulle pareti, estetica cartoon.
 >
-> **Versione condensata:** Cinque Adattati seduti attorno a un fuoco basso in una vecchia sala d'imbarco in rovina, tra file di tornelli arrugginiti; innesti di metallo e pelle cucita, sotto le cicatrici il rilievo di piccoli dischi forati. In primo piano una giovane donna preme due dita sul proprio disco. Gruppo raccolto, volti poco definiti. Luce calda del fuoco, buio freddo oltre i tornelli. Palette ocra, ruggine, nero fumo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Cinque persone con placche di metallo e pelle cucita sedute attorno a un fuoco basso in una vecchia sala d'imbarco in rovina, tra file di tornelli arrugginiti; sotto le cicatrici il rilievo di piccoli dischi metallici forati, incassati sotto la pelle. In primo piano una giovane donna preme due dita sul proprio disco. Gruppo raccolto, volti poco definiti. Luce calda del fuoco, buio freddo oltre i tornelli. Palette ocra, ruggine, nero fumo. Senza astronavi o scritte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che un tempo li ha esclusi è diventato la loro forza.

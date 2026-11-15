@@ -53,15 +53,15 @@ tags:
 > - **CAN-056** [[Prima linea]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** due Adattati in una tenda di fortuna; uno tiene fermo il braccio dell'altro mentre una mano esperta sutura un innesto biomeccanico dalla pelle spenta. Attorno, bretelle e fili tesi tra i due corpi. Il volto del ricevente è girato, quello del suturatore è concentrato.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato sull'innesto e sulle mani; i due volti di tre quarti ai lati; margine attorno, leggibile in miniatura.
-> - **Ambiente:** tenda di prima linea, tela cerata, lampada a olio, cassette di metallo con strumenti, un telo insanguinato.
+> - **Soggetto e azione:** due persone con placche di metallo cucite alla pelle in una tenda di fortuna; una tiene fermo il braccio dell'altra mentre una mano esperta sutura una placca biomeccanica dalla superficie spenta. Attorno, bretelle e fili tesi tra i due corpi. Il volto di chi riceve è girato, quello di chi sutura è concentrato.
+> - **Inquadratura e composizione:** piano medio, soggetto centrato sulla placca e sulle mani; i due volti di tre quarti ai lati; margine attorno, leggibile in miniatura.
+> - **Ambiente:** tenda di tela cerata, lampada a olio, casse di metallo con strumenti, un telo macchiato di rosso scuro.
 > - **Luce e atmosfera:** luce calda bassa della lampada, ombre profonde; fuori, un buio freddo che filtra dalla tela.
 > - **Palette:** ocra, ruggine, grigio pelle, un rosso spento sul telo.
-> - **Elementi del seme (Vincolo):** bretelle e fili che legano i due corpi, le mani che si stringono, la formazione stretta attorno al tavolo.
-> - **Da evitare:** sangue abbondante, eroismo, sorrisi, estetica cartoon, volti troppo definiti, testo.
+> - **Motivi visivi:** bretelle e fili che legano i due corpi, le mani che si stringono, la formazione stretta attorno al tavolo.
+> - **Da evitare:** sangue abbondante, eroismo, sorrisi, volti troppo definiti, testo, estetica cartoon.
 >
-> **Versione condensata:** Due Adattati in una tenda di prima linea; uno sutura un innesto biomeccanico sul braccio dell'altro, bretelle e fili tesi tra i due corpi. Piano medio, soggetto centrato sulle mani e sull'innesto. Ambiente: tela cerata, lampada a olio, cassette di metallo, telo insanguinato. Luce calda bassa, ombre profonde, buio freddo fuori. Palette ocra, ruggine, grigio pelle, rosso spento. Vincolo: bretelle, fili, mani che si stringono, formazione stretta. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Due persone con placche di metallo cucite alla pelle in una tenda di tela cerata; una sutura una placca di metallo spento sul braccio dell'altra, con bretelle e fili tesi tra i due corpi. Piano medio, centro sulle mani e sulla placca. Lampada a olio, casse di metallo, un telo macchiato di rosso scuro. Luce calda bassa, ombre profonde, buio freddo fuori. Palette ocra, ruggine, grigio pelle, rosso spento. Senza sangue abbondante né sorrisi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ogni compagno caduto diventa parte di loro.

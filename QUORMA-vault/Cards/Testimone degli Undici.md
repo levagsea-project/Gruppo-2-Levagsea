@@ -51,14 +51,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un uomo anziano, seduto su una cassa in una stanza di passaggio, tiene gli occhi chiusi e conta sulle dita; le labbra si muovono. Attraverso pareti sfondate si intravedono altre figure, ciascuna in una stanza diversa, che parlano da sole. Nessuno scrive.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato, le stanze in profondità ai lati; margine attorno, leggibile in miniatura.
-> - **Ambiente:** cunicoli e stanze ricavate da un relè in rovina, pareti di lamiera, nessun foglio, nessun testo.
-> - **Luce e atmosfera:** luce calda bassa, ombre lunghe; un alone freddo lontano dal relè.
+> - **Inquadratura e composizione:** piano medio, le stanze in profondità ai lati; margine attorno, leggibile in miniatura.
+> - **Ambiente:** cunicoli e stanze ricavate da una stazione tecnica in rovina, pareti di lamiera, nessun foglio, nessun testo; in lontananza una torre di trasmissione.
+> - **Luce e atmosfera:** luce calda bassa, ombre lunghe; un alone freddo lontano dalla torre.
 > - **Palette:** ocra, grigio cenere, un blu freddo lontano.
-> - **Elementi del seme (Vincolo):** fili tesi tra i polsi dei recitanti, nodi alle dita, il cerchio spezzato delle stanze.
+> - **Motivi visivi:** fili tesi tra i polsi dei recitanti, nodi alle dita, il cerchio spezzato delle stanze.
 > - **Da evitare:** testo o nomi leggibili, liste, simboli, espressioni eroiche, estetica cartoon.
 >
-> **Versione condensata:** Uomo anziano seduto su una cassa in una stanza di passaggio, occhi chiusi, conta sulle dita muovendo le labbra; oltre pareti sfondate, altre figure in stanze diverse parlano da sole, nessuno scrive. Piano medio, stanze in profondità ai lati. Cunicoli ricavati da un relè in rovina. Luce calda bassa, alone freddo lontano. Palette ocra, grigio cenere, blu freddo. Vincolo: fili tesi tra i polsi, nodi alle dita, cerchio spezzato. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Uomo anziano seduto su una cassa in una stanza di passaggio, occhi chiusi, conta sulle dita muovendo le labbra; oltre pareti sfondate, altre figure in stanze diverse parlano da sole, nessuno scrive. Piano medio, stanze in profondità ai lati. Cunicoli di lamiera ricavati da una stazione tecnica in rovina. Luce calda bassa, alone freddo lontano. Palette ocra, grigio cenere, blu freddo. Fili tesi tra i polsi, nodi di lana alle dita. Senza fogli, liste o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che anche dopo di lui, chi gli stava accanto non può essere riscritto.

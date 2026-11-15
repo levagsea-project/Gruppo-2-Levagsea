@@ -51,15 +51,15 @@ tags:
 > - **CAN-195** [[Nome in prestito]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** quattro ragazzi in un rifugio, ognuno con una fascia di stoffa avvolta a spirale attorno all'avambraccio, ricamata con segni illeggibili; un'anziana stringe l'ultimo giro della fascia al polso del più piccolo; tutti guardano in alto, verso un'apertura nel soffitto.
-> - **Inquadratura e composizione:** gruppo al centro, volti poco definiti, le fasce in primo piano; un fascio di luce dall'alto; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** quattro ragazzi in un rifugio, ognuno con una striscia di stoffa avvolta a spirale attorno all'avambraccio, ricamata con segni non decifrabili; un'anziana stringe l'ultimo giro della striscia al polso del più piccolo; tutti guardano in alto, verso un'apertura nel soffitto.
+> - **Inquadratura e composizione:** gruppo al centro, volti poco definiti, le strisce in primo piano; un fascio di luce dall'alto; margine attorno, leggibile in miniatura.
 > - **Ambiente:** rifugio di pietra e lamiera, coperte, attrezzi appesi, un foro nel soffitto da cui si vede un pezzo di cielo chiaro.
 > - **Luce e atmosfera:** luce calda di lampada nella stanza, luce fredda e pallida dal foro.
 > - **Palette:** lana grezza, ocra, marrone fumo, l'azzurro pallido del cielo.
-> - **Elementi del seme (Spira):** le fasce avvolte a spirale, l'ultimo giro che si stringe, i ragazzi di età diverse come stadi di una crescita.
-> - **Da evitare:** lettere o nomi leggibili sulle fasce, astronavi, testo, estetica cartoon.
+> - **Motivi visivi:** le strisce avvolte a spirale, l'ultimo giro che si stringe, i ragazzi di età diverse come stadi di una crescita.
+> - **Da evitare:** lettere o nomi leggibili sulle strisce, astronavi, testo, estetica cartoon.
 >
-> **Versione condensata:** Quattro ragazzi in un rifugio di pietra e lamiera, ognuno con una fascia di stoffa ricamata avvolta a spirale attorno all'avambraccio; un'anziana stringe l'ultimo giro al polso del più piccolo. Tutti guardano verso un foro nel soffitto da cui si vede un pezzo di cielo chiaro. Gruppo al centro, volti poco definiti, fasce in primo piano. Luce calda di lampada e luce fredda dal foro. Palette lana grezza, ocra, azzurro pallido. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Quattro ragazzi in un rifugio di pietra e lamiera, ognuno con una striscia di stoffa ricamata avvolta a spirale attorno all'avambraccio; un'anziana stringe l'ultimo giro al polso del più piccolo. Tutti guardano verso un foro nel soffitto da cui si vede un pezzo di cielo chiaro. Gruppo al centro, volti poco definiti, strisce in primo piano. Luce calda di lampada e luce fredda dal foro. Palette lana grezza, ocra, azzurro pallido. Senza lettere leggibili né astronavi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che chi porta il nome di un altro tiene il posto a qualcuno che può ancora arrivare.

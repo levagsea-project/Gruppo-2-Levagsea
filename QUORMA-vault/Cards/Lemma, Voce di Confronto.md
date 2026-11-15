@@ -54,10 +54,10 @@ tags:
 > - **Ambiente:** un cortile di cemento tra edifici bassi senza finestre, l'erba che spunta dalle fessure.
 > - **Luce e atmosfera:** luce grigia del tardo pomeriggio, nessuna ombra netta, aria ferma.
 > - **Palette:** vetro nero, grigio piombo, verde spento dell'erba, un riflesso argento.
-> - **Elementi del seme (Spira):** le squame che si schiudono a strati, la crescita lenta della struttura, l'erba che avanza tra le fessure.
-> - **Da evitare:** spirali a segmenti sospese a mezz'aria, macchine alte e sottili, testo sulle lastre, volti, estetica cartoon.
+> - **Motivi visivi:** le squame che si schiudono a strati, la crescita lenta della struttura, l'erba che avanza tra le fessure.
+> - **Da evitare:** spirali a segmenti sospese a mezz'aria, testo sulle lastre, volti, estetica cartoon.
 >
-> **Versione condensata:** Un cumulo di lastre di vetro scuro sovrapposte come le squame di una pigna, che si schiudono verso l'alto in un cortile vuoto; da una squama parte un filo sottile e teso fino a un frammento isolato in un angolo. Edifici bassi senza finestre, erba tra le fessure. Cumulo centrato, filo in diagonale. Luce grigia del tardo pomeriggio. Palette vetro nero, grigio piombo, verde spento, riflesso argento. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un cumulo di lastre di vetro scuro sovrapposte come le squame di una pigna, che si schiudono verso l'alto in un cortile vuoto; da una squama parte un filo sottile e teso fino a un frammento isolato in un angolo. Edifici bassi senza finestre, erba tra le fessure. Cumulo centrato, filo in diagonale. Luce grigia del tardo pomeriggio. Palette vetro nero, grigio piombo, verde spento, riflesso argento. Senza volti né testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che riconosce ciò che torna e lo fa tornare più forte di prima.

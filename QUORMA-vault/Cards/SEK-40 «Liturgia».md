@@ -48,15 +48,15 @@ tags:
 > - **CAN-058** [[Liturgia di chiusura]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un'unità SEKTAC alta e sottile, in piedi davanti a un condotto che sta per essere sigillato; il capo chino, le mani lungo i fianchi, in posizione di recitazione. Attorno, cavi recisi e un cordone di isolamento già teso. Nessuno la ascolta.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, il condotto a destra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** incrocio di condotti in rovina, pareti metalliche, un sigillo già chiuso dietro l'unità, un altro ancora aperto davanti.
-> - **Luce e atmosfera:** luce bianca fredda dall'unità, un buio più profondo oltre il condotto; polvere sospesa, nessun movimento.
+> - **Soggetto e azione:** una macchina alta e sottile in piedi davanti a un condotto; il capo chino, le mani lungo i fianchi, in posizione di recitazione. Attorno, cavi recisi e un cordone di cavo già teso. Nessuno la ascolta.
+> - **Inquadratura e composizione:** piano medio di tre quarti, il condotto a destra; margine attorno, leggibile in miniatura.
+> - **Ambiente:** incrocio di condotti in rovina, pareti metalliche, un portello chiuso con una placca circolare dietro la macchina, un altro ancora aperto davanti.
+> - **Luce e atmosfera:** luce bianca fredda dalla macchina, un buio più profondo oltre il condotto; polvere sospesa, nessun movimento.
 > - **Palette:** grigio metallo, bianco freddo, un ocra spento sul cordone.
-> - **Elementi del seme (Vestigio):** il sigillo già chiuso alle spalle, il cordone che resta dopo il passaggio, la traccia di un rito che continua anche quando nessuno guarda.
-> - **Da evitare:** testo, simboli, aureole, posture di preghiera riconoscibili (mani giunte, ginocchia), ragni, estetica cartoon.
+> - **Motivi visivi:** il portello già chiuso alle spalle, il cordone che resta dopo il passaggio, la traccia di un rito che continua anche quando nessuno guarda.
+> - **Da evitare:** testo, simboli, aureole, mani giunte o ginocchia a terra, ragni, estetica cartoon.
 >
-> **Versione condensata:** Unità SEKTAC alta e sottile davanti a un condotto che sta per essere sigillato; capo chino, mani lungo i fianchi, in posa di recitazione; attorno cavi recisi e un cordone teso, nessuno la ascolta. Piano medio di tre quarti, condotto a destra. Incrocio di condotti in rovina, un sigillo chiuso alle spalle, uno aperto davanti. Luce bianca fredda, buio oltre il condotto. Palette grigio metallo, bianco freddo, ocra spento. Vestigio: sigillo chiuso, cordone, traccia del rito. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Macchina alta e sottile in piedi davanti a un condotto aperto; capo chino, mani lungo i fianchi, in posa di recitazione; attorno cavi recisi e un cordone di cavo teso, nessuno la ascolta. Piano medio di tre quarti, condotto a destra. Incrocio di condotti in rovina, un portello chiuso con placca circolare alle spalle. Luce bianca fredda, buio oltre il condotto. Palette grigio metallo, bianco freddo, ocra spento. Senza mani giunte, ginocchia a terra, aureole o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la sua chiusura protegge chi resta, come un rito compiuto.

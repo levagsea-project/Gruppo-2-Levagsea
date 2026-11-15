@@ -51,13 +51,13 @@ tags:
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** una donna di mezza età, larga e solida, in piedi in una cucina comune tiene un lungo cordone di strisce di stoffa annodate; lo passa alla vicina, che lo prende con entrambe le mani; altre donne in cerchio attorno a una grande pentola, le teste chine.
 > - **Inquadratura e composizione:** la donna in primo piano a sinistra, il cordone in diagonale che attraversa il cerchio; margine attorno, leggibile in miniatura.
-> - **Ambiente:** cucina comune imbiancata a calce, pulita e ordinata, una finestra dalla quale si intravede una guardia con la fascia bianca che passa oltre senza voltarsi.
+> - **Ambiente:** cucina comune imbiancata a calce, pulita e ordinata, una finestra dalla quale si intravede un uomo con una fascia di stoffa bianca sul braccio che passa oltre senza voltarsi.
 > - **Luce e atmosfera:** vapore della pentola, luce calda del tardo pomeriggio, silenzio teso.
 > - **Palette:** calce bianca, ocra, rosso mattone, il grigio delle stoffe.
-> - **Elementi del seme (Vincolo):** il cordone di stoffe annodate passato di mano in mano, le mani che si stringono, il cerchio serrato.
-> - **Da evitare:** volti nitidi delle guardie, filo spinato, scritte sulle stoffe, uomo anziano e magro, estetica cartoon.
+> - **Motivi visivi:** il cordone di stoffe annodate passato di mano in mano, le mani che si stringono, il cerchio serrato.
+> - **Da evitare:** volti nitidi dell'uomo alla finestra, filo spinato, scritte sulle stoffe, estetica cartoon.
 >
-> **Versione condensata:** Una donna di mezza età, larga e solida, in una cucina comune imbiancata a calce, passa a una vicina un lungo cordone di strisce di stoffa annodate; altre donne, in cerchio attorno a una grande pentola fumante, tengono il capo chino. Dalla finestra si intravede una guardia con la fascia bianca che passa oltre. Donna in primo piano, cordone in diagonale. Vapore, luce calda. Palette bianco calce, ocra, rosso mattone, grigio. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una donna di mezza età, larga e solida, in una cucina comune imbiancata a calce, passa a una vicina un lungo cordone di strisce di stoffa annodate; altre donne, in cerchio attorno a una grande pentola fumante, tengono il capo chino. Dalla finestra si intravede un uomo con una fascia bianca al braccio che passa oltre. Donna in primo piano, cordone in diagonale. Vapore, luce calda. Palette bianco calce, ocra, rosso mattone, grigio. Senza scritte né filo spinato. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che chi le sta accanto resiste insieme a lei, finché qualcuno ripete il nome.

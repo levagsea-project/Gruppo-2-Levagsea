@@ -57,10 +57,10 @@ tags:
 > - **Ambiente:** stanza ricavata da un condotto di manutenzione, pareti di lamiera, stoffe appese, nessun foglio, nessun testo visibile.
 > - **Luce e atmosfera:** luce calda di una sola candela, ombre profonde, polvere ferma.
 > - **Palette:** ocra caldo, grigio cenere, un filo rosso spento.
-> - **Elementi del seme (Vincolo):** i nodi di filo alle dita, le mani intrecciate, il cerchio stretto degli ascoltatori.
+> - **Motivi visivi:** i nodi di filo alle dita, le mani intrecciate, il cerchio stretto degli ascoltatori.
 > - **Da evitare:** qualsiasi testo o nome leggibile, libri aperti, simboli, espressioni eroiche, estetica cartoon.
 >
-> **Versione condensata:** Donna anziana in una stanza nascosta ricavata da un condotto di manutenzione, seduta di fronte a due ascoltatori giovani; non scrive, tiene le mani intrecciate e parla a labbra quasi chiuse. Nodi di filo colorato alle dita. Piano medio, soggetto centrato, ascoltatori di tre quarti ai lati. Luce calda di una candela, ombre profonde, polvere ferma. Palette ocra, grigio cenere, un filo rosso spento. Vincolo: nodi, mani intrecciate, cerchio stretto. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Donna anziana in una stanza nascosta ricavata da un condotto di manutenzione, seduta di fronte a due ascoltatori giovani; non scrive, tiene le mani intrecciate e parla a labbra quasi chiuse. Fili di lana colorati annodati alle dita. Piano medio, soggetto centrato, ascoltatori di tre quarti ai lati. Luce calda di una candela, ombre profonde, polvere ferma. Palette ocra, grigio cenere, un filo rosso spento. Senza fogli, libri o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che il nome che porta è al sicuro finché ha accanto qualcuno a cui passarlo.

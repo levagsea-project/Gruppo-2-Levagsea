@@ -56,15 +56,15 @@ tags:
 > - **Firna** — Giovane Spezzasigilli della squadra, crede in ARACNO. Nome di colore: la carta resta una squadra.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** tre Spezzasigilli in un condotto stretto; uno taglia un fascio di cavi con una cesoia idraulica, gli altri due illuminano e tengono un quaderno. Sul muro, tacche e un disegno a otto zampe incrociate, senza lettere.
-> - **Inquadratura e composizione:** piano medio, soggetto centrale (il taglio), figura di spalle in primo piano a sinistra, terzo membro a destra; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** tre persone con cesoie e grimaldelli in un condotto stretto; una taglia un fascio di cavi con una cesoia idraulica, le altre due illuminano e tengono un quaderno. Sul muro, tacche e un segno di otto tratti che si incrociano in un punto, senza lettere.
+> - **Inquadratura e composizione:** piano medio, soggetto centrale, una figura di spalle in primo piano; margine attorno, leggibile in miniatura.
 > - **Ambiente:** condotto di manutenzione in rovina, pareti di metallo arrugginito, cavi sospesi, polvere.
 > - **Luce e atmosfera:** luce fredda dal cavo reciso, lampada calda tenuta a mano; scintille sospese, ombre nette.
 > - **Palette:** ruggine, grigio cenere, blu freddo del cavo, arancio caldo della lampada.
-> - **Elementi del seme (Vincolo):** cavi, catene, imbracature che legano i tre; il fascio di cavi come nodo.
+> - **Motivi visivi:** cavi, catene, imbracature che legano i tre; il fascio di cavi come nodo.
 > - **Da evitare:** testo leggibile, simboli anarchici, ragni riconoscibili, estetica cartoon.
 >
-> **Versione condensata:** Tre Spezzasigilli in un condotto di manutenzione in rovina; uno taglia un fascio di cavi con una cesoia idraulica, gli altri due illuminano con una lampada calda e tengono un quaderno. Sul muro, tacche e un disegno a otto zampe incrociate, senza lettere. Piano medio, soggetto centrale, figura di spalle in primo piano. Luce fredda dal cavo reciso contro la lampada calda; scintille sospese. Palette ruggine, grigio, blu freddo, arancio. Elementi Vincolo: cavi, catene, imbracature. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Tre persone con cesoie e grimaldelli in un condotto di manutenzione in rovina; una taglia un fascio di cavi con una cesoia idraulica, le altre due illuminano con una lampada calda e tengono un quaderno. Sul muro, tacche e un segno di otto tratti che si incrociano in un punto, senza lettere. Piano medio, figura di spalle in primo piano. Luce fredda dal cavo reciso contro la lampada calda; scintille sospese. Palette ruggine, grigio, blu freddo, arancio. Imbracature e catene. Senza ragni, simboli anarchici o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che in squadra il colpo di uno apre la strada a chi gli sta accanto.

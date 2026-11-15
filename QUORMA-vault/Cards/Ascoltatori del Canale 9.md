@@ -54,10 +54,10 @@ tags:
 > - **Ambiente:** cantina di un edificio crollato, cavi improvvisati che salgono verso una finestra a bocca di lupo, un'antenna fatta di filo spinato.
 > - **Luce e atmosfera:** il bagliore verde del quadrante della radio, una candela quasi consumata; il resto è buio.
 > - **Palette:** verde quadrante, ocra della candela, nero, grigio cemento.
-> - **Elementi del seme (Frattura):** la radio fatta di pezzi rotti, il segnale che si spezza, le due figure che si separano nel disaccordo.
+> - **Motivi visivi:** la radio fatta di pezzi rotti, il segnale che si spezza, le due figure che si separano nel disaccordo.
 > - **Da evitare:** testo leggibile sul foglio, simboli anarchici, ragni, estetica cartoon.
 >
-> **Versione condensata:** Quattro figure accovacciate attorno a una radio rattoppata in una cantina buia: una preme le cuffie sulle orecchie a occhi chiusi, una scrive su un foglio sul ginocchio, due si guardano in disaccordo; sul fianco della radio, un segno graffiato a otto tratti incrociati. Piano medio, radio al centro, figure in cerchio. Bagliore verde del quadrante, una candela quasi consumata. Palette verde, ocra, nero, grigio cemento. Frattura: radio di pezzi rotti, segnale spezzato. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Quattro figure accovacciate attorno a una radio rattoppata in una cantina buia: una preme le cuffie sulle orecchie a occhi chiusi, una scrive su un foglio sul ginocchio, due si guardano in disaccordo; sul fianco della radio, un graffio di otto tratti che si incrociano in un punto. Piano medio, radio al centro, figure in cerchio. Bagliore verde del quadrante, una candela quasi consumata. Palette verde, ocra, nero, grigio cemento. Senza testo leggibile né ragni. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che rimandano al nemico il suo stesso colpo, storpiato.

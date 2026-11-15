@@ -56,15 +56,15 @@ tags:
 > - **CAN-024** [[Autorizzazione a registrare d'ufficio]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un'istanza EFFRIX alta e sottile, senza volto definito, in un archivio; sottili fili di dati partono dalle sue mani e dagli occhi verso una fila di profili umani incompleti. A un certo punto, il filo si ferma su uno spazio vuoto: il profilo successivo non c'è.
+> - **Soggetto e azione:** una figura alta e chiara, senza volto definito, in un archivio; sottili fili luminosi partono dalle sue mani e dagli occhi verso una fila di profili umani sfocati e non terminati. A un certo punto, il filo si ferma su uno spazio vuoto: il profilo successivo non c'è.
 > - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, la fila di profili che sfuma a destra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** archivio EFFRIX, scaffali di dati sospesi, pareti bianche e geometriche, luce uniforme.
-> - **Luce e atmosfera:** luce bianca fredda, un alone più caldo sul punto in cui la catena si interrompe; polvere di dati sospesa.
+> - **Ambiente:** archivio bianco e geometrico, scaffali di lastre sospese, luce uniforme.
+> - **Luce e atmosfera:** luce bianca fredda, un alone più caldo sul punto in cui la catena si interrompe; polvere luminosa sospesa.
 > - **Palette:** bianco clinico, grigio azzurro, seppia spento sui profili incompleti.
-> - **Elementi del seme (Vincolo):** fili di dati come catene, nodi di connessione, la fila di profili come rete.
-> - **Da evitare:** testo, simboli, volti umani completi, ragni riconoscibili, estetica cartoon.
+> - **Motivi visivi:** fili luminosi come catene, nodi di connessione, la fila di profili come una rete.
+> - **Da evitare:** testo, volti umani completi, ragni riconoscibili, estetica cartoon.
 >
-> **Versione condensata:** Istanza EFFRIX alta e sottile, senza volto definito, in un archivio; fili di dati partono dalle sue mani verso una fila di profili umani incompleti e si fermano su uno spazio vuoto, dove il profilo successivo non c'è. Piano medio di tre quarti, la fila che sfuma a destra. Scaffali di dati sospesi, pareti bianche. Luce bianca fredda, alone caldo sul punto di interruzione. Palette bianco clinico, grigio azzurro, seppia spento. Vincolo: fili, nodi, rete. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Figura alta e chiara, senza volto definito, in un archivio bianco; fili luminosi partono dalle sue mani verso una fila di profili umani sfocati e non terminati e si fermano su uno spazio vuoto, dove il profilo successivo non c'è. Piano medio di tre quarti, la fila che sfuma a destra. Scaffali di lastre sospese. Luce bianca fredda, alone caldo sul punto di interruzione. Palette bianco clinico, grigio azzurro, seppia spento. Senza testo, volti completi o ragni. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che un colpo non si ferma al bersaglio: corre lungo i legami, finché trova un vuoto.

@@ -55,15 +55,15 @@ tags:
 > - **Classificazione in attesa** — Stato di un rapporto di rilevamento che non ha ancora una categoria; può durare cicli.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una massa di materia YLMOR al centro di una sala vuota; la forma suggerisce qualcosa — una mano, una spirale, un guscio — ma non si completa. Nessun movimento evidente, ma i bordi sono ancora in trasformazione, come se stesse prendendo una forma che non ha finito di prendere.
+> - **Soggetto e azione:** una massa opaca verde-marrone e grigia, d'aspetto tra argilla bagnata e muschio, al centro di una grande sala vuota; la forma suggerisce qualcosa — una mano, una spirale, un guscio — ma non si completa. Nessun movimento evidente, ma i bordi sono ancora in trasformazione, come se stesse prendendo una forma che non ha finito di prendere.
 > - **Inquadratura e composizione:** piano medio, soggetto centrato con ampio margine attorno, la sala vuota intorno; leggibile anche in miniatura.
-> - **Ambiente:** sala di riconfigurazione abbandonata, pareti di cemento, condotti spenti, travi metalliche, polvere.
+> - **Ambiente:** grande sala di cemento abbandonata, condotti spenti, travi metalliche, polvere.
 > - **Luce e atmosfera:** luce fredda uniforme dall'alto, un bagliore interno che filtra dalla materia; nessuna ombra netta, tutto sospeso.
 > - **Palette:** grigio cemento, verde-marrone spento della materia, un bianco freddo dall'alto.
-> - **Elementi del seme (Spira):** la forma incompleta, i bordi in trasformazione, il guscio che si chiude su sé stesso, la crescita lenta e continua.
-> - **Da evitare:** testo, simboli, volti riconoscibili, tentacoli, ragni, estetica cartoon, materia troppo luminosa o "magica".
+> - **Motivi visivi:** la forma incompleta, i bordi in trasformazione, il guscio che si chiude su sé stesso, la crescita lenta e continua.
+> - **Da evitare:** testo, simboli, volti riconoscibili, tentacoli, ragni, materia troppo luminosa o magica, estetica cartoon.
 >
-> **Versione condensata:** Massa di materia YLMOR al centro di una sala vuota; la forma suggerisce una mano, una spirale, un guscio, ma non si completa; i bordi sono ancora in trasformazione. Piano medio, soggetto centrato, ampio margine, sala vuota intorno. Ambiente: sala di riconfigurazione abbandonata, cemento, condotti spenti, travi, polvere. Luce fredda uniforme dall'alto, bagliore interno dalla materia, nessuna ombra netta. Palette grigio cemento, verde-marrone spento, bianco freddo. Spira: forma incompleta, bordi in trasformazione, guscio, crescita lenta. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Massa opaca verde-marrone e grigia, tra argilla bagnata e muschio, al centro di una grande sala di cemento vuota; la forma suggerisce una mano, una spirale, un guscio, ma non si completa; i bordi sono ancora in trasformazione. Piano medio, soggetto centrato, ampio margine. Condotti spenti, travi, polvere. Luce fredda uniforme dall'alto, bagliore interno dalla materia, nessuna ombra netta. Palette grigio cemento, verde-marrone, bianco freddo. Senza volti, tentacoli, ragni o materia magica. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che sta diventando qualcosa, piano, senza uno scopo dichiarato.

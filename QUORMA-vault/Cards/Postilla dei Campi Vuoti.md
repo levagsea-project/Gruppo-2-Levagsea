@@ -49,15 +49,15 @@ tags:
 > - **CAN-218** — questa carta
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una macchina bassa e larga, seduta come un copista, fatta di pannelli rettangolari impilati; al posto del volto una cornice ovale vuota; da una mano di pannelli scende un nastro di dati che si ferma su una lastra di pietra grezza, dove qualcuno ha graffiato un segno a otto tratti incrociati.
+> - **Soggetto e azione:** una macchina bassa e larga, seduta come un copista, fatta di pannelli rettangolari impilati; al posto del volto una cornice ovale vuota; da una mano di pannelli scende un nastro di luce che si ferma su una lastra di pietra grezza, dove qualcuno ha graffiato un segno a otto tratti incrociati.
 > - **Inquadratura e composizione:** figura centrata, ripresa di fronte e un poco dall'alto, la cornice vuota al centro, il graffio visibile in basso; margine attorno, leggibile in miniatura.
 > - **Ambiente:** una sala d'archivio sepolta dalla cenere fino alle caviglie, scaffali crollati sullo sfondo.
 > - **Luce e atmosfera:** una luce fredda da una fessura sul soffitto, polvere ferma, silenzio.
 > - **Palette:** bianco sporco, grigio cenere, azzurro freddo, il nero della cornice vuota.
-> - **Elementi del seme (Vestigio):** la cenere, gli scaffali crollati, il graffio sulla pietra come traccia di chi non c'è.
-> - **Da evitare:** macchine alte e sottili, condotti, testo o numeri sui pannelli, volti umani nella cornice, estetica cartoon.
+> - **Motivi visivi:** la cenere, gli scaffali crollati, il graffio sulla pietra come traccia di chi non c'è.
+> - **Da evitare:** testo o numeri sui pannelli, volti umani nella cornice, estetica cartoon.
 >
-> **Versione condensata:** Una macchina bassa e larga, seduta come un copista, fatta di pannelli rettangolari impilati; al posto del volto una cornice ovale vuota. Da una mano scende un nastro di dati che si ferma su una lastra di pietra grezza con un graffio a otto tratti incrociati. Sala d'archivio sepolta dalla cenere, scaffali crollati. Figura centrata, ripresa dall'alto. Luce fredda da una fessura. Palette bianco sporco, grigio cenere, azzurro freddo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Macchina bassa e larga, seduta come un copista, fatta di pannelli rettangolari impilati; al posto del volto una cornice ovale vuota. Da una mano scende un nastro di luce che si ferma su una lastra di pietra grezza con un graffio di otto tratti incrociati. Sala d'archivio sepolta dalla cenere, scaffali crollati. Figura centrata, ripresa dall'alto. Luce fredda da una fessura. Palette bianco sporco, grigio cenere, azzurro freddo. Senza testo, numeri o volti nella cornice. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che manca da un registro conta quanto ciò che c'è, e può essere usato.

@@ -56,15 +56,15 @@ tags:
 > - **Il pasto** — Turno con cui la squadra di Fiato gli porta da mangiare.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** nella penombra di un tunnel di scolo, una massa di carne, metallo e cavi occupa metà della galleria; al centro si intravede un volto umano stanco, ancora riconoscibile; davanti, una giovane Adattata posa una ciotola a terra, a distanza di un braccio.
+> - **Soggetto e azione:** nella penombra di un tunnel di scolo, una massa di carne, metallo e cavi occupa metà della galleria; al centro si intravede un volto umano stanco, ancora riconoscibile; davanti, una giovane donna con placche di metallo cucite sull'avambraccio posa una ciotola a terra, a distanza di un braccio.
 > - **Inquadratura e composizione:** piano medio, la massa a destra, la ragazza a sinistra, la ciotola al centro; margine attorno, leggibile in miniatura.
 > - **Ambiente:** tunnel di cemento umido, acqua bassa sul fondo, griglie arrugginite.
 > - **Luce e atmosfera:** lampada a mano della ragazza, calda e bassa; la massa resta per metà nel buio.
 > - **Palette:** ocra, verde muschio, grigio ferro, rosa pallido della pelle.
-> - **Elementi del seme (Frattura):** il corpo spezzato e ricomposto, cuciture aperte, il cemento crepato dove la massa preme.
+> - **Motivi visivi:** il corpo spezzato e ricomposto, cuciture aperte, il cemento crepato dove la massa preme.
 > - **Da evitare:** gore esplicito, denti, mostro da film, occhi luminosi, testo, estetica cartoon.
 >
-> **Versione condensata:** Tunnel di scolo in penombra: una massa di carne, metallo e cavi occupa metà della galleria, al centro un volto umano stanco ancora riconoscibile; davanti, una giovane Adattata posa una ciotola a terra a distanza di un braccio. Piano medio, massa a destra, ragazza a sinistra. Cemento umido, acqua bassa. Lampada calda e bassa, la massa per metà nel buio. Palette ocra, verde muschio, grigio ferro, rosa pallido. Frattura: corpo spezzato e ricomposto, cemento crepato. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Tunnel di scolo in penombra: una massa di carne, metallo e cavi occupa metà della galleria, al centro un volto umano stanco ancora riconoscibile; davanti, una giovane donna con placche di metallo cucite sull'avambraccio posa una ciotola a terra a distanza di un braccio. Piano medio, massa a destra, ragazza a sinistra. Cemento umido, acqua bassa. Lampada calda e bassa, la massa per metà nel buio. Palette ocra, verde muschio, grigio ferro, rosa pallido. Cuciture aperte, cemento crepato. Senza gore, denti o occhi luminosi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che diventa più forte e meno controllabile, fino a essere un pericolo anche per i suoi.

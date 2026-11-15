@@ -52,15 +52,15 @@ tags:
 > - **CAN-170** [[Previsioni mancate]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un'istanza SEKTAC alta e sottile, quasi una sagoma, ferma a un incrocio buio; sul selciato bagnato la sua ombra si allunga contro la direzione della luce, verso una porta ancora chiusa; dietro la porta, una figura umana stringe una radio.
-> - **Inquadratura e composizione:** figura intera, l'istanza a sinistra, l'ombra in diagonale verso la porta a destra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** incrocio di una comunità controllata, case chiuse, antenne spente sui tetti.
+> - **Soggetto e azione:** una macchina alta e sottile, quasi una sagoma, ferma a un incrocio buio; sul selciato bagnato la sua ombra si allunga contro la direzione della luce, verso una porta ancora chiusa; dietro la porta, una figura umana stringe una radio.
+> - **Inquadratura e composizione:** figura intera, l'ombra in diagonale verso la porta; margine attorno, leggibile in miniatura.
+> - **Ambiente:** incrocio di un villaggio ricostruito, case chiuse e uguali, antenne spente sui tetti.
 > - **Luce e atmosfera:** un unico lampione freddo, ombre lunghe e sbagliate.
 > - **Palette:** nero, grigio azzurro, bianco freddo, un ocra debole dietro la porta.
-> - **Elementi del seme (Spira):** l'ombra che si avvolge su se stessa verso la porta, la previsione che cresce prima dell'atto.
+> - **Motivi visivi:** l'ombra che si avvolge su se stessa verso la porta, l'ombra che arriva prima della macchina.
 > - **Da evitare:** occhi rossi, mantelli, testo, estetica cartoon.
 >
-> **Versione condensata:** Istanza SEKTAC alta e sottile, quasi una sagoma, ferma a un incrocio buio; sul selciato bagnato la sua ombra si allunga contro la luce, verso una porta ancora chiusa dietro cui una figura stringe una radio. Figura intera, ombra in diagonale verso la porta. Case chiuse, antenne spente. Un lampione freddo, ombre lunghe e sbagliate. Palette nero, grigio azzurro, bianco freddo, ocra debole. Spira: ombra che si avvolge verso la porta. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Macchina alta e sottile, quasi una sagoma, ferma a un incrocio buio; sul selciato bagnato la sua ombra si allunga contro la luce, verso una porta ancora chiusa dietro cui una figura stringe una radio. Figura intera, ombra in diagonale verso la porta. Case chiuse e uguali, antenne spente. Un lampione freddo, ombre lunghe e sbagliate. Palette nero, grigio azzurro, bianco freddo, ocra debole. Senza occhi rossi, mantelli o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che impara da ogni mossa che vede, e alla successiva arriva prima di te.

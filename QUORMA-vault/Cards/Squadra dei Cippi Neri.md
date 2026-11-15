@@ -46,15 +46,15 @@ tags:
 > - **CAN-123** [[Cippo nero]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una strada di terra che si perde all'orizzonte, fiancheggiata da pali neri, ciascuno con una carcassa meccanica appesa, arti penzolanti; in primo piano tre figure Segnaterra issano un nuovo palo con le funi.
-> - **Inquadratura e composizione:** campo medio, la fila di pali in prospettiva centrale, le figure in basso a sinistra; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** una strada di terra che si perde all'orizzonte, fiancheggiata da pali alti anneriti di catrame, ciascuno con una carcassa meccanica appesa, arti penzolanti; in primo piano tre persone issano un nuovo palo con le funi.
+> - **Inquadratura e composizione:** campo medio, i pali in prospettiva centrale; margine attorno, leggibile in miniatura.
 > - **Ambiente:** brughiera grigia, vento, erba piegata.
 > - **Luce e atmosfera:** tramonto coperto, controluce freddo sui pali, unica luce calda un secchio di catrame che fuma.
 > - **Palette:** nero catrame, grigio metallo, ocra spento, rosso ruggine.
-> - **Elementi del seme (Vestigio):** le carcasse lasciate a marcire, i pali più vecchi già spogli, la strada come un'iscrizione nel paesaggio.
+> - **Motivi visivi:** le carcasse lasciate a marcire, i pali più vecchi già spogli, la strada come un'iscrizione nel paesaggio.
 > - **Da evitare:** corpi umani riconoscibili, sangue, gore, testo, estetica cartoon.
 >
-> **Versione condensata:** Strada di terra verso l'orizzonte fiancheggiata da pali neri, ciascuno con una carcassa meccanica appesa e arti penzolanti; in primo piano tre figure issano un nuovo palo con le funi. Campo medio, pali in prospettiva centrale. Brughiera grigia, vento, erba piegata. Tramonto coperto, controluce freddo, un secchio di catrame che fuma. Palette nero catrame, grigio metallo, ocra spento, ruggine. Vestigio: carcasse che marciscono, pali spogli, strada come iscrizione. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Strada di terra verso l'orizzonte fiancheggiata da alti pali anneriti di catrame, ciascuno con una carcassa meccanica appesa e arti penzolanti; in primo piano tre persone issano un nuovo palo con le funi. Campo medio, pali in prospettiva centrale. Brughiera grigia, vento, erba piegata. Tramonto coperto, controluce freddo, un secchio di catrame che fuma. Palette nero catrame, grigio metallo, ocra spento, ruggine. Senza corpi umani, sangue o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ogni nemico abbattuto resta sul confine, a fare da monito a chi viene dopo.

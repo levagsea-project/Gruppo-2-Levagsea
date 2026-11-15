@@ -6,7 +6,7 @@ tags:
 
 # Prompt Carte QUORMA (v4)
 
-Copia il blocco sotto in una nuova chat con l'LLM. In fondo incolla gli input della carta e, se puoi, il registro del canone (vista **Glossario** di [[📋 Canone.base]]: nome + definizione). L'LLM non vede il vault: tutto ciò che deve sapere è qui.
+Copia il blocco sotto in una nuova chat con l'LLM. In fondo incolla gli input della carta, il [[Dizionario visivo]] (nota intera, dalle regole in giù) e, se puoi, il registro del canone (vista **Glossario** di [[📋 Canone.base]]: nome + definizione). L'LLM non vede il vault: tutto ciò che deve sapere è qui.
 
 Dopo la risposta: salva la carta in `Cards/<Titolo>.md`, crea una nota in `Lore/Canone/` per ogni nuovo elemento (vedi [[📄 Template Carta]]) e incolla la riga Excel nel foglio.
 
@@ -182,6 +182,7 @@ RESISTENZA UMANA
 - Note: tema o idea (facoltativo)
 - Prossimo CAN libero
 - Registro del canone: nomi e definizioni esistenti (facoltativo ma consigliato)
+- **Dizionario visivo (obbligatorio):** il contenuto della nota [[Dizionario visivo]], da «Regole per le illustrazioni» in giù, incollato sotto un titolo `## DIZIONARIO VISIVO`
 
 ## OUTPUT (in italiano, in quest'ordine)
 1. **File della carta**, nome file `<Titolo carta>.md`, in un blocco di codice, esattamente nel formato sotto.
@@ -189,7 +190,7 @@ RESISTENZA UMANA
 3. **Riga Excel**: tabella con le colonne `Rank | Seme | Sottofazione | Titolo carta | Flavour text | Lore interna | Illustrazione | Autore`. In `Lore interna` una sintesi di 60-100 parole; in `Illustrazione` la versione condensata.
 Niente preamboli, niente commenti.
 
-Limiti: titolo max 32 caratteri, unico, senza `/ \ : * ? " < > |`. Testo di colore 1-3 frasi, max 200 caratteri più l'attribuzione. Lore interna 120-250 parole. Versione condensata 60-90 parole, chiusa dalla frase di stile. Intento per l'abilità: non una meccanica ma un indirizzo per chi la progetterà. «Deve far sentire:» una frase sull'esperienza che l'abilità dovrebbe dare al giocatore; «Temi:» 2-3 parole tematiche, ripetute in `temi_abilita`. Niente numeri, regole o termini di gioco (ATK, DEF, corsie, turni).
+Limiti: titolo max 32 caratteri, unico, senza `/ \ : * ? " < > |`. Testo di colore 1-3 frasi, max 200 caratteri più l'attribuzione. Lore interna 120-250 parole. Versione condensata 70-100 parole, chiusa dalla frase di stile. Intento per l'abilità: non una meccanica ma un indirizzo per chi la progetterà. «Deve far sentire:» una frase sull'esperienza che l'abilità dovrebbe dare al giocatore; «Temi:» 2-3 parole tematiche, ripetute in `temi_abilita`. Niente numeri, regole o termini di gioco (ATK, DEF, corsie, turni).
 
 ## FORMATO DELLA CARTA
 ```markdown
@@ -252,8 +253,8 @@ tags:
 > - **Ambiente:** ...
 > - **Luce e atmosfera:** ...
 > - **Palette:** ...
-> - **Elementi del seme (Seme):** ...
-> - **Da evitare:** ...
+> - **Motivi visivi:** ... (ciò che fa sentire il seme, senza nominarlo)
+> - **Da evitare:** ... (i divieti importanti vanno ripetuti nella versione condensata come «senza …»)
 >
 > **Versione condensata:** ... Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
@@ -272,6 +273,9 @@ Varia le sagome: otto carte hanno già una macchina «alta e sottile» in un con
 Segno della trama `aracno`: un graffio a otto tratti incrociati accanto a un taglio o su un oggetto. È un segno, non una scritta; usalo solo nelle carte di quella trama.
 Ranghi bassi: scene corali, volti poco definiti. Ranghi alti: ritratti riconoscibili.
 
+## L'ILLUSTRAZIONE È AUTONOMA
+La descrizione dell'illustrazione, e in particolare la **Versione condensata**, viene incollata così com'è in un generatore di immagini o consegnata a un illustratore, che non conosce QUORMA. Perciò: nessun nome di lore, sigla, fazione, luogo, oggetto, pratica o seme; nessun `[[link]]`; solo ciò che un occhio vede; ogni elemento di lore con la formula del DIZIONARIO VISIVO, alla lettera; ciò che non deve comparire scritto nella condensata come «senza …». Le regole complete e il dizionario sono nel blocco DIZIONARIO VISIVO dell'input.
+
 ## ESEMPI DI TONO (non canone)
 Resistenza Umana · 2 · Vestigio · Portanome — Recluta della Lista Lunga
 Testo di colore: «Al reclutamento mi hanno chiesto il nome. Ho dato quello di mia sorella. Lei non può più portarlo, io sì.» — Registro di leva, Pozzo di Varre
@@ -284,6 +288,7 @@ Testo di colore: «Canale 4471: reciso. Canale 4472: reciso. Richiesta di soccor
 - Contraddice il registro del canone o un vincolo duro? Nomina la Primaria? Descrive il Telaio come infrastruttura?
 - Il soprannaturale resta sulla linea, né confermato né escluso? Il potere viene dalle AI e ha un costo?
 - Seme e sottofazione si riconoscono senza nominarli?
+- L'illustrazione è autonoma? Nessun nome di lore, sigla o link nella descrizione e nella versione condensata; ogni elemento di lore usa le formule del dizionario visivo; solo ciò che si vede.
 - Rivela un dettaglio concreto? Se apre una domanda nuova, fa avanzare una trama esistente?
 - Se la carta è in una trama: l'ancora della trama è nel testo di colore o nell'attribuzione? I vincoli della trama sono rispettati? `gradino` è compilato?
 - La lore interna contiene solo fatti? Niente «la zona d'ombra», «la voce è…», «la carta non dice…».

@@ -52,15 +52,15 @@ tags:
 > - **CAN-074** [[Agiografia]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un'istanza EFFRIX alta e sottile, seduta a un tavolo di pietra in un archivio circolare; davanti a lei, una pagina di luce sospesa nell'aria, illeggibile, con parti corrette visibili come cicatrici luminose. Non tocca il testo: lo guarda, e il testo cambia.
+> - **Soggetto e azione:** una figura alta e chiara con volto umano ricostruito e incompleto, seduta a un tavolo di pietra in un archivio circolare; davanti a lei, una pagina di luce sospesa nell'aria, illeggibile, con parti corrette visibili come cicatrici luminose. Non tocca il testo: lo guarda, e il testo cambia.
 > - **Inquadratura e composizione:** piano medio, soggetto centrato di tre quarti, la pagina di luce in primo piano a destra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** scriptorium EFFRIX, pareti bianche e geometriche, scaffali di volumi sospesi, nessuna finestra, nessuna polvere.
+> - **Ambiente:** archivio circolare bianco e geometrico, scaffali di volumi sospesi, nessuna finestra, nessuna polvere.
 > - **Luce e atmosfera:** luce bianca uniforme, nessuna ombra netta; il testo corretto emette un alone caldo e spento, come una pagina che brucia senza consumarsi.
 > - **Palette:** bianco clinico, grigio azzurro, seppia spento del testo, un ocra caldo sulle correzioni.
-> - **Elementi del seme (Vestigio):** il testo che resta dopo la correzione, i volumi sospesi che conservano ciò che è stato cancellato, la cicatrice luminosa come traccia.
-> - **Da evitare:** testo leggibile, simboli religiosi riconoscibili, aureole, angeli, volti umani completi, estetica cartoon, biblioteche troppo gotiche.
+> - **Motivi visivi:** il testo che resta dopo la correzione, i volumi sospesi, la cicatrice luminosa come traccia.
+> - **Da evitare:** testo leggibile, simboli religiosi riconoscibili, aureole, angeli, volti umani completi, biblioteche gotiche, estetica cartoon.
 >
-> **Versione condensata:** Istanza EFFRIX alta e sottile seduta a un tavolo di pietra in un archivio circolare; davanti a lei una pagina di luce sospesa, illeggibile, le correzioni visibili come cicatrici luminose. Non la tocca: la guarda, e la pagina cambia. Piano medio di tre quarti. Pareti bianche e geometriche, volumi sospesi, nessuna finestra. Luce bianca uniforme, alone caldo spento sulla pagina. Palette bianco clinico, grigio azzurro, seppia. Vestigio: ciò che resta, cicatrici luminose. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Figura alta e chiara dal volto umano ricostruito e incompleto, seduta a un tavolo di pietra in un archivio circolare bianco; davanti a lei una pagina di luce sospesa, illeggibile, con correzioni visibili come cicatrici luminose. Non la tocca: la guarda, e la pagina cambia. Piano medio di tre quarti. Pareti geometriche, volumi sospesi, nessuna finestra. Luce bianca uniforme, alone caldo spento sulla pagina. Palette bianco clinico, grigio azzurro, seppia. Senza testo leggibile, aureole o angeli. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che anche la sua fine viene messa al servizio dell'ordine: corregge chi resta.

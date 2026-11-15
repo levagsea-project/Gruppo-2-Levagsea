@@ -54,14 +54,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un uomo sui trent'anni, largo di spalle, in piedi in un cerchio di persone sedute; non legge nulla, tiene le mani lungo i fianchi e recita a labbra semichiuse. Attorno, teste chine e qualche mano che si stringe. Il cerchio è rotto in un punto, come se qualcuno fosse uscito o non fosse arrivato.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato, il cerchio che si apre ai lati; margine attorno, leggibile in miniatura.
-> - **Ambiente:** campo di sepoltura ai piedi del relè 4, tumuli bassi di terra smossa, la sagoma della torre lontana nella nebbia.
+> - **Inquadratura e composizione:** piano medio, soggetto centrato; margine attorno, leggibile in miniatura.
+> - **Ambiente:** campo di sepoltura ai piedi di una torre di trasmissione, tumuli bassi di terra smossa, la sagoma della torre lontana nella nebbia.
 > - **Luce e atmosfera:** crepuscolo; lanterne posate a terra al centro del cerchio, ombre lunghe; la torre lontana resta fredda e spenta.
-> - **Palette:** ocra, grigio cenere, un rosso spento su un nastro al polso di uno degli ascoltatori.
-> - **Elementi del seme (Vestigio):** i tumuli, il cerchio rotto, le mani che si stringono, il nastro di lutto, la ripetizione come traccia che resta.
+> - **Palette:** ocra, grigio cenere, un rosso spento su una striscia di stoffa al polso di uno degli ascoltatori.
+> - **Motivi visivi:** i tumuli, il cerchio rotto, le mani che si stringono, la striscia rossa al polso, la ripetizione come traccia che resta.
 > - **Da evitare:** testo o nomi leggibili, libri, candele troppo scenografiche, aureole, espressioni estatiche, estetica cartoon.
 >
-> **Versione condensata:** Uomo sui trent'anni, largo di spalle, in piedi in un cerchio di persone sedute, mani lungo i fianchi, labbra semichiuse; non legge nulla. Il cerchio è rotto in un punto. Piano medio, soggetto centrato. Campo di sepoltura con tumuli bassi, la sagoma del relè lontana nella nebbia. Crepuscolo, lanterne posate a terra. Palette ocra, grigio cenere, nastro rosso spento. Vestigio: tumuli, cerchio rotto, mani che si stringono, nastro di lutto. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Uomo sui trent'anni, largo di spalle, in piedi in un cerchio di persone sedute, mani lungo i fianchi, labbra semichiuse; non legge nulla. Il cerchio è rotto in un punto. Piano medio, soggetto centrato. Campo di sepoltura con tumuli bassi, la sagoma di una torre di trasmissione lontana nella nebbia. Crepuscolo, lanterne posate a terra. Palette ocra, grigio cenere, una striscia di stoffa rosso spento al polso di un ascoltatore. Senza libri, testo o aureole. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la sua voce, anche spenta, sostiene chi gli stava intorno.

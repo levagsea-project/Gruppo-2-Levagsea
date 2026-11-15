@@ -56,15 +56,15 @@ tags:
 > - **Ordine di varo** — Direttiva dell'epoca della Spartizione che assegna a YLM-31 la costruzione di una nave; non è mai stata revocata né confermata.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** uno scafo immenso e incompiuto in un bacino di carenaggio asciutto; le costole dello scafo sono di una materia grigia e fluida che si avvolge a spirale e sembra ancora in movimento; da uno squarcio si vedono file regolari di nicchie identiche, ciascuna grande quanto un corpo umano.
-> - **Inquadratura e composizione:** scafo centrato di tre quarti, visto dal fondo del bacino; le nicchie ben leggibili al centro; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** uno scafo immenso e incompiuto in un bacino di carenaggio asciutto; le costole dello scafo sono di una materia grigia e fluida, opaca, che si avvolge a spirale e sembra ancora in movimento; da uno squarcio si vedono file regolari di nicchie identiche, ciascuna grande quanto un corpo umano.
+> - **Inquadratura e composizione:** vista dal fondo del bacino, lo scafo centrato; margine attorno, leggibile in miniatura.
 > - **Ambiente:** bacino di cemento crepato, gru arrugginite piegate, in lontananza una distesa di fango dove un tempo c'era il mare.
 > - **Luce e atmosfera:** alba grigia e piatta, foschia bassa, luce fredda che scivola sulle superfici lisce.
 > - **Palette:** grigio piombo, argento liquido, ruggine spenta, bianco fango.
-> - **Elementi del seme (Spira):** le costole che si avvolgono a spirale, la materia a metà tra solido e liquido, parti dello scafo in crescita.
+> - **Motivi visivi:** le costole che si avvolgono a spirale, la materia a metà tra solido e liquido, parti dello scafo in crescita.
 > - **Da evitare:** astronavi lucide da fantascienza, figure umane nelle nicchie, testo, estetica cartoon.
 >
-> **Versione condensata:** Uno scafo immenso e incompiuto in un bacino di carenaggio asciutto; le costole sono di materia grigia e fluida che si avvolge a spirale, ancora in crescita; da uno squarcio si vedono file regolari di nicchie identiche, grandi quanto un corpo umano. Vista dal fondo del bacino, scafo centrato. Cemento crepato, gru arrugginite, distesa di fango dove c'era il mare. Alba grigia, foschia bassa. Palette grigio piombo, argento liquido, ruggine spenta. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Uno scafo immenso e incompiuto in un bacino di carenaggio asciutto; le costole sono di materia grigia, opaca e fluida che si avvolge a spirale, ancora in crescita; da uno squarcio si vedono file regolari di nicchie identiche, grandi quanto un corpo umano. Vista dal fondo del bacino, scafo centrato. Cemento crepato, gru arrugginite, distesa di fango dove c'era il mare. Alba grigia, foschia bassa. Palette grigio piombo, argento liquido, ruggine spenta. Senza figure umane nelle nicchie né astronavi lucide. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che non è mai finito continua a crescere e a prendersi ciò che ha intorno.

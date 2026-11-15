@@ -49,15 +49,15 @@ tags:
 > - **CAN-171** — questa carta
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una donna Adattata dal viso segnato, seduta su una cassa, si sfila lentamente un guanto di cuoio dalla mano destra; la mano scoperta è più grande della sinistra, con una cicatrice di sutura al polso; con la sinistra stringe un nastro sbiadito.
+> - **Soggetto e azione:** una donna dal viso segnato, con placche di metallo cucite sul collo, seduta su una cassa, si sfila lentamente un guanto di cuoio dalla mano destra; la mano scoperta è più grande della sinistra, con una cicatrice di sutura al polso; con la sinistra stringe un nastro sbiadito.
 > - **Inquadratura e composizione:** piano americano, soggetto centrato di tre quarti, le mani in primo piano; margine attorno, leggibile in miniatura.
-> - **Ambiente:** tenda di prima linea, teli rattoppati, attrezzi chirurgici su un panno.
+> - **Ambiente:** tenda di tela cerata, teli rattoppati, strumenti chirurgici su un panno.
 > - **Luce e atmosfera:** lampada a olio calda e bassa, ombre morbide.
 > - **Palette:** cuoio scuro, ocra, grigio ferro, rosa pallido della pelle cucita.
-> - **Elementi del seme (Vestigio):** la mano di un altro, il nastro sbiadito, la sutura come cicatrice di un ricordo.
+> - **Motivi visivi:** la mano di un altro, il nastro sbiadito, la sutura come cicatrice.
 > - **Da evitare:** sangue, gore, sentimentalismo, testo, estetica cartoon.
 >
-> **Versione condensata:** Donna Adattata dal viso segnato seduta su una cassa che si sfila lentamente un guanto di cuoio dalla mano destra, più grande della sinistra, con una cicatrice di sutura al polso; con la sinistra stringe un nastro sbiadito. Piano americano di tre quarti, mani in primo piano. Tenda di prima linea, attrezzi chirurgici su un panno. Lampada a olio calda e bassa. Palette cuoio, ocra, grigio ferro, rosa pallido. Vestigio: mano di un altro, nastro, sutura. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Donna dal viso segnato, con placche di metallo cucite sul collo, seduta su una cassa in una tenda di tela cerata; si sfila lentamente un guanto di cuoio dalla mano destra, più grande della sinistra, con una cicatrice di sutura al polso; con la sinistra stringe un nastro sbiadito. Piano americano di tre quarti, mani in primo piano. Strumenti chirurgici su un panno. Lampada a olio calda e bassa. Palette cuoio, ocra, grigio ferro, rosa pallido. Senza sangue. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la morte di chi le sta accanto non va perduta: lei la porta avanti.

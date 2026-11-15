@@ -58,10 +58,10 @@ tags:
 > - **Ambiente:** magazzino di lamiera, gocce che filtrano dal tetto, secchi a terra.
 > - **Luce e atmosfera:** un'unica lampada calda appesa al centro; fuori dalle finestre rigate di pioggia, buio grigio.
 > - **Palette:** ocra della lampada, grigio piombo, nero carbone, un solo giallo spento sui disegni.
-> - **Elementi del seme (Spira):** soli disegnati a spirale, disegni che cambiano di telo in telo, bambini di età diverse.
+> - **Motivi visivi:** soli disegnati a spirale, disegni che cambiano di telo in telo, bambini di età diverse.
 > - **Da evitare:** sole vero visibile, testo leggibile, sorrisi forzati, estetica cartoon.
 >
-> **Versione condensata:** Magazzino di lamiera con il tetto rattoppato: bambini seduti a terra disegnano soli a carbone su teli appesi; una donna magra alza la mano aperta come per mostrarne la grandezza; in un angolo un bambino disegna un sole nero. Piano medio, donna al centro di tre quarti. Gocce dal tetto, finestre rigate di pioggia. Una lampada calda al centro. Palette ocra, grigio piombo, nero carbone, giallo spento. Spira: soli a spirale, disegni sempre diversi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Magazzino di lamiera con il tetto rattoppato: bambini seduti a terra disegnano soli a carbone su teli appesi; una donna magra alza la mano aperta come per mostrarne la grandezza; in un angolo un bambino disegna un sole nero. Piano medio, donna al centro di tre quarti. Gocce dal tetto, finestre rigate di pioggia. Una lampada calda al centro. Palette ocra, grigio piombo, nero carbone, giallo spento. Soli disegnati a spirale. Senza sole vero né testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che chi impara da lei diventa qualcosa che lei non ha mai visto.

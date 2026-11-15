@@ -50,15 +50,15 @@ tags:
 > - **CAN-156** [[Esequie dei corretti]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una figura alta con un velo nero sul volto, in piedi davanti a una fila di persone in lutto; in prima fila un uomo piange insieme agli altri, l'unico senza nastro di lutto al polso; dietro di lui una donna guarda lui invece dell'officiante.
-> - **Inquadratura e composizione:** piano medio, l'officiante a sinistra di tre quarti, l'uomo al centro; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** una figura alta con un velo nero che copre interamente il volto, in piedi davanti a una fila di persone in lutto; in prima fila un uomo piange insieme agli altri, l'unico senza una striscia di stoffa rosso spento annodata al polso; dietro di lui una donna guarda lui invece della figura velata.
+> - **Inquadratura e composizione:** piano medio, la figura velata a sinistra di tre quarti, l'uomo al centro; margine attorno, leggibile in miniatura.
 > - **Ambiente:** cortile di un edificio in rovina, una bara vuota su due cavalletti, panche di fortuna.
 > - **Luce e atmosfera:** luce grigia di un pomeriggio coperto, nessuna candela.
-> - **Palette:** nero del velo, grigio, ocra spento dei vestiti, rosso spento dei nastri di lutto.
-> - **Elementi del seme (Frattura):** la bara vuota, la fila spezzata dallo sguardo della donna, l'uomo senza nastro.
+> - **Palette:** nero del velo, grigio, ocra spento dei vestiti, rosso spento delle strisce ai polsi.
+> - **Motivi visivi:** la bara vuota, la fila spezzata dallo sguardo della donna, l'uomo senza striscia al polso.
 > - **Da evitare:** volto visibile sotto il velo, simboli religiosi riconoscibili, testo, estetica cartoon.
 >
-> **Versione condensata:** Figura alta con un velo nero sul volto davanti a una fila di persone in lutto; in prima fila un uomo piange con gli altri, l'unico senza nastro di lutto al polso; dietro di lui una donna guarda lui invece dell'officiante. Piano medio, officiante a sinistra. Cortile in rovina, una bara vuota su due cavalletti. Luce grigia di pomeriggio coperto. Palette nero, grigio, ocra spento, rosso dei nastri. Frattura: bara vuota, uomo senza nastro. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Figura alta con un velo nero che copre del tutto il volto davanti a una fila di persone in lutto, ognuna con una striscia di stoffa rosso spento annodata al polso; in prima fila un uomo piange con gli altri, l'unico senza striscia; dietro di lui una donna guarda lui invece della figura velata. Piano medio, figura velata a sinistra. Cortile in rovina, una bara vuota su due cavalletti. Luce grigia di pomeriggio coperto. Palette nero, grigio, ocra spento, rosso spento. Senza volti sotto il velo né simboli religiosi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che dichiara perduto chi è ancora in piedi, e il colpo che segue lo trova già pianto.

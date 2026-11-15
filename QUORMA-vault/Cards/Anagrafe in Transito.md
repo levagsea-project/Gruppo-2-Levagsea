@@ -60,10 +60,10 @@ tags:
 > - **Ambiente:** una sala vuota e pulita, pavimento lucido che riflette la colonna.
 > - **Luce e atmosfera:** luce fredda e uniforme, nessuna ombra netta, silenzio clinico.
 > - **Palette:** bianco ghiaccio, grigio perla, azzurro freddo, i ritratti in seppia sbiadito.
-> - **Elementi del seme (Spira):** la colonna che cresce a spirale, i ritratti che cambiano da adulti a bambini salendo, una lastra in cima ancora in formazione.
+> - **Motivi visivi:** la colonna che cresce a spirale, i ritratti che cambiano da adulti a bambini salendo, una lastra in cima ancora in formazione.
 > - **Da evitare:** volti nitidi, lettere o numeri sulle lastre, astronavi, estetica cartoon.
 >
-> **Versione condensata:** Una colonna d'archivio liscia e bianca che sale a spirale in una sala vuota; lungo la spirale lastre sottili con ritratti imperfetti di adulti, che verso la cima diventano bambini sfocati e incompleti, e un'ultima lastra ancora in formazione. Ripresa dal basso, colonna centrata, pavimento lucido che la riflette. Luce fredda e uniforme, silenzio clinico. Palette bianco ghiaccio, grigio perla, azzurro freddo, seppia sbiadito. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una colonna d'archivio liscia e bianca che sale a spirale in una sala vuota; lungo la spirale lastre sottili con ritratti sfocati e non terminati di adulti, che verso la cima diventano bambini incompleti, e un'ultima lastra ancora in formazione. Ripresa dal basso, colonna centrata, pavimento lucido che la riflette. Luce fredda e uniforme, silenzio clinico. Palette bianco ghiaccio, grigio perla, azzurro freddo, seppia sbiadito. Senza volti nitidi, lettere o numeri. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che il registro continua a crescere anche senza ciò che registra.

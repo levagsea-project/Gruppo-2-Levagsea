@@ -54,10 +54,10 @@ tags:
 > - **Ambiente:** il bordo di una strada di terra battuta all'alba, alle spalle un campo di rovine basse e un fumo lontano.
 > - **Luce e atmosfera:** alba fredda e grigia, la luce calda del fuoco sulle dita nuove, occhi stanchi di chi non dorme.
 > - **Palette:** ocra, grigio cenere, pelle pallida delle dita nuove, rosso brace.
-> - **Elementi del seme (Vestigio):** le dita come lascito di un altro, la sacca con oggetti consunti, la cenere del fuoco da campo, le rovine alle spalle.
-> - **Da evitare:** il sito e ciò che contiene, macchine chirurgiche, uomo anziano e magro, testo, estetica cartoon.
+> - **Motivi visivi:** le dita come lascito di un altro, la sacca con oggetti consunti, la cenere del fuoco da campo, le rovine alle spalle.
+> - **Da evitare:** strumenti chirurgici, edifici riconoscibili, testo, estetica cartoon.
 >
-> **Versione condensata:** Un uomo sui trent'anni, robusto, seduto accanto a un piccolo fuoco al margine di una strada di terra battuta all'alba; tiene sul ginocchio la mano destra aperta, con tre dita più chiare delle altre e una cicatrice a filo attorno al polso, mentre con la sinistra stringe una sacca di tela consunta. Rovine basse e fumo lontano sullo sfondo. Mano al centro, fuoco a destra. Alba fredda, brace calda. Palette ocra, grigio cenere, pelle pallida, rosso brace. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un uomo sui trent'anni, robusto, seduto accanto a un piccolo fuoco al margine di una strada di terra battuta all'alba; tiene sul ginocchio la mano destra aperta, con tre dita più chiare delle altre e una cicatrice a filo attorno al polso, mentre con la sinistra stringe una sacca di tela consunta. Rovine basse e fumo lontano. Mano al centro, fuoco a destra. Alba fredda, brace calda. Palette ocra, grigio cenere, pelle pallida, rosso brace. Senza strumenti chirurgici. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che porta con sé qualcosa di chi non c'è più, e che questo gli ha dato forza e gli ha tolto qualcosa.

@@ -55,15 +55,15 @@ tags:
 > - **Fonti concordi** — Termine MEROZYN per fonti che si citano a vicenda senza contraddirsi; per il nodo sono la forma più alta di certezza.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** sopra una valle erbosa e vuota fluttua uno sciame di lastre metalliche sottili, ordinate come pagine sfogliate di un libro enorme; dalle lastre cade una luce pallida su decine di piccole pietre posate nell'erba.
-> - **Inquadratura e composizione:** lo sciame al centro in alto, le pietre in basso come una costellazione; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** sopra una valle erbosa e vuota fluttua un banco di lastre metalliche sottili, ordinate come pagine sfogliate di un libro enorme; dalle lastre cade una luce pallida su decine di piccole pietre posate nell'erba.
+> - **Inquadratura e composizione:** il banco di lastre al centro in alto, le pietre in basso come una costellazione; margine attorno, leggibile in miniatura.
 > - **Ambiente:** valle ampia senza fiume né ponte, colline basse, qualche fiore secco accanto alle pietre.
-> - **Luce e atmosfera:** crepuscolo, cielo violaceo, la luce fredda dello sciame contro il buio che sale dalla valle.
+> - **Luce e atmosfera:** crepuscolo, cielo violaceo, la luce fredda delle lastre contro il buio che sale dalla valle.
 > - **Palette:** verde spento, grigio pietra, argento, viola crepuscolo.
-> - **Elementi del seme (Vestigio):** le pietre con offerte, fiori secchi, cenere di piccoli fuochi votivi, le lastre come pagine di un archivio.
+> - **Motivi visivi:** le pietre con offerte, fiori secchi, cenere di piccoli fuochi votivi, le lastre come pagine di un archivio.
 > - **Da evitare:** ponti, fiumi, scritte sulle pietre o sulle lastre, figure umane in primo piano, estetica cartoon.
 >
-> **Versione condensata:** Sopra una valle erbosa e vuota, senza fiume né ponte, fluttua uno sciame di lastre metalliche sottili ordinate come pagine sfogliate di un libro enorme; dalle lastre cade luce pallida su decine di piccole pietre posate nell'erba, con fiori secchi e cenere di fuochi votivi. Sciame in alto, pietre in basso come una costellazione. Crepuscolo violaceo. Palette verde spento, grigio pietra, argento, viola. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Sopra una valle erbosa e vuota, senza fiume né ponte, fluttua un banco di lastre metalliche sottili ordinate come pagine sfogliate di un libro enorme; dalle lastre cade luce pallida su decine di piccole pietre posate nell'erba, con fiori secchi e cenere di piccoli fuochi. Lastre in alto, pietre in basso come una costellazione. Crepuscolo violaceo. Palette verde spento, grigio pietra, argento, viola. Senza scritte né figure umane. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che una memoria ripetuta abbastanza volte diventa vera.

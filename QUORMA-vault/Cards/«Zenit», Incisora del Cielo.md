@@ -55,10 +55,10 @@ tags:
 > - **Ambiente:** crinale nudo d'alta quota, erba rasa e sassi, in basso un mare di nuvole scure che copre le pianure.
 > - **Luce e atmosfera:** notte limpida e gelida, stelle fitte, il punto fermo che getta una luce bianca appena più forte.
 > - **Palette:** blu notte, grigio pietra, bianco stella, il rosso spento del mantello.
-> - **Elementi del seme (Spira):** le scie delle stelle che ruotano attorno al cielo in archi concentrici, le linee incise sulla pietra che si avvolgono a spirale.
+> - **Motivi visivi:** le scie delle stelle che ruotano attorno al cielo in archi concentrici, le linee incise sulla pietra che si avvolgono a spirale.
 > - **Da evitare:** astronavi riconoscibili, pianeti, segni leggibili sulla pietra, testo, estetica cartoon.
 >
-> **Versione condensata:** Una donna magra in un mantello consunto, inginocchiata su una lastra di pietra piatta incisa di linee curve a spirale, lo scalpello sollevato; guarda un unico punto di luce fermo, più grande delle stelle. Crinale nudo d'alta quota, in basso un mare di nuvole scure. Notte limpida e gelida, scie di stelle che ruotano in archi concentrici. Palette blu notte, grigio pietra, bianco stella, rosso spento. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una donna magra in un mantello consunto, inginocchiata su una lastra di pietra piatta incisa di linee curve a spirale, lo scalpello sollevato; guarda un unico punto di luce fermo, più grande delle stelle. Crinale nudo d'alta quota, in basso un mare di nuvole scure. Notte limpida e gelida, scie di stelle che ruotano in archi concentrici. Palette blu notte, grigio pietra, bianco stella, rosso spento. Senza astronavi né pianeti. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che osserva abbastanza a lungo cambia, e che intanto cambia anche lei.

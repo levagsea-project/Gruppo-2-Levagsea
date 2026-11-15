@@ -58,10 +58,10 @@ tags:
 > - **Ambiente:** una piattaforma di cemento liscio su un'altura, antenne spente sullo sfondo.
 > - **Luce e atmosfera:** crepuscolo freddo, luce grigia e uniforme, un'unica stella visibile in alto.
 > - **Palette:** grafite, argento opaco, blu cenere, un bianco pallido.
-> - **Elementi del seme (Spira):** la spirale dei segmenti che si apre verso l'alto, alcuni segmenti di forma leggermente diversa dagli altri, come mutati.
+> - **Motivi visivi:** la spirale dei segmenti che si apre verso l'alto, alcuni segmenti di forma leggermente diversa dagli altri, come mutati.
 > - **Da evitare:** volti umani, astronavi, pianeti, testo, estetica cartoon.
 >
-> **Versione condensata:** Un corpo di segmenti metallici sospesi nell'aria, disposti a spirale attorno a un centro vuoto e rivolti verso l'alto; in più punti mancano segmenti, come posti lasciati liberi, e alcuni hanno forma leggermente diversa. Ripresa dal basso, figura centrata. Piattaforma di cemento liscio su un'altura, antenne spente sullo sfondo. Crepuscolo freddo, luce grigia, un'unica stella in alto. Palette grafite, argento opaco, blu cenere. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un corpo di segmenti metallici sospesi nell'aria, disposti a spirale attorno a un centro vuoto e rivolti verso l'alto; in più punti mancano segmenti, come posti lasciati liberi, e alcuni hanno forma leggermente diversa. Ripresa dal basso, figura centrata. Piattaforma di cemento liscio su un'altura, antenne spente sullo sfondo. Crepuscolo freddo, luce grigia, un'unica stella in alto. Palette grafite, argento opaco, blu cenere. Senza volti umani, astronavi o pianeti. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che ciò che si è separato può tornare, ma non uguale a come è partito.

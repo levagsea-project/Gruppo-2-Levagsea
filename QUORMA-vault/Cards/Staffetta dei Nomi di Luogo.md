@@ -51,15 +51,15 @@ tags:
 > - **CAN-163** [[Contromappa]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una bambina magra con un mantello troppo grande cammina sotto una pioggia scura lungo un vicolo, contando sottovoce sulle dita; lontano, dietro di lei, una pattuglia di macchine passa senza guardarla.
-> - **Inquadratura e composizione:** piano medio, la bambina centrata di tre quarti, il vicolo che sale a gradini alle sue spalle; margine attorno, leggibile in miniatura.
+> - **Soggetto e azione:** una bambina magra con un mantello troppo grande cammina sotto una pioggia fine e scura lungo un vicolo a gradini, contando sottovoce sulle dita; lontano, dietro di lei, una pattuglia di macchine passa senza guardarla.
+> - **Inquadratura e composizione:** piano medio, la bambina centrata di tre quarti; margine attorno, leggibile in miniatura.
 > - **Ambiente:** vicolo di una città in rovina, targhe arrugginite illeggibili, gradini consumati, pozzanghere nere.
 > - **Luce e atmosfera:** grigio piombo uniforme, riflessi neri nelle pozzanghere, una sola finestra calda in alto.
 > - **Palette:** grigio piombo, ruggine, nero, ocra della finestra.
-> - **Elementi del seme (Vestigio):** le targhe consumate, i gradini segnati da chi è passato, le dita che contano.
+> - **Motivi visivi:** le targhe consumate, i gradini segnati da chi è passato, le dita che contano.
 > - **Da evitare:** targhe leggibili, testo, sorrisi, estetica cartoon.
 >
-> **Versione condensata:** Bambina magra con un mantello troppo grande che cammina sotto una pioggia scura lungo un vicolo a gradini, contando sottovoce sulle dita; lontano, una pattuglia di macchine passa senza guardarla. Piano medio, bambina centrata di tre quarti. Targhe arrugginite illeggibili, pozzanghere nere. Grigio piombo, riflessi neri, una finestra calda in alto. Palette grigio, ruggine, nero, ocra. Vestigio: targhe consumate, gradini segnati, dita che contano. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Bambina magra con un mantello troppo grande che cammina sotto una pioggia fine e scura lungo un vicolo a gradini, contando sottovoce sulle dita; lontano, una pattuglia di macchine passa senza guardarla. Piano medio, bambina centrata di tre quarti. Targhe arrugginite illeggibili, pozzanghere nere. Grigio piombo, riflessi neri, una finestra calda in alto. Palette grigio, ruggine, nero, ocra. Senza testo né sorrisi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che chi arriva dopo trova la strada già segnata.

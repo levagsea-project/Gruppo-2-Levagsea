@@ -54,15 +54,15 @@ tags:
 > - **Non si sa mai** — Formula di Quelli del Grazie per spiegare perché ringraziano ogni macchina; i loro antenati la usavano prima della Ribellione.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** cinque Adattati in cerchio nell'erba alta, ognuno con una mano sulla spalla o sull'innesto del vicino; chinano il capo verso la carcassa arrugginita di una macchina coricata al centro, come davanti a una tomba.
-> - **Inquadratura e composizione:** cerchio visto leggermente dall'alto, la carcassa al centro, volti poco definiti; margine attorno, leggibile in miniatura.
-> - **Ambiente:** un prato incolto ai margini di un borgo in rovina, pali storti, un pozzo.
+> - **Soggetto e azione:** cinque persone con placche di metallo cucite alla pelle in cerchio nell'erba alta, ognuna con una mano sulla spalla o sulla placca del vicino; chinano il capo verso la carcassa arrugginita di una macchina coricata al centro, come davanti a una tomba.
+> - **Inquadratura e composizione:** vista leggermente dall'alto, il cerchio al centro, volti poco definiti; margine attorno, leggibile in miniatura.
+> - **Ambiente:** un prato incolto ai margini di un borgo in rovina, pali storti, un pozzo; cavi della macchina intrecciati nell'erba.
 > - **Luce e atmosfera:** alba calda e bassa, rugiada, silenzio raccolto.
-> - **Palette:** ocra, verde paglia, ruggine, il grigio caldo della pelle cucita, il bronzo degli innesti.
-> - **Elementi del seme (Vincolo):** le mani posate sulle spalle e sugli innesti, la formazione chiusa del cerchio, cavi della macchina intrecciati nell'erba.
+> - **Palette:** ocra, verde paglia, ruggine, il grigio caldo della pelle cucita, il bronzo delle placche.
+> - **Motivi visivi:** le mani posate sulle spalle e sulle placche, la formazione chiusa del cerchio, cavi intrecciati nell'erba.
 > - **Da evitare:** armi in vista, scritte, testo, estetica cartoon.
 >
-> **Versione condensata:** Cinque Adattati in cerchio nell'erba alta, ognuno con una mano sulla spalla o sull'innesto del vicino, chinano il capo verso la carcassa arrugginita di una macchina coricata al centro, come davanti a una tomba. Vista leggermente dall'alto, volti poco definiti. Prato incolto ai margini di un borgo in rovina, un pozzo, cavi intrecciati nell'erba. Alba calda e bassa, rugiada. Palette ocra, verde paglia, ruggine, bronzo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Cinque persone con placche di metallo cucite alla pelle in cerchio nell'erba alta, ognuna con una mano sulla spalla o sulla placca del vicino, chinano il capo verso la carcassa arrugginita di una macchina coricata al centro, come davanti a una tomba. Vista leggermente dall'alto, volti poco definiti. Prato incolto ai margini di un borgo in rovina, un pozzo, cavi intrecciati nell'erba. Alba calda e bassa, rugiada. Palette ocra, verde paglia, ruggine, bronzo. Senza armi né scritte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che un gesto piccolo e ripetuto può proteggere più di un'arma.

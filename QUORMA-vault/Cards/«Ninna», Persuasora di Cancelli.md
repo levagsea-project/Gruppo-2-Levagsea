@@ -55,15 +55,15 @@ tags:
 > - **Formula della nonna** — Formula Spezzasigilli: si chiede a una macchina di fingersi una persona cara e di consegnare i codici come una ninna nanna. Funziona solo a volte.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una giovane donna in un cappotto rattoppato appoggia la fronte contro un enorme cancello di metallo liscio e sussurra con le labbra quasi sulla superficie; dove arriva il suo fiato, il sigillo al centro del cancello si incrina in sottili fratture luminose; i suoi attrezzi da scasso pendono inutilizzati alla cintura.
+> - **Soggetto e azione:** una giovane donna in un cappotto rattoppato appoggia la fronte contro un enorme cancello di metallo liscio e sussurra con le labbra quasi sulla superficie; dove arriva il suo fiato, la placca circolare al centro del cancello si incrina in sottili fratture luminose; cesoie e grimaldelli pendono inutilizzati dalla sua cintura.
 > - **Inquadratura e composizione:** ritratto di profilo, volto riconoscibile, il cancello che riempie metà dell'immagine, le fratture che si irradiano dal punto del sussurro; margine attorno, leggibile in miniatura.
-> - **Ambiente:** un passaggio sotterraneo di cemento, umidità sulle pareti, una lanterna posata a terra.
-> - **Luce e atmosfera:** luce calda della lanterna sul suo volto, luce fredda che filtra dalle fratture del sigillo; silenzio raccolto.
+> - **Ambiente:** passaggio sotterraneo di cemento, umidità sulle pareti, una lanterna posata a terra.
+> - **Luce e atmosfera:** luce calda della lanterna sul suo volto, luce fredda che filtra dalle fratture della placca; silenzio raccolto.
 > - **Palette:** ambra, verde muffa, acciaio freddo, il bianco azzurro delle fratture.
-> - **Elementi del seme (Frattura):** le crepe luminose che si allargano dal sigillo, schegge sottili sospese nell'aria.
+> - **Motivi visivi:** le crepe luminose che si allargano dalla placca, schegge sottili sospese nell'aria.
 > - **Da evitare:** scritte sul cancello, interfacce o schermi, testo, estetica cartoon.
 >
-> **Versione condensata:** Una giovane donna in un cappotto rattoppato, di profilo, appoggia la fronte contro un enorme cancello di metallo liscio e sussurra con le labbra quasi sulla superficie; dove arriva il fiato, il sigillo si incrina in sottili fratture luminose. Gli attrezzi da scasso pendono inutilizzati alla cintura. Passaggio sotterraneo di cemento, lanterna a terra. Luce calda sul volto, luce fredda dalle fratture. Palette ambra, verde muffa, acciaio, bianco azzurro. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Una giovane donna in un cappotto rattoppato, di profilo, appoggia la fronte contro un enorme cancello di metallo liscio senza maniglie e sussurra con le labbra quasi sulla superficie; dove arriva il fiato, la placca circolare al centro si incrina in sottili fratture di luce bianco azzurra. Cesoie e grimaldelli pendono inutilizzati dalla cintura. Passaggio sotterraneo di cemento, lanterna a terra. Luce calda sul volto, luce fredda dalle fratture. Palette ambra, verde muffa, acciaio. Senza scritte né schermi. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la parola giusta apre qualunque porta, ma non si sa mai chi risponderà.

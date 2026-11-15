@@ -51,15 +51,15 @@ tags:
 > - **CAN-110** [[Il registro precede]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un banco chirurgico semovente, bianco e liscio, con bracci articolati ripiegati come un insetto a riposo, fermo nella piazza di una comunità; accanto un uomo in piedi, il braccio destro fasciato fino al gomito, guarda il banco senza paura; dietro, abitanti alle finestre.
+> - **Soggetto e azione:** un banco chirurgico semovente, bianco e liscio, con bracci articolati ripiegati come un insetto a riposo, fermo nella piazza di un villaggio ricostruito; accanto un uomo in piedi, il braccio destro fasciato fino al gomito, guarda il banco senza paura; dietro, abitanti alle finestre.
 > - **Inquadratura e composizione:** piano medio, il banco al centro di tre quarti, l'uomo a sinistra; margine attorno, leggibile in miniatura.
-> - **Ambiente:** piazza di un villaggio ricostruito, case pulite e troppo uguali, nessuna traccia di rovina.
+> - **Ambiente:** piazza di un villaggio ricostruito, case imbiancate pulite e troppo uguali, nessuna traccia di rovina.
 > - **Luce e atmosfera:** luce bianca fredda e uniforme, nessuna ombra calda, aria immobile.
 > - **Palette:** bianco ospedale, grigio perla, un rosso spento sulla fasciatura.
-> - **Elementi del seme (Frattura):** la superficie liscia del banco incrinata da una linea sottile, la fasciatura che spezza la figura, la piazza divisa da un'ombra netta.
+> - **Motivi visivi:** la superficie liscia del banco incrinata da una linea sottile, la fasciatura che spezza la figura, la piazza divisa da un'ombra netta.
 > - **Da evitare:** sangue esplicito, gore, volti mostruosi, testo, estetica cartoon.
 >
-> **Versione condensata:** Banco chirurgico semovente bianco e liscio, bracci articolati ripiegati come un insetto a riposo, fermo nella piazza di una comunità; accanto un uomo con il braccio destro fasciato fino al gomito lo guarda senza paura, abitanti alle finestre. Piano medio, banco al centro di tre quarti. Case pulite e troppo uguali. Luce bianca fredda e uniforme. Palette bianco ospedale, grigio perla, rosso spento. Frattura: superficie incrinata, ombra netta che divide la piazza. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Banco chirurgico semovente bianco e liscio, bracci articolati ripiegati come un insetto a riposo, fermo nella piazza di un villaggio ricostruito; accanto un uomo con il braccio destro fasciato fino al gomito lo guarda senza paura, abitanti alle finestre. Piano medio, banco al centro di tre quarti. Case imbiancate, pulite e troppo uguali. Luce bianca fredda e uniforme. Palette bianco ospedale, grigio perla, rosso spento. Una crepa sottile sul banco, ombra netta che divide la piazza. Senza sangue o gore. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che cancella ciò che il nemico è diventato e lo riporta a com'era scritto.

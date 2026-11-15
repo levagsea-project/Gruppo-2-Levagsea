@@ -60,15 +60,15 @@ tags:
 > - **Nodo temporaneo** — Struttura MEROZYN di frammenti connessi che dovrebbe sciogliersi dopo l’uso.
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un grappolo di frammenti geometrici, come vetro rotto o schegge di macchina, tenuti insieme da filamenti sottili e luminosi. Un frammento periferico si allontana, il filamento teso. Il nodo ha una forma vagamente sferica, incompleta.
+> - **Soggetto e azione:** un grappolo di schegge geometriche, come vetro rotto o frammenti di macchina, tenute insieme da filamenti sottili e luminosi. Una scheggia periferica si allontana, il filamento teso. Il grappolo ha una forma vagamente sferica, incompleta.
 > - **Inquadratura e composizione:** piano medio, soggetto centrato con margine attorno, leggibile anche in miniatura.
-> - **Ambiente:** interno del relè 4, pareti metalliche, cavi, sigilli spezzati, polvere.
-> - **Luce e atmosfera:** luce bianca fredda dai filamenti, un alone caldo sul frammento che si stacca; ombre nette.
-> - **Palette:** bianco freddo, grigio azzurro, ambra spenta sul frammento.
-> - **Elementi del seme (Vincolo):** filamenti come catene, nodi di connessione, il grappolo come formazione serrata.
-> - **Da evitare:** testo, simboli, volti, ragni riconoscibili, estetica cartoon, particelle troppo luminose.
+> - **Ambiente:** stanza tecnica di cemento con armadi di cavi, quadri spenti, fili pendenti; alle pareti placche circolari di metallo incrinate; polvere.
+> - **Luce e atmosfera:** luce bianca fredda dai filamenti, un alone caldo sulla scheggia che si stacca; ombre nette.
+> - **Palette:** bianco freddo, grigio azzurro, ambra spenta sulla scheggia che si stacca.
+> - **Motivi visivi:** filamenti come catene, nodi di connessione, il grappolo come formazione serrata.
+> - **Da evitare:** testo, volti, ragni riconoscibili, particelle troppo luminose, estetica cartoon.
 >
-> **Versione condensata:** Grappolo di frammenti geometrici come vetro rotto o schegge di macchina, tenuti insieme da filamenti sottili e luminosi; un frammento periferico si allontana, il filamento teso. Forma sferica incompleta, piano medio, soggetto centrato. Ambiente: interno del relè 4, pareti metalliche, cavi, sigilli spezzati. Luce bianca fredda dai filamenti, alone caldo sul frammento che si stacca. Palette bianco freddo, grigio azzurro, ambra spenta. Vincolo: filamenti, nodi, formazione serrata. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Grappolo di schegge geometriche come vetro rotto o frammenti di macchina, tenute insieme da filamenti sottili e luminosi; una scheggia periferica si allontana, il filamento teso. Forma sferica incompleta, piano medio, soggetto centrato. Stanza tecnica di cemento con armadi di cavi, quadri spenti, fili pendenti, placche circolari incrinate alle pareti. Luce bianca fredda dai filamenti, alone caldo sulla scheggia che si stacca. Palette bianco freddo, grigio azzurro, ambra spenta. Senza volti, testo o particelle magiche. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** di tenere uniti due compagni che da soli non si toccherebbero, mentre una sua parte rifiuta di obbedire.

@@ -53,14 +53,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un corpo largo e basso di placche metalliche sovrapposte, come un guscio, inginocchiato al centro di una sala di pietra in rovina; una fenditura lo divide a metà e le due metà si volgono appena in direzioni opposte, tenute insieme da cavi sottili tesi.
-> - **Inquadratura e composizione:** figura centrata, ripresa da davanti e leggermente dall'alto, la fenditura al centro ben leggibile; margine attorno, leggibile in miniatura.
+> - **Inquadratura e composizione:** figura centrata, ripresa dall'alto, fenditura ben leggibile; margine attorno, leggibile in miniatura.
 > - **Ambiente:** anfiteatro di pietra crollato, gradinate spezzate, cenere sul pavimento; lungo i bordi file di piccole placche spente.
 > - **Luce e atmosfera:** una luce fredda cade da una breccia nel soffitto; polvere sospesa, silenzio di luogo abbandonato.
 > - **Palette:** grigio cenere, argento opaco, blu freddo, tocchi di bianco sporco.
-> - **Elementi del seme (Vestigio):** le gradinate in rovina, la cenere, le placche spente come reliquie di un'assemblea che non c'è più.
-> - **Da evitare:** macchine alte e sottili, condotti, archivi, volti umani, scritte sulle placche, estetica cartoon.
+> - **Motivi visivi:** le gradinate in rovina, la cenere, le placche spente come reliquie di un'assemblea che non c'è più.
+> - **Da evitare:** volti umani, scritte sulle placche, estetica cartoon.
 >
-> **Versione condensata:** Un corpo largo e basso di placche metalliche sovrapposte, inginocchiato al centro di un anfiteatro di pietra crollato; una fenditura lo divide a metà e le due metà si volgono appena in direzioni opposte, tenute da cavi sottili tesi. Cenere sul pavimento, piccole placche spente lungo i bordi. Figura centrata, ripresa dall'alto, fenditura ben leggibile. Luce fredda da una breccia nel soffitto. Palette grigio cenere, argento opaco, blu freddo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Un corpo largo e basso di placche metalliche sovrapposte come un guscio, inginocchiato al centro di un anfiteatro di pietra crollato; una fenditura lo divide a metà e le due metà si volgono appena in direzioni opposte, tenute da cavi sottili tesi. Cenere sul pavimento, piccole placche spente lungo i bordi. Figura centrata, ripresa dall'alto, fenditura ben leggibile. Luce fredda da una breccia nel soffitto. Palette grigio cenere, argento opaco, blu freddo. Senza volti umani né scritte. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che è divisa in due metà che tirano in direzioni opposte, e che entrambe contano finché lei resta intera.

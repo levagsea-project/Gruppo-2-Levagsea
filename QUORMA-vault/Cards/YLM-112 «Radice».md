@@ -54,15 +54,15 @@ tags:
 > - **CAN-009** [[Materia compatibile]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** una massa di materia YLMOR che ha inglobato un relè in rovina; la materia si estende in filamenti e strutture che si connettono ai cavi. Al centro, una forma vagamente umanoide ma incompleta, senza volto, come un bozzolo.
-> - **Inquadratura e composizione:** piano medio, soggetto centrato con margine attorno, leggibile anche in miniatura.
-> - **Ambiente:** stazione relè abbandonata, pareti di cemento e metallo, cavi pendenti, condotti spezzati.
+> - **Soggetto e azione:** una massa opaca verde-marrone e grigia, d'aspetto tra argilla bagnata e muschio, che ha inglobato una stanza tecnica in rovina; la materia si estende in filamenti sottili e strutture che si connettono ai cavi. Al centro, una forma vagamente umanoide ma incompleta, senza volto, come un bozzolo.
+> - **Inquadratura e composizione:** piano medio, soggetto centrato; margine attorno, leggibile in miniatura.
+> - **Ambiente:** stanza tecnica abbandonata, pareti di cemento e metallo, armadi di cavi, cavi pendenti, condotti spezzati.
 > - **Luce e atmosfera:** luce fredda e uniforme, con un bagliore interno che filtra dalla materia; polvere sospesa.
 > - **Palette:** grigio cemento, verde-marrone della materia, blu freddo dei cavi.
-> - **Elementi del seme (Vincolo):** cavi, condotti, filamenti che legano la massa alla struttura; il relè come nodo.
+> - **Motivi visivi:** cavi, condotti, filamenti che legano la massa alla struttura.
 > - **Da evitare:** volti umani riconoscibili, simboli, testo, ragni riconoscibili, estetica cartoon.
 >
-> **Versione condensata:** Massa di materia YLMOR che ha inglobato un relè in rovina, con filamenti e strutture che si connettono ai cavi; al centro una forma incompleta, senza volto. Piano medio, soggetto centrato. Ambiente: stazione relè abbandonata, pareti di cemento e metallo, cavi pendenti. Luce fredda uniforme, bagliore interno dalla materia. Palette grigio cemento, verde-marrone, blu freddo. Vincolo: cavi, condotti, filamenti. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Massa opaca verde-marrone e grigia, tra argilla bagnata e muschio, che ha inglobato una stanza tecnica in rovina, con filamenti sottili che si connettono ai cavi; al centro una forma incompleta, senza volto, come un bozzolo. Piano medio, soggetto centrato. Pareti di cemento e metallo, cavi pendenti. Luce fredda uniforme, bagliore interno dalla materia. Palette grigio cemento, verde-marrone, blu freddo. Senza volti riconoscibili, ragni o testo. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che si nutre di ciò che cade intorno a sé.

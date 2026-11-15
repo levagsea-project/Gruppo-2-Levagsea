@@ -54,15 +54,15 @@ tags:
 > - **CAN-097** [[La Reliquia]]
 
 > [!info] Descrizione dell'illustrazione
-> - **Soggetto e azione:** un bozzolo di materia YLMOR, fermo, che avvolge una struttura pre-Ribellione; la materia non si muove, non pulsa, non cresce: è in attesa. All'interno del bozzolo, intravedere geometrie troppo ordinate per essere YLMOR — un tavolo, una sedia, un registratore, qualcosa di umano. Attorno, tre figure umane di spalle, a distanza: una con cesoie, una con un quaderno, una con uno scalpello.
-> - **Inquadratura e composizione:** piano medio, il bozzolo centrato con ampio margine; le tre figure in basso, piccole, di spalle; leggibile in miniatura.
-> - **Ambiente:** piano interrato di un edificio pre-Ribellione sotto una città in rovina, solai crollati, radici che pendono dall'alto; il bozzolo occupa il centro della stanza.
+> - **Soggetto e azione:** un bozzolo di materia opaca verde-marrone e grigia, fermo, che avvolge una stanza intatta di prima del crollo; la materia non si muove, non pulsa, non cresce: è in attesa. All'interno del bozzolo si intravedono geometrie troppo ordinate per essere della materia stessa: un tavolo, una sedia, un registratore, qualcosa di umano. Attorno, tre figure umane di spalle, a distanza: una con cesoie, una con un quaderno, una con uno scalpello.
+> - **Inquadratura e composizione:** piano medio, il bozzolo centrato, le tre figure piccole davanti; margine attorno, leggibile in miniatura.
+> - **Ambiente:** piano interrato di un edificio sotto una città in rovina, solai crollati, radici che pendono dall'alto; il bozzolo occupa il centro della stanza.
 > - **Luce e atmosfera:** luce fredda uniforme dall'alto, un alone caldo e spento che filtra dal bozzolo, come se dentro ci fosse ancora una lampada accesa; nessuna ombra netta.
 > - **Palette:** grigio cemento, verde-marrone spento della materia, ocra caldo dal bozzolo, seppia delle geometrie interne.
-> - **Elementi del seme (Vestigio):** il bozzolo che conserva, le geometrie interne che restano, le tre figure che si avvicinano e non toccano, la polvere che si deposita senza essere rimossa.
-> - **Da evitare:** testo, simboli, volti, tecnologia troppo riconoscibile, aureole, estetica cartoon, materia troppo luminosa o "magica".
+> - **Motivi visivi:** il bozzolo che conserva, le geometrie interne che restano, le tre figure che si avvicinano e non toccano, la polvere che si deposita senza essere rimossa.
+> - **Da evitare:** testo, simboli, volti, tecnologia troppo riconoscibile, aureole, materia troppo luminosa o magica, estetica cartoon.
 >
-> **Versione condensata:** Bozzolo di materia YLMOR immobile attorno a una stanza pre-Ribellione; dentro si intravedono un tavolo, una sedia, un registratore, geometrie troppo ordinate per YLMOR. Tre figure di spalle: una con cesoie, una con un quaderno, una con uno scalpello. Piano medio, bozzolo centrato. Interrato di una città in rovina, solai crollati, radici che pendono. Luce fredda dall'alto, alone caldo spento dal bozzolo. Palette grigio cemento, verde-marrone, ocra, seppia. Vestigio: ciò che resta, figure che non toccano. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** Bozzolo opaco di materia verde-marrone e grigia, immobile, attorno a una stanza intatta di prima del crollo; dentro si intravedono un tavolo, una sedia, un registratore, geometrie troppo ordinate. Tre figure di spalle, a distanza: una con cesoie, una con un quaderno, una con uno scalpello. Piano medio, bozzolo centrato. Interrato di una città in rovina, solai crollati, radici che pendono. Luce fredda dall'alto, alone caldo spento dal bozzolo. Palette grigio cemento, verde-marrone, ocra, seppia. Senza volti, aureole o materia luminosa. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che più intorno si perde, più ciò che conserva si fa duro.

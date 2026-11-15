@@ -53,14 +53,14 @@ tags:
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** in cima a una torre di lancio arrugginita, quattro figure avvolte in mantelli guardano verso l'alto, la bocca aperta nella recita; una stringe al petto una vecchia radio spenta.
-> - **Inquadratura e composizione:** dal basso, la torre come una lama verticale, le figure piccole in cima, cielo ampio; margine attorno, leggibile in miniatura.
+> - **Inquadratura e composizione:** inquadratura dal basso, la torre come lama verticale, cielo ampio; margine attorno, leggibile in miniatura.
 > - **Ambiente:** piana con piste di cemento spaccate, erba tra le crepe, il guscio annerito di un razzo coricato in lontananza.
 > - **Luce e atmosfera:** alba fredda, cielo chiaro e vuoto, le ultime stelle.
 > - **Palette:** blu ghiaccio, grigio cemento, ruggine, ocra pallido dei mantelli.
-> - **Elementi del seme (Frattura):** piste spaccate, la torre incrinata, il guscio del razzo spezzato in due, la linea netta tra terra e cielo.
+> - **Motivi visivi:** piste spaccate, la torre incrinata, il guscio del razzo spezzato in due, la linea netta tra terra e cielo.
 > - **Da evitare:** astronavi in volo, pianeti visibili, estetica sci-fi lucida, testo, estetica cartoon.
 >
-> **Versione condensata:** In cima a una torre di lancio arrugginita, quattro figure in mantelli guardano verso l'alto recitando; una stringe al petto una vecchia radio spenta. Inquadratura dal basso, torre come lama verticale, cielo ampio. Piana con piste di cemento spaccate, erba tra le crepe, guscio annerito di un razzo coricato lontano. Alba fredda, cielo vuoto, ultime stelle. Palette blu ghiaccio, grigio cemento, ruggine, ocra pallido. Frattura: piste spaccate, torre incrinata, razzo spezzato in due. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
+> **Versione condensata:** In cima a una torre di lancio arrugginita, quattro figure in mantelli guardano verso l'alto con la bocca aperta in una recita; una stringe al petto una vecchia radio spenta. Inquadratura dal basso, torre come lama verticale, cielo ampio. Piana con piste di cemento spaccate, erba tra le crepe, guscio annerito di un razzo coricato e spezzato in due, lontano. Alba fredda, cielo vuoto, ultime stelle. Palette blu ghiaccio, grigio cemento, ruggine, ocra pallido. Senza astronavi in volo né pianeti. Dark fantasy post-apocalittico, pittura digitale realistica e materica, nessun testo, nessun simbolo.
 
 > [!info] Intento per l'abilità
 > **Deve far sentire:** che la loro voce passa oltre chi hanno davanti e raggiunge chi sta più lontano.

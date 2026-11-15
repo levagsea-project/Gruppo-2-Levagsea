@@ -44,7 +44,7 @@ Sei callout, in quest'ordine: **Testo di colore** · **Lore interna** · **Rivel
 |---|---|
 | Testo di colore | 1-3 frasi, max 200 caratteri + attribuzione in-world; una voce sola |
 | Lore interna | 120-250 parole di solo contenuto: che cosa è vero, che cosa succede, i collegamenti. Almeno un `[[link]]` a una carta o a un elemento esistente. Niente «Ciò che non dice…» né note sulla voce: le domande aperte vanno in Rivela / Nasconde |
-| Versione condensata | 60-90 parole, chiusa dalla frase di stile; nessuna parola che chieda testo nell'immagine |
+| Versione condensata | 70-100 parole, chiusa dalla frase di stile; autonoma (nessun nome di lore, sigla, seme o link: usa le formule del [[Dizionario visivo]]); i divieti scritti come «senza …»; nessuna parola che chieda testo nell'immagine |
 | Intento per l'abilità | **Deve far sentire:** l'esperienza che l'abilità dovrebbe dare, in una frase · **Temi:** 2-3 parole tematiche (le stesse in `temi_abilita`). Niente numeri, niente regole, niente termini di gioco: è un indirizzo per chi progetterà l'abilità, non una meccanica |
 
 ## Nomi per rango
