@@ -35,7 +35,7 @@ Viste: Registro (per CAN), Per categoria, Glossario (alfabetico), Da approvare (
 
 - [[🗂️ Slot del set base]]: i 104 slot del set base, quali sono occupati e quali liberi (generata da `Strumenti/elenca_slot.py`).
 - [[📄 Template Carta]]: come si fa una carta a mano (slot, frontmatter, limiti, nomi per rango, checklist). I modelli Obsidian sono in `Strumenti/Template/`.
-- [[🤖 Prompt Carte]]: il prompt da dare a un LLM per scrivere una carta nello stesso formato.
+- [[Prompt Carte]]: il prompt da dare a un LLM per scrivere una carta nello stesso formato.
 - [[🧵 Trame]]: le trame emergenti (ARACNO, gli Undici, il tecnico scomparso…), con le carte che le costruiscono.
 
 ---

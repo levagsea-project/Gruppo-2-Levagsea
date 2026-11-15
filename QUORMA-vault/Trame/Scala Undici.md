@@ -50,7 +50,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Non elencare i nomi degli Undici.
 - Non dire chi abbia assegnato il sigillo a «Cesoia Fredda».

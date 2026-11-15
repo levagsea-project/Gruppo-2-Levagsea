@@ -17,15 +17,15 @@ stato: Bozza
 
 | Scala | Gradino raggiunto | Nota |
 |---|---|---|
-| [[Scala ARACNO]] | 3 | condivide il [[Fatto del settore 4]] |
+| [[Scala ARACNO]] | 4 | condivide il [[Fatto del settore 4]] |
 | [[Scala Tecnico]] | 2 | condivide il [[Fatto del settore 4]] |
 | [[Scala Undici]] | 3 | condivide il [[Fatto del settore 4]] |
-| [[Scala Ritorno]] | 3 | |
-| [[Scala Spartizione]] | 3 | è la trama della rivalità tra Potenze |
-| [[Scala Eresie]] | 1 | otto agganci, nessun gradino successivo |
-| [[Scala Pioggia nera]] | 3 | |
-| [[Scala Comunità controllate]] | 3 | |
-| [[Scala Pellegrinaggio]] | 3 | |
+| [[Scala Ritorno]] | 4 | |
+| [[Scala Spartizione]] | 4 | è la trama della rivalità tra Potenze; il gradino 4 è [[Sinodo dei Due Conti]] |
+| [[Scala Eresie]] | 2 | otto agganci e un gradino 2 |
+| [[Scala Pioggia nera]] | 4 | |
+| [[Scala Comunità controllate]] | 4 | |
+| [[Scala Pellegrinaggio]] | 4 | |
 | [[Scala Primo Ingegnere]] | 3 | si ferma qui per scelta |
 
 Nessuna trama ha ancora raggiunto il gradino 4.
@@ -88,13 +88,13 @@ Tre idee di lavoro tengono insieme quasi tutte le scale. Sono **Orientate**: val
 
 | Priorità | Che cosa | Dove | Scala |
 |---|---|---|---|
-| 1 | La rivalità tra Potenze, nominata | figura AI | [[Scala Spartizione]] |
-| 2 | Chi riconosce una macchina dal suo errore | Resistenza, rango medio | [[Scala Eresie]] |
-| 3 | Il proprietario di ARACNO | figura EFFRIX o SEKTAC | [[Scala ARACNO]] |
-| 4 | La parola del Coro in una richiesta di rientro | figura MEROZYN | [[Scala Ritorno]] |
-| 5 | Una voce che resiste dentro Riva Lenta | Resistenza | [[Scala Comunità controllate]] |
-| 6 | Chi è salito sulla torre | Resistenza | [[Scala Pioggia nera]] |
-| 7 | Il sito di sutura visto da vicino | Adattati | [[Scala Pellegrinaggio]] |
+| 1 | ~~La rivalità tra Potenze, nominata~~ — scritta: [[Sinodo dei Due Conti]] (MEROZYN K Vestigio) | figura AI | [[Scala Spartizione]] |
+| 2 | ~~Chi riconosce una macchina dal suo errore~~ — scritta | Resistenza, rango medio | [[Scala Eresie]] |
+| 3 | ~~Il proprietario di ARACNO~~ — scritta | figura EFFRIX o SEKTAC | [[Scala ARACNO]] |
+| 4 | ~~La parola del Coro in una richiesta di rientro~~ — scritta | figura MEROZYN | [[Scala Ritorno]] |
+| 5 | ~~Una voce che resiste dentro Riva Lenta~~ — scritta | Resistenza | [[Scala Comunità controllate]] |
+| 6 | ~~Chi è salito sulla torre~~ — scritta | Resistenza | [[Scala Pioggia nera]] |
+| 7 | ~~Il sito di sutura visto da vicino~~ — scritta | Adattati | [[Scala Pellegrinaggio]] |
 
 ## Carte senza trama
 

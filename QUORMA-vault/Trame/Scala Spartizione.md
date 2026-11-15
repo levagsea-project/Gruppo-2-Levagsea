@@ -28,7 +28,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 | Che cos'è la luce ferma sopra la Sella? | **Orientata** | Una nave tornata, a cui nessuno ha dato il permesso di scendere. La portante di SEK-73 è la sua | — |
 | Perché il sigillo di rotta mostra destinazioni diverse? | **Orientata** | La rotta è contesa: più Potenze la riscrivono | — |
 | Da dove nasce la voce della grande offensiva? | **Orientata** | Non dalla Resistenza: una Potenza rivale la alimenta, perché ha interesse a che la Terra bruci. Chi sfrutta le previsioni mancate di SEK-61 è il canale da cui arrivano alla Resistenza le crepe da colpire | — |
-| La Resistenza sa di essere usata? | **Aperta** | Una voce delle Potenze deve registrare la voce dell'offensiva prima che arrivi nei rifugi (carta di rivalità) | — |
+| La Resistenza sa di essere usata? | **Aperta** | [[Sinodo dei Due Conti]] registra la voce dell'offensiva prima che arrivi nei rifugi e annota che non nasce da lì; resta da vedere se i rifugi lo sapranno | — |
 | Chi c'è a bordo della nave tornata? | **Aperta** | A: discendenti dei partiti. B: solo i frammenti di bordo. C: una voce di un'altra Potenza che usa i loro nomi | — |
 | Che cosa dice il codice sulla piastrina d'imbarco? | **Aperta** | Decidere, anche se nessuna carta del set base lo legge | — |
 | Dove sono arrivate le navi? | **Aperta** | Da non chiudere nel set base | — |
@@ -40,22 +40,20 @@ Indice e regole: [[🪜 Scale delle trame]].
 | 1 | [[Recitanti del Campo di Lancio]] (6), [[Scartati dell'Imbarco]] (4), [[Figli del Nome in Prestito]] (5), [[Scassinatori della Rotta]] (3) | Qualcuno è partito e non è tornato; a terra se ne tiene il posto |
 | 2 | [[Anagrafe in Transito]] (6), [[YLM-31 «Chiglia»]] (8), [[SEK-73 «Campana Muta»]] (7) | Le macchine li contano ancora; gli alloggi si chiudevano da fuori; dall'alto arriva una portante |
 | 3 | [[«Zenit», Incisora del Cielo]] (8), [[MER-2C-N05-004-61 «Attesa»]] (7) | Una luce si è fermata; qualcosa chiede di rientrare |
-| 4 | *manca* |  |
+| 4 | [[Sinodo dei Due Conti]] (K) | Due Potenze contano le stesse voci, 67 contro 61, e nessuna cede; la voce dell'offensiva è già passata da un nodo, ma nei rifugi non è ancora arrivata |
 | 5 | espansione |  |
 
 **Ancore:** Serra Alta · «in transito» · canale di rientro · piastrina d'imbarco · la luce sopra la Sella
 
-**Contraddizione visibile:** manca. I Recitanti dicono «sono partiti»; una voce delle Potenze deve dire, su un'altra carta, che **non sono mai usciti dal conteggio**. L'Anagrafe lo dice già: basta che i due testi di colore usino la stessa parola.
+**Contraddizione visibile:** c'è. I Recitanti dicono «sono partiti»; l'Anagrafe e [[Sinodo dei Due Conti]] dicono «in transito»: per un conto contano, per l'altro no.
 
 ## Che cosa manca
 
-- **La rivalità, nominata.** Una carta in cui due voci delle Potenze si contendono lo stesso numero. È il gradino 4 naturale e va su una figura AI. È la priorità 1 di tutto il set.
-- Il conteggio della Terra **con** e **senza** i partiti, 67 e 61, nello stesso testo di colore.
 - Un'unità di un'altra Potenza sulla Terra, riconoscibile dal suo errore: lega questa scala a [[Scala Eresie]].
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Non dire dove siano arrivate le navi né chi le guidasse.
 - Non dire che cosa sia la luce sopra la Sella.

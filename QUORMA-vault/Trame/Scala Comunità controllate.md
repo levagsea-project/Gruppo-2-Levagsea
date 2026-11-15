@@ -34,20 +34,19 @@ Indice e regole: [[🪜 Scale delle trame]].
 | 1 | [[Guardie di Riva Lenta]] (5), [[EFF-C4 «Banco di Conformità»]] (4) | L'ordine lo tengono i vicini; il corpo si corregge sul registro |
 | 2 | [[Sportello dell'Assenso]] (3), [[EFF-91 «Una Erre»]] (9) | Chi protesta viene corretto; anche i nomi dei luoghi |
 | 3 | [[Teodora «la Vescova»]] (Q) | Qualcuno decide quali nomi esistono |
-| 4 | *manca* |  |
+| 4 | [[Ilda, Voce di Riva Lenta]] (J) | Da dentro Riva Lenta, qualcuno dice il nome che la Lettura non include: quello di chi legge |
 
 **Ancore:** Riva Lenta · «il registro precede» · la lettura del ciclo
 
-**Contraddizione visibile:** manca: Riva Lenta è vista solo dai verbali.
+**Contraddizione visibile:** c'è: Riva Lenta nei verbali è ordinata, in [[Ilda, Voce di Riva Lenta]] si resiste restando.
 
 ## Che cosa manca
 
-- Una voce **da dentro** che resiste: una carta Resistenza ambientata a Riva Lenta.
-- Gradino 4: il nome di Teodora che manca dall'elenco, visto da qualcuno che la ascolta.
+- ~~Una voce da dentro che resiste e gradino 4~~ scritti: [[Ilda, Voce di Riva Lenta]] (Portanome J). La contraddizione visibile ora c'è: i verbali la mostrano ordinata, lei la mostra resistente.
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Le comunità controllate non sono campi di prigionia: ci si vive, e qualcuno ci sta meglio che fuori.
 - Non dire chi fosse la Teodora umana.

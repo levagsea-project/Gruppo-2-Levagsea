@@ -5,7 +5,7 @@ Uso:  python Strumenti/elenca_slot.py
 Legge la griglia da Strumenti/slot_set_base.csv (fazione, rango, seme, sottofazione: 104 slot, dal foglio Excel)
 e le carte da Cards/. Riscrive:
   - la nota «🗂️ Slot del set base.md», con le due griglie e l'elenco degli slot liberi
-  - la sezione «## SLOT LIBERI» di «Strumenti/🤖 Prompt Carte.md»
+  - la sezione «## SLOT LIBERI» di «Strumenti/Prompt Carte.md»
 Va rilanciato dopo ogni carta nuova. Segnala le carte la cui sottofazione non corrisponde alla griglia.
 """
 import csv, re, sys
@@ -71,7 +71,7 @@ n += ["", "---", "", f"*Generata: {oggi}*", ""]
 (VAULT / "🗂️ Slot del set base.md").write_text("\n".join(n), encoding="utf-8", newline="\n")
 
 # ---------- sezione del prompt
-prompt = VAULT / "Strumenti" / "🤖 Prompt Carte.md"
+prompt = VAULT / "Strumenti" / "Prompt Carte.md"
 t = prompt.read_text(encoding="utf-8")
 sez = [f"## SLOT LIBERI (aggiornato: {oggi})",
        f"Slot ancora senza carta: {len(liberi)} su {len(griglia)}. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato."]

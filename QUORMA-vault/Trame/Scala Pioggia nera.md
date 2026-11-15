@@ -36,7 +36,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 | 1 | [[Routine della Pioggia Nera]] (2), [[Staffetta dei Nomi di Luogo]] (6) | Piove silenzio; le strade perdono il nome |
 | 2 | [[La Scuola del Sole]] (4), [[«Spina», Fante della Prima Linea]] (7) | Bambini che non hanno mai visto il sole |
 | 3 | [[Orsola, Madre della Pioggia]] (J) | «Non vogliamo il sole» |
-| 4 | *manca* |  |
+| 4 | [[«Quota», Salitore della Torre]] (9) | Sopra la pioggia la luce non cambia mai; salire costa |
 
 **Ancore:** Le Basse · il sole · la torre sopra le nuvole
 
@@ -44,12 +44,12 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Che cosa manca
 
-- Gradino 4: qualcuno che è salito sulla torre e dice **una** cosa di ciò che c'è sopra.
+- ~~Gradino 4~~ scritto: [[«Quota», Salitore della Torre]] (Segnaterra 9).
 - Un legame visibile con [[«Zenit», Incisora del Cielo]], che il cielo lo vede: lei conta le luci, a Le Basse non ne vedono nessuna.
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Non dire che cosa ci sia sopra le nuvole.
 - La pioggia è regionale: altrove il sole si vede.

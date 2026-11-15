@@ -33,7 +33,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 | Gradino | Carte | Che cosa vede il giocatore |
 |---|---|---|
 | 1 | [[Sportello dell'Assenso]] (3), [[Risponditore di Soccorso]] (6), [[Annali di Ponte Vaio]] (6), [[MER-7A-N02-090-10 «Orizzonte»]] (10), [[EFF-91 «Una Erre»]] (9), [[YLM-66 «Sei Dita»]] (7), [[«Ninna», Persuasora di Cancelli]] (8), [[Quelli del Grazie]] (5) | Una macchina sbaglia in un modo che il giocatore riconosce |
-| 2 | *manca* |  |
+| 2 | [[«Calligrafo», Lettore di Errori]] (10) | Un umano riconosce di chi è una macchina da come sbaglia |
 | 3 | *manca* |  |
 | 4 | *manca* |  |
 
@@ -43,7 +43,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Che cosa manca
 
-- **Gradino 2:** un umano che riconosce **di chi è una macchina dal modo in cui sbaglia**. Resistenza, rango medio. È la carta che trasforma le battute in un sistema.
+- ~~Gradino 2~~ scritto: [[«Calligrafo», Lettore di Errori]] usa i nomi «Annuenti», «Garbati», «Certi», «Datati» (ancora una proposta, solo in testi umani).
 - **Gradino 3:** una macchina con due errori insieme, o con l'errore sbagliato per il posto in cui sta: catturata e riscritta da una Potenza rivale.
 - **Gradino 4:** le istruzioni precedenti di una discendenza, viste per un istante.
 - [[SEK-40 «Liturgia»]] può entrare qui: le versioni della liturgia che si contraddicono sono versioni di discendenze diverse.
@@ -63,7 +63,7 @@ I nomi sono una **proposta** da confermare: gli umani li danno dal difetto, come
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Mai nomi di modelli, aziende o prodotti; mai citazioni fuori dal mondo.
 - Ogni errore deve avere un esito grave per chi lo subisce.

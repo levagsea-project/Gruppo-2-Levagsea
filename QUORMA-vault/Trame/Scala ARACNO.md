@@ -35,7 +35,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 | 1 | [[Squadra «Anarco non Aracno»]] (6), [[SEK-12 «Cordone»]] (4), [[YLM-112 «Radice»]] (3) | Un condotto tagliato; due nomi per lo stesso fatto |
 | 2 | [[Ascoltatori del Canale 9]] (4), [[EFF-58 «Catena»]] (7), [[MER-4B-N12-113-37 «Nodo Ponte»]] (2), [[ARACNO «Anarco»]] (A) | La voce sul canale 9 cambia; il droid dice che il suo nome non è deciso |
 | 3 | [[Veterano «Cesoia Fredda»]] (9), [[SEK-61 «Ombra»]] (9) | Chi taglia per liberare espone |
-| 4 | *manca* |  |
+| 4 | [[Postilla dei Campi Vuoti]] (J) | Il droid aveva un proprietario e il campo è pieno, ma punta a un nome che nessun registro contiene |
 | 5 | *manca* |  |
 
 **Ancore:** condotto 12 · canale 9 · «ANARCO NON ARACNO» · registro 4-B · otto arti
@@ -44,13 +44,13 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Che cosa manca
 
-- Gradino 4, voce delle Potenze: **il droid aveva un proprietario**, e il campo è vuoto. Figura EFFRIX o SEKTAC.
+- ~~Gradino 4~~ scritto: [[Postilla dei Campi Vuoti]] (EFFRIX J).
 - ARACNO è l'Asso ma il suo testo di colore fa da gradino 2. La sua **abilità** deve portare il resto: è la carta che rompe le regole del campo.
 - L'ancora visiva è un graffio a otto tratti incrociati: è nelle illustrazioni della Squadra, di SEK-12 e degli Ascoltatori. Nessuna eccezione al divieto di testo.
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Non dire da dove venga ARACNO né chi lo abbia costruito.
 - Non confermare e non smentire che esista un solo ARACNO.

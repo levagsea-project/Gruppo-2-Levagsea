@@ -44,7 +44,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Nessuna carta conferma o smentisce il Primo Ingegnere.
 - Nessuna voce delle Potenze lo nomina se non attraverso un'agiografia.

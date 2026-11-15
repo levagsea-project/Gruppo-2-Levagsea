@@ -50,7 +50,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Non scrivere mai il nome del tecnico, nemmeno in parte.
 - Non dire che cosa gli sia successo.

@@ -6,7 +6,7 @@ tags:
 
 # 📄 Template Carta — come si fa una carta
 
-Guida per creare carte ed elementi di canone a mano. Per farle scrivere a un LLM usa [[🤖 Prompt Carte]], che produce già questo formato.
+Guida per creare carte ed elementi di canone a mano. Per farle scrivere a un LLM usa [[Prompt Carte]], che produce già questo formato.
 
 ## In breve
 

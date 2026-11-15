@@ -11,9 +11,9 @@ Questa nota è generata da `Strumenti/elenca_slot.py`: non modificarla a mano, r
 
 | | Occupati | Liberi |
 |---|---|---|
-| Potenze Artificiali | 27 | 25 |
-| Resistenza Umana | 33 | 19 |
-| **Totale** | **60** | **44** |
+| Potenze Artificiali | 30 | 22 |
+| Resistenza Umana | 37 | 15 |
+| **Totale** | **67** | **37** |
 
 ## Potenze Artificiali
 
@@ -28,15 +28,15 @@ Questa nota è generata da `Strumenti/elenca_slot.py`: non modificarla a mano, r
 | **8** | SEKTAC · **libero** | MEROZYN · **libero** | YLMOR · [[YLM-31 «Chiglia»]] | EFFRIX · [[EFF-29 «Scriptorium»]] |
 | **9** | YLMOR · **libero** | EFFRIX · [[EFF-91 «Una Erre»]] | SEKTAC · [[SEK-61 «Ombra»]] | MEROZYN · [[MER-1A-N00-001-09 «Ossario»]] |
 | **10** | MEROZYN · [[MER-7A-N02-090-10 «Orizzonte»]] | SEKTAC · [[SEK-88 «Inquisitore»]] | EFFRIX · **libero** | YLMOR · **libero** |
-| **J** | SEKTAC · **libero** | YLMOR · **libero** | MEROZYN · **libero** | EFFRIX · **libero** |
+| **J** | SEKTAC · **libero** | YLMOR · **libero** | MEROZYN · [[Lemma, Voce di Confronto]] | EFFRIX · [[Postilla dei Campi Vuoti]] |
 | **Q** | EFFRIX · [[Teodora «la Vescova»]] | MEROZYN · **libero** | SEKTAC · **libero** | YLMOR · **libero** |
-| **K** | YLMOR · **libero** | SEKTAC · **libero** | EFFRIX · **libero** | MEROZYN · **libero** |
+| **K** | YLMOR · **libero** | SEKTAC · **libero** | EFFRIX · **libero** | MEROZYN · [[Sinodo dei Due Conti]] |
 | **A** | EFFRIX · **libero** | SEKTAC · **libero** | YLMOR · **libero** | MEROZYN · **libero** |
 
 ### Slot liberi · Potenze Artificiali
 
-- **EFFRIX** (5): 2 Vestigio · 10 Spira · J Vestigio · K Spira · A Vincolo
-- **MEROZYN** (7): 3 Frattura · 5 Vincolo · 8 Frattura · J Spira · Q Frattura · K Vestigio · A Vestigio
+- **EFFRIX** (4): 2 Vestigio · 10 Spira · K Spira · A Vincolo
+- **MEROZYN** (5): 3 Frattura · 5 Vincolo · 8 Frattura · Q Frattura · A Vestigio
 - **SEKTAC** (6): 5 Vestigio · 8 Vincolo · J Vincolo · Q Spira · K Frattura · A Frattura
 - **YLMOR** (7): 6 Vincolo · 9 Vincolo · 10 Vestigio · J Frattura · Q Vestigio · K Vincolo · A Spira
 
@@ -51,19 +51,19 @@ Questa nota è generata da `Strumenti/elenca_slot.py`: non modificarla a mano, r
 | **6** | Spezzasigilli · [[Squadra «Anarco non Aracno»]] | Portanome · [[Recitanti del Campo di Lancio]] | Adattati · [[Pellegrini del Corpo]] | Segnaterra · [[Staffetta dei Nomi di Luogo]] |
 | **7** | Segnaterra · [[«Selce», Incisora del Relè]] | Adattati · [[«Spina», Fante della Prima Linea]] | Spezzasigilli · [[Decifratrice «Carta Bianca»]] | Portanome · [[Salmista dei Nomi]] |
 | **8** | Portanome · [[Testimone degli Undici]] | Spezzasigilli · [[«Ninna», Persuasora di Cancelli]] | Segnaterra · [[«Zenit», Incisora del Cielo]] | Adattati · [[«Guanto», Vedova di Sutura]] |
-| **9** | Spezzasigilli · [[Veterano «Cesoia Fredda»]] | Adattati · [[«Fiato», che era dei nostri]] | Segnaterra · **libero** | Portanome · [[Agiografo del Primo Ingegnere]] |
-| **10** | Segnaterra · **libero** | Portanome · [[«Velo», Officiante dei Corretti]] | Spezzasigilli · **libero** | Adattati · **libero** |
-| **J** | Portanome · **libero** | Segnaterra · **libero** | Adattati · [[Orsola, Madre della Pioggia]] | Spezzasigilli · **libero** |
+| **9** | Spezzasigilli · [[Veterano «Cesoia Fredda»]] | Adattati · [[«Fiato», che era dei nostri]] | Segnaterra · [[«Quota», Salitore della Torre]] | Portanome · [[Agiografo del Primo Ingegnere]] |
+| **10** | Segnaterra · **libero** | Portanome · [[«Velo», Officiante dei Corretti]] | Spezzasigilli · [[«Calligrafo», Lettore di Errori]] | Adattati · [[«Tre Dita», Ripartito dal Sito]] |
+| **J** | Portanome · [[Ilda, Voce di Riva Lenta]] | Segnaterra · **libero** | Adattati · [[Orsola, Madre della Pioggia]] | Spezzasigilli · **libero** |
 | **Q** | Adattati · **libero** | Spezzasigilli · **libero** | Portanome · **libero** | Segnaterra · **libero** |
 | **K** | Spezzasigilli · **libero** | Segnaterra · **libero** | Portanome · **libero** | Adattati · **libero** |
 | **A** | Segnaterra · **libero** | Spezzasigilli · [[ARACNO «Anarco»]] | Adattati · **libero** | Portanome · **libero** |
 
 ### Slot liberi · Resistenza Umana
 
-- **Spezzasigilli** (5): 2 Vestigio · 10 Spira · J Vestigio · Q Frattura · K Vincolo
-- **Segnaterra** (6): 9 Spira · 10 Vincolo · J Frattura · Q Vestigio · K Frattura · A Vincolo
-- **Adattati** (4): 10 Vestigio · Q Vincolo · K Vestigio · A Spira
-- **Portanome** (4): J Vincolo · Q Spira · K Spira · A Vestigio
+- **Spezzasigilli** (4): 2 Vestigio · J Vestigio · Q Frattura · K Vincolo
+- **Segnaterra** (5): 10 Vincolo · J Frattura · Q Vestigio · K Frattura · A Vincolo
+- **Adattati** (3): Q Vincolo · K Vestigio · A Spira
+- **Portanome** (3): Q Spira · K Spira · A Vestigio
 
 ---
 

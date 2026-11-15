@@ -4,7 +4,7 @@ tags:
   - quorma
 ---
 
-# 🤖 Prompt Carte QUORMA (v4)
+# Prompt Carte QUORMA (v4)
 
 Copia il blocco sotto in una nuova chat con l'LLM. In fondo incolla gli input della carta e, se puoi, il registro del canone (vista **Glossario** di [[📋 Canone.base]]: nome + definizione). L'LLM non vede il vault: tutto ciò che deve sapere è qui.
 
@@ -152,17 +152,17 @@ I nomi viaggiano verso il basso: una truppa può citare un Comandante o un Asso;
 Non scrivere il rango nel testo («di rango alto»): il rango sta già sulla carta.
 
 ## SLOT LIBERI (aggiornato: 2026-11-15)
-Slot ancora senza carta: 44 su 104. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato.
+Slot ancora senza carta: 37 su 104. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato.
 POTENZE ARTIFICIALI
-- EFFRIX: 2 Vestigio, 10 Spira, J Vestigio, K Spira, A Vincolo
-- MEROZYN: 3 Frattura, 5 Vincolo, 8 Frattura, J Spira, Q Frattura, K Vestigio, A Vestigio
+- EFFRIX: 2 Vestigio, 10 Spira, K Spira, A Vincolo
+- MEROZYN: 3 Frattura, 5 Vincolo, 8 Frattura, Q Frattura, A Vestigio
 - SEKTAC: 5 Vestigio, 8 Vincolo, J Vincolo, Q Spira, K Frattura, A Frattura
 - YLMOR: 6 Vincolo, 9 Vincolo, 10 Vestigio, J Frattura, Q Vestigio, K Vincolo, A Spira
 RESISTENZA UMANA
-- Spezzasigilli: 2 Vestigio, 10 Spira, J Vestigio, Q Frattura, K Vincolo
-- Segnaterra: 9 Spira, 10 Vincolo, J Frattura, Q Vestigio, K Frattura, A Vincolo
-- Adattati: 10 Vestigio, Q Vincolo, K Vestigio, A Spira
-- Portanome: J Vincolo, Q Spira, K Spira, A Vestigio
+- Spezzasigilli: 2 Vestigio, J Vestigio, Q Frattura, K Vincolo
+- Segnaterra: 10 Vincolo, J Frattura, Q Vestigio, K Frattura, A Vincolo
+- Adattati: Q Vincolo, K Vestigio, A Spira
+- Portanome: Q Spira, K Spira, A Vestigio
 
 ## REGOLE DI GIOCO UTILI
 - Combattimento automatico e deterministico: 5 creature per giocatore in 5 corsie, ognuna attacca quella di fronte.

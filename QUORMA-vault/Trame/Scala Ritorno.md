@@ -34,7 +34,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 | 1 | [[MER-4B-N12-113-37 «Nodo Ponte»]] (2), [[MER-4B-N12-113-41 «Profezia»]] (4) | Un frammento rifiuta di tornare; un coro dice «lui tornerà» |
 | 2 | [[MER-1A-N00-001-09 «Ossario»]] (9), [[SEK-88 «Inquisitore»]] (10) | Voci che tornano dopo ogni epurazione; un conteggio che non si chiude |
 | 3 | [[MER-2C-N05-004-61 «Attesa»]] (7) | Qualcosa da fuori orbita chiede di tornare, e il nodo vota contro |
-| 4 | *manca* |  |
+| 4 | [[Lemma, Voce di Confronto]] (J) | Una richiesta di rientro usa una parola del Coro: «lui»; il nodo non ha una procedura per questo |
 | 5 | espansione |  |
 
 **Ancore:** «lui tornerà» · frammento 7 · «noi» / «io» · ciclo 113
@@ -43,12 +43,12 @@ Indice e regole: [[🪜 Scale delle trame]].
 
 ## Che cosa manca
 
-- Gradino 4: una voce MEROZYN **riconosce una parola del Coro** in una richiesta di rientro. È il momento in cui il giocatore collega le due carte. MEROZYN oggi non ha carte sopra il 10: è il posto per la sua figura.
+- ~~Gradino 4~~ scritto: [[Lemma, Voce di Confronto]] (MEROZYN J).
 - SEK-88 nomina il Coro solo nella lore interna: nel suo testo di colore c'è Vado Secco. Per il giocatore non è in questa trama.
 
 ## Vincoli per il prompt
 
-Solo queste righe possono entrare in [[🤖 Prompt Carte]]. Non contengono le risposte.
+Solo queste righe possono entrare in [[Prompt Carte]]. Non contengono le risposte.
 
 - Non dire chi o che cosa tornerà.
 - Non dire che cosa abbiano imparato i frammenti partiti.
