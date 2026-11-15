@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/decks")
-@Tag(name = "Decks", description = "The player's decks. Players only: admins do not play. A 400 error lists every broken rule in `errors`.")
+@Tag(name = "Decks", description = "The player's decks. Players only: admins do not play. Errors carry a `code`; a 400 also lists every broken rule in `errors` as `{code, params}`. The faction is `RESISTENZA_UMANA` or `POTENZE_ARTIFICIALI`.")
 public class DeckController {
 
     private final DeckService decks;

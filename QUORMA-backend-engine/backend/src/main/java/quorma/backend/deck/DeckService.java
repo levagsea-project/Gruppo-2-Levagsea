@@ -19,9 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardRepository;
+import quorma.backend.catalogue.Faction;
 import quorma.backend.catalogue.PoolSnapshotRepository;
 import quorma.backend.collection.CardInstance;
 import quorma.backend.collection.CardInstanceRepository;
+import quorma.backend.common.ErrorCodes;
 
 /** Deck CRUD. Every save is checked (ownership, snapshot, structure) before anything is written; a bad deck is a 400. */
 @Service
@@ -53,7 +55,8 @@ public class DeckService {
         Map<UUID, Long> counts = mine.isEmpty() ? Map.of() : deckCards.findByDeckIds(mine.stream().map(Deck::getId).toList())
                 .stream().collect(Collectors.groupingBy(c -> c.getId().deckId(), Collectors.counting()));
         return mine.stream()
-                .map(d -> new DeckSummary(d.getId(), d.getName(), d.getFaction(), d.getSnapshotId(), d.isDefense(),
+                .map(d -> new DeckSummary(d.getId(), d.getName(), Faction.fromDataName(d.getFaction()).name(),
+                        d.getSnapshotId(), d.isDefense(),
                         counts.getOrDefault(d.getId(), 0L).intValue(), d.getUpdatedAt()))
                 .toList();
     }
@@ -75,11 +78,12 @@ public class DeckService {
     public DeckResponse create(UUID ownerId, DeckRequest req) {
         String name = req.name().strip();
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, new UUID(0, 0))) {
-            throw new DeckException(HttpStatus.CONFLICT, "Deck name already in use");
+            throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_NAME_TAKEN);
         }
-        List<DeckCardResponse> views = validate(ownerId, req.faction(), req.snapshotId(), req.cardInstanceIds());
+        String faction = Faction.valueOf(req.faction()).dataName();
+        List<DeckCardResponse> views = validate(ownerId, faction, req.snapshotId(), req.cardInstanceIds());
 
-        Deck deck = new Deck(ownerId, name, req.faction(), req.snapshotId(), Instant.now());
+        Deck deck = new Deck(ownerId, name, faction, req.snapshotId(), Instant.now());
         save(deck);
         deckCards.saveAll(toRows(deck, views));
         return toResponse(deck, views);
@@ -91,7 +95,7 @@ public class DeckService {
         Deck deck = find(ownerId, deckId);
         String name = req.name().strip();
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, deckId)) {
-            throw new DeckException(HttpStatus.CONFLICT, "Deck name already in use");
+            throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_NAME_TAKEN);
         }
         List<DeckCardResponse> views = validate(ownerId, deck.getFaction(), req.snapshotId(), req.cardInstanceIds());
 
@@ -111,18 +115,18 @@ public class DeckService {
     public void delete(UUID ownerId, UUID deckId) {
         Deck deck = find(ownerId, deckId);
         if (deck.isDefense()) {
-            throw new DeckException(HttpStatus.CONFLICT, "Cannot delete the defense deck");
+            throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_DEFENSE_UNDELETABLE);
         }
         decks.delete(deck);
     }
 
     /** Runs {@link #load} then {@link DeckValidator}; throws 400 listing every broken rule. */
     private List<DeckCardResponse> validate(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds) {
-        List<String> errors = new ArrayList<>();
+        List<DeckError> errors = new ArrayList<>();
         List<DeckCardResponse> views = load(ownerId, faction, snapshotId, instanceIds, errors);
-        errors.addAll(validator.validate(faction, views));
+        errors.addAll(validator.validate(Faction.fromDataName(faction), views));
         if (!errors.isEmpty()) {
-            throw new DeckException(HttpStatus.BAD_REQUEST, "Invalid deck", errors);
+            throw new DeckException(HttpStatus.BAD_REQUEST, ErrorCodes.DECK_INVALID, errors);
         }
         return views;
     }
@@ -134,13 +138,13 @@ public class DeckService {
      * snapshot.
      */
     private List<DeckCardResponse> load(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds,
-                                        List<String> errors) {
+                                        List<DeckError> errors) {
         // repeated instance ids (order of the request is kept)
         Set<UUID> unique = new LinkedHashSet<>();
         Set<UUID> reported = new HashSet<>();
         for (UUID id : instanceIds) {
             if (!unique.add(id) && reported.add(id)) {
-                errors.add("Card instance listed more than once: " + id);
+                errors.add(DeckError.of(ErrorCodes.DECK_INSTANCE_DUPLICATED, "id", id));
             }
         }
 
@@ -149,7 +153,7 @@ public class DeckService {
                 .filter(s -> Objects.equals(s.getFaction(), faction))
                 .isPresent();
         if (!snapshotOk) {
-            errors.add("Snapshot not found or belongs to another faction");
+            errors.add(DeckError.of(ErrorCodes.DECK_SNAPSHOT_INVALID));
         }
 
         // instances: missing or not owned give the same message
@@ -158,7 +162,7 @@ public class DeckService {
                 .collect(Collectors.toMap(CardInstance::getInstanceId, i -> i));
         for (UUID id : unique) {
             if (!instMap.containsKey(id)) {
-                errors.add("Card instance not found: " + id);
+                errors.add(DeckError.of(ErrorCodes.DECK_INSTANCE_NOT_FOUND, "id", id));
             }
         }
 
@@ -184,13 +188,13 @@ public class DeckService {
                 continue;
             }
             if (!Objects.equals(card.getFaction(), faction)) {
-                errors.add("Card " + card.getCardCode() + " belongs to another faction");
+                errors.add(DeckError.of(ErrorCodes.DECK_CARD_WRONG_FACTION, "card", card.getCardCode()));
                 continue;
             }
             CardDefinition def = defMap.get(card.getId());
             if (def == null) {
                 if (snapshotOk) {
-                    errors.add("Card " + card.getCardCode() + " has no definition in the snapshot");
+                    errors.add(DeckError.of(ErrorCodes.DECK_CARD_NO_DEFINITION, "card", card.getCardCode()));
                 }
                 continue;
             }
@@ -203,14 +207,14 @@ public class DeckService {
 
     private Deck find(UUID ownerId, UUID deckId) {
         return decks.findByIdAndOwnerId(deckId, ownerId)
-                .orElseThrow(() -> new DeckException(HttpStatus.NOT_FOUND, "Deck not found"));
+                .orElseThrow(() -> new DeckException(HttpStatus.NOT_FOUND, ErrorCodes.DECK_NOT_FOUND));
     }
 
     private void save(Deck deck) {
         try {
             decks.saveAndFlush(deck);
         } catch (DataIntegrityViolationException e) {
-            throw new DeckException(HttpStatus.CONFLICT, "Deck name already in use or snapshot does not match the faction");
+            throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_CONFLICT);
         }
     }
 
@@ -223,7 +227,8 @@ public class DeckService {
     }
 
     private DeckResponse toResponse(Deck d, List<DeckCardResponse> cards) {
-        return new DeckResponse(d.getId(), d.getName(), d.getFaction(), d.getSnapshotId(), d.isDefense(), d.getVersion(),
+        return new DeckResponse(d.getId(), d.getName(), Faction.fromDataName(d.getFaction()).name(), d.getSnapshotId(),
+                d.isDefense(), d.getVersion(),
                 d.getCreatedAt(), d.getUpdatedAt(), cards);
     }
 }

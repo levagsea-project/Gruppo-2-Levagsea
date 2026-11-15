@@ -5,12 +5,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Errors carry a language-neutral {@code code}; the frontend translates it. A 400 also has {@code errors}, one
+ * {@code {code, params}} per broken rule.
+ */
 @RestControllerAdvice(assignableTypes = DeckController.class)
 public class DeckExceptionHandler {
 
     @ExceptionHandler(DeckException.class)
     public ResponseEntity<ProblemDetail> handle(DeckException e) {
-        ProblemDetail body = ProblemDetail.forStatusAndDetail(e.status(), e.getMessage());
+        ProblemDetail body = ProblemDetail.forStatusAndDetail(e.status(), e.code());
+        body.setProperty("code", e.code());
         if (!e.errors().isEmpty()) {
             body.setProperty("errors", e.errors());
         }

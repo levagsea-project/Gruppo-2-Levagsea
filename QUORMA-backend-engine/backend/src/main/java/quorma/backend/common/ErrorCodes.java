@@ -18,6 +18,7 @@ public final class ErrorCodes {
     public static final String PASSWORD_SIZE = "validation.password.size";
     public static final String MAX_UTF8_BYTES = "validation.max_utf8_bytes";
     public static final String FACTION_UNKNOWN = "validation.faction.unknown";
+    public static final String DECK_NAME_MAX_LENGTH = "validation.deck_name.max_length";
 
     public static final String USERNAME_TAKEN = "auth.username_taken";
     public static final String EMAIL_TAKEN = "auth.email_taken";
@@ -29,6 +30,20 @@ public final class ErrorCodes {
     public static final String PACK_NO_POOL = "pack.no_pool";
     public static final String PACK_IDEMPOTENCY_KEY_INVALID = "pack.idempotency_key_invalid";
     public static final String PACK_IDEMPOTENCY_KEY_REUSED = "pack.idempotency_key_reused";
+
+    public static final String DECK_NOT_FOUND = "deck.not_found";
+    public static final String DECK_NAME_TAKEN = "deck.name_taken";
+    public static final String DECK_DEFENSE_UNDELETABLE = "deck.defense_undeletable";
+    public static final String DECK_CONFLICT = "deck.conflict";
+    public static final String DECK_INVALID = "deck.invalid";
+    public static final String DECK_SIZE = "deck.size";
+    public static final String DECK_CREATURE_COUNT = "deck.creature_count";
+    public static final String DECK_DUPLICATE_SLOT = "deck.duplicate_slot";
+    public static final String DECK_INSTANCE_DUPLICATED = "deck.instance_duplicated";
+    public static final String DECK_INSTANCE_NOT_FOUND = "deck.instance_not_found";
+    public static final String DECK_SNAPSHOT_INVALID = "deck.snapshot_invalid";
+    public static final String DECK_CARD_WRONG_FACTION = "deck.card_wrong_faction";
+    public static final String DECK_CARD_NO_DEFINITION = "deck.card_no_definition";
 
     public static final String NOT_IMPLEMENTED = "error.not_implemented";
 
