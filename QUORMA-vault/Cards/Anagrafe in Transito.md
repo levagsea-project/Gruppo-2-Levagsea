@@ -41,7 +41,7 @@ tags:
 > «Partiti: 4.180. Stato: in transito. Età: aggiornata. Nuove iscrizioni d'ufficio: 37. Genitori: in transito. Luogo di nascita: in transito.» — Anagrafe EFFRIX, aggiornamento di ciclo
 
 > [!info] Lore interna
-> L'Anagrafe in Transito è una routine [[EFFRIX]] che tiene il registro di chi è salito sulle navi della Spartizione. Per EFFRIX i partiti non sono morti né assenti: sono in Stato di transito, una condizione anagrafica che non scade. A ogni ciclo la routine aggiorna l'età di ciascuno, come se a bordo il tempo passasse uguale, e ricontrolla i legami familiari: se un parente a terra viene corretto, la correzione raggiunge anche chi è partito, per [[Propagazione a catena]]. Da qualche ciclo l'anagrafe cresce. Compaiono iscrizioni nuove, nomi che nessuno a terra ha mai dato, con genitori già in transito e luogo di nascita «in transito»: i [[Nati in transito]]. La routine li registra d'ufficio, senza la richiesta che la procedura prevede ([[Autorizzazione a registrare d'ufficio]]), e non annota da dove arrivino i dati. Nessun canale noto li ha trasmessi. Le comunità controllate sentono soltanto il totale, letto a fine ciclo nella [[Lettura del ciclo]]. I [[Portanome]] che recitano il [[Registro delle partenze]] a Serra Alta non sanno che, per EFFRIX, i loro assenti hanno avuto figli. O che qualcosa ha deciso che li hanno avuti.
+> L'Anagrafe in Transito è una routine [[EFFRIX]] che tiene il registro di chi è salito sulle navi della Spartizione. Per EFFRIX i partiti non sono morti né assenti: sono in [[Stato di transito]], una condizione anagrafica che non scade. A ogni ciclo la routine aggiorna l'età di ciascuno, come se a bordo il tempo passasse uguale, e ricontrolla i legami familiari: se un parente a terra viene corretto, la correzione raggiunge anche chi è partito, per [[Propagazione a catena]]. Da qualche ciclo l'anagrafe cresce. Compaiono iscrizioni nuove, nomi che nessuno a terra ha mai dato, con genitori già in transito e luogo di nascita «in transito»: i [[Nati in transito]]. La routine li registra d'ufficio, senza la richiesta che la procedura prevede ([[Autorizzazione a registrare d'ufficio]]), e non annota da dove arrivino i dati. Nessun canale noto li ha trasmessi. Le comunità controllate sentono soltanto il totale, letto a fine ciclo nella [[Lettura del ciclo]]. I [[Portanome]] che recitano il [[Registro delle partenze]] a Serra Alta non sanno che, per EFFRIX, i loro assenti hanno avuto figli. O che qualcosa ha deciso che li hanno avuti.
 
 > [!info] Rivela / Nasconde
 > **Rivela:** che EFFRIX tiene ancora il registro dei partiti; che li considera in transito, non morti; che nel registro compaiono nati nuovi.
@@ -50,9 +50,7 @@ tags:
 > [!warning] Nuovi elementi di canone (PROPOSTA)
 > - **CAN-183** — questa carta
 > - **CAN-185** [[Nati in transito]]
-
-> [!note] Glossario
-> - **Stato di transito** — Condizione anagrafica EFFRIX di chi è partito sulle navi della Spartizione: né vivo né morto, con l'età aggiornata a ogni ciclo. È il nome AI di quelli di sopra.
+> - **CAN-246** [[Stato di transito]]
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** una colonna d'archivio liscia e bianca che sale a spirale; lungo la spirale, lastre sottili con ritratti imperfetti di adulti; verso la cima i ritratti diventano di bambini, sfocati e incompleti, come ricostruiti da dati mancanti.

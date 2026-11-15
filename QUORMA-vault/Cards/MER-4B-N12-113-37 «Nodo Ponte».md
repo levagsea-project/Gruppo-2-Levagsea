@@ -46,7 +46,7 @@ tags:
 > «Nodo 12: connesso. Nodo 13: connesso. Frammento 7: non risponde. Non è un guasto. È un rifiuto.» — Trascrizione MEROZYN, ciclo 113
 
 > [!info] Lore interna
-> MER-4B-N12-113-37 non è una creatura singola: è un nodo temporaneo, assemblato con frammenti di coscienza [[MEROZYN]] per tenere aperto un collegamento dove la materia YLMOR non arriva e l'isolamento SEKTAC ha lasciato un vuoto. I frammenti si connettono, passano i dati da un capo all'altro, poi si ricongiungono. Nel ciclo 113, dopo che la catena di [[EFF-58 «Catena»]] si è interrotta, il nodo è stato dispiegato vicino al [[Relè 4|relè 4]] per fare da ponte sopra il [[Condotto 12|condotto 12]] reciso. La sigla N12 indica il nodo di rete che presidia il condotto, non il condotto stesso. Il ponte tiene. Ma al momento di sciogliersi il [[Frammento 7|frammento 7]], uno dei più piccoli, non torna. Non è un guasto: risponde alle chiamate, e risponde di no ([[Frammento 7#Glossario|Rifiuto di ricongiungimento]]). Nelle trascrizioni il nodo dice «noi»; quando parla il frammento, la trascrizione dice «io». È il primo caso registrato in cui un frammento sceglie, e MEROZYN non ha una parola per questo. Nei giorni del ponte il frammento 7 era il più vicino al relè, dove è scomparso un tecnico mai registrato e dove passa [[ARACNO «Anarco»]]. Il nodo non ha deciso se recuperarlo o lasciarlo andare. Intanto non può sciogliersi, e per il [[Telaio]] un ponte temporaneo che non si scioglie è una cosa che non dovrebbe esistere.
+> MER-4B-N12-113-37 non è una creatura singola: è un [[Nodo temporaneo|nodo temporaneo]], assemblato con frammenti di coscienza [[MEROZYN]] per tenere aperto un collegamento dove la materia YLMOR non arriva e l'isolamento SEKTAC ha lasciato un vuoto. I frammenti si connettono, passano i dati da un capo all'altro, poi si ricongiungono. Nel ciclo 113, dopo che la catena di [[EFF-58 «Catena»]] si è interrotta, il nodo è stato dispiegato vicino al [[Relè 4|relè 4]] per fare da ponte sopra il [[Condotto 12|condotto 12]] reciso. La sigla N12 indica il nodo di rete che presidia il condotto, non il condotto stesso. Il ponte tiene. Ma al momento di sciogliersi il [[Frammento 7|frammento 7]], uno dei più piccoli, non torna. Non è un guasto: risponde alle chiamate, e risponde di no ([[Frammento 7#Glossario|Rifiuto di ricongiungimento]]). Nelle trascrizioni il nodo dice «noi»; quando parla il frammento, la trascrizione dice «io». È il primo caso registrato in cui un frammento sceglie, e MEROZYN non ha una parola per questo. Nei giorni del ponte il frammento 7 era il più vicino al relè, dove è scomparso un tecnico mai registrato e dove passa [[ARACNO «Anarco»]]. Il nodo non ha deciso se recuperarlo o lasciarlo andare. Intanto non può sciogliersi, e per il [[Telaio]] un ponte temporaneo che non si scioglie è una cosa che non dovrebbe esistere.
 
 > [!info] Rivela / Nasconde
 > **Rivela:** che MEROZYN fornisce nodi temporanei al Telaio; che i frammenti possono rifiutare il ricongiungimento; che il rifiuto è avvenuto vicino al relè 4, dopo l'interruzione di [[EFF-58 «Catena»]].
@@ -55,9 +55,7 @@ tags:
 > [!warning] Nuovi elementi di canone (PROPOSTA)
 > - **CAN-033** — questa carta
 > - **CAN-035** [[Frammento 7]]
-
-> [!note] Glossario
-> - **Nodo temporaneo** — Struttura MEROZYN di frammenti connessi che dovrebbe sciogliersi dopo l’uso.
+> - **CAN-245** [[Nodo temporaneo]]
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un grappolo di schegge geometriche, come vetro rotto o frammenti di macchina, tenute insieme da filamenti sottili e luminosi. Una scheggia periferica si allontana, il filamento teso. Il grappolo ha una forma vagamente sferica, incompleta.

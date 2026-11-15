@@ -19,7 +19,8 @@ from pathlib import Path
 VAULT = Path(__file__).resolve().parent.parent
 CATEGORIE = {"Mondo", "Luogo", "Oggetto", "Entità", "Pratica", "Seme", "Sottofazione", "Carta"}
 MAX_NUOVI = 2
-IGNORA = {"📄 Template Carta.md", "Prompt Carte.md", "Carta.md", "Elemento di canone.md"}
+IGNORA = {"📄 Template Carta.md", "Prompt Carte.md", "Prompt Magie ed Equipaggiamenti.md", "Carta.md",
+          "Magia.md", "Equipaggiamento.md", "Elemento di canone.md"}
 
 def campo(testo, chiave):
     m = re.search(rf'^{chiave}: *"?(.*?)"?\s*$', testo, re.M)

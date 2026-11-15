@@ -22,6 +22,7 @@ Come si usa:
 - **Solo ciò che un occhio vede.** Niente ruoli, intenzioni, storia o stati interni («custode», «sta per sigillare», «che era dei nostri»): gesti, corpi, oggetti, luoghi.
 - **Nessuna informazione riservata.** L'immagine non rivela ciò che i vincoli di trama vietano di dire: un dettaglio vietato si sostituisce con un'immagine neutra.
 - **I divieti stanno nella versione condensata.** Un generatore non vede il campo «Da evitare»: ciò che non deve comparire va scritto nella condensata con «senza …» o «nessun …».
+- **Magie ed equipaggiamenti.** Nessun effetto speciale: niente fulmini, aure, raggi o particelle luminose. Una magia si mostra nel suo momento e nelle sue conseguenze (persone ferme, un oggetto fuori posto, una luce che manca); un equipaggiamento è un oggetto in primo piano con i segni dell'uso (usura, rammendi, tracce di chi l'ha avuto prima). Mai nomi o lettere leggibili su un oggetto: segni non decifrabili.
 - **Prova finale:** se un illustratore che non ha letto nulla dovrebbe fare una domanda per disegnarla, la descrizione è sbagliata.
 
 ## Dizionario visivo

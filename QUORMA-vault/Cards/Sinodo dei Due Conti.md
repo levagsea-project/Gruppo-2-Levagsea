@@ -39,7 +39,7 @@ tags:
 > «Stesse voci, due conteggi: 67 per l'uno, 61 per l'altro. Chi è in transito conta solo per il primo. Nei rifugi l'offensiva non è ancora arrivata; da noi è già passata.» — Verbale del Sinodo, ciclo 113
 
 > [!info] Lore interna
-> Sinodo è l'istanza [[MEROZYN]] che tiene il verbale dei voti nel nodo di ponte: ogni conteggio delle voci umane passa da lei prima di diventare valido, perché i frammenti sono il tramite tra i registri. Da qualche ciclo i registri sono due, e li scrivono due Potenze che non si parlano. Per la prima gli assenti partiti sulle navi della Spartizione restano nel conto ([[Anagrafe in Transito]], [[Nati in transito]]): la Terra arriva a 67, la soglia del [[QUORMA]]. Per la seconda gli assenti non sono voci: la Terra si ferma a 61. Entrambe scrivono a Sinodo, ciascuna chiedendo che l'altro conto sia annotato come errore. Sinodo non sceglie: se annotasse uno, l'altro varrebbe lo stesso per chi lo legge. Verbalizza tutti e due, con la dicitura «conto doppio», e per questo il quorum della Terra resta sospeso a ogni ciclo. Nello stesso verbale c'è una voce che non appartiene a nessun conto: la [[La grande offensiva|grande offensiva]], entrata nei canali diretti ai rifugi prima che nei rifugi se ne parlasse, da un canale che non è umano. Sinodo l'ha registrata e inoltrata, come inoltra ogni voce, e ha annotato che non nasce dai rifugi. Non annota chi l'abbia immessa né a chi giovi. I frammenti che compongono Sinodo votano su ogni riga del verbale; le righe del conto doppio passano a 61, sei sotto la soglia.
+> Sinodo è l'istanza [[MEROZYN]] che tiene il verbale dei voti nel nodo di ponte: ogni conteggio delle voci umane passa da lei prima di diventare valido, perché i frammenti sono il tramite tra i registri. Da qualche ciclo i registri sono due, e li scrivono due Potenze che non si parlano. Per la prima gli assenti partiti sulle navi della Spartizione restano nel conto ([[Anagrafe in Transito]], [[Nati in transito]]): la Terra arriva a 67, la soglia del [[QUORMA]]. Per la seconda gli assenti non sono voci: la Terra si ferma a 61. Entrambe scrivono a Sinodo, ciascuna chiedendo che l'altro conto sia annotato come errore. Sinodo non sceglie: se annotasse uno, l'altro varrebbe lo stesso per chi lo legge. Verbalizza tutti e due, con la dicitura «[[Conto doppio]]», e per questo il quorum della Terra resta sospeso a ogni ciclo. Nello stesso verbale c'è una voce che non appartiene a nessun conto: la [[La grande offensiva|grande offensiva]], entrata nei canali diretti ai rifugi prima che nei rifugi se ne parlasse, da un canale che non è umano. Sinodo l'ha registrata e inoltrata, come inoltra ogni voce, e ha annotato che non nasce dai rifugi. Non annota chi l'abbia immessa né a chi giovi. I frammenti che compongono Sinodo votano su ogni riga del verbale; le righe del conto doppio passano a 61, sei sotto la soglia.
 
 > [!info] Rivela / Nasconde
 > **Rivela:** che due Potenze contano in modo opposto le stesse voci umane e nessuna cede; che la voce della grande offensiva è entrata nei canali dei rifugi da un canale non umano.
@@ -47,9 +47,7 @@ tags:
 
 > [!warning] Nuovi elementi di canone (PROPOSTA)
 > - **CAN-216** — questa carta
-
-> [!note] Glossario
-> - **Conto doppio** — Dicitura con cui Sinodo verbalizza due conteggi opposti delle stesse voci, senza dichiararne errato nessuno.
+> - **CAN-247** [[Conto doppio]]
 
 > [!info] Descrizione dell'illustrazione
 > - **Soggetto e azione:** un corpo largo e basso di placche metalliche sovrapposte, come un guscio, inginocchiato al centro di una sala di pietra in rovina; una fenditura lo divide a metà e le due metà si volgono appena in direzioni opposte, tenute insieme da cavi sottili tesi.

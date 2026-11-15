@@ -17,6 +17,12 @@ Punto di accesso alla lore di QUORMA. Ogni carta è una nota in `Cards/` che ha 
 
 Vista «Per sottofazione»: apri [[🃏 Carte.base]].
 
+### ✦ Magie ed Equipaggiamenti
+
+Le carte che non sono creature (senza rango, seme né sottofazione): che cosa sono nel mondo in [[Magie ed Equipaggiamenti]].
+
+![[🪄 Magie ed Equipaggiamenti.base#Per tipo]]
+
 ## 📋 Canone
 
 ![[📋 Canone.base#Registro]]
@@ -25,7 +31,7 @@ Viste: Registro (per CAN), Per categoria, Glossario (alfabetico), Da approvare (
 
 ## 🏷️ Tag
 
-- `#tipo/carta` · `#stato/proposta` · `#canone`
+- `#tipo/carta` · `#tipo/magia` · `#tipo/equipaggiamento` · `#stato/proposta` · `#canone`
 - `#fazione/potenze-artificiali` · `#fazione/resistenza-umana`
 - `#seme/vincolo` · `#seme/frattura` · `#seme/spira` · `#seme/vestigio`
 - `#sottofazione/adattati` · `#sottofazione/spezzasigilli` · `#sottofazione/portanome` · `#sottofazione/segnaterra`
@@ -36,6 +42,7 @@ Viste: Registro (per CAN), Per categoria, Glossario (alfabetico), Da approvare (
 - [[🗂️ Slot del set base]]: i 104 slot del set base, quali sono occupati e quali liberi (generata da `Strumenti/elenca_slot.py`).
 - [[📄 Template Carta]]: come si fa una carta a mano (slot, frontmatter, limiti, nomi per rango, checklist). I modelli Obsidian sono in `Strumenti/Template/`.
 - [[Prompt Carte]]: il prompt da dare a un LLM per scrivere una carta nello stesso formato.
+- [[Prompt Magie ed Equipaggiamenti]]: lo stesso, per le carte magia ed equipaggiamento.
 - [[Dizionario visivo]]: come si traducono in immagini i termini di lore; da incollare insieme al prompt, e fonte unica per le illustrazioni.
 - [[🧵 Trame]]: le trame emergenti (ARACNO, gli Undici, il tecnico scomparso…), con le carte che le costruiscono.
 
@@ -53,6 +60,7 @@ Estratta da `LEVAGSEA_Lore_v2.0` (copia anche nel repo: `QUORMA-backend-engine/d
 | [[Cronologia]] | Dottrina → Ribellione → Spartizione → Sopravvissuti → Fine della Stabilità |
 | [[Fazioni]] | Resistenza Umana, Potenze Artificiali, QUORMA |
 | [[Dottrine]] | I due cicli: [[Dottrine|Ciclo del Mondo]] e [[Dottrine|Ciclo dell'Identità]] |
+| [[Magie ed Equipaggiamenti]] | Che cosa sono nel mondo le carte che non sono creature |
 | [[Elementi Aperti]] | Questioni non risolte, punti consolidati, fonti |
 
 ### Sottofazioni

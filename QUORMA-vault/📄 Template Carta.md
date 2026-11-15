@@ -17,6 +17,15 @@ Guida per creare carte ed elementi di canone a mano. Per farle scrivere a un LLM
 4. **Collega**: nella sezione dei nuovi elementi della carta lascia solo `- **CAN-xxx** [[Nome]]`; nella lore interna collega carte ed elementi esistenti.
 5. **Aggiorna il foglio Excel** con la riga della carta.
 
+## Magie ed equipaggiamenti
+
+Le carte che non sono creature non hanno slot, rango, seme né sottofazione: sono della fazione. Cosa sono nel mondo: [[Magie ed Equipaggiamenti]]. Prompt per l'LLM: [[Prompt Magie ed Equipaggiamenti]].
+
+1. Nuova nota in `Cards/Magie ed Equipaggiamenti/` → *Inserisci modello* → **Magia** o **Equipaggiamento** (`Strumenti/Template/`).
+2. `id`: `BASE-{AI|RES}-{MAG|EQU}-{NN}`, progressivo per fazione e per tipo. Tag `tipo/magia` o `tipo/equipaggiamento` (non `tipo/carta`); campo `tipo_carta`; niente `rango`, `seme`, `sottofazione`.
+3. Il corpo è quello delle creature, più la riga **Costo** in *Rivela / Nasconde*: ogni potere ha un costo, sempre di qualcuno. Niente numeri né termini di gioco.
+4. Le carte restano fuori da [[🗂️ Slot del set base]] e dall'Excel; si vedono in [[🪄 Magie ed Equipaggiamenti.base]].
+
 ## Frontmatter della carta
 
 | Campo | Valori |
