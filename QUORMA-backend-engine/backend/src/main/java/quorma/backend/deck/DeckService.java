@@ -159,7 +159,7 @@ public class DeckService {
         // instances: missing or not owned give the same message
         Map<UUID, CardInstance> instMap = instances.findAllById(unique).stream()
                 .filter(i -> Objects.equals(i.getOwnerId(), ownerId))
-                .collect(Collectors.toMap(CardInstance::getInstanceId, i -> i));
+                .collect(Collectors.toMap(CardInstance::getId, i -> i));
         for (UUID id : unique) {
             if (!instMap.containsKey(id)) {
                 errors.add(DeckError.of(ErrorCodes.DECK_INSTANCE_NOT_FOUND, "id", id));
@@ -198,7 +198,7 @@ public class DeckService {
                 }
                 continue;
             }
-            result.add(new DeckCardResponse(inst.getInstanceId(), card.getId(), card.getCardCode(), card.getKind().name(),
+            result.add(new DeckCardResponse(inst.getId(), card.getId(), card.getCardCode(), card.getKind().name(),
                     def.getName(), card.getSubfaction(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
                     def.getAbilities(), card.getDeckSlot()));
         }
