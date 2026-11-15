@@ -1,0 +1,6111 @@
+{
+  "_readme": "Bozza di collegamento carte -> effetti -> statistiche (ruleset 1.0-alpha). Non e' letta dal motore, non e' nell'hash del regolamento e non e' validata da validate.py: sta in docs/cards/ e non in data/ apposta. Tutti i numeri sono segnaposto in attesa di playtest, come in balance.json. Le note del vault non sono state modificate: questo file e' l'unico punto in cui una carta e' legata a un'abilita'. Il motore scrivera' i dati di carta dallo stesso schema (keywords/evolutions con params gia' scalati per Tier, vedi data/AGENTS.md sez. 4).",
+  "schema_version": 1,
+  "ruleset_version": "1.0-alpha",
+  "status": "draft",
+  "how_to_read": {
+    "link_status": {
+      "live": "tutte le abilita' sono gia' nel motore",
+      "restore": "servono abilita' o pezzi di vocabolario oggi in parked/",
+      "proposed": "usa abilita' nuove ma solo con vocabolario vivo o parcheggiato",
+      "new_vocab": "servono nuovi effetti, trigger, bersagli o condizioni (vedi vocab_proposed)"
+    },
+    "ability.status": {
+      "live": "keyword/evoluzione viva",
+      "parked": "keyword/evoluzione in parked/",
+      "proposed": "abilita' nuova, definita in abilities_proposed"
+    },
+    "value_references": "Come in data/AGENTS.md sez. 3 ($param.x = valore sulla carta). In piu', un prefisso '-' come in \"-$param.permille\" nega il valore risolto: segnaposto di sintassi per i bonus negativi, da fissare quando le abilita' entrano in keyword.json.",
+    "fit": "quanto l'abilita' rende l'idea di 'Deve far sentire' della nota: alto, medio o basso (basso = segnaposto da rivedere con la narrativa)",
+    "needs_restore": "ID di vocabolario o abilita' da spostare da parked/ ai file vivi",
+    "needs_new_vocab": "ID nuovi proposti in vocab_proposed (continuano dopo E58/T38/S44/C26 liberi)",
+    "effect_cards": "magie ed equipaggiamenti: lista di espansioni di classe I. role=benefit e' l'effetto, role=cost e' il costo narrativo reso meccanico. Gli equipaggiamenti agiscono su S27 (creatura sostitutiva) o concedono un effetto con trigger alla creatura."
+  },
+  "stat_model": {
+    "status": "ipotesi di lavoro di balance.json (open_decisions): ATK circa 4000, DEF 1.5-2.5 x ATK, vita 12000.",
+    "points": "stat_points = ATK + DEF / 2. Riferimento 8000 (ATK 4000, DEF 8000, rapporto 2.0).",
+    "formula": "stat_points = 8000 x (1 - cost_pct_total / 100); ATK = stat_points / (1 + rapporto / 2); DEF = ATK x rapporto. ATK e DEF arrotondati a 50.",
+    "cost_pct_total": "somma dei costi delle abilita' (balance.json stat_cost_pct, proporzionale al valore scalato per Tier) + theme_match_stat_cost_pct (3) per ogni abilita' che condivide un tema col seme + extra_cost_pct. Negativo = bonus.",
+    "tier_scaling": "i parametri tier_scaled sono gia' scalati: Tier1 x0.8, Tier2 x1.0, Tier3 x1.2, Tier4 x1.5, con clamp su x_range. Il Tier non cambia le statistiche base (regolamento 3.2.2): cambia solo i valori delle abilita' open.",
+    "archetypes": {
+      "assalto": "rapporto 1.5",
+      "equilibrato": "rapporto 2.0",
+      "bastione": "rapporto 2.5"
+    },
+    "archetype_choice": "scelta per carta dalla nota (ruolo narrativo), non dal seme: Frattura tende ad assalto, Vestigio a bastione, ma non e' una regola. Rapporto massimo 4 (balance.json) riservato a Muro, non usato qui.",
+    "unused_global": "globals.stat_cost_effect_cards_pct (15) non e' usato: il significato non e' definito altrove nei dati. Magie ed equipaggiamenti non hanno statistiche: i loro numeri sono nei parametri degli effetti."
+  },
+  "summary": {
+    "cards": 87,
+    "by_kind": {
+      "creature": 67,
+      "equipment": 9,
+      "spell": 11
+    },
+    "by_link_status": {
+      "restore": 35,
+      "proposed": 34,
+      "new_vocab": 14,
+      "live": 4
+    },
+    "proposed_abilities": 40,
+    "new_vocab": {
+      "effects": [
+        "E58",
+        "E59",
+        "E60",
+        "E61",
+        "E62",
+        "E63"
+      ],
+      "triggers": [
+        "T38",
+        "T39"
+      ],
+      "targets": [
+        "S44",
+        "S45"
+      ],
+      "conditions": [
+        "C26"
+      ]
+    },
+    "duplicate_card_ids": []
+  },
+  "vocab_proposed": {
+    "effects": {
+      "E58": {
+        "name": "Infliggi danno proporzionale [SOURCE] [PERMILLE]",
+        "class": [
+          "T"
+        ],
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "instant_only",
+        "params": {
+          "source": {
+            "type": "enum",
+            "values": [
+              "damage_taken",
+              "damage_dealt",
+              "own_atk"
+            ]
+          },
+          "permille": {
+            "type": "int"
+          }
+        },
+        "description": "Infligge al bersaglio un danno pari a params.permille per-mille di: il danno appena subito dalla sorgente (damage_taken), il danno appena inflitto dalla sorgente (damage_dealt) o il suo ATK effettivo (own_atk). Riduce la DEF attuale come E7."
+      },
+      "E59": {
+        "name": "Annulla modificatori positivi",
+        "class": [
+          "T"
+        ],
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "instant_only",
+        "params": {},
+        "description": "Rimuove dal bersaglio i modificatori positivi di ATK e DEF attuali e le keyword concesse da effetti. Non tocca i valori stampati."
+      },
+      "E60": {
+        "name": "Isola dalle adiacenze",
+        "class": [
+          "C"
+        ],
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "sustained_only",
+        "params": {},
+        "description": "Il bersaglio non e' considerato adiacente a nessuna creatura del suo giocatore per gli effetti che richiedono adiacenza (opposto di E34). Disattiva anche Sostegno e Provocazione che lo riguardano."
+      },
+      "E61": {
+        "name": "Impedisci bonus",
+        "class": [
+          "C"
+        ],
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "sustained_only",
+        "params": {},
+        "description": "I modificatori positivi di ATK e DEF attuali non si applicano al bersaglio (simmetrico di E52, che protegge dalle riduzioni)."
+      },
+      "E62": {
+        "name": "Reindirizza spill sulle creature adiacenti",
+        "class": [
+          "R"
+        ],
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "instant_only",
+        "params": {},
+        "description": "Lo spill dell'attacco indicato non colpisce il giocatore: viene diviso come danno alle creature avversarie adiacenti al bersaglio ucciso. Classe R: usare il trigger T34."
+      },
+      "E63": {
+        "name": "Escludi dalla mano",
+        "class": [
+          "R"
+        ],
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "sustained_only",
+        "params": {},
+        "description": "La creatura bersaglio non conta per la mano di poker del suo giocatore. Resta in gioco e combatte, ma non forma combinazioni. Classe R: usare il trigger T4."
+      }
+    },
+    "triggers": {
+      "T38": {
+        "name": "Quando infligge danno da combattimento",
+        "class": "T",
+        "uses_stack": true,
+        "provides": [
+          "damaged_creature"
+        ],
+        "description": "Quando la creatura infligge danno da combattimento (> 0) a un'altra creatura. Fornisce la creatura danneggiata."
+      },
+      "T39": {
+        "name": "Quando sta per essere attaccata da una creatura avversaria",
+        "class": "R",
+        "uses_stack": false,
+        "provides": [
+          "attacker"
+        ],
+        "description": "Sostituzione: un attaccante avversario sta per colpire la creatura. Non usa la pila. Fornisce l'attaccante."
+      }
+    },
+    "targets": {
+      "S44": {
+        "name": "Creature avversarie adiacenti al bersaglio",
+        "kind": [
+          "creature"
+        ],
+        "requires_context": "damaged_creature",
+        "description": "Le creature avversarie in corsie adiacenti (differenza di 1) a quella della creatura danneggiata o dichiarata come bersaglio. Si ferma alla prima corsia vuota."
+      },
+      "S45": {
+        "name": "Creature avversarie nella corsia della sorgente e in quelle adiacenti",
+        "kind": [
+          "creature"
+        ],
+        "requires_context": null,
+        "description": "Le creature avversarie nella corsia opposta alla sorgente e nelle due corsie adiacenti."
+      }
+    },
+    "conditions": {
+      "C26": {
+        "name": "Creature alleate adiacenti",
+        "params": {
+          "min": {
+            "type": "int",
+            "optional": true
+          },
+          "max": {
+            "type": "int",
+            "optional": true
+          }
+        },
+        "description": "Il numero di creature alleate in corsie adiacenti alla sorgente e' almeno params.min e al massimo params.max (0, 1 o 2)."
+      }
+    },
+    "enum_extensions": {
+      "E1.scale_by": [
+        "own_empty_lanes"
+      ],
+      "note": "own_empty_lanes: moltiplica il valore per il numero di corsie vuote del controllore (0-5)."
+    }
+  },
+  "abilities_proposed": {
+    "K_SCUDO_COMUNITA": {
+      "name": "Scudo di comunita'",
+      "kind": "keyword",
+      "description": "Questa creatura riduce il danno subito di {x}% per ogni creatura alleata adiacente (massimo due).",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E28",
+          "effect_params": {
+            "mode": "reduction_pct",
+            "pct": "$param.x"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [
+            {
+              "id": "C26",
+              "params": {
+                "min": 1
+              }
+            }
+          ],
+          "class": "C"
+        },
+        {
+          "trigger_id": "T0",
+          "effect_id": "E28",
+          "effect_params": {
+            "mode": "reduction_pct",
+            "pct": "$param.x"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [
+            {
+              "id": "C26",
+              "params": {
+                "min": 2
+              }
+            }
+          ],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 3,
+      "params": {
+        "x": 12
+      },
+      "tier_scaled": [
+        "x"
+      ],
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 2,
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "C26"
+      ]
+    },
+    "K_SCUDO_ADIACENTI": {
+      "name": "Voce che regge",
+      "kind": "keyword",
+      "description": "Le creature alleate adiacenti riducono il danno subito di {x}% finche' questa creatura e' in gioco.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E28",
+          "effect_params": {
+            "mode": "reduction_pct",
+            "pct": "$param.x"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "x": 12
+      },
+      "tier_scaled": [
+        "x"
+      ],
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": []
+    },
+    "K_LASCITO_DIFESA": {
+      "name": "Lascito di difesa",
+      "kind": "keyword",
+      "description": "Quando questa creatura viene distrutta: le creature alleate adiacenti guadagnano +{bonus_pct}% della loro DEF base in modo permanente.",
+      "expands_to": [
+        {
+          "trigger_id": "T10",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "$param.permille"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 200
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 2,
+      "needs_restore": [
+        "E2",
+        "T10"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_LASCITO_CURA": {
+      "name": "Lascito di cura",
+      "kind": "keyword",
+      "description": "Quando questa creatura viene distrutta: le creature alleate adiacenti curano {heal_pct}% della loro DEF base.",
+      "expands_to": [
+        {
+          "trigger_id": "T10",
+          "effect_id": "E6",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "$param.permille"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 300
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 2,
+      "needs_restore": [
+        "T10"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_ECO": {
+      "name": "Eco storpiato",
+      "kind": "keyword",
+      "description": "Quando questa creatura subisce danno da combattimento: la creatura che l'ha inflitto subisce il {pct}% di quel danno.",
+      "expands_to": [
+        {
+          "trigger_id": "T13",
+          "effect_id": "E58",
+          "effect_params": {
+            "source": "damage_taken",
+            "permille": "$param.permille"
+          },
+          "target_id": "S26",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T",
+          "trigger_params": {
+            "source": "combattimento"
+          }
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 600
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "trigger_params T13: source = combattimento",
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S26",
+        "T13"
+      ],
+      "needs_new_vocab": [
+        "E58"
+      ]
+    },
+    "K_CATENA": {
+      "name": "Catena",
+      "kind": "keyword",
+      "description": "Quando questa creatura infligge danno da combattimento: le creature avversarie adiacenti al bersaglio subiscono il {pct}% di quel danno. Si ferma alla prima corsia vuota.",
+      "expands_to": [
+        {
+          "trigger_id": "T38",
+          "effect_id": "E58",
+          "effect_params": {
+            "source": "damage_dealt",
+            "permille": "$param.permille"
+          },
+          "target_id": "S44",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 7,
+      "params": {
+        "permille": 300
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "E58",
+        "S44",
+        "T38"
+      ]
+    },
+    "K_TAGLIO_LEGAMI": {
+      "name": "Taglio dei legami",
+      "kind": "keyword",
+      "description": "Quando questa creatura attacca: le creature avversarie adiacenti al bersaglio perdono {pct}% della loro DEF base fino alla fine del combattimento.",
+      "expands_to": [
+        {
+          "trigger_id": "T6",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S44",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelCombattimento",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 200
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "D_FinoAllaFineDelCombattimento",
+        "E2",
+        "T6"
+      ],
+      "needs_new_vocab": [
+        "S44"
+      ]
+    },
+    "K_ULTIMO_GESTO": {
+      "name": "Ultimo gesto",
+      "kind": "keyword",
+      "description": "Quando questa creatura viene distrutta: la creatura avversaria nella sua corsia subisce il {pct}% dell'ATK di questa creatura.",
+      "expands_to": [
+        {
+          "trigger_id": "T10",
+          "effect_id": "E58",
+          "effect_params": {
+            "source": "own_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S6",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 700
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S6",
+        "T10"
+      ],
+      "needs_new_vocab": [
+        "E58"
+      ]
+    },
+    "K_CONFORMITA": {
+      "name": "Conformita'",
+      "kind": "keyword",
+      "description": "Quando questa creatura attacca: il bersaglio perde i modificatori positivi e le keyword concesse.",
+      "expands_to": [
+        {
+          "trigger_id": "T6",
+          "effect_id": "E59",
+          "effect_params": {},
+          "target_id": "S43",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S43",
+        "T6"
+      ],
+      "needs_new_vocab": [
+        "E59"
+      ]
+    },
+    "K_ISOLA": {
+      "name": "Isolamento",
+      "kind": "keyword",
+      "description": "La creatura avversaria nella corsia di questa creatura non e' considerata adiacente alle sue alleate.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E60",
+          "effect_params": {},
+          "target_id": "S6",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 7,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adjacency"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 2,
+      "needs_restore": [
+        "S6"
+      ],
+      "needs_new_vocab": [
+        "E60"
+      ]
+    },
+    "K_CONFINE": {
+      "name": "Confine",
+      "kind": "keyword",
+      "description": "Le creature avversarie nella corsia di questa creatura e in quelle adiacenti non ricevono bonus di ATK o DEF.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E61",
+          "effect_params": {},
+          "target_id": "S45",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 7,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "E61",
+        "S45"
+      ]
+    },
+    "K_APRI_STRADA": {
+      "name": "Apri la strada",
+      "kind": "keyword",
+      "description": "Quando questa creatura uccide una creatura: le creature alleate adiacenti guadagnano +{bonus_pct}% del loro ATK base fino alla fine del turno.",
+      "expands_to": [
+        {
+          "trigger_id": "T19",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelTurno",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 150
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_SLANCIO": {
+      "name": "Slancio",
+      "kind": "keyword",
+      "description": "Quando questa creatura attacca: le creature alleate adiacenti guadagnano +{bonus_pct}% del loro ATK base fino alla fine del turno; questa creatura perde {cost_pct}% della sua DEF base in modo permanente (massimo 3 volte).",
+      "expands_to": [
+        {
+          "trigger_id": "T6",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelTurno",
+          "conditions": [],
+          "class": "T"
+        },
+        {
+          "trigger_id": "T6",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "-$param.cost_permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_SLANCIO"
+        }
+      ],
+      "stat_cost_pct": 3,
+      "params": {
+        "permille": 150,
+        "cost_permille": 100
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "E2",
+        "T6"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_ASSIMILA": {
+      "name": "Assimilazione",
+      "kind": "keyword",
+      "description": "Quando una creatura alleata viene distrutta (scope any: o una creatura avversaria): questa creatura guadagna +{bonus_pct}% del suo ATK base in modo permanente, fino a {max_stacks} volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T36",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_ASSIMILA"
+        },
+        {
+          "trigger_id": "T37",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "scope",
+                "equals": "any"
+              }
+            }
+          ],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_ASSIMILA"
+        }
+      ],
+      "stat_cost_pct": 4,
+      "params": {
+        "permille": 120,
+        "scope": "allies"
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "growth"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "param scope: allies | any (come kind di Scudo, via K_PARAM).",
+      "used_by_cards": 2,
+      "needs_restore": [
+        "T36",
+        "T37"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_INNESTO": {
+      "name": "Innesto",
+      "kind": "keyword",
+      "description": "Quando una creatura alleata viene distrutta: questa creatura guadagna +{atk_pct}% del suo ATK base e perde {def_pct}% della sua DEF base in modo permanente, fino a 3 volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T36",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_INNESTO"
+        },
+        {
+          "trigger_id": "T36",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "-$param.def_permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_INNESTO"
+        }
+      ],
+      "stat_cost_pct": 3,
+      "params": {
+        "permille": 150,
+        "def_permille": 100
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adaptation",
+        "growth"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 2,
+      "needs_restore": [
+        "E2",
+        "T36"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_INDURISCE": {
+      "name": "Indurimento",
+      "kind": "keyword",
+      "description": "Quando una creatura alleata viene distrutta: questa creatura guadagna +{bonus_pct}% della sua DEF base in modo permanente, fino a 3 volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T36",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_INDURISCE"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 200
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence",
+        "growth"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E2",
+        "T36"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_PORTA_AVANTI": {
+      "name": "Porta avanti",
+      "kind": "keyword",
+      "description": "Quando una creatura alleata viene distrutta: questa creatura cura {heal_pct}% della sua DEF base.",
+      "expands_to": [
+        {
+          "trigger_id": "T36",
+          "effect_id": "E6",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 300
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "T36"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_MAESTRA": {
+      "name": "Maestra",
+      "kind": "keyword",
+      "description": "All'inizio della fase di Valutazione: concede l'Evoluzione Crescita alle creature alleate adiacenti che non l'hanno.",
+      "expands_to": [
+        {
+          "trigger_id": "T2",
+          "effect_id": "E16",
+          "effect_params": {
+            "evolution_id": "EVO_CRESCITA"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "trigger_params": {
+            "phase": "Valutazione"
+          }
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adaptation",
+        "growth"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "Richiede il ripristino delle Evoluzioni (oggi nessuna e' viva).",
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E16"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_LESSICO": {
+      "name": "Lessico",
+      "kind": "keyword",
+      "description": "Quando una carta sostitutiva viene piazzata: guadagna +{bonus_pct}% del suo ATK base in modo permanente.",
+      "expands_to": [
+        {
+          "trigger_id": "T29",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S27",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 250
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "growth",
+        "adaptation"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": []
+    },
+    "K_PONTE": {
+      "name": "Ponte",
+      "kind": "keyword",
+      "description": "Questa creatura e' considerata adiacente a tutte le creature del suo giocatore, per gli effetti che richiedono adiacenza.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E34",
+          "effect_params": {
+            "group": "stesso_giocatore"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 3,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adjacency"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": []
+    },
+    "K_NON_RISCRIVIBILE": {
+      "name": "Non riscrivibile",
+      "kind": "keyword",
+      "description": "L'ATK di questa creatura (scope self_adjacent) e delle creature alleate adiacenti non puo' essere ridotto dagli effetti.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E52",
+          "effect_params": {},
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "scope",
+                "equals": "self_adjacent"
+              }
+            }
+          ],
+          "class": "C"
+        },
+        {
+          "trigger_id": "T0",
+          "effect_id": "E52",
+          "effect_params": {},
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "scope": "adjacent"
+      },
+      "tier_scaled": [],
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "param scope: adjacent | self_adjacent.",
+      "used_by_cards": 2,
+      "needs_restore": [],
+      "needs_new_vocab": []
+    },
+    "K_CAMPI_VUOTI": {
+      "name": "Campi vuoti",
+      "kind": "keyword",
+      "description": "Questa creatura guadagna +{bonus_pct}% del suo ATK base per ogni tua corsia vuota.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille",
+            "scale_by": "own_empty_lanes"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 200
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "Richiede il nuovo valore scale_by own_empty_lanes di E1.",
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": []
+    },
+    "K_ALLONTANA": {
+      "name": "Allontana",
+      "kind": "keyword",
+      "description": "Quando questa creatura attacca (on=attack) o e' attaccata (on=attacked): le creature alleate adiacenti perdono {pct}% del loro ATK base fino alla fine del turno.",
+      "expands_to": [
+        {
+          "trigger_id": "T6",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelTurno",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "on",
+                "equals": "attack"
+              }
+            }
+          ],
+          "class": "T"
+        },
+        {
+          "trigger_id": "T7",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S41",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelTurno",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "on",
+                "equals": "attacked"
+              }
+            }
+          ],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": -3,
+      "params": {
+        "permille": 150,
+        "on": "attack"
+      },
+      "tier_scaled": [],
+      "themes": [
+        "adjacency"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "Svantaggio: stat_cost negativo = bonus di statistiche.",
+      "used_by_cards": 2,
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "T6",
+        "T7"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_ISOLATO": {
+      "name": "Isolato",
+      "kind": "keyword",
+      "description": "Questa creatura guadagna +{bonus_pct}% del suo ATK base finche' non ha creature alleate adiacenti.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [
+            {
+              "id": "C26",
+              "params": {
+                "max": 0
+              }
+            }
+          ],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 250
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adjacency"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "C26"
+      ]
+    },
+    "K_ORDINE_PAGATO": {
+      "name": "Ordine pagato",
+      "kind": "keyword",
+      "description": "All'inizio del Ciclo 1, se questa creatura e' attaccante: guadagna +{bonus_pct}% del suo ATK base fino alla fine del turno e una creatura alleata adiacente subisce {amount} danni.",
+      "expands_to": [
+        {
+          "trigger_id": "T2",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelTurno",
+          "conditions": [
+            {
+              "id": "C1"
+            }
+          ],
+          "class": "T",
+          "trigger_params": {
+            "phase": "Ciclo 1"
+          }
+        },
+        {
+          "trigger_id": "T2",
+          "effect_id": "E7",
+          "effect_params": {
+            "amount": "$param.amount"
+          },
+          "target_id": "S7",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [
+            {
+              "id": "C1"
+            }
+          ],
+          "class": "T",
+          "trigger_params": {
+            "phase": "Ciclo 1"
+          }
+        }
+      ],
+      "stat_cost_pct": 2,
+      "params": {
+        "permille": 300,
+        "amount": 800
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "E7",
+        "S7"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_FURIA_CIECA": {
+      "name": "Furia cieca",
+      "kind": "keyword",
+      "description": "Quando questa creatura uccide una creatura: una creatura alleata adiacente subisce {amount} danni.",
+      "expands_to": [
+        {
+          "trigger_id": "T19",
+          "effect_id": "E7",
+          "effect_params": {
+            "amount": "$param.amount"
+          },
+          "target_id": "S7",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": -3,
+      "params": {
+        "amount": 600
+      },
+      "tier_scaled": [],
+      "themes": [
+        "growth",
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "Svantaggio: stat_cost negativo = bonus di statistiche.",
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E7",
+        "S7"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_RELIQUIA": {
+      "name": "Reliquia",
+      "kind": "keyword",
+      "description": "Quando questa creatura viene distrutta: una creatura alleata adiacente ottiene Scudo ({x}).",
+      "expands_to": [
+        {
+          "trigger_id": "T10",
+          "effect_id": "E14",
+          "effect_params": {
+            "keyword": "K_SCUDO",
+            "keyword_params": {
+              "x": "$param.x"
+            }
+          },
+          "target_id": "S7",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "x": 15
+      },
+      "tier_scaled": [
+        "x"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E14",
+        "S7",
+        "T10"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_PORTA_CHIUSA": {
+      "name": "Porta gentile e chiusa",
+      "kind": "keyword",
+      "description": "Una volta per turno, quando una creatura avversaria sta per attaccare questa creatura: quell'attacco non viene effettuato.",
+      "expands_to": [
+        {
+          "trigger_id": "T39",
+          "effect_id": "E25",
+          "effect_params": {},
+          "target_id": "S2",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "R",
+          "once_per_turn": true
+        }
+      ],
+      "stat_cost_pct": 8,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "limited",
+      "suggested_ranks": [
+        "4",
+        "5",
+        "6"
+      ],
+      "note": "E25 oggi e' usato solo da Muro. Una volta per turno e' cio' che lo rende non spammabile.",
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E25",
+        "S2"
+      ],
+      "needs_new_vocab": [
+        "T39"
+      ]
+    },
+    "K_RITARDO": {
+      "name": "Ritardo",
+      "kind": "keyword",
+      "description": "Le Evoluzioni della creatura avversaria nella corsia di questa creatura non possono essere innescate.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E18",
+          "effect_params": {},
+          "target_id": "S6",
+          "target_params": {},
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 4,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adaptation"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E18",
+        "S6"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_ASSENSO": {
+      "name": "Assenso",
+      "kind": "keyword",
+      "description": "Quando questa creatura e' attaccata: l'attaccante perde {pct}% del suo ATK base in modo permanente, fino a {max_stacks} volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T7",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S2",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_ASSENSO"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 80
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adaptation"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S2",
+        "T7"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_MONITO": {
+      "name": "Monito",
+      "kind": "keyword",
+      "description": "Quando questa creatura uccide una creatura: tutte le creature avversarie perdono {pct}% del loro ATK base in modo permanente, fino a 3 volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T19",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S10",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_MONITO"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 40
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S10"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_ACCUMULO": {
+      "name": "Accumulo",
+      "kind": "keyword",
+      "description": "Alla fine di ogni turno: questa creatura guadagna +{bonus_pct}% del suo ATK base in modo permanente, fino a {max_stacks} volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T26",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 4,
+          "stack_key": "K_ACCUMULO"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 100
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "growth",
+        "persistence"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 2,
+      "needs_restore": [
+        "T26"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_APPRENDE": {
+      "name": "Apprende",
+      "kind": "keyword",
+      "description": "Quando questa creatura subisce danno da combattimento: riduce il danno subito di un ulteriore {pct}% in modo permanente, fino a 4 volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T13",
+          "effect_id": "E28",
+          "effect_params": {
+            "mode": "reduction_pct",
+            "pct": "$param.x"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 4,
+          "stack_key": "K_APPRENDE",
+          "trigger_params": {
+            "source": "combattimento"
+          }
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "x": 4
+      },
+      "tier_scaled": [
+        "x"
+      ],
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": "Il valore e' basso perche' si impila 4 volte; la riduzione resta soggetta al tetto di mitigazione.",
+      "used_by_cards": 1,
+      "needs_restore": [
+        "T13"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_SALITA": {
+      "name": "Salita",
+      "kind": "keyword",
+      "description": "Alla fine di ogni turno: questa creatura guadagna +{bonus_pct}% del suo ATK base e perde {cost_pct}% della sua DEF base in modo permanente, fino a 4 volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T26",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 4,
+          "stack_key": "K_SALITA"
+        },
+        {
+          "trigger_id": "T26",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "-$param.cost_permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 4,
+          "stack_key": "K_SALITA"
+        }
+      ],
+      "stat_cost_pct": 3,
+      "params": {
+        "permille": 150,
+        "cost_permille": 100
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "growth"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E2",
+        "T26"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_SGUARDO": {
+      "name": "Sguardo",
+      "kind": "keyword",
+      "description": "Alla fine di ogni turno: la creatura avversaria nella sua corsia perde {pct}% del suo ATK base e questa creatura guadagna lo stesso valore, in modo permanente, fino a 3 volte.",
+      "expands_to": [
+        {
+          "trigger_id": "T26",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S6",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_SGUARDO"
+        },
+        {
+          "trigger_id": "T26",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_SGUARDO"
+        }
+      ],
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 40
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "adaptation"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S6",
+        "T26"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_DICHIARA_PERDUTO": {
+      "name": "Dichiara perduto",
+      "kind": "keyword",
+      "description": "Quando questa creatura attacca: il bersaglio perde {pct}% della sua DEF base fino alla fine del combattimento.",
+      "expands_to": [
+        {
+          "trigger_id": "T6",
+          "effect_id": "E2",
+          "effect_params": {
+            "mode": "pct_base_def",
+            "permille": "-$param.permille"
+          },
+          "target_id": "S43",
+          "target_params": {},
+          "duration": "D_FinoAllaFineDelCombattimento",
+          "conditions": [],
+          "class": "T"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {
+        "permille": 150
+      },
+      "tier_scaled": [
+        "permille"
+      ],
+      "themes": [
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "D_FinoAllaFineDelCombattimento",
+        "E2",
+        "S43",
+        "T6"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_SINODO": {
+      "name": "Due meta'",
+      "kind": "keyword",
+      "description": "Per la mano di poker questa creatura conta anche come Regina.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E30",
+          "effect_params": {
+            "rank": "Q"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 4,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "persistence"
+      ],
+      "suggested_cap_class": "capped",
+      "suggested_ranks": [
+        "K"
+      ],
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E30"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_QUASI_UGUALE": {
+      "name": "Quasi uguale",
+      "kind": "keyword",
+      "description": "Per la mano di poker questa creatura conta anche come 8.",
+      "expands_to": [
+        {
+          "trigger_id": "T0",
+          "effect_id": "E30",
+          "effect_params": {
+            "rank": "8"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [],
+          "class": "C"
+        }
+      ],
+      "stat_cost_pct": 3,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adaptation"
+      ],
+      "suggested_cap_class": "capped",
+      "suggested_ranks": [
+        "7"
+      ],
+      "note": "Segnaposto: il rango o il seme da imitare e' una scelta di design.",
+      "used_by_cards": 1,
+      "needs_restore": [
+        "E30"
+      ],
+      "needs_new_vocab": []
+    },
+    "K_CONTA_CHI_CONTA": {
+      "name": "Chi conta",
+      "kind": "keyword",
+      "description": "Nella Valutazione, la creatura avversaria di rango piu' alto non conta per la sua mano di poker.",
+      "expands_to": [
+        {
+          "trigger_id": "T4",
+          "effect_id": "E63",
+          "effect_params": {},
+          "target_id": "S39",
+          "target_params": {
+            "from": "S10"
+          },
+          "duration": "D_FincheSorgenteInGioco",
+          "conditions": [],
+          "class": "R"
+        }
+      ],
+      "stat_cost_pct": 8,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "adjacency"
+      ],
+      "suggested_cap_class": "limited",
+      "suggested_ranks": [
+        "Q",
+        "K"
+      ],
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [
+        "S10",
+        "S39",
+        "T4"
+      ],
+      "needs_new_vocab": [
+        "E63"
+      ]
+    },
+    "K_RICADUTA": {
+      "name": "Ricaduta",
+      "kind": "keyword",
+      "description": "Quando questa creatura uccide un bersaglio: lo spill non colpisce il giocatore ma le creature avversarie adiacenti al bersaglio.",
+      "expands_to": [
+        {
+          "trigger_id": "T34",
+          "effect_id": "E62",
+          "effect_params": {},
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [],
+          "class": "R"
+        }
+      ],
+      "stat_cost_pct": 6,
+      "params": {},
+      "tier_scaled": [],
+      "themes": [
+        "breakthrough"
+      ],
+      "suggested_cap_class": "open",
+      "suggested_ranks": "tutti",
+      "note": null,
+      "used_by_cards": 1,
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "E62"
+      ]
+    }
+  },
+  "cards": [
+    {
+      "id": "BASE-RES-A-FRA-SPE",
+      "title": "ARACNO «Anarco»",
+      "source_note": "ARACNO «Anarco»",
+      "can": "CAN-001",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "A",
+      "suit": "Frattura",
+      "tier": 4,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "K_LETALE",
+          "status": "parked"
+        },
+        {
+          "ref": "K_DOPPIO_COLPO",
+          "status": "parked"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_LETALE",
+          "cost_pct": 15,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "K_DOPPIO_COLPO",
+          "cost_pct": 15,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 36.0,
+        "extra_cost_pct": 0,
+        "stat_points": 5120
+      },
+      "stats": {
+        "atk": 2950,
+        "def": 4400
+      },
+      "needs_restore": [
+        "K_DOPPIO_COLPO",
+        "K_LETALE"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Imprevedibilita' e prezzo: le due abilita' piu' 'swingy' dell'Asso insieme. Il prezzo narrativo e' lo stat cost del 30%, quindi stat molto basse."
+    },
+    {
+      "id": "BASE-RES-9-VES-POR",
+      "title": "Agiografo del Primo Ingegnere",
+      "source_note": "Agiografo del Primo Ingegnere",
+      "can": "CAN-082",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "9",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_LASCITO_DIFESA",
+          "status": "proposed",
+          "params": {
+            "permille": 200
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_LASCITO_DIFESA",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "E2",
+        "T10"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "La sua fine mette al riparo i piu' fragili: alla distruzione le alleate adiacenti guadagnano DEF."
+    },
+    {
+      "id": "BASE-AI-6-SPI-EFF",
+      "title": "Anagrafe in Transito",
+      "source_note": "Anagrafe in Transito",
+      "can": "CAN-183",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "6",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_ACCUMULO",
+          "status": "proposed",
+          "params": {
+            "permille": 80
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ACCUMULO",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "T26"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Il registro cresce anche senza cio' che registra: cresce a fine turno a prescindere dal combattimento."
+    },
+    {
+      "id": "BASE-AI-6-VES-MER",
+      "title": "Annali di Ponte Vaio",
+      "source_note": "Annali di Ponte Vaio",
+      "can": "CAN-200",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "6",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_APPRENDE",
+          "status": "proposed",
+          "params": {
+            "x": 3
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_APPRENDE",
+          "cost_pct": 3.75,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 6.75,
+        "extra_cost_pct": 0,
+        "stat_points": 7460
+      },
+      "stats": {
+        "atk": 3300,
+        "def": 8250
+      },
+      "needs_restore": [
+        "T13"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Una memoria ripetuta diventa vera: ogni colpo subito rende meno efficaci i successivi."
+    },
+    {
+      "id": "BASE-RES-4-FRA-SPE",
+      "title": "Ascoltatori del Canale 9",
+      "source_note": "Ascoltatori del Canale 9",
+      "can": "CAN-152",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "4",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_ECO",
+          "status": "proposed",
+          "params": {
+            "permille": 480
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ECO",
+          "cost_pct": 4.8,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 7.8,
+        "extra_cost_pct": 0,
+        "stat_points": 7376
+      },
+      "stats": {
+        "atk": 4200,
+        "def": 6300
+      },
+      "needs_restore": [
+        "S26",
+        "T13"
+      ],
+      "needs_new_vocab": [
+        "E58"
+      ],
+      "fit": "alto",
+      "note": "Rimandano il colpo storpiato: ritorsione parziale sull'attaccante."
+    },
+    {
+      "id": "BASE-RES-2-VIN-POR",
+      "title": "Custode del Nome Non Scritto",
+      "source_note": "Custode del Nome Non Scritto",
+      "can": "CAN-010",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "2",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_SCUDO_COMUNITA",
+          "status": "proposed",
+          "params": {
+            "x": 9
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SCUDO_COMUNITA",
+          "cost_pct": 2.25,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 5.25,
+        "extra_cost_pct": 0,
+        "stat_points": 7580
+      },
+      "stats": {
+        "atk": 3800,
+        "def": 7600
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "C26"
+      ],
+      "fit": "alto",
+      "note": "Al sicuro finche' ha accanto qualcuno a cui passare il nome: la riduzione danni dipende dalle alleate adiacenti."
+    },
+    {
+      "id": "BASE-RES-7-SPI-SPE",
+      "title": "Decifratrice «Carta Bianca»",
+      "source_note": "Decifratrice «Carta Bianca»",
+      "can": "CAN-173",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "7",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_CRESCITA",
+          "status": "parked",
+          "params": {
+            "permille": 150
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_CRESCITA",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "EVO_CRESCITA"
+      ],
+      "needs_new_vocab": [],
+      "fit": "basso",
+      "note": "Impara mentre resta in campo, ma 'non sai che cosa' richiederebbe una scelta casuale. Segnaposto: Crescita."
+    },
+    {
+      "id": "BASE-AI-8-VES-EFF",
+      "title": "EFF-29 «Scriptorium»",
+      "source_note": "EFF-29 «Scriptorium»",
+      "can": "CAN-073",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "8",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_LASCITO_CURA",
+          "status": "proposed",
+          "params": {
+            "permille": 300
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_LASCITO_CURA",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "T10"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "La sua fine corregge chi resta: cura le alleate adiacenti alla distruzione."
+    },
+    {
+      "id": "BASE-AI-7-VIN-EFF",
+      "title": "EFF-58 «Catena»",
+      "source_note": "EFF-58 «Catena»",
+      "can": "CAN-022",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "7",
+      "suit": "Vincolo",
+      "tier": 2,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_CATENA",
+          "status": "proposed",
+          "params": {
+            "permille": 300
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_CATENA",
+          "cost_pct": 7.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 10.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7200
+      },
+      "stats": {
+        "atk": 3600,
+        "def": 7200
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "E58",
+        "S44",
+        "T38"
+      ],
+      "fit": "alto",
+      "note": "Il colpo corre lungo i legami finche' trova un vuoto: danno alle avversarie adiacenti al bersaglio."
+    },
+    {
+      "id": "BASE-AI-9-FRA-EFF",
+      "title": "EFF-91 «Una Erre»",
+      "source_note": "EFF-91 «Una Erre»",
+      "can": "CAN-207",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "9",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "live",
+      "abilities": [
+        {
+          "ref": "K_PERFORANTE",
+          "status": "live",
+          "params": {
+            "x": 30
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_PERFORANTE",
+          "cost_pct": 8.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 11.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7120
+      },
+      "stats": {
+        "atk": 4050,
+        "def": 6100
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Un piccolo errore detto con certezza spezza qualcosa di grande: ignora la mitigazione."
+    },
+    {
+      "id": "BASE-AI-4-FRA-EFF",
+      "title": "EFF-C4 «Banco di Conformità»",
+      "source_note": "EFF-C4 «Banco di Conformità»",
+      "can": "CAN-107",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "4",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_CONFORMITA",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_CONFORMITA",
+          "cost_pct": 6,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 9.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7280
+      },
+      "stats": {
+        "atk": 4150,
+        "def": 6200
+      },
+      "needs_restore": [
+        "S43",
+        "T6"
+      ],
+      "needs_new_vocab": [
+        "E59"
+      ],
+      "fit": "alto",
+      "note": "Cancella cio' che il nemico e' diventato: azzera i modificatori positivi del bersaglio."
+    },
+    {
+      "id": "BASE-RES-5-SPI-POR",
+      "title": "Figli del Nome in Prestito",
+      "source_note": "Figli del Nome in Prestito",
+      "can": "CAN-194",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "5",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_EREDITA",
+          "status": "parked",
+          "params": {
+            "amount": 480
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_EREDITA",
+          "cost_pct": 6.4,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 6.4,
+        "extra_cost_pct": 0,
+        "stat_points": 7488
+      },
+      "stats": {
+        "atk": 3750,
+        "def": 7500
+      },
+      "needs_restore": [
+        "EVO_EREDITA"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Tiene il posto a chi puo' ancora arrivare: alla distruzione lascia vita al proprio giocatore."
+    },
+    {
+      "id": "BASE-AI-5-FRA-EFF",
+      "title": "Guardie di Riva Lenta",
+      "source_note": "Guardie di Riva Lenta",
+      "can": "CAN-149",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "5",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_ORDINE_PAGATO",
+          "status": "proposed",
+          "params": {
+            "permille": 240,
+            "amount": 800
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ORDINE_PAGATO",
+          "cost_pct": 1.6,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 4.6,
+        "extra_cost_pct": 0,
+        "stat_points": 7632
+      },
+      "stats": {
+        "atk": 4350,
+        "def": 6500
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "E7",
+        "S7"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "L'ordine si paga sacrificando i propri: bonus ATK e danno a un'alleata adiacente."
+    },
+    {
+      "id": "BASE-RES-3-FRA-POR",
+      "title": "Il Nome Pronunciato",
+      "source_note": "Il Nome Pronunciato",
+      "can": "CAN-102",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "3",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_ISOLATO",
+          "status": "proposed",
+          "params": {
+            "permille": 200
+          }
+        },
+        {
+          "ref": "K_ALLONTANA",
+          "status": "proposed",
+          "params": {
+            "permille": 150,
+            "on": "attack"
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ISOLATO",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 0
+        },
+        {
+          "ref": "K_ALLONTANA",
+          "cost_pct": -3,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 1.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7920
+      },
+      "stats": {
+        "atk": 4550,
+        "def": 6800
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "T6",
+        "T7"
+      ],
+      "needs_new_vocab": [
+        "C26"
+      ],
+      "fit": "alto",
+      "note": "Piu' forte da solo, e ogni colpo allontana chi gli sta accanto."
+    },
+    {
+      "id": "BASE-RES-J-VIN-POR",
+      "title": "Ilda, Voce di Riva Lenta",
+      "source_note": "Ilda, Voce di Riva Lenta",
+      "can": "CAN-220",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "J",
+      "suit": "Vincolo",
+      "tier": 3,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_SCUDO_ADIACENTI",
+          "status": "proposed",
+          "params": {
+            "x": 14
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SCUDO_ADIACENTI",
+          "cost_pct": 7.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 10.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7200
+      },
+      "stats": {
+        "atk": 3600,
+        "def": 7200
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Chi le sta accanto resiste con lei finche' lei resta in gioco."
+    },
+    {
+      "id": "BASE-RES-4-VIN-SEG",
+      "title": "Incisori del Confine Antico",
+      "source_note": "Incisori del Confine Antico",
+      "can": "CAN-018",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "4",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_CONFINE",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_CONFINE",
+          "cost_pct": 7,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 10.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7200
+      },
+      "stats": {
+        "atk": 3600,
+        "def": 7200
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "E61",
+        "S45"
+      ],
+      "fit": "alto",
+      "note": "Nel confine il nemico non puo' crescere: niente bonus alle avversarie vicine."
+    },
+    {
+      "id": "BASE-RES-3-VIN-ADA",
+      "title": "Innestati di Seconda Mano",
+      "source_note": "Innestati di Seconda Mano",
+      "can": "CAN-053",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "3",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_ASSIMILA",
+          "status": "proposed",
+          "params": {
+            "permille": 96,
+            "scope": "allies"
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ASSIMILA",
+          "cost_pct": 3.2,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 3.2,
+        "extra_cost_pct": 0,
+        "stat_points": 7744
+      },
+      "stats": {
+        "atk": 3850,
+        "def": 7700
+      },
+      "needs_restore": [
+        "T36",
+        "T37"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Ogni compagno caduto diventa parte di loro: ATK permanente a ogni alleata distrutta."
+    },
+    {
+      "id": "BASE-RES-4-SPI-POR",
+      "title": "La Scuola del Sole",
+      "source_note": "La Scuola del Sole",
+      "can": "CAN-146",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "4",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_MAESTRA",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_MAESTRA",
+          "cost_pct": 6,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 9.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7280
+      },
+      "stats": {
+        "atk": 3650,
+        "def": 7300
+      },
+      "needs_restore": [
+        "E16"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Chi impara da lei diventa qualcosa di nuovo: concede Crescita alle adiacenti."
+    },
+    {
+      "id": "BASE-AI-J-SPI-MER",
+      "title": "Lemma, Voce di Confronto",
+      "source_note": "Lemma, Voce di Confronto",
+      "can": "CAN-219",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "J",
+      "suit": "Spira",
+      "tier": 3,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_LESSICO",
+          "status": "proposed",
+          "params": {
+            "permille": 300
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_LESSICO",
+          "cost_pct": 7.2,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 10.2,
+        "extra_cost_pct": 0,
+        "stat_points": 7184
+      },
+      "stats": {
+        "atk": 3600,
+        "def": 7200
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Riconosce cio' che torna e lo fa tornare piu' forte: bonus a ogni carta sostitutiva."
+    },
+    {
+      "id": "BASE-AI-9-VES-MER",
+      "title": "MER-1A-N00-001-09 «Ossario»",
+      "source_note": "MER-1A-N00-001-09 «Ossario»",
+      "can": "CAN-115",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "9",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_ULTIMO_GESTO",
+          "status": "proposed",
+          "params": {
+            "permille": 700
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ULTIMO_GESTO",
+          "cost_pct": 6.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 9.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7280
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "S6",
+        "T10"
+      ],
+      "needs_new_vocab": [
+        "E58"
+      ],
+      "fit": "alto",
+      "note": "La sua fine non finisce: l'ultimo gesto si ripete come danno alla creatura opposta."
+    },
+    {
+      "id": "BASE-AI-7-SPI-MER",
+      "title": "MER-2C-N05-004-61 «Attesa»",
+      "source_note": "MER-2C-N05-004-61 «Attesa»",
+      "can": "CAN-181",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "7",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_TEMPRATO",
+          "status": "parked"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_TEMPRATO",
+          "cost_pct": 5,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "EVO_TEMPRATO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "basso",
+      "note": "Cio' che si e' separato puo' tornare non uguale: segnaposto, Temprato (ricevuto un colpo, cambia)."
+    },
+    {
+      "id": "BASE-AI-2-VIN-MER",
+      "title": "MER-4B-N12-113-37 «Nodo Ponte»",
+      "source_note": "MER-4B-N12-113-37 «Nodo Ponte»",
+      "can": "CAN-033",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "2",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_PONTE",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_PONTE",
+          "cost_pct": 3,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 6.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7520
+      },
+      "stats": {
+        "atk": 3750,
+        "def": 7500
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Tiene uniti due compagni che non si toccherebbero: conta come adiacente a tutte. Il 'rifiuto' non ha ancora una meccanica."
+    },
+    {
+      "id": "BASE-AI-4-SPI-MER",
+      "title": "MER-4B-N12-113-41 «Profezia»",
+      "source_note": "MER-4B-N12-113-41 «Profezia»",
+      "can": "CAN-090",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "4",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_TRINCEA",
+          "status": "parked",
+          "params": {
+            "permille": 160
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_TRINCEA",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 4.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7680
+      },
+      "stats": {
+        "atk": 3850,
+        "def": 7700
+      },
+      "needs_restore": [
+        "EVO_TRINCEA"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cambia prima che la perdita arrivi: quando e' dichiarata bersaglio guadagna DEF."
+    },
+    {
+      "id": "BASE-AI-10-VIN-MER",
+      "title": "MER-7A-N02-090-10 «Orizzonte»",
+      "source_note": "MER-7A-N02-090-10 «Orizzonte»",
+      "can": "CAN-205",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "10",
+      "suit": "Vincolo",
+      "tier": 2,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "K_SOSTEGNO",
+          "status": "parked",
+          "params": {
+            "x": 15
+          }
+        },
+        {
+          "ref": "EVO_INTRECCIO",
+          "status": "parked",
+          "params": {
+            "permille": 100
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SOSTEGNO",
+          "cost_pct": 9.0,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "EVO_INTRECCIO",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 20.0,
+        "extra_cost_pct": 0,
+        "stat_points": 6400
+      },
+      "stats": {
+        "atk": 3200,
+        "def": 6400
+      },
+      "needs_restore": [
+        "EVO_INTRECCIO",
+        "K_SOSTEGNO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Lega le vicine, ma il legame va rifatto: Sostegno ogni turno piu' Intreccio una volta."
+    },
+    {
+      "id": "BASE-RES-J-SPI-ADA",
+      "title": "Orsola, Madre della Pioggia",
+      "source_note": "Orsola, Madre della Pioggia",
+      "can": "CAN-176",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "J",
+      "suit": "Spira",
+      "tier": 3,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_NON_RISCRIVIBILE",
+          "status": "proposed",
+          "params": {
+            "scope": "self_adjacent"
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_NON_RISCRIVIBILE",
+          "cost_pct": 5,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che logora gli altri, su di lei e sui suoi non attecchisce: ATK non riducibile."
+    },
+    {
+      "id": "BASE-RES-6-SPI-ADA",
+      "title": "Pellegrini del Corpo",
+      "source_note": "Pellegrini del Corpo",
+      "can": "CAN-065",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "6",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_INNESTO",
+          "status": "proposed",
+          "params": {
+            "permille": 120,
+            "def_permille": 100
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_INNESTO",
+          "cost_pct": 2.4,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 5.4,
+        "extra_cost_pct": 0,
+        "stat_points": 7568
+      },
+      "stats": {
+        "atk": 3800,
+        "def": 7600
+      },
+      "needs_restore": [
+        "E2",
+        "T36"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "A ogni compagno perso cambiano forma: piu' ATK, meno DEF."
+    },
+    {
+      "id": "BASE-RES-2-FRA-ADA",
+      "title": "Portatore di Rotta",
+      "source_note": "Portatore di Rotta",
+      "can": "CAN-086",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "2",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_RICADUTA",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_RICADUTA",
+          "cost_pct": 6,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 9.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7280
+      },
+      "stats": {
+        "atk": 4150,
+        "def": 6200
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "E62"
+      ],
+      "fit": "alto",
+      "note": "Cio' che il bersaglio non regge ricade su altri: lo spill va alle avversarie adiacenti."
+    },
+    {
+      "id": "BASE-AI-J-VES-EFF",
+      "title": "Postilla dei Campi Vuoti",
+      "source_note": "Postilla dei Campi Vuoti",
+      "can": "CAN-218",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "J",
+      "suit": "Vestigio",
+      "tier": 3,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_CAMPI_VUOTI",
+          "status": "proposed",
+          "params": {
+            "permille": 240
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_CAMPI_VUOTI",
+          "cost_pct": 7.2,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 10.2,
+        "extra_cost_pct": 0,
+        "stat_points": 7184
+      },
+      "stats": {
+        "atk": 3600,
+        "def": 7200
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che manca conta quanto cio' che c'e': ATK per ogni corsia vuota."
+    },
+    {
+      "id": "BASE-RES-5-FRA-SEG",
+      "title": "Presidio dei Non Registrati",
+      "source_note": "Presidio dei Non Registrati",
+      "can": "CAN-164",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "5",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_SCUDO",
+          "status": "live",
+          "params": {
+            "x": 640,
+            "kind": "flat"
+          }
+        },
+        {
+          "ref": "K_ALLONTANA",
+          "status": "proposed",
+          "params": {
+            "permille": 150,
+            "on": "attacked"
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SCUDO",
+          "cost_pct": 0.77,
+          "theme_match_tax_pct": 0
+        },
+        {
+          "ref": "K_ALLONTANA",
+          "cost_pct": -3,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": -2.23,
+        "extra_cost_pct": 0,
+        "stat_points": 8178
+      },
+      "stats": {
+        "atk": 3650,
+        "def": 9100
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "T6",
+        "T7"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Respinge con durezza chiunque gli si avvicini: Scudo flat e allontana anche le alleate."
+    },
+    {
+      "id": "BASE-RES-5-VIN-ADA",
+      "title": "Quelli del Grazie",
+      "source_note": "Quelli del Grazie",
+      "can": "CAN-214",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "5",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "K_SCUDO",
+          "status": "live",
+          "params": {
+            "x": 20
+          }
+        },
+        {
+          "ref": "K_SOSTEGNO",
+          "status": "parked",
+          "params": {
+            "x": 12
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SCUDO",
+          "cost_pct": 2.4,
+          "theme_match_tax_pct": 0
+        },
+        {
+          "ref": "K_SOSTEGNO",
+          "cost_pct": 7.2,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 12.6,
+        "extra_cost_pct": 0,
+        "stat_points": 6992
+      },
+      "stats": {
+        "atk": 3500,
+        "def": 7000
+      },
+      "needs_restore": [
+        "K_SOSTEGNO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Un gesto piccolo e ripetuto protegge piu' di un'arma: Scudo e Sostegno."
+    },
+    {
+      "id": "BASE-RES-6-FRA-POR",
+      "title": "Recitanti del Campo di Lancio",
+      "source_note": "Recitanti del Campo di Lancio",
+      "can": "CAN-138",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "6",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "live",
+      "abilities": [
+        {
+          "ref": "K_TRABOCCANTE",
+          "status": "live",
+          "params": {
+            "factor": 1200
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_TRABOCCANTE",
+          "cost_pct": 8,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 11.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7120
+      },
+      "stats": {
+        "atk": 4050,
+        "def": 6100
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "La voce passa oltre chi hanno davanti e raggiunge chi sta piu' lontano: spill amplificato."
+    },
+    {
+      "id": "BASE-RES-5-VES-SPE",
+      "title": "Reliquiario del Sigillo Rotto",
+      "source_note": "Reliquiario del Sigillo Rotto",
+      "can": "CAN-098",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "5",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_RELIQUIA",
+          "status": "proposed",
+          "params": {
+            "x": 12
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_RELIQUIA",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3300,
+        "def": 8250
+      },
+      "needs_restore": [
+        "E14",
+        "S7",
+        "T10"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che custodisce sopravvive a chi lo porta e passa di mano: Scudo a un'alleata alla distruzione."
+    },
+    {
+      "id": "BASE-AI-6-FRA-SEK",
+      "title": "Risponditore di Soccorso",
+      "source_note": "Risponditore di Soccorso",
+      "can": "CAN-203",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "6",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_PORTA_CHIUSA",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_PORTA_CHIUSA",
+          "cost_pct": 8,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "E25",
+        "S2"
+      ],
+      "needs_new_vocab": [
+        "T39"
+      ],
+      "fit": "alto",
+      "note": "Una porta gentile e chiusa: annulla un attacco per turno."
+    },
+    {
+      "id": "BASE-AI-2-SPI-SEK",
+      "title": "Routine della Pioggia Nera",
+      "source_note": "Routine della Pioggia Nera",
+      "can": "CAN-142",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "2",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_RITARDO",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_RITARDO",
+          "cost_pct": 4,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "E18",
+        "S6"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Ogni trasformazione arriva in ritardo: sopprime le Evoluzioni opposte."
+    },
+    {
+      "id": "BASE-AI-4-VIN-SEK",
+      "title": "SEK-12 «Cordone»",
+      "source_note": "SEK-12 «Cordone»",
+      "can": "CAN-014",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "4",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_ISOLA",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ISOLA",
+          "cost_pct": 7,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 14.0,
+        "extra_cost_pct": 4,
+        "stat_points": 6880
+      },
+      "stats": {
+        "atk": 3950,
+        "def": 5900
+      },
+      "needs_restore": [
+        "S6"
+      ],
+      "needs_new_vocab": [
+        "E60"
+      ],
+      "fit": "alto",
+      "note": "Separa il nemico dagli altri a costo di esporsi: costo extra di statistiche per la DEF bassa."
+    },
+    {
+      "id": "BASE-AI-3-VES-SEK",
+      "title": "SEK-40 «Liturgia»",
+      "source_note": "SEK-40 «Liturgia»",
+      "can": "CAN-057",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "3",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_LASCITO_DIFESA",
+          "status": "proposed",
+          "params": {
+            "permille": 160
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_LASCITO_DIFESA",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3300,
+        "def": 8250
+      },
+      "needs_restore": [
+        "E2",
+        "T10"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "La sua chiusura protegge chi resta come un rito compiuto."
+    },
+    {
+      "id": "BASE-AI-9-SPI-SEK",
+      "title": "SEK-61 «Ombra»",
+      "source_note": "SEK-61 «Ombra»",
+      "can": "CAN-168",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "9",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_SOPRAVVISSUTO",
+          "status": "parked",
+          "params": {
+            "x": 10
+          }
+        },
+        {
+          "ref": "K_PERFORANTE",
+          "status": "live",
+          "params": {
+            "x": 30
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_SOPRAVVISSUTO",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "K_PERFORANTE",
+          "cost_pct": 8.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 19.0,
+        "extra_cost_pct": 0,
+        "stat_points": 6480
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 6500
+      },
+      "needs_restore": [
+        "EVO_SOPRAVVISSUTO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Impara da ogni mossa e arriva prima: Scudo dopo il primo colpo, piu' Perforante."
+    },
+    {
+      "id": "BASE-AI-7-VES-SEK",
+      "title": "SEK-73 «Campana Muta»",
+      "source_note": "SEK-73 «Campana Muta»",
+      "can": "CAN-179",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "7",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_ACCUMULO",
+          "status": "proposed",
+          "params": {
+            "permille": 100
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ACCUMULO",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "T26"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che ascolta in silenzio accumula e prima o poi pesera'."
+    },
+    {
+      "id": "BASE-AI-10-FRA-SEK",
+      "title": "SEK-88 «Inquisitore»",
+      "source_note": "SEK-88 «Inquisitore»",
+      "can": "CAN-077",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "SEKTAC",
+      "rank": "10",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_ISOLA",
+          "status": "proposed"
+        },
+        {
+          "ref": "K_PERFORANTE",
+          "status": "live",
+          "params": {
+            "x": 30
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ISOLA",
+          "cost_pct": 7,
+          "theme_match_tax_pct": 0
+        },
+        {
+          "ref": "K_PERFORANTE",
+          "cost_pct": 8.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 18.0,
+        "extra_cost_pct": 0,
+        "stat_points": 6560
+      },
+      "stats": {
+        "atk": 3750,
+        "def": 5600
+      },
+      "needs_restore": [
+        "S6"
+      ],
+      "needs_new_vocab": [
+        "E60"
+      ],
+      "fit": "medio",
+      "note": "Lascia il nemico solo: isola la creatura opposta e ignora la sua mitigazione."
+    },
+    {
+      "id": "BASE-RES-7-VES-POR",
+      "title": "Salmista dei Nomi",
+      "source_note": "Salmista dei Nomi",
+      "can": "CAN-061",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "7",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_LASCITO_CURA",
+          "status": "proposed",
+          "params": {
+            "permille": 300
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_LASCITO_CURA",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "T10"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "La sua voce, anche spenta, sostiene chi gli stava intorno."
+    },
+    {
+      "id": "BASE-RES-4-VES-ADA",
+      "title": "Scartati dell'Imbarco",
+      "source_note": "Scartati dell'Imbarco",
+      "can": "CAN-189",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "4",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_TEMPRATO",
+          "status": "parked"
+        },
+        {
+          "ref": "K_SCUDO",
+          "status": "live",
+          "params": {
+            "x": 20
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_TEMPRATO",
+          "cost_pct": 5,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "K_SCUDO",
+          "cost_pct": 2.4,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 13.4,
+        "extra_cost_pct": 0,
+        "stat_points": 6928
+      },
+      "stats": {
+        "atk": 3100,
+        "def": 7750
+      },
+      "needs_restore": [
+        "EVO_TEMPRATO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che li ha esclusi e' diventato la loro forza: colpiti, ottengono Rigenerante."
+    },
+    {
+      "id": "BASE-RES-3-SPI-SPE",
+      "title": "Scassinatori della Rotta",
+      "source_note": "Scassinatori della Rotta",
+      "can": "CAN-192",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "3",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_SFONDAMENTO",
+          "status": "parked"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_SFONDAMENTO",
+          "cost_pct": 5,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 5.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7600
+      },
+      "stats": {
+        "atk": 3800,
+        "def": 7600
+      },
+      "needs_restore": [
+        "EVO_SFONDAMENTO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Ogni apertura cambia cio' che sta dall'altra parte: alla prima breccia ottengono Traboccante."
+    },
+    {
+      "id": "BASE-AI-2-FRA-YLM",
+      "title": "Sciame di Malta",
+      "source_note": "Sciame di Malta",
+      "can": "CAN-119",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "YLMOR",
+      "rank": "2",
+      "suit": "Frattura",
+      "tier": 1,
+      "link_status": "live",
+      "abilities": [
+        {
+          "ref": "K_INSAZIABILE",
+          "status": "live",
+          "params": {
+            "permille": 120,
+            "max_stacks": 3
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_INSAZIABILE",
+          "cost_pct": 3.2,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 6.2,
+        "extra_cost_pct": 0,
+        "stat_points": 7504
+      },
+      "stats": {
+        "atk": 4300,
+        "def": 6450
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che abbatte lo macina e ci costruisce il colpo successivo: Insaziabile."
+    },
+    {
+      "id": "BASE-RES-2-SPI-SEG",
+      "title": "Sentinella dell'Ultimo Cippo",
+      "source_note": "Sentinella dell'Ultimo Cippo",
+      "can": "CAN-111",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "2",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_MIMETICO",
+          "status": "parked"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_MIMETICO",
+          "cost_pct": 3,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 6.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7520
+      },
+      "stats": {
+        "atk": 3750,
+        "def": 7500
+      },
+      "needs_restore": [
+        "EVO_MIMETICO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Restare troppo a lungo ti cambia: a fine turno ottiene Camaleonte, senza ritorno."
+    },
+    {
+      "id": "BASE-AI-K-VES-MER",
+      "title": "Sinodo dei Due Conti",
+      "source_note": "Sinodo dei Due Conti",
+      "can": "CAN-216",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "MEROZYN",
+      "rank": "K",
+      "suit": "Vestigio",
+      "tier": 3,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_CUSTODE",
+          "status": "parked"
+        },
+        {
+          "ref": "K_SINODO",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_CUSTODE",
+          "cost_pct": 15,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "K_SINODO",
+          "cost_pct": 4,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 25.0,
+        "extra_cost_pct": 0,
+        "stat_points": 6000
+      },
+      "stats": {
+        "atk": 2650,
+        "def": 6600
+      },
+      "needs_restore": [
+        "E30",
+        "K_CUSTODE"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Due meta' che contano entrambe finche' lei resta intera: Custode piu' conta anche come Regina."
+    },
+    {
+      "id": "BASE-AI-3-SPI-EFF",
+      "title": "Sportello dell'Assenso",
+      "source_note": "Sportello dell'Assenso",
+      "can": "CAN-198",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "3",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_ASSENSO",
+          "status": "proposed",
+          "params": {
+            "permille": 64
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ASSENSO",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "S2",
+        "T7"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Da' al nemico cio' che chiede e lo cambia: chi la attacca perde ATK permanente."
+    },
+    {
+      "id": "BASE-RES-3-VES-SEG",
+      "title": "Squadra dei Cippi Neri",
+      "source_note": "Squadra dei Cippi Neri",
+      "can": "CAN-122",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "3",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_MONITO",
+          "status": "proposed",
+          "params": {
+            "permille": 32
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_MONITO",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3300,
+        "def": 8250
+      },
+      "needs_restore": [
+        "S10"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Ogni nemico abbattuto resta sul confine a fare da monito: le avversarie perdono ATK."
+    },
+    {
+      "id": "BASE-RES-6-VIN-SPE",
+      "title": "Squadra «Anarco non Aracno»",
+      "source_note": "Squadra «Anarco non Aracno»",
+      "can": "CAN-178",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "6",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_APRI_STRADA",
+          "status": "proposed",
+          "params": {
+            "permille": 120
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_APRI_STRADA",
+          "cost_pct": 4.8,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 7.8,
+        "extra_cost_pct": 0,
+        "stat_points": 7376
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Il colpo di uno apre la strada a chi gli sta accanto."
+    },
+    {
+      "id": "BASE-RES-6-VES-SEG",
+      "title": "Staffetta dei Nomi di Luogo",
+      "source_note": "Staffetta dei Nomi di Luogo",
+      "can": "CAN-161",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "6",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "K_VENDICATIVO",
+          "status": "parked",
+          "params": {
+            "permille": 80
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_VENDICATIVO",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3300,
+        "def": 8250
+      },
+      "needs_restore": [
+        "K_VENDICATIVO"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Chi arriva dopo trova la strada segnata: alla distruzione un'alleata adiacente guadagna ATK."
+    },
+    {
+      "id": "BASE-AI-Q-VIN-EFF",
+      "title": "Teodora «la Vescova»",
+      "source_note": "Teodora «la Vescova»",
+      "can": "CAN-134",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "EFFRIX",
+      "rank": "Q",
+      "suit": "Vincolo",
+      "tier": 3,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_CONTA_CHI_CONTA",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_CONTA_CHI_CONTA",
+          "cost_pct": 8,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 11.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7120
+      },
+      "stats": {
+        "atk": 3550,
+        "def": 7100
+      },
+      "needs_restore": [
+        "S10",
+        "S39",
+        "T4"
+      ],
+      "needs_new_vocab": [
+        "E63"
+      ],
+      "fit": "alto",
+      "note": "Decide chi conta e chi no: una creatura avversaria esce dalla mano."
+    },
+    {
+      "id": "BASE-RES-8-VIN-POR",
+      "title": "Testimone degli Undici",
+      "source_note": "Testimone degli Undici",
+      "can": "CAN-030",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "8",
+      "suit": "Vincolo",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_NON_RISCRIVIBILE",
+          "status": "proposed",
+          "params": {
+            "scope": "adjacent"
+          }
+        },
+        {
+          "ref": "K_PROVOCAZIONE",
+          "status": "parked"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_NON_RISCRIVIBILE",
+          "cost_pct": 5,
+          "theme_match_tax_pct": 0
+        },
+        {
+          "ref": "K_PROVOCAZIONE",
+          "cost_pct": 8,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 16.0,
+        "extra_cost_pct": 0,
+        "stat_points": 6720
+      },
+      "stats": {
+        "atk": 3000,
+        "def": 7500
+      },
+      "needs_restore": [
+        "K_PROVOCAZIONE"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Chi gli sta accanto non puo' essere riscritto: ATK non riducibile e Provocazione."
+    },
+    {
+      "id": "BASE-RES-9-VIN-SPE",
+      "title": "Veterano «Cesoia Fredda»",
+      "source_note": "Veterano «Cesoia Fredda»",
+      "can": "CAN-026",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "9",
+      "suit": "Vincolo",
+      "tier": 2,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_TAGLIO_LEGAMI",
+          "status": "proposed",
+          "params": {
+            "permille": 200
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_TAGLIO_LEGAMI",
+          "cost_pct": 6.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 9.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7280
+      },
+      "stats": {
+        "atk": 4150,
+        "def": 6200
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelCombattimento",
+        "E2",
+        "T6"
+      ],
+      "needs_new_vocab": [
+        "S44"
+      ],
+      "fit": "alto",
+      "note": "Il taglio colpisce i legami: lascia scoperte le avversarie accanto al bersaglio."
+    },
+    {
+      "id": "BASE-AI-3-VIN-YLM",
+      "title": "YLM-112 «Radice»",
+      "source_note": "YLM-112 «Radice»",
+      "can": "CAN-006",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "YLMOR",
+      "rank": "3",
+      "suit": "Vincolo",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_ASSIMILA",
+          "status": "proposed",
+          "params": {
+            "permille": 96,
+            "scope": "any"
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_ASSIMILA",
+          "cost_pct": 3.2,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 3.2,
+        "extra_cost_pct": 0,
+        "stat_points": 7744
+      },
+      "stats": {
+        "atk": 3850,
+        "def": 7700
+      },
+      "needs_restore": [
+        "T36",
+        "T37"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Si nutre di cio' che cade intorno a se': ATK a ogni creatura distrutta."
+    },
+    {
+      "id": "BASE-AI-4-VES-YLM",
+      "title": "YLM-19 «Sito»",
+      "source_note": "YLM-19 «Sito»",
+      "can": "CAN-094",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "YLMOR",
+      "rank": "4",
+      "suit": "Vestigio",
+      "tier": 1,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_INDURISCE",
+          "status": "proposed",
+          "params": {
+            "permille": 160
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_INDURISCE",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3300,
+        "def": 8250
+      },
+      "needs_restore": [
+        "E2",
+        "T36"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Piu' intorno si perde, piu' cio' che conserva si fa duro."
+    },
+    {
+      "id": "BASE-AI-8-SPI-YLM",
+      "title": "YLM-31 «Chiglia»",
+      "source_note": "YLM-31 «Chiglia»",
+      "can": "CAN-186",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "YLMOR",
+      "rank": "8",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "K_INSAZIABILE",
+          "status": "live",
+          "params": {
+            "permille": 150,
+            "max_stacks": 3
+          }
+        },
+        {
+          "ref": "EVO_CRESCITA",
+          "status": "parked",
+          "params": {
+            "permille": 150
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_INSAZIABILE",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "EVO_CRESCITA",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 15.0,
+        "extra_cost_pct": 0,
+        "stat_points": 6800
+      },
+      "stats": {
+        "atk": 3400,
+        "def": 6800
+      },
+      "needs_restore": [
+        "EVO_CRESCITA"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che non e' mai finito continua a crescere."
+    },
+    {
+      "id": "BASE-AI-7-FRA-YLM",
+      "title": "YLM-66 «Sei Dita»",
+      "source_note": "YLM-66 «Sei Dita»",
+      "can": "CAN-209",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "YLMOR",
+      "rank": "7",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_QUASI_UGUALE",
+          "status": "proposed"
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_QUASI_UGUALE",
+          "cost_pct": 3,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 3.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7760
+      },
+      "stats": {
+        "atk": 4450,
+        "def": 6700
+      },
+      "needs_restore": [
+        "E30"
+      ],
+      "needs_new_vocab": [],
+      "fit": "basso",
+      "note": "Somiglia quasi del tutto a uno dei tuoi: segnaposto, conta anche come 8 per la mano."
+    },
+    {
+      "id": "BASE-AI-5-SPI-YLM",
+      "title": "YLM-74 «Segno»",
+      "source_note": "YLM-74 «Segno»",
+      "can": "CAN-069",
+      "kind": "creature",
+      "faction": "Potenze Artificiali",
+      "subfaction": "YLMOR",
+      "rank": "5",
+      "suit": "Spira",
+      "tier": 1,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_CRESCITA",
+          "status": "parked",
+          "params": {
+            "permille": 120
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_CRESCITA",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "EVO_CRESCITA"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Sta diventando qualcosa, piano: Crescita."
+    },
+    {
+      "id": "BASE-RES-10-SPI-SPE",
+      "title": "«Calligrafo», Lettore di Errori",
+      "source_note": "«Calligrafo», Lettore di Errori",
+      "can": "CAN-217",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "10",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "restore",
+      "abilities": [
+        {
+          "ref": "EVO_PREDATORE",
+          "status": "parked",
+          "params": {
+            "x": 20
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "EVO_PREDATORE",
+          "cost_pct": 8.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 11.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7120
+      },
+      "stats": {
+        "atk": 3550,
+        "def": 7100
+      },
+      "needs_restore": [
+        "EVO_PREDATORE"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Dopo un errore sa come colpirlo: alla prima uccisione ottiene Perforante."
+    },
+    {
+      "id": "BASE-RES-9-FRA-ADA",
+      "title": "«Fiato», che era dei nostri",
+      "source_note": "«Fiato», che era dei nostri",
+      "can": "CAN-126",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "9",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_INSAZIABILE",
+          "status": "live",
+          "params": {
+            "permille": 150,
+            "max_stacks": 3
+          }
+        },
+        {
+          "ref": "K_FURIA_CIECA",
+          "status": "proposed",
+          "params": {
+            "amount": 600
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_INSAZIABILE",
+          "cost_pct": 4.0,
+          "theme_match_tax_pct": 3
+        },
+        {
+          "ref": "K_FURIA_CIECA",
+          "cost_pct": -3,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 7.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7439
+      },
+      "stats": {
+        "atk": 4250,
+        "def": 6400
+      },
+      "needs_restore": [
+        "E7",
+        "S7"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Piu' forte e meno controllabile, un pericolo anche per i suoi."
+    },
+    {
+      "id": "BASE-RES-8-VES-ADA",
+      "title": "«Guanto», Vedova di Sutura",
+      "source_note": "«Guanto», Vedova di Sutura",
+      "can": "CAN-171",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "8",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_PORTA_AVANTI",
+          "status": "proposed",
+          "params": {
+            "permille": 300
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_PORTA_AVANTI",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3250,
+        "def": 8100
+      },
+      "needs_restore": [
+        "T36"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "La morte di chi le sta accanto non va perduta: si cura quando una alleata cade."
+    },
+    {
+      "id": "BASE-RES-8-FRA-SPE",
+      "title": "«Ninna», Persuasora di Cancelli",
+      "source_note": "«Ninna», Persuasora di Cancelli",
+      "can": "CAN-211",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Spezzasigilli",
+      "rank": "8",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "live",
+      "abilities": [
+        {
+          "ref": "K_PERFORANTE",
+          "status": "live",
+          "params": {
+            "x": 40
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_PERFORANTE",
+          "cost_pct": 8.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 11.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7120
+      },
+      "stats": {
+        "atk": 4050,
+        "def": 6100
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "La parola giusta apre qualunque porta: Perforante alto. Il rischio 'chi risponde' non ha una meccanica."
+    },
+    {
+      "id": "BASE-RES-9-SPI-SEG",
+      "title": "«Quota», Salitore della Torre",
+      "source_note": "«Quota», Salitore della Torre",
+      "can": "CAN-221",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "9",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_SALITA",
+          "status": "proposed",
+          "params": {
+            "permille": 150,
+            "cost_permille": 100
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SALITA",
+          "cost_pct": 3.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 6.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7520
+      },
+      "stats": {
+        "atk": 3750,
+        "def": 7500
+      },
+      "needs_restore": [
+        "E2",
+        "T26"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Piu' sale, piu' perde: ATK in crescita a fine turno, DEF in calo."
+    },
+    {
+      "id": "BASE-RES-7-VIN-SEG",
+      "title": "«Selce», Incisora del Relè",
+      "source_note": "«Selce», Incisora del Relè",
+      "can": "CAN-130",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "7",
+      "suit": "Vincolo",
+      "tier": 2,
+      "link_status": "new_vocab",
+      "abilities": [
+        {
+          "ref": "K_SCUDO_COMUNITA",
+          "status": "proposed",
+          "params": {
+            "x": 12
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SCUDO_COMUNITA",
+          "cost_pct": 3.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 6.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7520
+      },
+      "stats": {
+        "atk": 3350,
+        "def": 8400
+      },
+      "needs_restore": [],
+      "needs_new_vocab": [
+        "C26"
+      ],
+      "fit": "alto",
+      "note": "Piu' la comunita' e' unita, piu' e' impossibile abbatterla."
+    },
+    {
+      "id": "BASE-RES-7-FRA-ADA",
+      "title": "«Spina», Fante della Prima Linea",
+      "source_note": "«Spina», Fante della Prima Linea",
+      "can": "CAN-158",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "7",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_SLANCIO",
+          "status": "proposed",
+          "params": {
+            "permille": 150,
+            "cost_permille": 100
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SLANCIO",
+          "cost_pct": 3.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 6.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7520
+      },
+      "stats": {
+        "atk": 4300,
+        "def": 6450
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelTurno",
+        "E2",
+        "T6"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Apre la strada, il suo slancio trascina chi viene dopo, a costo della propria DEF."
+    },
+    {
+      "id": "BASE-RES-10-VES-ADA",
+      "title": "«Tre Dita», Ripartito dal Sito",
+      "source_note": "«Tre Dita», Ripartito dal Sito",
+      "can": "CAN-222",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Adattati",
+      "rank": "10",
+      "suit": "Vestigio",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_INNESTO",
+          "status": "proposed",
+          "params": {
+            "permille": 150,
+            "def_permille": 100
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_INNESTO",
+          "cost_pct": 3.0,
+          "theme_match_tax_pct": 0
+        }
+      ],
+      "stat_model": {
+        "archetype": "bastione",
+        "def_atk_ratio": 2.5,
+        "cost_pct_total": 3.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7760
+      },
+      "stats": {
+        "atk": 3450,
+        "def": 8600
+      },
+      "needs_restore": [
+        "E2",
+        "T36"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Porta con se' qualcosa di chi non c'e' piu': forza guadagnata, DEF persa."
+    },
+    {
+      "id": "BASE-RES-10-FRA-POR",
+      "title": "«Velo», Officiante dei Corretti",
+      "source_note": "«Velo», Officiante dei Corretti",
+      "can": "CAN-155",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Portanome",
+      "rank": "10",
+      "suit": "Frattura",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_DICHIARA_PERDUTO",
+          "status": "proposed",
+          "params": {
+            "permille": 150
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_DICHIARA_PERDUTO",
+          "cost_pct": 6.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "assalto",
+        "def_atk_ratio": 1.5,
+        "cost_pct_total": 9.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7280
+      },
+      "stats": {
+        "atk": 4150,
+        "def": 6200
+      },
+      "needs_restore": [
+        "D_FinoAllaFineDelCombattimento",
+        "E2",
+        "S43",
+        "T6"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Dichiara perduto chi e' ancora in piedi: il bersaglio perde DEF prima del colpo."
+    },
+    {
+      "id": "BASE-RES-8-SPI-SEG",
+      "title": "«Zenit», Incisora del Cielo",
+      "source_note": "«Zenit», Incisora del Cielo",
+      "can": "CAN-196",
+      "kind": "creature",
+      "faction": "Resistenza Umana",
+      "subfaction": "Segnaterra",
+      "rank": "8",
+      "suit": "Spira",
+      "tier": 2,
+      "link_status": "proposed",
+      "abilities": [
+        {
+          "ref": "K_SGUARDO",
+          "status": "proposed",
+          "params": {
+            "permille": 40
+          }
+        }
+      ],
+      "ability_costs": [
+        {
+          "ref": "K_SGUARDO",
+          "cost_pct": 5.0,
+          "theme_match_tax_pct": 3
+        }
+      ],
+      "stat_model": {
+        "archetype": "equilibrato",
+        "def_atk_ratio": 2.0,
+        "cost_pct_total": 8.0,
+        "extra_cost_pct": 0,
+        "stat_points": 7360
+      },
+      "stats": {
+        "atk": 3700,
+        "def": 7400
+      },
+      "needs_restore": [
+        "S6",
+        "T26"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Cio' che osserva a lungo cambia, e intanto cambia anche lei."
+    },
+    {
+      "id": "BASE-RES-EQU-05",
+      "title": "Contromappa a nodi",
+      "source_note": "Contromappa a nodi",
+      "can": "CAN-236",
+      "kind": "equipment",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E28",
+              "effect_params": {
+                "mode": "reduction_pct",
+                "pct": 15
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E18",
+              "effect_params": {},
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E18"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Conoscere una strada a memoria ti tiene sicuro e ti toglie le altre: riduzione danni, ma niente Evoluzioni."
+    },
+    {
+      "id": "BASE-RES-EQU-06",
+      "title": "Disco forato di chi restò",
+      "source_note": "Disco forato di chi restò",
+      "can": "CAN-237",
+      "kind": "equipment",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E14",
+              "effect_params": {
+                "keyword": "K_RIGENERANTE"
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -50
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E14"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Una ragione per restare: Rigenerante a chi lo porta; il costo e' un po' di ATK."
+    },
+    {
+      "id": "BASE-RES-EQU-01",
+      "title": "Giubba col nome cucito",
+      "source_note": "Giubba col nome cucito",
+      "can": "CAN-226",
+      "kind": "equipment",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E3",
+              "effect_params": {
+                "amount": 800
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -100
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E3"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Chi riceve qualcosa di un altro riceve anche un po' di lui: DEF base in piu' per chi la indossa, ATK in meno finche' risponde al nome cucito."
+    },
+    {
+      "id": "BASE-RES-MAG-03",
+      "title": "La pietra che resta",
+      "source_note": "La pietra che resta",
+      "can": "CAN-229",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E52",
+              "effect_params": {},
+              "target_id": "S9",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -100
+              },
+              "target_id": "S9",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "D_FinoAlProssimoRifornimento",
+        "S9"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Il posto dichiarato non si lascia riscrivere finche' la pietra regge: ATK non riducibile fino al prossimo Rifornimento; chi la incide non si muove, quindi cala l'ATK."
+    },
+    {
+      "id": "BASE-RES-MAG-02",
+      "title": "La risposta prima della lettera",
+      "source_note": "La risposta prima della lettera",
+      "can": "CAN-224",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E35",
+              "effect_params": {},
+              "target_id": "S31",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E57",
+              "effect_params": {
+                "count": 1
+              },
+              "target_id": "S31",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E35",
+        "E57",
+        "S31"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Un aiuto arrivato troppo presto: pesca una carta; la lettera non arriva, quindi la prima carta del mazzo va scartata."
+    },
+    {
+      "id": "BASE-RES-EQU-02",
+      "title": "Lima di Serra Alta",
+      "source_note": "Lima di Serra Alta",
+      "can": "CAN-227",
+      "kind": "equipment",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "trigger_id": "T6",
+              "effect_id": "E56",
+              "effect_params": {
+                "pct": 40
+              },
+              "target_id": "S1",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "T",
+              "max_triggers": 3
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "T6"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Ogni sigillo che apre le costa un dente: Perforante per sole tre attacchi."
+    },
+    {
+      "id": "BASE-RES-MAG-06",
+      "title": "Passaparola",
+      "source_note": "Passaparola",
+      "can": "CAN-232",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": 100
+              },
+              "target_id": "S9",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -200
+              },
+              "target_id": "S33",
+              "target_params": {
+                "from": "S9"
+              },
+              "duration": "D_Permanente",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "D_FinoAlProssimoRifornimento",
+        "S33",
+        "S9"
+      ],
+      "needs_new_vocab": [],
+      "fit": "basso",
+      "note": "Una speranza che si deforma a ogni passaggio: bonus ATK a tutte fino al prossimo Rifornimento; la creatura piu' a sinistra non riconosce piu' la sua frase. Il decadimento per corsia non ha una meccanica."
+    },
+    {
+      "id": "BASE-AI-EQU-03",
+      "title": "Placca d'ufficio",
+      "source_note": "Placca d'ufficio",
+      "can": "CAN-242",
+      "kind": "equipment",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E56",
+              "effect_params": {
+                "pct": 50
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E2",
+              "effect_params": {
+                "mode": "pct_base_def",
+                "permille": -100
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E2"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Autorizza a oltrepassare ogni barriera: ignora il 50% delle riduzioni di danno; puo' stare solo dove e' registrata: DEF in meno."
+    },
+    {
+      "id": "BASE-RES-EQU-04",
+      "title": "Placca di taglia sbagliata",
+      "source_note": "Placca di taglia sbagliata",
+      "can": "CAN-235",
+      "kind": "equipment",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "trigger_id": "T20",
+              "effect_id": "E11",
+              "effect_params": {
+                "count": 1,
+                "set_def": 1
+              },
+              "target_id": "S1",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "R",
+              "max_triggers": 1
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -100
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E11"
+      ],
+      "needs_new_vocab": [],
+      "fit": "alto",
+      "note": "Salva un giorno ma non e' mai del tutto tua: previene una distruzione (DEF 1) e costa ATK."
+    },
+    {
+      "id": "BASE-AI-EQU-01",
+      "title": "Profilo in dotazione",
+      "source_note": "Profilo in dotazione",
+      "can": "CAN-228",
+      "kind": "equipment",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E55",
+              "effect_params": {},
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E2",
+              "effect_params": {
+                "mode": "pct_base_def",
+                "permille": -100
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E2",
+        "E55"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Indossare qualcun altro: conta come qualsiasi seme per la mano; chi lo porta perde DEF."
+    },
+    {
+      "id": "BASE-RES-MAG-07",
+      "title": "Recita verso l'alto",
+      "source_note": "Recita verso l'alto",
+      "can": "CAN-233",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E9",
+              "effect_params": {
+                "amount": 1200
+              },
+              "target_id": "S31",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E57",
+              "effect_params": {
+                "count": 1
+              },
+              "target_id": "S31",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E57",
+        "E9",
+        "S31"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Il Contatore dice i nomi dei partiti: il giocatore guadagna vita; a forza di recitare perde i nomi dei morti che porta, cioe' una carta dal mazzo."
+    },
+    {
+      "id": "BASE-RES-MAG-05",
+      "title": "Respiro filtrato",
+      "source_note": "Respiro filtrato",
+      "can": "CAN-231",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E16",
+              "effect_params": {
+                "evolution_id": "EVO_SOPRAVVISSUTO",
+                "evolution_params": {
+                  "x": 10
+                }
+              },
+              "target_id": "S15",
+              "target_params": {
+                "subfaction": "Adattati"
+              },
+              "duration": "D_Permanente",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E2",
+              "effect_params": {
+                "mode": "flat",
+                "amount": -500
+              },
+              "target_id": "S15",
+              "target_params": {
+                "subfaction": "Adattati"
+              },
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E16",
+        "E2",
+        "S15"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Per vivere qui bisogna cambiare: gli Adattati ottengono l'Evoluzione Sopravvissuto; il cambiamento si paga con DEF persa."
+    },
+    {
+      "id": "BASE-AI-MAG-04",
+      "title": "Richiesta di materia",
+      "source_note": "Richiesta di materia",
+      "can": "CAN-240",
+      "kind": "spell",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": 200
+              },
+              "target_id": "S15",
+              "target_params": {
+                "subfaction": "YLMOR"
+              },
+              "duration": "D_Permanente",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E2",
+              "effect_params": {
+                "mode": "flat",
+                "amount": -300
+              },
+              "target_id": "S9",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E2",
+        "S15",
+        "S9"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "L'unita' YLMOR indica cio' che le serve: guadagnano ATK permanente; la materia vicina e' assorbita: DEF persa dalle altre creature alleate."
+    },
+    {
+      "id": "BASE-RES-EQU-03",
+      "title": "Scheggia di sigillo",
+      "source_note": "Scheggia di sigillo",
+      "can": "CAN-234",
+      "kind": "equipment",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E18",
+              "effect_params": {},
+              "target_id": "S6",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E2",
+              "effect_params": {
+                "mode": "pct_base_def",
+                "permille": -50
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E18",
+        "E2",
+        "S6"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Falsa gli strumenti di decifrazione: la creatura opposta non puo' innescare Evoluzioni; chi la porta perde DEF."
+    },
+    {
+      "id": "BASE-AI-MAG-03",
+      "title": "Scioglimento del nodo",
+      "source_note": "Scioglimento del nodo",
+      "can": "CAN-239",
+      "kind": "spell",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E6",
+              "effect_params": {
+                "mode": "pct_base_def",
+                "permille": 300
+              },
+              "target_id": "S15",
+              "target_params": {
+                "subfaction": "MEROZYN"
+              },
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E7",
+              "effect_params": {
+                "amount": 600
+              },
+              "target_id": "S38",
+              "target_params": {
+                "from": "S15",
+                "subfaction": "MEROZYN"
+              },
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E7",
+        "S15",
+        "S38"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "I frammenti rientrano: i MEROZYN si curano; ogni scioglimento lascia una voce in meno, quella con meno DEF subisce danno."
+    },
+    {
+      "id": "BASE-AI-MAG-01",
+      "title": "Seduta straordinaria",
+      "source_note": "Seduta straordinaria",
+      "can": "CAN-225",
+      "kind": "spell",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E13",
+              "effect_params": {},
+              "target_id": "S38",
+              "target_params": {
+                "from": "S10"
+              },
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E13",
+        "S10",
+        "S38"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Si contano solo le voci in contatto: la creatura avversaria con meno DEF e' esclusa dal registro (scartata senza destruzione). Il costo e' tutto sull'assente. Da bilanciare: scartare una creatura e' molto forte."
+    },
+    {
+      "id": "BASE-AI-MAG-02",
+      "title": "Silenzio distribuito",
+      "source_note": "Silenzio distribuito",
+      "can": "CAN-238",
+      "kind": "spell",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E18",
+              "effect_params": {},
+              "target_id": "S11",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E51",
+              "effect_params": {
+                "permille": 0
+              },
+              "target_id": "S11",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "D_FinoAlProssimoRifornimento",
+        "E18",
+        "E51",
+        "S11"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Nessun segnale entra o esce, nemmeno per chi lo ha steso: fino al prossimo Rifornimento nessuna Evoluzione si innesca e nessuna cura viene ricevuta, per entrambi i giocatori."
+    },
+    {
+      "id": "BASE-RES-MAG-04",
+      "title": "Stanze separate",
+      "source_note": "Stanze separate",
+      "can": "CAN-230",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E28",
+              "effect_params": {
+                "mode": "reduction_pct",
+                "pct": 15
+              },
+              "target_id": "S9",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E7",
+              "effect_params": {
+                "amount": 800
+              },
+              "target_id": "S38",
+              "target_params": {
+                "from": "S9"
+              },
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "D_FinoAlProssimoRifornimento",
+        "E7",
+        "S38",
+        "S9"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Una lista concorde non si corregge: riduzione danni a tutte; chi dimentica un nome lo perde: la creatura con meno DEF subisce danno."
+    },
+    {
+      "id": "BASE-AI-EQU-02",
+      "title": "Tabella dei rilievi umani",
+      "source_note": "Tabella dei rilievi umani",
+      "can": "CAN-241",
+      "kind": "equipment",
+      "faction": "Potenze Artificiali",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "trigger_id": "T21",
+              "effect_id": "E29",
+              "effect_params": {
+                "once": true
+              },
+              "target_id": "S1",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "R",
+              "max_triggers": 1
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -50
+              },
+              "target_id": "S27",
+              "target_params": {},
+              "duration": "D_FincheSorgenteInGioco",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "E29",
+        "T21"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Chi la porta non puo' sbagliare: previene il prossimo danno; ogni scarto ha un colpevole, quindi costa ATK."
+    },
+    {
+      "id": "BASE-RES-MAG-01",
+      "title": "Veglia senza fiamma",
+      "source_note": "Veglia senza fiamma",
+      "can": "CAN-223",
+      "kind": "spell",
+      "faction": "Resistenza Umana",
+      "link_status": "restore",
+      "abilities": [
+        {
+          "inline": [
+            {
+              "role": "benefit",
+              "effect_id": "E6",
+              "effect_params": {
+                "mode": "pct_base_def",
+                "permille": 250
+              },
+              "target_id": "S9",
+              "target_params": {},
+              "duration": "D_Istantanea",
+              "conditions": [],
+              "class": "I"
+            },
+            {
+              "role": "cost",
+              "effect_id": "E1",
+              "effect_params": {
+                "mode": "pct_base_atk",
+                "permille": -250
+              },
+              "target_id": "S40",
+              "target_params": {
+                "from": "S9"
+              },
+              "duration": "D_Permanente",
+              "conditions": [],
+              "class": "I"
+            }
+          ]
+        }
+      ],
+      "needs_restore": [
+        "S40",
+        "S9"
+      ],
+      "needs_new_vocab": [],
+      "fit": "medio",
+      "note": "Il gruppo regge perche' qualcuno paga per tutti: cura per tutte, ATK perso dalla creatura di rango piu' basso (il 'contatore')."
+    }
+  ]
+}
