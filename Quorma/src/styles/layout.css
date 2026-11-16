@@ -1,0 +1,2 @@
+/* Griglia principale: colonna sidebar + resto */
+.app { display: grid; grid-template-columns: 152px 1fr; height: 100vh; min-height: 560px; overflow: hidden; }

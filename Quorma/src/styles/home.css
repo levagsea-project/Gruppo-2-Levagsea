@@ -1,0 +1,45 @@
+/* Sfondo: metti l'immagine in public/hero-bg.jpg. Se manca si vede solo il gradiente. */
+.home { position: relative; padding: 30px 30px 20px; overflow: hidden; display: flex; flex-direction: column;
+  background:
+    linear-gradient(90deg, rgba(5, 11, 15, 0.92) 0%, rgba(5, 11, 15, 0.45) 45%, transparent 75%),
+    linear-gradient(0deg, rgba(5, 11, 15, 0.9) 0%, transparent 35%),
+    url('/hero-bg.jpg') center / cover no-repeat,
+    radial-gradient(circle at 70% 35%, #5a3a2a 0%, #1d2a30 40%, #070e12 80%);
+}
+
+/* valute */
+.currency-bar { position: absolute; top: 22px; right: 38px; display: flex; padding: 6px 26px; gap: 26px;
+  background: rgba(8, 24, 30, 0.85); border: 1px solid var(--border);
+  clip-path: polygon(0 0, 100% 0, 96% 100%, 4% 100%); }
+.currency { display: flex; align-items: center; gap: 8px; }
+.currency-icon { color: var(--cyan); font-size: 11px; }
+.currency-label { font-size: 6.5px; letter-spacing: 1.5px; color: var(--muted); }
+.currency-value { font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+
+/* testo hero */
+.hero-text { margin-top: 125px; max-width: 420px; }
+.hero-line { display: block; width: 30px; height: 2px; background: var(--cyan); margin-bottom: 14px; }
+.hero-text h1 { font-family: var(--serif); font-weight: 600; font-size: 40px; line-height: 1.1; letter-spacing: 2px; text-transform: uppercase; }
+.hero-desc { margin-top: 20px; font-size: 11.5px; line-height: 1.6; color: #c3cfd2; max-width: 300px; }
+
+/* bottone gioca */
+.play-row { display: flex; align-items: center; gap: 6px; margin-top: 30px; }
+.play-dot { width: 5px; height: 5px; background: #fff; transform: rotate(45deg); }
+.play-btn { width: 165px; height: 38px; font-family: var(--serif); font-size: 13px; letter-spacing: 4px; color: #fff; border: none;
+  background: linear-gradient(180deg, #1c4a52, #0d2830);
+  clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%); }
+.play-star { color: var(--cyan); margin-right: 6px; }
+.play-hint { margin-left: 14px; font-size: 8px; color: var(--muted); }
+
+/* card in fondo */
+.info-cards { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding-right: 8px; }
+.info-card { position: relative; padding: 18px 18px 14px; background: rgba(9, 28, 36, 0.88); border: 1px solid var(--border);
+  border-radius: 50% 50% 8px 8px / 16px 16px 8px 8px; backdrop-filter: blur(4px); }
+.info-card-diamond { position: absolute; top: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+.info-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.info-card-icon { color: var(--cyan); font-size: 10px; }
+.info-card h2 { font-family: var(--serif); font-size: 11px; letter-spacing: 3px; font-weight: 600; }
+.info-card-line { flex: 1; height: 1px; background: var(--border); }
+.info-card-meta { font-size: 7.5px; letter-spacing: 1.5px; color: var(--orange); }
+.info-card h3 { font-size: 10.5px; font-weight: 600; margin-bottom: 6px; }
+.info-card p { font-size: 8.5px; line-height: 1.5; color: var(--muted); margin-bottom: 12px; }

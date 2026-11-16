@@ -1,0 +1,8 @@
+.diamond { display: block; width: 6px; height: 6px; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+
+.outline-btn { padding: 6px 16px; font-family: var(--serif); font-size: 8px; letter-spacing: 1.5px; color: var(--text);
+  background: rgba(10, 30, 38, 0.6); border: 1px solid var(--cyan-dim); border-radius: 16px; }
+.outline-btn:hover { border-color: var(--cyan); }
+
+.progress { height: 6px; background: #0a1a20; border: 1px solid var(--border); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #1c6670, var(--cyan)); }
