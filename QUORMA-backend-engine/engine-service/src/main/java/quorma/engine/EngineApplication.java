@@ -2,6 +2,8 @@ package quorma.engine;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import quorma.gameengine.GameEngine;
 
 /**
  * Entry point for the Quorma Game Engine microservice.
@@ -11,6 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class EngineApplication {
+
+    @Bean
+    GameEngine gameEngine() {
+        return new GameEngine();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(EngineApplication.class, args);
