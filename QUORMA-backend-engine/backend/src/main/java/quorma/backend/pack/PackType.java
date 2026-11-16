@@ -1,5 +1,7 @@
 package quorma.backend.pack;
 
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -10,9 +12,28 @@ import java.util.Map;
  */
 public record PackType(long price, Map<Tier, Integer> slots, int supportSlots, boolean featured) {
 
+    /** Checks the configuration: a bad pack type stops the app at startup instead of failing at purchase time. */
     public PackType {
-        // TODO(pack-type-validate): price > 0 (the ledger rejects amount 0), no negative slot count (also supportSlots), at
-        // least one slot overall. Throw IllegalArgumentException so a bad config stops the app at startup. Copy the map.
+        if (price <= 0) {
+            throw new IllegalArgumentException("pack price must be > 0, was " + price);
+        }
+        if (supportSlots < 0) {
+            throw new IllegalArgumentException("pack support-slots must be >= 0, was " + supportSlots);
+        }
+        EnumMap<Tier, Integer> copy = new EnumMap<>(Tier.class);
+        if (slots != null) {
+            slots.forEach((tier, count) -> {
+                if (tier == null || count == null || count < 0) {
+                    throw new IllegalArgumentException("pack slots need a Tier and a count >= 0, got " + tier + "=" + count);
+                }
+                copy.put(tier, count);
+            });
+        }
+        int total = copy.values().stream().mapToInt(Integer::intValue).sum() + supportSlots;
+        if (total < 1) {
+            throw new IllegalArgumentException("a pack must hold at least one card");
+        }
+        slots = Collections.unmodifiableMap(copy);
     }
 
     public int size() {
