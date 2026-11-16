@@ -151,18 +151,18 @@ Il rango è il peso del soggetto nel mondo: più sale, più la carta è una pers
 I nomi viaggiano verso il basso: una truppa può citare un Comandante o un Asso; un Asso non sa che quella truppa esiste.
 Non scrivere il rango nel testo («di rango alto»): il rango sta già sulla carta.
 
-## SLOT LIBERI (aggiornato: 2026-11-15)
-Slot ancora senza carta: 37 su 104. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato.
+## SLOT LIBERI (aggiornato: 2026-11-16)
+Slot ancora senza carta: 32 su 104. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato.
 POTENZE ARTIFICIALI
-- EFFRIX: 2 Vestigio, 10 Spira, K Spira, A Vincolo
+- EFFRIX: 2 Vestigio, 10 Spira, A Vincolo
 - MEROZYN: 3 Frattura, 5 Vincolo, 8 Frattura, Q Frattura, A Vestigio
-- SEKTAC: 5 Vestigio, 8 Vincolo, J Vincolo, Q Spira, K Frattura, A Frattura
-- YLMOR: 6 Vincolo, 9 Vincolo, 10 Vestigio, J Frattura, Q Vestigio, K Vincolo, A Spira
+- SEKTAC: 5 Vestigio, 8 Vincolo, J Vincolo, Q Spira, K Frattura
+- YLMOR: 9 Vincolo, 10 Vestigio, J Frattura, K Vincolo, A Spira
 RESISTENZA UMANA
 - Spezzasigilli: 2 Vestigio, J Vestigio, Q Frattura, K Vincolo
 - Segnaterra: 10 Vincolo, J Frattura, Q Vestigio, K Frattura, A Vincolo
 - Adattati: Q Vincolo, K Vestigio, A Spira
-- Portanome: Q Spira, K Spira, A Vestigio
+- Portanome: K Spira, A Vestigio
 
 ## REGOLE DI GIOCO UTILI
 - Combattimento automatico e deterministico: 5 creature per giocatore in 5 corsie, ognuna attacca quella di fronte.

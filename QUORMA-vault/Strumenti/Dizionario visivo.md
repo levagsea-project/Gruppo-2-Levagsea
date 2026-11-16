@@ -38,6 +38,7 @@ Usa queste formule alla lettera.
 - **Segno a otto tratti** → graffio di otto tratti che si incrociano in un unico punto, come una stella rudimentale; mai riconoscibile come ragno, mai lettere. Compare solo dove la scena lo richiede.
 - **Fascia a spirale** → striscia di stoffa grezza avvolta a spirale attorno all'avambraccio, ricamata con segni non decifrabili.
 - **Velo da lutto** → velo nero che copre interamente il volto.
+- **Guscio** → carcassa di macchina di forma umana, metallo grigio ammaccato, aperta sul petto come un portello, imbottita all'interno di stracci e cuciture; chi la indossa si vede solo quando è aperta. Mai estetica da robot o da giocattolo.
 
 ### Oggetti e luoghi della Resistenza
 - **Sigillo** → placca circolare di metallo scuro e liscio, bordo rilevato, saldata su una porta, un pannello o un cancello, senza scritte. **Sigillo aperto o rotto** → la stessa placca attraversata da sottili fratture da cui filtra luce bianco azzurra.
@@ -61,6 +62,7 @@ La lettura è sempre «macchina»: mai «robot», mai «alieno».
 - **Pioggia nera** → pioggia fine e scura, quasi nera, sotto nuvole basse; superfici arrugginite e licheni.
 - **Sciame** → centinaia di piccole unità meccaniche, grandi come semi o insetti, che si muovono come un fiume.
 - **Disco forato** → piccolo disco metallico con un foro al centro, incassato sotto la pelle, visibile come rilievo sotto le cicatrici.
+- **Vetro che cresce** → massa di vetro scuro e torbido, color fumo e ambra, con oggetti e figure immobili visibili all'interno come sfocati; mai cristallo lucido, mai ghiaccio.
 - **Sala di riconfigurazione** → grande sala di cemento abbandonata, condotti spenti, travi metalliche, polvere.
 
 ### Tabù visivi
