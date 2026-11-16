@@ -42,7 +42,7 @@ public class HttpGameEngine {
                 .retrieve()
                 .bodyToMono(MatchLog.class)
                 .timeout(timeout)
-                .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("engine.service.empty_response")))
+                .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
                 .onErrorMap(HttpGameEngine::translate)
                 .block();
     }
@@ -57,7 +57,7 @@ public class HttpGameEngine {
         } catch (RuntimeException ignored) {
             // not a ProblemDetail body: fall through to the generic code
         }
-        return "engine.service.rejected_request";
+        return "the engine service rejected the request";
     }
 
     private static Throwable translate(Throwable e) {
@@ -68,11 +68,11 @@ public class HttpGameEngine {
             int status = r.getStatusCode().value();
             return status == 400 || status == 422
                     ? new EngineRejectedException(detail(r), r)
-                    : new EngineUnavailableException("engine.service.error_response", r);
+                    : new EngineUnavailableException("the engine service answered with an error", r);
         }
         if (e instanceof TimeoutException) {
-            return new EngineUnavailableException("engine.service.timeout", e);
+            return new EngineUnavailableException("the engine service timed out", e);
         }
-        return new EngineUnavailableException("engine.service.unavailable", e);
+        return new EngineUnavailableException("the engine service could not be reached", e);
     }
 }

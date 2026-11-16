@@ -36,6 +36,9 @@
   "pack.type.standard": "Pacchetto Standard",
   "pack.type.advanced": "Pacchetto Avanzato",
   "pack.type.elite": "Pacchetto Élite",
+  "engine.input_invalid": "Impossibile giocare la partita: dati non validi",
+  "engine.unavailable": "Il motore di gioco non è disponibile, riprova più tardi",
+
   "error.not_implemented": "Funzione non ancora disponibile",
 
   "game.faction.resistenza_umana": "Resistenza Umana",

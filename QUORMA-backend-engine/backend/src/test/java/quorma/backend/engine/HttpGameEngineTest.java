@@ -88,7 +88,7 @@ class HttpGameEngineTest {
         EngineRejectedException e = assertThrows(EngineRejectedException.class,
                 () -> engine(Duration.ofSeconds(5)).simulate(json("{}")));
 
-        assertEquals("engine.service.rejected_request", e.getMessage());
+        assertEquals("the engine service rejected the request", e.getMessage());
     }
 
     @Test
@@ -98,7 +98,7 @@ class HttpGameEngineTest {
         EngineUnavailableException e = assertThrows(EngineUnavailableException.class,
                 () -> engine(Duration.ofSeconds(5)).simulate(json("{}")));
 
-        assertEquals("engine.service.error_response", e.getMessage());
+        assertEquals("the engine service answered with an error", e.getMessage());
     }
 
     @Test
@@ -116,7 +116,7 @@ class HttpGameEngineTest {
         EngineUnavailableException e = assertThrows(EngineUnavailableException.class,
                 () -> engine(Duration.ofSeconds(5)).simulate(json("{}")));
 
-        assertEquals("engine.service.empty_response", e.getMessage());
+        assertEquals("empty response from the engine service", e.getMessage());
     }
 
     @Test
@@ -126,7 +126,7 @@ class HttpGameEngineTest {
         EngineUnavailableException e = assertThrows(EngineUnavailableException.class,
                 () -> engine(Duration.ofMillis(200)).simulate(json("{}")));
 
-        assertEquals("engine.service.timeout", e.getMessage());
+        assertEquals("the engine service timed out", e.getMessage());
     }
 
     @Test
@@ -139,6 +139,6 @@ class HttpGameEngineTest {
         EngineUnavailableException e = assertThrows(EngineUnavailableException.class,
                 () -> engine.simulate(json("{}")));
 
-        assertTrue(e.getMessage().startsWith("engine.service."));
+        assertTrue(e.getMessage().startsWith("the engine service"));
     }
 }

@@ -51,6 +51,7 @@ All requests use JWT. Critical operations (buying packs, accepting trades) are a
 - `POST /challenges`: locks the deck snapshot.
 - `POST /challenges/{id}/accept`: generates the seed, calls the engine, stores the recipe.
 - `GET /matches/{id}/replay`: returns the rebuilt log.
+- `POST /v1/simulate`: **admins only**, a development entry point that forwards a match input to the engine-service and returns its match log. Errors: 400 `engine.input_invalid`, 503 `engine.unavailable` (the engine's own message is only logged).
 
 Keep the OpenAPI document current: it is the formal contact point with the Web team. Treat changes to it as breaking changes.
 
@@ -65,7 +66,7 @@ The API never returns text for the player. Every error has a `code`, a key of `d
 
 ## Tests
 
-**No automated tests in the backend for now** (project decision: unit tests exist for the engine only), so the pom has no test dependencies. If this changes, log it in `docs/DECISIONS.md`. Whatever is added later, a trade or purchase must still be proven atomic with no duplication.
+Unit tests exist for the engine, and for the engine client in the backend (`engine` package: `HttpGameEngineTest`, `EngineExceptionHandlerTest`; decision `2026-11-16-backend-engine-client-tests`). The rest of the backend has no automated tests for now. Whatever is added later, a trade or purchase must still be proven atomic with no duplication.
 
 ## Do not
 
