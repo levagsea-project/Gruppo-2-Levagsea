@@ -43,3 +43,6 @@
 .info-card-meta { font-size: 7.5px; letter-spacing: 1.5px; color: var(--orange); }
 .info-card h3 { font-size: 10.5px; font-weight: 600; margin-bottom: 6px; }
 .info-card p { font-size: 8.5px; line-height: 1.5; color: var(--muted); margin-bottom: 12px; }
+
+/* linea divisoria tra le due valute */
+.currency + .currency { border-left: 1px solid var(--border); padding-left: 26px; }

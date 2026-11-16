@@ -1,0 +1,47 @@
+.decks-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 206px; gap: 30px; margin-top: -2px; }
+.decks-body > section { padding-top: 24px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 7.5px; letter-spacing: 1.5px; color: var(--cyan); }
+.section-header h2 { font-family: var(--serif); font-size: 10px; letter-spacing: 2px; color: var(--text); }
+.section-line { flex: 1; height: 1px; background: var(--border); }
+
+/* griglia mazzi */
+.deck-grid { display: grid; grid-template-columns: repeat(3, 115px); gap: 24px 55px; }
+.deck-card { position: relative; width: 115px; height: 165px; padding: 0; display: flex; flex-direction: column; overflow: hidden; text-align: center; color: var(--text);
+  background: #0a1a20; border: 1px solid var(--border); border-radius: 50% 50% 3px 3px / 22px 22px 3px 3px; box-shadow: 4px -3px 0 -1px rgba(120, 170, 180, 0.15); }
+.deck-card.is-selected { border-color: var(--cyan); box-shadow: 0 0 14px var(--cyan-dim); }
+.deck-diamond { position: absolute; top: 2px; left: 50%; width: 5px; height: 5px; transform: translateX(-50%) rotate(45deg); background: var(--cyan); box-shadow: 0 0 6px var(--cyan); z-index: 1; }
+.deck-img { width: 100%; flex: 1; min-height: 0; object-fit: cover; object-position: 60% center; }
+.deck-info { display: flex; flex-direction: column; gap: 4px; padding: 9px 4px 8px; background: #0a1a20; }
+.deck-name { font-family: var(--serif); font-size: 9.5px; font-weight: 700; letter-spacing: 2px; }
+.deck-faction { font-size: 6px; letter-spacing: 1.5px; color: var(--cyan); }
+.deck-status { font-size: 7.5px; color: #c3cfd2; }
+
+/* carta "nuovo mazzo" */
+.new-deck-card { justify-content: center; align-items: center; gap: 6px; background: linear-gradient(180deg, rgba(120, 140, 150, 0.35), rgba(30, 50, 58, 0.5)); }
+.new-deck-plus { font-size: 24px; font-weight: 300; color: var(--cyan); line-height: 1; margin-bottom: 4px; }
+.new-deck-title { font-family: var(--serif); font-size: 10px; font-weight: 700; letter-spacing: 2px; line-height: 1.4; }
+.new-deck-sub { font-size: 7px; letter-spacing: 1.5px; color: var(--cyan); }
+
+/* pannello dettagli */
+.deck-details { display: flex; flex-direction: column; margin-top: 24px; padding: 16px 16px 14px; background: rgba(9, 26, 33, 0.9); border: 1px solid var(--cyan-dim); }
+.deck-empty { margin: auto 0; text-align: center; font-size: 9px; line-height: 1.7; color: var(--muted); }
+.details-tag { font-size: 6.5px; letter-spacing: 2px; color: var(--cyan); margin: 14px 0 8px; }
+.details-tag:first-child { margin-top: 0; }
+.details-name { font-family: var(--serif); font-size: 17px; letter-spacing: 1.5px; }
+.details-faction { margin: 6px 0 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); font-size: 7.5px; letter-spacing: 2px; color: var(--cyan); }
+.details-stats { display: grid; grid-template-columns: repeat(3, 1fr); }
+.details-stats .stat-value { font-size: 15px; }
+.suit-list { display: flex; flex-direction: column; gap: 9px; }
+.suit-list li { display: grid; grid-template-columns: 14px 42px 1fr 12px; align-items: center; gap: 4px; font-size: 8px; }
+.suit-icon { color: var(--muted); font-size: 9px; }
+.suit-bar { height: 4px; background: #0d242b; }
+.suit-bar span { display: block; height: 100%; background: linear-gradient(90deg, #1c6670, var(--cyan)); }
+.suit-value { text-align: right; }
+.details-status { margin-top: 12px; font-size: 7.5px; color: #c3cfd2; }
+.details-status::before { content: '■ '; color: var(--cyan); }
+
+.deck-actions { margin-top: auto; display: flex; flex-direction: column; gap: 7px; }
+.deck-actions .hex-btn { width: 100%; }
+.deck-play { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+.deck-play .hex-btn { flex: 1; }
+.deck-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

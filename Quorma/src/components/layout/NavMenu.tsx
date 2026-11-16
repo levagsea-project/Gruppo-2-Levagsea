@@ -1,13 +1,27 @@
 import { navItems } from '../../data/navItems'
+import type { Page } from '../../data/navItems'
 import NavItem from './NavItem'
 
+type Props = {
+  current: Page // pagina aperta ora
+  onNavigate: (page: Page) => void
+}
+
 // Lista di tutte le voci del menu.
-export default function NavMenu() {
+export default function NavMenu({ current, onNavigate }: Props) {
+  // "Nuovo mazzo" fa parte della sezione Mazzi, quindi Mazzi resta acceso.
+  const section = current === 'nuovo-mazzo' ? 'mazzi' : current
+
   return (
     <nav>
       <ul className="nav-menu">
         {navItems.map((item) => (
-          <NavItem key={item.label} {...item} />
+          <NavItem
+            key={item.label}
+            {...item}
+            active={item.page === section}
+            onClick={() => item.page && onNavigate(item.page)}
+          />
         ))}
       </ul>
     </nav>

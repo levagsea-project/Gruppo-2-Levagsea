@@ -1,4 +1,4 @@
-import CurrencyBar from './CurrencyBar'
+import CurrencyBar from '../layout/CurrencyBar'
 import HeroText from './HeroText'
 import InfoCards from './InfoCards'
 

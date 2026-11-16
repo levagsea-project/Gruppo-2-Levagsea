@@ -1,0 +1,15 @@
+.newdeck-intro { margin-top: 18px; max-width: 640px; font-size: 9px; line-height: 1.6; color: #c3cfd2; }
+.faction-list { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 26px; max-width: 780px; }
+
+.faction-card { position: relative; padding: 0; display: flex; flex-direction: column; overflow: hidden; text-align: left; color: var(--text);
+  background: #0a1a20; border: 1px solid var(--border); border-radius: 50% 50% 0 0 / 14px 14px 0 0; }
+.faction-card.is-selected { border-color: var(--cyan); box-shadow: 0 0 18px var(--cyan-dim); }
+.faction-img { width: 100%; aspect-ratio: 478 / 160; object-fit: cover; }
+.faction-body { display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 14px; background: #0c1f27; }
+.faction-name { font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: 2.5px; }
+.faction-stats { display: grid; grid-template-columns: repeat(3, 1fr); }
+.subfactions { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.subfaction { display: flex; align-items: center; gap: 5px; font-size: 8px; }
+.subfaction-badge { width: 17px; height: 17px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--c); color: var(--c); font-size: 5.5px; }
+
+.newdeck-buttons { margin-top: auto; display: flex; justify-content: flex-end; gap: 14px; }

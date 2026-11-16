@@ -1,3 +1,3 @@
 export default function Logo() {
-  return <div className="logo">QUORMA</div>
+  return <img src="/logo.png" alt="Quorma" className="logo" />
 }
