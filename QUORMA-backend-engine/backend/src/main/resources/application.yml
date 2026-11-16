@@ -20,6 +20,8 @@ server:
 engine:
   service:
     url: ${ENGINE_SERVICE_URL:http://localhost:8081}
+    timeout: ${ENGINE_SERVICE_TIMEOUT:30s}
+    connect-timeout: ${ENGINE_SERVICE_CONNECT_TIMEOUT:2s}
 
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}

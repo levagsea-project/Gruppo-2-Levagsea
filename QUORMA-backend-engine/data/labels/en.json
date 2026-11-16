@@ -36,6 +36,9 @@
   "pack.type.standard": "Standard Pack",
   "pack.type.advanced": "Advanced Pack",
   "pack.type.elite": "Elite Pack",
+  "engine.input_invalid": "The match could not be played: invalid input",
+  "engine.unavailable": "The game engine is not available, please try again later",
+
   "error.not_implemented": "Not available yet",
 
   "game.faction.resistenza_umana": "Resistenza Umana",

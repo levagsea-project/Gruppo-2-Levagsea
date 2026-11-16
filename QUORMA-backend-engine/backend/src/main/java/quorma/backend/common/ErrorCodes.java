@@ -45,6 +45,9 @@ public final class ErrorCodes {
     public static final String DECK_CARD_WRONG_FACTION = "deck.card_wrong_faction";
     public static final String DECK_CARD_NO_DEFINITION = "deck.card_no_definition";
 
+    public static final String ENGINE_INPUT_INVALID = "engine.input_invalid";
+    public static final String ENGINE_UNAVAILABLE = "engine.unavailable";
+
     public static final String NOT_IMPLEMENTED = "error.not_implemented";
 
     private ErrorCodes() {
