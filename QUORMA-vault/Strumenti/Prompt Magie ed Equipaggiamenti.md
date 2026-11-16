@@ -30,8 +30,9 @@ Valgono per tutte:
 3. **Si usano e si perdono.** Una magia, avvenuta, non c'è più. Un equipaggiamento passa a chi arriva e non torna indietro; se nessuno arriva, si perde.
 4. **Non si scelgono.** Nessuno decide *a chi* tocca: tocca a chi c'è. Le Potenze assegnano per procedura, la Resistenza distribuisce ciò che c'è.
 5. **Ogni potere ha un costo**, sempre di qualcuno (un sonno, un nome, un'abitudine, un prima) e di solito non di chi ne gode. Il costo va scritto nella lore interna e nella riga **Costo**.
-6. **La Resistenza ne ha di più e più povere** (riti, oggetti che passano di mano, «prima» addosso a chi arriva); le Potenze, poche e pulite, quasi sempre un'altra faccia di una procedura già nota. Le Potenze non chiamano mai «magia» ciò che fanno: lo chiamano procedura, delibera, seduta, direttiva. Per la Resistenza è un rito, una veglia, un favore, a volte un «miracolo» o una «maledizione».
+6. **Stesso numero, natura diversa.** Il set completo ha 46 carte che non sono creature, 23 per fazione (accanto alle 104 creature). Quelle della Resistenza sono più povere, più vari e più legate a una persona (riti, oggetti che passano di mano, «prima» addosso a chi arriva); quelle delle Potenze, pulite, quasi sempre un'altra faccia di una procedura già nota. Le Potenze non chiamano mai «magia» ciò che fanno: lo chiamano procedura, delibera, seduta, direttiva. Per la Resistenza è un rito, una veglia, un favore, a volte un «miracolo» o una «maledizione».
 7. **Un equipaggiamento ha sempre un prima**: un proprietario precedente, un luogo, un uso che l'ha consumato. La Resistenza lo dice senza dirlo («era di mio fratello»); le Potenze lo registrano come dotazione e dichiarano il titolare precedente «non rilevato» o non lo nominano.
+8. **Il numero di carte.** Prima di scrivere, controlla nel registro quante ne esistono già per quella fazione: ne mancano fino a 23. Non ripetere un tema già coperto.
 
 ## LA LORE È A FRAMMENTI
 La lore non viene mai spiegata: si ricostruisce leggendo molte carte, come le descrizioni degli oggetti in Dark Souls o Hollow Knight. Ogni carta è un frammento: una voce, un registro, un inventario, un ordine, una lista.

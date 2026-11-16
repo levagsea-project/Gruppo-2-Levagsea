@@ -167,7 +167,7 @@ RESISTENZA UMANA
 ## REGOLE DI GIOCO UTILI
 - Combattimento automatico e deterministico: 5 creature per giocatore in 5 corsie, ognuna attacca quella di fronte.
 - A ogni turno le creature formano una mano di poker (rango e seme); attaccano solo quelle della mano.
-- Set base: 52 creature per fazione, una per ogni coppia rango + seme. Un mazzo ha 32 carte e al massimo una creatura per ogni coppia rango + seme.
+- Set base: 104 creature (52 per fazione, una per ogni coppia rango + seme) più 46 magie ed equipaggiamenti (23 per fazione), che non occupano slot. Un mazzo ha 32 carte e al massimo una creatura per ogni coppia rango + seme.
 - Vantaggio di dottrina: +10% di danno contro la sottofazione battuta, −10% contro quella che ti batte.
 
 ## VINCOLI DURI

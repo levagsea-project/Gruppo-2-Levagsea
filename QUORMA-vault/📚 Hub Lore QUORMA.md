@@ -19,7 +19,7 @@ Vista «Per sottofazione»: apri [[🃏 Carte.base]].
 
 ### ✦ Magie ed Equipaggiamenti
 
-Le carte che non sono creature (senza rango, seme né sottofazione): che cosa sono nel mondo in [[Magie ed Equipaggiamenti]].
+Le carte che non sono creature (senza rango, seme né sottofazione): che cosa sono nel mondo in [[Magie ed Equipaggiamenti]]. Il set completo ne avrà 46, 23 per fazione, accanto alle 104 creature.
 
 ![[🪄 Magie ed Equipaggiamenti.base#Per tipo]]
 

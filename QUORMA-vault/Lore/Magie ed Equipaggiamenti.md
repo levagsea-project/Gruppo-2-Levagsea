@@ -36,7 +36,7 @@ Il potere appare come magia a chi lo subisce e come procedura a chi lo esegue: l
 | Che cosa mostrano | la persona che lo compie e ciò che le costa | il protocollo che si compie e chi ne resta fuori |
 | Da chi vengono | tramandati, imparati da chi è tornato, copiati | emessi, e mai attribuiti a nessuno |
 
-Le magie della Resistenza sono più numerose e più povere: si fanno con ciò che c'è. Quelle delle Potenze sono poche, pulite e quasi sempre un'altra faccia di una procedura già nota ([[Esclusione dal quorum]], [[Taglio preventivo]]). Le Potenze non chiamano mai «magia» ciò che fanno.
+Le magie della Resistenza sono più povere e più legate a una persona: si fanno con ciò che c'è. Quelle delle Potenze sono pulite e quasi sempre un'altra faccia di una procedura già nota ([[Esclusione dal quorum]], [[Taglio preventivo]]). Le Potenze non chiamano mai «magia» ciò che fanno.
 
 ## Equipaggiamenti
 
@@ -49,13 +49,13 @@ Un equipaggiamento ha sempre un **prima**: un proprietario precedente, un luogo 
 | Che cosa portano con sé | il nome o l'uso di chi li aveva | un'identità o una funzione di qualcuno che non c'è più |
 | Che cosa chiedono in cambio | di continuare quell'uso, o quel nome | di non restituire, e di non chiedere di chi fosse |
 
-## Perché la Resistenza ne ha di più
+## Stesso numero, natura diversa
 
-Chi non può produrre in serie improvvisa: più riti, più oggetti che passano di mano, più prima addosso a chi arriva. Le Potenze fanno arrivare ciò che serve per procedura, e ciò che non è in dotazione, per le Potenze, semplicemente non c'è. Nel mondo questo si legge in una sola direzione: la Resistenza dipende dalle cose e dalle persone che ricordano; le Potenze, dal registro. Nessuna carta lo dice: lo dice la proporzione.
+Il set completo conta **46 carte che non sono creature, 23 per fazione**, accanto alle 104 creature. Il numero è pari; la natura no. Chi non può produrre in serie improvvisa: i riti e gli oggetti della Resistenza sono più poveri, più vari, ognuno con un prima addosso a chi arriva. Le Potenze fanno arrivare ciò che serve per procedura, e ciò che non è in dotazione, per le Potenze, semplicemente non c'è: le loro carte sono più pulite e si somigliano come si somigliano i moduli. Nel mondo questo si legge in una sola direzione: la Resistenza dipende dalle cose e dalle persone che ricordano; le Potenze, dal registro. Nessuna carta lo dice: lo dice il tono.
 
 ## Il set base: una mappa per chi entra nel mondo
 
-Venti carte (13 Resistenza, 7 Potenze) pensate come un'introduzione: ciascuna ancora un pezzo di lore di base e rimanda a elementi di canone che le creature sviluppano. Nessuna dichiara una sottofazione; quelle indicate qui sono solo la firma che si sente.
+Il set completo ha 23 carte per fazione. Le prime venti (13 Resistenza, 7 Potenze) sono pensate come un'introduzione: ciascuna ancora un pezzo di lore di base e rimanda a elementi di canone che le creature sviluppano. Le successive seguono le creature e le trame. Nessuna dichiara una sottofazione; quelle indicate qui sono solo la firma che si sente.
 
 | Che cosa fa capire | Resistenza Umana | Potenze Artificiali |
 |---|---|---|
@@ -91,4 +91,4 @@ Le due magie e i due equipaggiamenti più generali sono pensati come i primi da 
 
 ---
 
-*Aggiornato: 2026-11-15*
+*Aggiornato: 2026-11-16*
