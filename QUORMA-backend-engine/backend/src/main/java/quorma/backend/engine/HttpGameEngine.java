@@ -11,10 +11,13 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 /** Calls the engine-service and returns its MatchLog without interpreting or recomputing it. */
 @Component
 public class HttpGameEngine {
+
+    private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
     private final WebClient client;
     private final Duration timeout;
@@ -44,13 +47,27 @@ public class HttpGameEngine {
                 .block();
     }
 
+    /** The engine's validation message (ProblemDetail.detail), so the caller can fix its input. */
+    private static String detail(WebClientResponseException r) {
+        try {
+            JsonNode detail = MAPPER.readTree(r.getResponseBodyAsString()).path("detail");
+            if (detail.isString() && !detail.asString().isBlank()) {
+                return detail.asString();
+            }
+        } catch (RuntimeException ignored) {
+            // not a ProblemDetail body: fall through to the generic code
+        }
+        return "engine.service.rejected_request";
+    }
+
     private static Throwable translate(Throwable e) {
         if (e instanceof EngineUnavailableException || e instanceof EngineRejectedException) {
             return e;
         }
         if (e instanceof WebClientResponseException r) {
-            return r.getStatusCode().is4xxClientError()
-                    ? new EngineRejectedException("engine.service.rejected_request", r)
+            int status = r.getStatusCode().value();
+            return status == 400 || status == 422
+                    ? new EngineRejectedException(detail(r), r)
                     : new EngineUnavailableException("engine.service.error_response", r);
         }
         if (e instanceof TimeoutException) {

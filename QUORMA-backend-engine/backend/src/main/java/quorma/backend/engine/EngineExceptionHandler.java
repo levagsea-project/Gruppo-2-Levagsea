@@ -15,6 +15,6 @@ class EngineExceptionHandler {
 
     @ExceptionHandler(EngineRejectedException.class)
     ProblemDetail rejected(EngineRejectedException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 }
