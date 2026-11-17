@@ -7,6 +7,7 @@ import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.MatchResult;
 import quorma.gameengine.model.Side;
+import quorma.gameengine.model.Target;
 
 /**
  * Everything that happens in a turn, in the order it happens. This is the in-memory base of the match log: a
@@ -19,6 +20,12 @@ public sealed interface MatchEvent {
 
     /** Declare: an attack and its frozen target (ruleset 8). */
     record TargetDeclared(Attack attack) implements MatchEvent {}
+
+    /**
+     * Declare: an effect (E24) aimed an attack at another creature. {@code attack} is the attack as it was declared;
+     * the redirected one resolves in the same cycle (ruleset 9.4).
+     */
+    record AttackRedirected(Attack attack, Target to, String abilityId) implements MatchEvent {}
 
     /** An attack that did not happen. {@code cycle} is 1 or 2. */
     record AttackSkipped(Attack attack, int cycle, SkipReason reason) implements MatchEvent {}

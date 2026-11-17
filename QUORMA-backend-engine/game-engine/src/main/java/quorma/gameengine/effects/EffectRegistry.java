@@ -35,6 +35,7 @@ public final class EffectRegistry {
             new Shape("T12", "E1", ResClass.T, "D_Permanente"),   // + share of base ATK after surviving damage (Crescita)
             new Shape("T9", "E2", ResClass.T, "D_Permanente"),    // + share of base DEF when targeted (Trincea)
             new Shape("T5", "E17", ResClass.T, "D_Istantanea"),   // force the Evolutions of a suit (Spira 5)
+            new Shape("T9", "E24", ResClass.T, "D_Istantanea"),   // redirect an attack declared against this creature
             new Shape("T34", "E22", ResClass.R, "D_Istantanea"),  // spill treats the target's DEF as a share of itself
             new Shape("T2", "E6", ResClass.T, "D_Istantanea"),    // heal at the start of a phase (Refill)
             new Shape("T20", "E12", ResClass.R, "D_Istantanea"),  // saved from destruction (Vestigio 5)
@@ -85,6 +86,7 @@ public final class EffectRegistry {
     private static final Map<String, Map<String, ParamRule>> PARAMS_2 = Map.of(
             "E2", Map.of("pct_base_def", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of())),
             "E17", Map.of("", new ParamRule(Map.of(), Map.of())),
+            "E24", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("new_target_id", Set.of("S7")))),
             "E19", Map.of("", new ParamRule(Map.of("factor", new int[] {0, MAX}), Map.of())));
 
     private static final Map<String, Map<String, ParamRule>> PARAMS;

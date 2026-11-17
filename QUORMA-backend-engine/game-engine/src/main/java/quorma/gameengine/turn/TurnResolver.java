@@ -21,6 +21,8 @@ import quorma.gameengine.hand.HandType;
 import quorma.gameengine.hand.Suit;
 import quorma.gameengine.hand.WildSuit;
 import quorma.gameengine.log.BoardSnapshot;
+import quorma.gameengine.log.FizzleReason;
+import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
@@ -95,7 +97,7 @@ public final class TurnResolver {
         for (Attack attack : attacks) {
             opening.add(new TargetDeclared(attack));
         }
-        declareTriggers(state, attacks, opening);
+        attacks = declareTriggers(state, attacks, opening);
         List<MatchEvent> cycle1 = new ArrayList<>();
         cycle1(state, evaluation, attacks, cycle1);
         List<MatchEvent> cycle2 = new ArrayList<>();
@@ -182,7 +184,7 @@ public final class TurnResolver {
         CycleStart start = CycleStart.of(state, evaluation);
         List<Blow> blows = new ArrayList<>();
         for (Attack attack : attacks) {
-            if (!attack.inCycle1()) continue;
+            if (!attack.inCycle1() || attack.isRedirected()) continue;
 
             Target targetRef = attack.target().orElseThrow();
             Creature attacker = state.player(attack.attacker()).creatureAt(attack.attackerLane()).orElse(null);
@@ -225,6 +227,13 @@ public final class TurnResolver {
         }
         triggerKills(state, kills, log);
         triggerSurvivors(state, survivors, log);
+
+        // 9.4: a redirected attack of Cycle 1 resolves after all the simultaneous ones, one at a time, in attack order.
+        for (Attack attack : attacks) {
+            if (attack.inCycle1() && attack.isRedirected()) {
+                sequentialAttack(state, evaluation, start, attack, 1, log);
+            }
+        }
     }
 
     /**
@@ -234,44 +243,55 @@ public final class TurnResolver {
     public void cycle2(MatchState state, Evaluation evaluation, List<Attack> attacks, List<MatchEvent> log) {
         CycleStart start = CycleStart.of(state, evaluation);
         for (Attack attack : attacks) {
-            if (attack.inCycle1()) continue;
-            Creature attacker = state.player(attack.attacker()).creatureAt(attack.attackerLane()).orElse(null);
-            if (attacker == null || attacker.destroyed()) {
-                log.add(new AttackSkipped(attack, 2, SkipReason.ATTACKER_DESTROYED));
-                continue;
+            if (!attack.inCycle1()) {
+                sequentialAttack(state, evaluation, start, attack, 2, log);
             }
-            if (attack.target().isEmpty()) {
-                log.add(new AttackSkipped(attack, 2, SkipReason.NO_TARGET));
-                continue;
-            }
-            Target targetRef = attack.target().orElseThrow();
-            Creature target = state.player(targetRef.side()).creatureAt(targetRef.lane()).orElse(null);
-            if (target == null || target.destroyed()) {
-                log.add(new AttackSkipped(attack, 2, SkipReason.TARGET_DESTROYED));
-                continue;
-            }
+        }
+    }
 
-            Strike strike = Strike.of(rules, state, evaluation, start, attack.attacker(), attacker, targetRef.side(), target);
+    /**
+     * One attack resolved on its own with immediate effect: the attacks of Cycle 2 (9.3) and the redirected ones of
+     * Cycle 1 (9.4). An attacker already destroyed does not attack, nor does one whose target is gone, so a redirect
+     * to a creature destroyed meanwhile does nothing. After a kill the stack resolves before the next attack.
+     */
+    private void sequentialAttack(MatchState state, Evaluation evaluation, CycleStart start, Attack attack, int cycle,
+            List<MatchEvent> log) {
+        Creature attacker = state.player(attack.attacker()).creatureAt(attack.attackerLane()).orElse(null);
+        if (attacker == null || attacker.destroyed()) {
+            log.add(new AttackSkipped(attack, cycle, SkipReason.ATTACKER_DESTROYED));
+            return;
+        }
+        if (attack.target().isEmpty()) {
+            log.add(new AttackSkipped(attack, cycle, SkipReason.NO_TARGET));
+            return;
+        }
+        Target targetRef = attack.target().orElseThrow();
+        Creature target = state.player(targetRef.side()).creatureAt(targetRef.lane()).orElse(null);
+        if (target == null || target.destroyed()) {
+            log.add(new AttackSkipped(attack, cycle, SkipReason.TARGET_DESTROYED));
+            return;
+        }
 
-            BoundExpansion rescue = strike.killed() ? rescue(state, evaluation, targetRef.side(), target) : null;
-            if (rescue != null) {
-                strike = strike.saved(target.card().def());
-            } else {
-                target.takeDamage(strike.damage());
-            }
-            if (strike.spill() > 0) {
-                state.player(attack.attacker().other()).loseLife(strike.spill());
-            }
-            log.add(strike.event(attack, 2, false));
-            if (rescue != null) {
-                log.add(new CreatureSaved(targetRef.side(), targetRef.lane(), target.card().id(), rescue.abilityId()));
-            } else if (strike.killed()) {
-                log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), target.card().id()));
-                attacker.endUntilKill();
-                triggerKills(state, List.of(new Kill(attack.attacker(), attacker)), log);
-            } else if (strike.damage() > 0 && !target.destroyed()) {
-                triggerSurvivors(state, List.of(new Survivor(targetRef.side(), target)), log);
-            }
+        Strike strike = Strike.of(rules, state, evaluation, start, attack.attacker(), attacker, targetRef.side(), target);
+
+        BoundExpansion rescue = strike.killed() ? rescue(state, evaluation, targetRef.side(), target) : null;
+        if (rescue != null) {
+            strike = strike.saved(target.card().def());
+        } else {
+            target.takeDamage(strike.damage());
+        }
+        if (strike.spill() > 0) {
+            state.player(attack.attacker().other()).loseLife(strike.spill());
+        }
+        log.add(strike.event(attack, cycle, false));
+        if (rescue != null) {
+            log.add(new CreatureSaved(targetRef.side(), targetRef.lane(), target.card().id(), rescue.abilityId()));
+        } else if (strike.killed()) {
+            log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), target.card().id()));
+            attacker.endUntilKill();
+            triggerKills(state, List.of(new Kill(attack.attacker(), attacker)), log);
+        } else if (strike.damage() > 0 && !target.destroyed()) {
+            triggerSurvivors(state, List.of(new Survivor(targetRef.side(), target)), log);
         }
     }
 
@@ -350,25 +370,71 @@ public final class TurnResolver {
     }
 
     /**
-     * T9 "declared as the target of an attack" (Trincea), after Declare: the targets' abilities, in attack order,
-     * then the stack resolves.
+     * T9 "declared as the target of an attack", after Declare: the targets' abilities, in attack order (Trincea), then
+     * the stack resolves; then the redirects (E24) take effect. Returns the attacks as they stand, in the same order:
+     * a redirected attack keeps its place and its cycle (ruleset 9.4).
      */
-    public void declareTriggers(MatchState state, List<Attack> attacks, List<MatchEvent> log) {
+    public List<Attack> declareTriggers(MatchState state, List<Attack> attacks, List<MatchEvent> log) {
         EffectStack stack = new EffectStack(log);
         for (Attack attack : attacks) {
-            if (attack.target().isEmpty()) {
-                continue;
-            }
-            Target target = attack.target().get();
-            Creature creature = state.player(target.side()).creatureAt(target.lane()).orElse(null);
+            Creature creature = declaredTarget(state, attack);
             if (creature == null) {
                 continue;
             }
             for (BoundExpansion ability : creature.abilities("T9")) {
-                pushTriggered(stack, state, target.side(), creature, ability);
+                if (!ability.effectId().equals("E24")) {
+                    pushTriggered(stack, state, attack.target().orElseThrow().side(), creature, ability);
+                }
             }
         }
         stack.resolveAll();
+
+        List<Attack> out = new ArrayList<>();
+        for (Attack attack : attacks) {
+            out.add(redirect(state, attack, log));
+        }
+        return List.copyOf(out);
+    }
+
+    private static Creature declaredTarget(MatchState state, Attack attack) {
+        if (attack.target().isEmpty()) {
+            return null;
+        }
+        Target target = attack.target().get();
+        return state.player(target.side()).creatureAt(target.lane()).orElse(null);
+    }
+
+    /**
+     * E24 with trigger T9: the creature an attack was declared against aims it at a creature of its own player
+     * next to it (new target S7: a living creature in a lane differing by 1, the lowest lane when there are two).
+     * Without one the effect fizzles. The first creature's effect wins: a redirected attack is not declared against
+     * its new target, so it triggers nothing there.
+     */
+    private static Attack redirect(MatchState state, Attack attack, List<MatchEvent> log) {
+        Creature creature = declaredTarget(state, attack);
+        if (creature == null) {
+            return attack;
+        }
+        Side side = attack.target().get().side();
+        for (BoundExpansion e : creature.abilities("T9")) {
+            if (!e.effectId().equals("E24")) {
+                continue;
+            }
+            CreatureRef source = CreatureRef.of(side, creature);
+            log.add(new MatchEvent.EffectTriggered(source, e.abilityId(), e.triggerId(), e.effectId(), 1));
+            Creature next = state.player(side).creatures().stream()
+                    .filter(c -> !c.destroyed() && Math.abs(c.lane() - creature.lane()) == 1)
+                    .min(Comparator.comparingInt(Creature::lane))
+                    .orElse(null);
+            if (next == null) {
+                log.add(new MatchEvent.EffectFizzled(source, e.abilityId(), e.effectId(), FizzleReason.NO_NEW_TARGET));
+                return attack;
+            }
+            Target to = new Target(side, next.lane());
+            log.add(new MatchEvent.AttackRedirected(attack, to, e.abilityId()));
+            return attack.redirectTo(to);
+        }
+        return attack;
     }
 
     /**

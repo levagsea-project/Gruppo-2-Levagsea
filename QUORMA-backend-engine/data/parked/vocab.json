@@ -445,22 +445,6 @@
       ],
       "duration_mode": "any"
     },
-    "E24": {
-      "name": "Reindirizza attacco",
-      "class": [
-        "T"
-      ],
-      "description": "Reindirizza l'attacco indicato verso il nuovo bersaglio params.new_target_id. L'attacco reindirizzato si risolve nello stesso ciclo dell'attacco originale.",
-      "params": {
-        "new_target_id": {
-          "type": "target_id"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
-    },
     "E25": {
       "name": "Previeni attacco",
       "class": [

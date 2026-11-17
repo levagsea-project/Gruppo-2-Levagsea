@@ -121,6 +121,7 @@
           "type": "array",
           "items": { "$ref": "#/$defs/declaration" }
         },
+        "opening": { "description": "Effects of Evaluate and Declare, in the order they happened: Evolutions that fired, redirects. Absent when there were none.", "type": "array", "items": { "$ref": "#/$defs/event" } },
         "cycle_1": { "type": "array", "items": { "$ref": "#/$defs/event" } },
         "cycle_2": { "type": "array", "items": { "$ref": "#/$defs/event" } },
         "refill": { "type": "array", "items": { "$ref": "#/$defs/event" } },
@@ -148,7 +149,8 @@
       "properties": {
         "attacker": { "$ref": "#/$defs/creature_ref" },
         "target": { "description": "null when the opponent had nothing to target.", "oneOf": [{ "$ref": "#/$defs/creature_ref" }, { "type": "null" }] },
-        "cycle": { "enum": [1, 2] }
+        "cycle": { "description": "The cycle of the attack as declared: a redirected attack keeps it.", "enum": [1, 2] },
+        "redirected_from": { "description": "Present when an effect redirected the attack: the target it was declared with.", "$ref": "#/$defs/creature_ref" }
       }
     },
 
@@ -223,6 +225,7 @@
       "description": "One thing that happened. Discriminated by type.",
       "oneOf": [
         { "$ref": "#/$defs/ev_attack_resolved" },
+        { "$ref": "#/$defs/ev_attack_redirected" },
         { "$ref": "#/$defs/ev_attack_skipped" },
         { "$ref": "#/$defs/ev_creature_destroyed" },
         { "$ref": "#/$defs/ev_creature_saved" },
@@ -276,6 +279,19 @@
         "cycle": { "enum": [1, 2] },
         "attacker": { "$ref": "#/$defs/creature_ref" },
         "reason": { "enum": ["NO_TARGET", "TARGET_DESTROYED", "ATTACKER_DESTROYED"] }
+      }
+    },
+    "ev_attack_redirected": {
+      "description": "Declare: an effect aimed an attack at another creature. The redirected attack resolves in the cycle of the original attack (ruleset 9.4).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "attacker", "from", "to", "ability_id"],
+      "properties": {
+        "type": { "const": "attack_redirected" },
+        "attacker": { "$ref": "#/$defs/creature_ref" },
+        "from": { "$ref": "#/$defs/creature_ref" },
+        "to": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" }
       }
     },
     "ev_creature_destroyed": {
@@ -338,7 +354,7 @@
         "source": { "$ref": "#/$defs/creature_ref" },
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
-        "reason": { "enum": ["TARGET_DESTROYED"] }
+        "reason": { "enum": ["TARGET_DESTROYED", "NO_NEW_TARGET"] }
       }
     },
     "ev_creature_discarded": {

@@ -210,18 +210,6 @@
       "reason": "I bersagli sono fissati alla Dichiarazione: spostare o svuotare corsie durante il combattimento romperebbe la risoluzione. Usare T2/T3 di una fase non di combattimento."
     },
     {
-      "rule_id": "IC012",
-      "trigger_id": null,
-      "effect_id": "E24",
-      "target_id": null,
-      "allowed_triggers": [
-        "T8",
-        "T9",
-        "T35"
-      ],
-      "reason": "E24 reindirizza un attacco già dichiarato: è valido solo con T8, T9 o T35."
-    },
-    {
       "rule_id": "IC013",
       "trigger_id": [
         "T36",

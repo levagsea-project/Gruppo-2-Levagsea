@@ -60,6 +60,18 @@
       "effect_id": "E17",
       "target_id": null,
       "reason": "Un'Evoluzione che innesca Evoluzioni crea un ciclo. Usare un trigger diverso."
+    },
+    {
+      "rule_id": "IC012",
+      "trigger_id": null,
+      "effect_id": "E24",
+      "target_id": null,
+      "allowed_triggers": [
+        "T8",
+        "T9",
+        "T35"
+      ],
+      "reason": "E24 reindirizza un attacco già dichiarato: è valido solo con T8, T9 o T35."
     }
   ]
 }
