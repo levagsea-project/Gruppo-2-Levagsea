@@ -8,11 +8,9 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardKind;
 import quorma.backend.catalogue.CardRepository;
-import quorma.backend.catalogue.Faction;
 import quorma.backend.catalogue.PoolSnapshot;
 import quorma.backend.catalogue.PoolSnapshotRepository;
 import quorma.backend.collection.CardInstance;
@@ -113,7 +111,7 @@ public class PackService {
         PoolSnapshot snapshot = snapshots.findFirstByFactionOrderByCreatedAtDesc(faction)
                 .orElseThrow(() -> new PackException(HttpStatus.NOT_FOUND, ErrorCodes.PACK_NO_POOL));
         List<UUID> poolCardIds = definitions.findBySnapshotId(snapshot.getId()).stream()
-                .map(CardDefinition::getCardId)
+                .map(c -> c.getCardId())
                 .toList();
         List<PoolCard> pool = cards.findAllById(poolCardIds).stream()
                 .map(card -> new PoolCard(card.getId(), card.getKind(),

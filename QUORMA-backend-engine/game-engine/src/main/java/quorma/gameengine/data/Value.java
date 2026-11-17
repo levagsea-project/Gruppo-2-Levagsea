@@ -60,7 +60,7 @@ public sealed interface Value {
             case DecV d -> new java.math.BigDecimal(d.text());
             case StrV s -> s.v();
             case BoolV b -> b.v();
-            case NullV n -> null;
+            case NullV _ -> null;
             case Ref r -> r.text();
             case ListV l -> {
                 List<Object> out = new java.util.ArrayList<>();

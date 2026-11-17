@@ -29,7 +29,7 @@ public record PackType(long price, Map<Tier, Integer> slots, int supportSlots, b
                 copy.put(tier, count);
             });
         }
-        int total = copy.values().stream().mapToInt(Integer::intValue).sum() + supportSlots;
+        int total = copy.values().stream().mapToInt(i -> i).sum() + supportSlots;
         if (total < 1) {
             throw new IllegalArgumentException("a pack must hold at least one card");
         }
@@ -37,6 +37,6 @@ public record PackType(long price, Map<Tier, Integer> slots, int supportSlots, b
     }
 
     public int size() {
-        return slots.values().stream().mapToInt(Integer::intValue).sum() + supportSlots;
+        return slots.values().stream().mapToInt(i -> i).sum() + supportSlots;
     }
 }

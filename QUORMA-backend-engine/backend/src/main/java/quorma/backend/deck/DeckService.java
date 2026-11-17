@@ -55,7 +55,7 @@ public class DeckService {
     @Transactional(readOnly = true)
     public List<DeckSummary> list(UUID ownerId) {
         List<Deck> mine = decks.findByOwnerIdOrderByUpdatedAtDesc(ownerId);
-        Map<UUID, Long> counts = mine.isEmpty() ? Map.of() : deckCards.findByDeckIds(mine.stream().map(Deck::getId).toList())
+        Map<UUID, Long> counts = mine.isEmpty() ? Map.of() : deckCards.findByDeckIds(mine.stream().map(d -> d.getId()).toList())
                 .stream().collect(Collectors.groupingBy(c -> c.getId().deckId(), Collectors.counting()));
         return mine.stream()
                 .map(d -> new DeckSummary(d.getId(), d.getName(), d.getFaction(),
@@ -157,7 +157,7 @@ public class DeckService {
         PoolSnapshot snapshot = snapshots.findById(snapshotId)
                 .orElseThrow(() -> new DeckException(HttpStatus.BAD_REQUEST, ErrorCodes.DECK_SNAPSHOT_INVALID));
         List<UUID> deckIds = decks.findByFactionAndSnapshotIdNot(snapshot.getFaction(), snapshotId).stream()
-                .map(Deck::getId).toList();
+                .map(d -> d.getId()).toList();
         for (UUID deckId : deckIds) {
             Deck deck = decks.findById(deckId).orElseThrow();
             List<UUID> instanceIds = deckCards.findByDeckId(deckId).stream()
@@ -225,7 +225,7 @@ public class DeckService {
         // instances: missing or not owned give the same message
         Map<UUID, CardInstance> instMap = instances.findAllById(unique).stream()
                 .filter(i -> Objects.equals(i.getOwnerId(), ownerId))
-                .collect(Collectors.toMap(CardInstance::getId, i -> i));
+                .collect(Collectors.toMap(i -> i.getId(), i -> i));
         for (UUID id : unique) {
             if (!instMap.containsKey(id)) {
                 errors.add(DeckError.of(ErrorCodes.DECK_INSTANCE_NOT_FOUND, "id", id));
@@ -233,7 +233,7 @@ public class DeckService {
         }
 
         // cards
-        Set<UUID> cardIds = instMap.values().stream().map(CardInstance::getCardId).collect(Collectors.toSet());
+        Set<UUID> cardIds = instMap.values().stream().map(i -> i.getCardId()).collect(Collectors.toSet());
         var cardMap = cards.findAllById(cardIds).stream().collect(Collectors.toMap(c -> c.getId(), c -> c));
 
         // definitions in the snapshot

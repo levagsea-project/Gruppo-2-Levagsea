@@ -37,12 +37,12 @@ public class DeckEligibility {
     @Transactional(readOnly = true)
     public PlayStatus status(UUID userId) {
         List<Deck> defense = decks.findByOwnerIdAndDefenseTrue(userId);
-        List<String> outdated = Arrays.stream(Faction.values()).map(Faction::name)
+        List<String> outdated = Arrays.stream(Faction.values()).map(f -> f.name())
                 .filter(f -> defense.stream().anyMatch(d -> d.getFaction().equals(f) && d.isOutdated())).toList();
-        List<String> missing = Arrays.stream(Faction.values()).map(Faction::name)
+        List<String> missing = Arrays.stream(Faction.values()).map(f -> f.name())
                 .filter(f -> defense.stream().noneMatch(d -> d.getFaction().equals(f))).toList();
         List<OutdatedDeck> outdatedDecks = decks.findByOwnerIdOrderByUpdatedAtDesc(userId).stream()
-                .filter(Deck::isOutdated)
+                .filter(d -> d.isOutdated())
                 .map(d -> new OutdatedDeck(d.getId(), d.getName(), d.getFaction(), d.isDefense()))
                 .toList();
         return new PlayStatus(outdated.isEmpty() && missing.isEmpty(), outdated, missing, outdatedDecks);
