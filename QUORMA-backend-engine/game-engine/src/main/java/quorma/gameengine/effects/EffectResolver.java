@@ -41,6 +41,7 @@ public final class EffectResolver {
             case "E1/pct_base_atk" -> addShareOfBaseAtk(expansion, target);
             case "E1/flat" -> addFlatAtk(expansion, target);
             case "E6/flat" -> heal(expansion, target);
+            case "E2/pct_base_def" -> addShareOfBaseDef(expansion, target);
             default -> throw new IllegalStateException("no resolution for effect " + expansion.effectId()
                     + (mode.isEmpty() ? "" : " mode " + mode) + " (EffectRegistry let it through)");
         };
@@ -58,6 +59,13 @@ public final class EffectResolver {
             target.addAtk(e.intParam("amount"));
         }
         return new Outcome(List.of(new StatChange(StatChange.Stat.ATK, before, target.currentAtk())), OptionalInt.empty());
+    }
+
+    /** E2 mode {@code pct_base_def}: DEF + floor(base DEF x permille / 1000), with no cap (Trincea). */
+    private static Outcome addShareOfBaseDef(BoundExpansion e, Creature target) {
+        int before = target.currentDef();
+        target.addDef(Math.toIntExact(Math.floorDiv((long) target.card().def() * e.intParam("permille"), 1000L)));
+        return new Outcome(List.of(new StatChange(StatChange.Stat.DEF, before, target.currentDef())), OptionalInt.empty());
     }
 
     /** E6 mode {@code flat}: + {@code amount} DEF, up to the base DEF. */

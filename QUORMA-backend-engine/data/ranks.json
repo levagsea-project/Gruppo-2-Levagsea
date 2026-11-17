@@ -141,18 +141,22 @@
     "1": [
       "K_SCUDO",
       "K_PERFORANTE",
-      "K_CAMALEONTE"
+      "K_CAMALEONTE",
+      "EVO_CRESCITA",
+      "EVO_TRINCEA"
     ],
     "2": [
       "K_PERFORANTE",
       "K_TRABOCCANTE",
       "K_INSAZIABILE",
-      "K_SCUDO"
+      "K_SCUDO",
+      "EVO_TRINCEA"
     ],
     "3": [
       "K_PERFORANTE",
       "K_TRABOCCANTE",
-      "K_INSAZIABILE"
+      "K_INSAZIABILE",
+      "EVO_CRESCITA"
     ],
     "4": [
       "K_INSAZIABILE",

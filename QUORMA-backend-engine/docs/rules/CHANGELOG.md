@@ -10,6 +10,8 @@ Anything may change until 1.0 is released. Changes before this log started are i
 
 | Date | Area | Change | Reference |
 |---|---|---|---|
+| 2026-11-17 | data | Evolutions Crescita and Trincea restored from `data/parked/` with `T_EVO`, T9, T12, E2, their balance entries, role affinity, class rules and IC001. New `ruleset_hash` (`69c45df5...`). | `2026-11-17-evolutions` |
+| 2026-11-17 | engine | Evolutions (fire once per creature, T12 after surviving damage, T9 after Declare) and Spira 3, 4 and 5 (+ATK per Evolution fired, Evolution values x1.2, Evolutions forced after Evaluate). Goldens and example log: only `ruleset_hash` and `result_hash` changed. | `2026-11-17-evolutions` |
 | 2026-11-17 | engine | Vestigio 3, 4 and 5: heal at the start of Refill, +ATK for a replacement until it kills, and a Vestigio about to be destroyed is saved once per activation (destroyed at Refill, lockout until fewer than 5 are in play). New MatchLog event `creature_saved`. Suit counts are fixed at Evaluate on the player. No data changed, no hash changed. | `2026-11-17-vestigio-synergy` |
 | 2026-11-17 | engine | Frattura 3, 4 and 5: +ATK against a target whose DEF is above the attacker's ATK as the cycle started; on a kill the spill multiplier and the DEF spill uses change. Two new modifier kinds in the MatchLog: none for the bonus (`atk_bonus`), `spill_def_permille` for the DEF share. No data changed, no hash changed. | `2026-11-17-frattura-synergy` |
 | 2026-11-17 | engine | Suit synergies: Evaluate fixes the active tiers of each side, and Vincolo 3, 4 and 5 add ATK to blows (`atk_bonus` modifiers, `ability_id` like `VINCOLO_3`). The MatchLog schema accepts both. No data changed, so no hash changed. | `2026-11-17-synergies-engine` |

@@ -11,11 +11,6 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 ## Fix before use
 
 
-### `2026-11-14-suit-synergies-not-in-engine`: Spira synergies are not applied
-
-Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures. The engine applies Vincolo, Frattura and Vestigio (`2026-11-17-synergies-engine`, `2026-11-17-frattura-synergy`, `2026-11-17-vestigio-synergy`). Spira 3, 4 and 5 count, multiply and force Evolutions, and no Evolution is live, so they change nothing (`2026-11-14-spira-inert-without-evolutions`). A board with three or more Spira creatures is played as the rulebook would play it without Evolutions. Close this issue together with that one when an Evolution is restored.
-
-
 ## Gaps
 
 
@@ -27,11 +22,6 @@ Not decided yet: whether `FACTION_SWAP` is the main format; how the faction of g
 ### `2026-11-07-spell-equipment-hooks-no-data`: Spell and equipment hooks do nothing
 
 `CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves, discards and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`, `2026-11-08-equipment-discard-after-use`) and `RefillTest` covers that flow with a recording hook. When cards exist: replace the no-op default and test what the effects do.
-
-
-### `2026-11-14-spira-inert-without-evolutions`: Spira synergies do nothing while every Evolution is parked
-
-Spira 3 counts triggered Evolutions, Spira 4 multiplies their values (`E19`) and Spira 5 forces them (`E17`). With no live Evolution (`2026-11-14-mvp-ability-set`) all three tiers are inert, so Spira decks only get hand value. The synergies stay live because they are ruleset 7.10. Restore at least one Evolution before Spira is balanced or tested.
 
 
 ### `2026-11-14-vincolo-no-themed-ability`: No live ability carries Vincolo's theme

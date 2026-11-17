@@ -25,6 +25,9 @@ import quorma.gameengine.data.Value;
  *                    {@link Value.BoolV}
  * @param maxStacks   {@code max_stacks}, empty when the effect has no limit
  * @param stackKey    {@code stack_key}, empty when the expansion does not stack
+ * @param evolution   true for an expansion of an Evolution: {@code triggerId} is then the real trigger inside
+ *                    {@code T_EVO}, and the ability fires at most {@code maxTriggers} times per creature
+ * @param maxTriggers how many times an Evolution may fire per creature (1), unused when not an evolution
  */
 public record BoundExpansion(
         String abilityId,
@@ -38,7 +41,9 @@ public record BoundExpansion(
         ResClass cls,
         Map<String, Value> effectParams,
         OptionalInt maxStacks,
-        Optional<String> stackKey) {
+        Optional<String> stackKey,
+        boolean evolution,
+        int maxTriggers) {
 
     public BoundExpansion {
         Objects.requireNonNull(abilityId, "abilityId");
@@ -53,6 +58,27 @@ public record BoundExpansion(
         triggerParams = Collections.unmodifiableMap(new LinkedHashMap<>(Objects.requireNonNull(triggerParams, "triggerParams")));
         targetParams = Collections.unmodifiableMap(new LinkedHashMap<>(Objects.requireNonNull(targetParams, "targetParams")));
         conditions = List.copyOf(Objects.requireNonNull(conditions, "conditions"));
+    }
+
+    /** The same expansion marked as an Evolution that fires at most {@code maxTriggers} times per creature. */
+    public BoundExpansion asEvolution(int maxTriggers) {
+        return new BoundExpansion(abilityId, triggerId, triggerParams, effectId, targetId, targetParams, conditions,
+                duration, cls, effectParams, maxStacks, stackKey, true, maxTriggers);
+    }
+
+    /**
+     * The same expansion with every integer effect param multiplied by {@code factorPermille} / 1000, floored
+     * (effect E19, Spira 4). 1000 returns this.
+     */
+    public BoundExpansion scaled(int factorPermille) {
+        if (factorPermille == 1000) {
+            return this;
+        }
+        Map<String, Value> scaled = new LinkedHashMap<>();
+        effectParams.forEach((name, value) -> scaled.put(name, value instanceof Value.IntV n
+                ? new Value.IntV(Math.floorDiv(n.v() * factorPermille, 1000L)) : value));
+        return new BoundExpansion(abilityId, triggerId, triggerParams, effectId, targetId, targetParams, conditions,
+                duration, cls, scaled, maxStacks, stackKey, evolution, maxTriggers);
     }
 
     /** An integer effect param. */

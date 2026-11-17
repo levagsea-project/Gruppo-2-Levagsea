@@ -1,1 +1,50 @@
-{}
+{
+  "EVO_CRESCITA": {
+    "name": "Crescita",
+    "balance_ref": "EVO_CRESCITA",
+    "description": "Evoluzione — Quando questa creatura sopravvive a danno da combattimento: guadagna +{bonus_pct}% del suo ATK base in modo permanente.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T12",
+          "max_triggers": 1
+        },
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.EVO_CRESCITA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "EVO_TRINCEA": {
+    "name": "Trincea",
+    "balance_ref": "EVO_TRINCEA",
+    "description": "Evoluzione — Quando questa creatura è dichiarata bersaglio di un attacco: guadagna +{bonus_pct}% della sua DEF base in modo permanente.",
+    "expands_to": [
+      {
+        "trigger_id": "T_EVO",
+        "trigger_params": {
+          "trigger_id": "T9",
+          "max_triggers": 1
+        },
+        "effect_id": "E2",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.EVO_TRINCEA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  }
+}

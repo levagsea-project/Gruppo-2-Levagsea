@@ -79,6 +79,7 @@ class RulesetLoaderTest {
         write(dir, "keyword.json", "{}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
         write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{\"globals\":{\"mitigation_floor_permille\":650}}");
         assertEquals(Optional.of(new Value.IntV(650)), RulesetLoader.fromDirectory(dir).global("mitigation_floor_permille"));
 
@@ -91,6 +92,7 @@ class RulesetLoaderTest {
         write(dir, "keyword.json", "{\"K_X\":{\"name\":\"X\",\"class\":\"I\",\"expands_to\":[" + expansion + "]}}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
         write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{}");
     }
 
@@ -118,6 +120,7 @@ class RulesetLoaderTest {
         write(dir, "keyword.json", "{}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
         write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{\"a\":1,\"a\":2}");
         assertThrows(RulesetException.class, () -> RulesetLoader.fromDirectory(dir));
     }
@@ -128,6 +131,7 @@ class RulesetLoaderTest {
         write(dir, "keyword.json", "{\"K_X\":{\"name\":\"X\",\"class\":\"C\"}}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
         write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{}");
         RulesetException e = assertThrows(RulesetException.class, () -> RulesetLoader.fromDirectory(dir));
         assertTrue(e.getMessage().contains("keyword.json#K_X"), e.getMessage());

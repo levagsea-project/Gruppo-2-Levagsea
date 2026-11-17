@@ -24,6 +24,7 @@ public final class Creature {
     private int atkBonus;
     private int untilKillAtk;
     private boolean condemned;
+    private final Map<String, Integer> evolutionTriggers = new LinkedHashMap<>();
     private final Map<String, Integer> stacks = new LinkedHashMap<>();
     private boolean destroyed;
 
@@ -149,6 +150,28 @@ public final class Creature {
         if (currentDef <= 0) {
             destroyed = true;
         }
+    }
+
+    /** Raises DEF by {@code amount} without a cap: not a heal, the base DEF stays what it was (effect E2). */
+    public void addDef(int amount) {
+        currentDef = Math.addExact(currentDef, amount);
+    }
+
+    /** False for an Evolution that already fired {@code maxTriggers} times on this creature; true for anything else. */
+    public boolean canTrigger(BoundExpansion expansion) {
+        return !expansion.evolution() || evolutionTriggers.getOrDefault(expansion.abilityId(), 0) < expansion.maxTriggers();
+    }
+
+    /** Records that an Evolution fired on this creature; other expansions are not counted. */
+    public void markTriggered(BoundExpansion expansion) {
+        if (expansion.evolution()) {
+            evolutionTriggers.merge(expansion.abilityId(), 1, Integer::sum);
+        }
+    }
+
+    /** How many of this creature's Evolutions have fired (Spira 3 counts them). */
+    public int evolutionsTriggered() {
+        return evolutionTriggers.size();
     }
 
     /** Raises DEF by {@code amount}, never above the base DEF. A destroyed creature is not healed. */

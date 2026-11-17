@@ -6,10 +6,8 @@
       "K_SOSTEGNO",
       "K_RIGENERANTE",
       "K_FLESSIBILE",
-      "EVO_CRESCITA",
       "EVO_SOPRAVVISSUTO",
       "EVO_TEMPRATO",
-      "EVO_TRINCEA",
       "EVO_MATURAZIONE",
       "EVO_MIMETICO",
       "EVO_SFONDAMENTO",
@@ -23,7 +21,6 @@
       "EVO_FURIA",
       "EVO_CAPITANO",
       "K_SOSTEGNO",
-      "EVO_TRINCEA",
       "EVO_SOPRAVVISSUTO",
       "EVO_TEMPRATO"
     ],
@@ -37,7 +34,6 @@
       "EVO_CAPITANO",
       "EVO_PREDATORE",
       "EVO_SACCHEGGIO",
-      "EVO_CRESCITA",
       "EVO_TEMPRATO"
     ],
     "4": [

@@ -333,7 +333,88 @@
     "Traboccante si cumula con Frattura 4 e 5 (fattore 1200 x 1200 = 1440, con la DEF all'80% o al 50%). Simulare le build Frattura con Traboccante: se lo spill accorcia le partite sotto i 7 turni, abbassare il fattore di Traboccante invece di renderlo non cumulativo.",
     "Camaleonte (E55) non conta come altro seme per sinergie e condizioni C4/C11. Confermato dal vocabolario; verificare in simulazione se Camaleonte e' troppo debole per le build un-seme."
   ],
-  "evolutions": {},
+  "evolutions": {
+    "EVO_CRESCITA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 150
+      },
+      "display": {
+        "bonus_pct": 15
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_TRINCEA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    }
+  },
   "suit_themes": {
     "_note": "Temi per seme usati dalla generazione del pool (pool_generation) e dal lint del validatore. Un tema e' un tag, non un vincolo.",
     "Vincolo": [

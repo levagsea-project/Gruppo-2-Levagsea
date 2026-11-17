@@ -89,11 +89,13 @@ public final class TurnResolver {
         Evaluation evaluation = evaluate(state);
         opening.add(new HandEvaluated(turn, Side.A, evaluation.a(), evaluation.multiplierA()));
         opening.add(new HandEvaluated(turn, Side.B, evaluation.b(), evaluation.multiplierB()));
+        forceEvolutions(state, opening);
 
         List<Attack> attacks = declare(state, evaluation);
         for (Attack attack : attacks) {
             opening.add(new TargetDeclared(attack));
         }
+        declareTriggers(state, attacks, opening);
         List<MatchEvent> cycle1 = new ArrayList<>();
         cycle1(state, evaluation, attacks, cycle1);
         List<MatchEvent> cycle2 = new ArrayList<>();
@@ -193,6 +195,7 @@ public final class TurnResolver {
         }
 
         List<Kill> kills = new ArrayList<>();
+        List<Survivor> survivors = new ArrayList<>();
         for (Blow blow : blows) {
             boolean mutualKill = blow.strike().killed() && blows.stream().anyMatch(other ->
                     other != blow && other.strike().killed()
@@ -216,9 +219,12 @@ public final class TurnResolver {
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), blow.target().card().id()));
                 kills.add(new Kill(blow.attack().attacker(), blow.attacker()));
                 blow.attacker().endUntilKill();
+            } else if (strike.damage() > 0 && !blow.target().destroyed()) {
+                survivors.add(new Survivor(targetRef.side(), blow.target()));
             }
         }
         triggerKills(state, kills, log);
+        triggerSurvivors(state, survivors, log);
     }
 
     /**
@@ -263,6 +269,8 @@ public final class TurnResolver {
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), target.card().id()));
                 attacker.endUntilKill();
                 triggerKills(state, List.of(new Kill(attack.attacker(), attacker)), log);
+            } else if (strike.damage() > 0 && !target.destroyed()) {
+                triggerSurvivors(state, List.of(new Survivor(targetRef.side(), target)), log);
             }
         }
     }
@@ -305,9 +313,84 @@ public final class TurnResolver {
                     .sorted(Comparator.comparingInt(kill -> kill.killer().lane()))
                     .forEach(kill -> {
                         for (BoundExpansion ability : kill.killer().abilities("T19")) {
-                            stack.push(side, kill.killer(), ability);
+                            pushTriggered(stack, state, side, kill.killer(), ability);
                         }
                     });
+        }
+        stack.resolveAll();
+    }
+
+    /** A creature that took combat damage and is still in play. */
+    private record Survivor(Side side, Creature creature) {}
+
+    /** Pushes a triggered ability; an Evolution carries the factor of the creature's E19 (Spira 4). */
+    private static void pushTriggered(EffectStack stack, MatchState state, Side side, Creature source,
+            BoundExpansion e) {
+        stack.push(side, source, source, e, e.triggerId(),
+                e.evolution() ? StaticEffects.evolutionScale(state, side, source) : 1000);
+    }
+
+    /**
+     * T12 "survives combat damage" (Crescita): pushes the abilities of the creatures that took damage and stayed
+     * in play, in the order of ruleset 4.3, then resolves the stack.
+     */
+    private static void triggerSurvivors(MatchState state, List<Survivor> survivors, List<MatchEvent> log) {
+        EffectStack stack = new EffectStack(log);
+        for (Side side : prioritySides(state)) {
+            survivors.stream()
+                    .filter(s -> s.side() == side)
+                    .sorted(Comparator.comparingInt(s -> s.creature().lane()))
+                    .forEach(s -> {
+                        for (BoundExpansion ability : s.creature().abilities("T12")) {
+                            pushTriggered(stack, state, side, s.creature(), ability);
+                        }
+                    });
+        }
+        stack.resolveAll();
+    }
+
+    /**
+     * T9 "declared as the target of an attack" (Trincea), after Declare: the targets' abilities, in attack order,
+     * then the stack resolves.
+     */
+    public void declareTriggers(MatchState state, List<Attack> attacks, List<MatchEvent> log) {
+        EffectStack stack = new EffectStack(log);
+        for (Attack attack : attacks) {
+            if (attack.target().isEmpty()) {
+                continue;
+            }
+            Target target = attack.target().get();
+            Creature creature = state.player(target.side()).creatureAt(target.lane()).orElse(null);
+            if (creature == null) {
+                continue;
+            }
+            for (BoundExpansion ability : creature.abilities("T9")) {
+                pushTriggered(stack, state, target.side(), creature, ability);
+            }
+        }
+        stack.resolveAll();
+    }
+
+    /**
+     * T5 with E17 (Spira 5), after Evaluate: the Evolutions of the player's living creatures of the suit fire now, once,
+     * whatever their own trigger. An Evolution that already fired does nothing. The log shows T5 as the trigger.
+     */
+    public void forceEvolutions(MatchState state, List<MatchEvent> log) {
+        EffectStack stack = new EffectStack(log);
+        for (Side side : prioritySides(state)) {
+            for (BoundExpansion force : state.player(side).playerAbilities()) {
+                if (!force.triggerId().equals("T5") || !force.effectId().equals("E17")) {
+                    continue;
+                }
+                for (Creature creature : targetsOf(state, side, force, null)) {
+                    for (BoundExpansion evolution : creature.abilities()) {
+                        if (evolution.evolution()) {
+                            stack.push(side, creature, creature, evolution, "T5",
+                                    StaticEffects.evolutionScale(state, side, creature));
+                        }
+                    }
+                }
+            }
         }
         stack.resolveAll();
     }

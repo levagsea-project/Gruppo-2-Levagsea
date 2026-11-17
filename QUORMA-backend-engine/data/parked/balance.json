@@ -329,46 +329,6 @@
     }
   },
   "evolutions": {
-    "EVO_CRESCITA": {
-      "allowed_ranks": [
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "J",
-        "Q",
-        "K",
-        "A"
-      ],
-      "max_built_in": 52,
-      "stat_cost_pct": 5,
-      "params": {
-        "permille": 150
-      },
-      "display": {
-        "bonus_pct": 15
-      },
-      "sim": {
-        "status": "untested",
-        "ruleset_version": "1.0-alpha",
-        "date": null,
-        "five_build_matrix": null,
-        "cross_faction": null
-      },
-      "themes": [
-        "growth"
-      ],
-      "cap_class": "open",
-      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
-      "tier_scaled": [
-        "permille"
-      ]
-    },
     "EVO_SOPRAVVISSUTO": {
       "allowed_ranks": [
         "2",
@@ -609,46 +569,6 @@
       },
       "themes": [
         "growth"
-      ],
-      "cap_class": "open",
-      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
-      "tier_scaled": [
-        "permille"
-      ]
-    },
-    "EVO_TRINCEA": {
-      "allowed_ranks": [
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "J",
-        "Q",
-        "K",
-        "A"
-      ],
-      "max_built_in": 52,
-      "stat_cost_pct": 5,
-      "params": {
-        "permille": 200
-      },
-      "display": {
-        "bonus_pct": 20
-      },
-      "sim": {
-        "status": "untested",
-        "ruleset_version": "1.0-alpha",
-        "date": null,
-        "five_build_matrix": null,
-        "cross_faction": null
-      },
-      "themes": [
-        "persistence"
       ],
       "cap_class": "open",
       "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",

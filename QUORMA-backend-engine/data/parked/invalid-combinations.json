@@ -20,16 +20,10 @@
       "T8": [
         "T"
       ],
-      "T9": [
-        "T"
-      ],
       "T10": [
         "T"
       ],
       "T11": [
-        "T"
-      ],
-      "T12": [
         "T"
       ],
       "T13": [
@@ -86,9 +80,6 @@
       "T33": [
         "T"
       ],
-      "T_EVO": [
-        "T"
-      ],
       "T35": [
         "T"
       ],
@@ -101,16 +92,6 @@
     }
   },
   "combination_rules": [
-    {
-      "rule_id": "IC001",
-      "trigger_id": [
-        "T_EVO",
-        "T15"
-      ],
-      "effect_id": "E17",
-      "target_id": null,
-      "reason": "Un'Evoluzione che innesca Evoluzioni crea un ciclo. Usare un trigger diverso."
-    },
     {
       "rule_id": "IC002",
       "trigger_id": "T30",

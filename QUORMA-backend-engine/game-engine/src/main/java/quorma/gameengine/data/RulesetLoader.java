@@ -21,7 +21,7 @@ import quorma.gameengine.json.CanonicalJson;
  */
 public final class RulesetLoader {
 
-    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json", "synergies.json");
+    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json", "synergies.json", "evolutions.json");
 
     /** The files of the rule pack hash, in hash order (decision {@code 2026-11-14-match-log-schema}). */
     public static final List<String> HASHED_FILES = List.of(
@@ -100,7 +100,8 @@ public final class RulesetLoader {
                 keywords(roots.get("keyword.json")),
                 subfactions(roots.get("subfactions.json")),
                 roots.get("balance.json"),
-                synergies(roots.get("synergies.json")));
+                synergies(roots.get("synergies.json")),
+                evolutions(roots.get("evolutions.json")));
     }
 
     // ---- vocab ----
@@ -207,6 +208,29 @@ public final class RulesetLoader {
                 List.copyOf(conditions),
                 cls,
                 common);
+    }
+
+    // ---- evolutions ----
+
+    /** Reads {@code evolutions.json}: one entry per Evolution, in file order. Keys starting with {@code _} are notes. */
+    private static Map<String, EvolutionDef> evolutions(Value.MapV root) {
+        Map<String, EvolutionDef> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> e : root.fields().entrySet()) {
+            if (e.getKey().startsWith("_")) {
+                continue;
+            }
+            String path = "evolutions.json#" + e.getKey();
+            Value.MapV evo = asMap(e.getValue(), path);
+            List<ExpansionDef> expansions = new ArrayList<>();
+            List<Value> raw = asList(require(evo, "expands_to", path), path + ".expands_to");
+            for (int i = 0; i < raw.size(); i++) {
+                expansions.add(expansion(asMap(raw.get(i), path + ".expands_to[" + i + "]"),
+                        path + ".expands_to[" + i + "]"));
+            }
+            out.put(e.getKey(), new EvolutionDef(e.getKey(), optString(evo, "name"), optString(evo, "balance_ref"),
+                    optString(evo, "description"), expansions));
+        }
+        return java.util.Collections.unmodifiableMap(out);
     }
 
     // ---- synergies ----

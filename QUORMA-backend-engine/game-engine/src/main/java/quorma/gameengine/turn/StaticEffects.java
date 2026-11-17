@@ -47,6 +47,11 @@ final class StaticEffects {
                     continue;
                 }
                 int amount = e.intParam("amount");
+                if (e.stringParam("scale_by").isPresent()) {
+                    // own_evolutions_triggered: once for each Evolution that has fired on a living creature of the player
+                    amount = Math.multiplyExact(amount, state.player(side).creatures().stream()
+                            .filter(c -> !c.destroyed()).mapToInt(Creature::evolutionsTriggered).sum());
+                }
                 if (amount != 0 && conditionsHold(e, state, evaluation, side, source, true, target, start)
                         && appliesTo(e, state, evaluation, side, source, receiver)) {
                     out.add(new Modifier(CreatureRef.of(side, source), e.abilityId(), "E1", Modifier.Kind.ATK_BONUS, amount));
@@ -54,6 +59,22 @@ final class StaticEffects {
             }
         }
         return out;
+    }
+
+    /**
+     * The factor, per mille, by which the numbers of the Evolutions of {@code creature} are multiplied (effect E19,
+     * static): the product of its E19 whose conditions hold, each step floored. 1000 if it has none.
+     */
+    static int evolutionScale(MatchState state, Side side, Creature creature) {
+        long factor = 1000;
+        if (!creature.destroyed()) {
+            for (BoundExpansion e : creature.abilities("T0")) {
+                if (e.effectId().equals("E19") && conditionsHold(e, state, null, side, creature, true, null, null)) {
+                    factor = factor * e.intParam("factor") / 1000;
+                }
+            }
+        }
+        return Math.toIntExact(factor);
     }
 
     /**

@@ -278,6 +278,38 @@
       ],
       "duration_mode": "sustained_only"
     },
+      "E2": {
+        "name": "Aggiungi DEF attuale [AMOUNT]",
+        "class": [
+          "C",
+          "T",
+          "I"
+        ],
+        "description": "Aggiunge params.amount alla DEF attuale del bersaglio. Non è una cura: non aumenta la DEF massima.",
+        "params": {
+          "mode": {
+            "type": "enum",
+            "values": [
+              "flat",
+              "pct_base_def"
+            ],
+            "default": "flat"
+          },
+          "amount": {
+            "type": "int",
+            "optional": true
+          },
+          "permille": {
+            "type": "int",
+            "optional": true,
+            "description": "Per-mille della DEF base del bersaglio (200 = +20%)."
+          }
+        },
+        "target_kind": [
+          "creature"
+        ],
+        "duration_mode": "sustained_only"
+      },
     "E6": {
       "name": "Cura DEF [AMOUNT]",
       "class": [
@@ -564,6 +596,26 @@
       },
       "provides": []
     },
+      "T9": {
+        "name": "Quando è bersaglio di un attacco dichiarato",
+        "class": "T",
+        "uses_stack": true,
+        "description": "Durante la fase di Dichiarazione, quando la creatura è scelta come bersaglio.",
+        "provides": [
+          "triggerer"
+        ]
+      },
+      "T12": {
+        "name": "Quando sopravvive a danno da combattimento",
+        "class": "T",
+        "uses_stack": true,
+        "description": "Quando la creatura subisce danno da combattimento e rimane in gioco.",
+        "provides": [
+          "damaged",
+          "damager",
+          "triggerer"
+        ]
+      },
     "T19": {
       "name": "Quando uccide una creatura",
       "class": "T",
@@ -608,7 +660,28 @@
         "declared_target"
       ],
       "description": "Sostituzione: l'attaccante ha ucciso il bersaglio e sta per infliggere spill al giocatore avversario. Permette di modificare moltiplicatore della mano, DEF considerata o altri valori dello spill di quell'attacco. Non usa la pila."
-    }
+    },
+      "T_EVO": {
+        "name": "Evoluzione [TRIGGER]",
+        "class": "T",
+        "uses_stack": true,
+        "description": "Wrapper: il trigger indicato da params.trigger_id conta come trigger di Evoluzione per le sinergie Spira. Un'Evoluzione si innesca al massimo UNA volta per istanza di carta in gioco (max_triggers = 1, vedi evolution_rules). Valori ammessi per params.trigger_id: qualsiasi trigger di classe T.",
+        "params": {
+          "trigger_id": {
+            "type": "trigger_id"
+          },
+          "trigger_params": {
+            "type": "object",
+            "optional": true
+          },
+          "max_triggers": {
+            "type": "int",
+            "const": 1,
+            "description": "Fisso a 1 per regola."
+          }
+        },
+        "provides": "inherit:params.trigger_id"
+      }
   },
   "targets": {
     "S1": {

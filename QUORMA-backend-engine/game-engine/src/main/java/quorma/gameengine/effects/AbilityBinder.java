@@ -10,9 +10,11 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import quorma.gameengine.data.ConditionDef;
+import quorma.gameengine.data.EvolutionDef;
 import quorma.gameengine.data.ExpansionDef;
 import quorma.gameengine.data.KeywordDef;
 import quorma.gameengine.data.ParamSpec;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.data.SynergyDef;
 import quorma.gameengine.data.Value;
@@ -40,7 +42,8 @@ public final class AbilityBinder {
         List<Ability> abilities = card.abilities();
         for (int i = 0; i < abilities.size(); i++) {
             switch (abilities.get(i)) {
-                case AbilityRef ref -> out.addAll(bindKeyword(card.id(), ref));
+                case AbilityRef ref -> out.addAll(ref.id().startsWith("EVO_")
+                        ? bindEvolution(card.id(), ref) : bindKeyword(card.id(), ref));
                 case InlineEffect inline -> out.addAll(bindInline(card.id(), inlineId(i + 1), inline));
             }
         }
@@ -74,6 +77,41 @@ public final class AbilityBinder {
             out.add(bound);
         }
         return out;
+    }
+
+    /**
+     * An Evolution on a card. Its expansions use the wrapper trigger T_EVO: the bound expansion has the real trigger
+     * ({@code trigger_params.trigger_id}) and is marked as an Evolution, which fires at most {@code max_triggers}
+     * (1) times per creature. Numbers resolve like a keyword's ({@code $tune.EVO_X.name}, the card's params first).
+     */
+    private List<BoundExpansion> bindEvolution(String cardId, AbilityRef ref) {
+        String where = "card " + cardId + " " + ref.id();
+        EvolutionDef evolution = rules.evolutions().get(ref.id());
+        if (evolution == null) {
+            throw new AbilityException(where + ": unknown ability (not a live keyword or evolution)");
+        }
+        KeywordDef asKeyword = new KeywordDef(evolution.id(), evolution.name(), ResClass.T, evolution.balanceRef(),
+                Map.of(), evolution.description(), evolution.expandsTo());
+        Map<String, Value> params = cardParams(where, asKeyword, tierScaled(asKeyword), ref.params());
+
+        List<BoundExpansion> out = new ArrayList<>();
+        for (ExpansionDef expansion : evolution.expandsTo()) {
+            if (!"T_EVO".equals(expansion.triggerId()) || !(expansion.triggerParams().get("trigger_id") instanceof Value.StrV inner)) {
+                throw new AbilityException(where + ": an Evolution must use T_EVO with a trigger_id");
+            }
+            Map<String, Value> innerParams = expansion.triggerParams().get("trigger_params") instanceof Value.MapV m
+                    ? m.fields() : Map.of();
+            int maxTriggers = expansion.triggerParams().get("max_triggers") instanceof Value.IntV n
+                    ? Math.toIntExact(n.v()) : 1;
+            ExpansionDef unwrapped = new ExpansionDef(inner.v(), innerParams, expansion.effectId(),
+                    expansion.effectParams(), expansion.targetId(), expansion.targetParams(), expansion.duration(),
+                    expansion.conditions(), expansion.cls(), expansion.common());
+            BoundExpansion bound = bindExpansion(where, evolution.id(), unwrapped, params, ref.params(),
+                    inPlayConditions(unwrapped)).asEvolution(maxTriggers);
+            EffectRegistry.check(bound, where);
+            out.add(bound);
+        }
+        return List.copyOf(out);
     }
 
     private List<BoundExpansion> bindKeyword(String cardId, AbilityRef ref) {
@@ -120,12 +158,14 @@ public final class AbilityBinder {
      */
     private Set<String> tierScaled(KeywordDef keyword) {
         Set<String> out = new LinkedHashSet<>();
-        if (rules.balance().get("keywords") instanceof Value.MapV entries
-                && entries.get(keyword.balanceRef()) instanceof Value.MapV entry
-                && entry.get("tier_scaled") instanceof Value.ListV names) {
-            for (Value name : names.items()) {
-                if (name instanceof Value.StrV s) {
-                    out.add(s.v());
+        for (String section : new String[] {"keywords", "evolutions"}) {
+            if (rules.balance().get(section) instanceof Value.MapV entries
+                    && entries.get(keyword.balanceRef()) instanceof Value.MapV entry
+                    && entry.get("tier_scaled") instanceof Value.ListV names) {
+                for (Value name : names.items()) {
+                    if (name instanceof Value.StrV s) {
+                        out.add(s.v());
+                    }
                 }
             }
         }
@@ -222,7 +262,7 @@ public final class AbilityBinder {
             stackKey = Optional.of(abilityId); // vocab.common_params.stack_key: defaults to the source's id
         }
         return new BoundExpansion(abilityId, expansion.triggerId(), expansion.triggerParams(), expansion.effectId(), expansion.targetId(),
-                expansion.targetParams(), conditions, expansion.duration(), expansion.cls(), effectParams, maxStacks, stackKey);
+                expansion.targetParams(), conditions, expansion.duration(), expansion.cls(), effectParams, maxStacks, stackKey, false, 1);
     }
 
     /** Resolves a param; an object becomes one param per field, named {@code parent.field} (E12 {@code lockout}). */

@@ -136,7 +136,7 @@ class AbilityBinderTest {
     void parkedOrUnknownAbilitiesAreRefused() {
         String msg = refused(card(ref("K_LETALE")));
         assertTrue(msg.contains("card RU-VIN-A K_LETALE: unknown ability"), msg);
-        assertTrue(refused(card(ref("EVO_CRESCITA"))).contains("unknown ability"), "evolutions are not loaded");
+        assertTrue(refused(card(ref("EVO_FURIA"))).contains("unknown ability"), "a parked evolution is not loaded");
     }
 
     @Test
@@ -202,7 +202,7 @@ class AbilityBinderTest {
                 .contains("card RU-VIN-A INLINE_1: effect E26 is not implemented"));
         assertTrue(refusedInline(expansion("T0", "E1", ResClass.C, "D_Permanente", "mode", "pct_base_atk", "permille", 100))
                 .contains("effect E1 with trigger T0, class C and duration D_Permanente is not implemented by the engine yet "
-                        + "(supported: T0/C/D_FincheSorgenteInGioco, T19/T/D_Permanente, T29/T/D_FinoAUccisione)"));
+                        + "(supported: T0/C/D_FincheSorgenteInGioco, T12/T/D_Permanente, T19/T/D_Permanente, T29/T/D_FinoAUccisione)"));
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.T, "D_Permanente", "mode", "reduction_pct", "pct", 10))
                 .contains("class T"), "the class must match the shape");
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.C, "D_Permanente", "mode", "reduction_pct"))
@@ -248,10 +248,10 @@ class AbilityBinderTest {
         String msg = refusedKeyword(destroy);
         assertTrue(msg.contains("card RU-VIN-A K_TEST: effect E26 is not implemented"), msg);
 
-        ExpansionDef otherTrigger = new ExpansionDef("T5", Map.of(), "E1",
+        ExpansionDef otherTrigger = new ExpansionDef("T13", Map.of(), "E1",
                 Map.of("mode", new Value.StrV("pct_base_atk"), "permille", new Value.IntV(100)),
                 "S1", Map.of(), "D_Permanente", List.of(), ResClass.T);
-        assertTrue(refusedKeyword(otherTrigger).contains("trigger T5 is not implemented"));
+        assertTrue(refusedKeyword(otherTrigger).contains("trigger T13 is not implemented"));
 
         ExpansionDef otherMode = new ExpansionDef("T0", Map.of(), "E28",
                 Map.of("mode", new Value.StrV("permille"), "permille", new Value.IntV(800)),
@@ -275,7 +275,7 @@ class AbilityBinderTest {
     /** Binds a card with keyword {@code K_TEST}, made of one expansion over the real ruleset; returns the refusal. */
     private static String refusedKeyword(ExpansionDef expansion) {
         KeywordDef k = new KeywordDef("K_TEST", "Test", expansion.cls(), "K_TEST", Map.of(), "", List.of(expansion));
-        Ruleset rules = new Ruleset(RULES.vocab(), Map.of("K_TEST", k), RULES.subfactions(), RULES.balance(), RULES.synergies());
+        Ruleset rules = new Ruleset(RULES.vocab(), Map.of("K_TEST", k), RULES.subfactions(), RULES.balance(), RULES.synergies(), RULES.evolutions());
         CreatureCard card = card(new AbilityRef("K_TEST"));
         return assertThrows(AbilityException.class, () -> new AbilityBinder(rules).bind(card)).getMessage();
     }
