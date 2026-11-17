@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from 're
 import { Link, useNavigate } from 'react-router'
 import {
   AuthError,
+  DEMO_AUTH,
   login,
   register,
   saveSession,
@@ -81,6 +82,12 @@ export default function AuthDialog({ mode }: { mode: AuthMode }) {
             <Link to="/accedi" replace preventScrollReset className="l-scheda" aria-current={signup ? undefined : 'page'}>Accedi</Link>
             <Link to="/registrati" replace preventScrollReset className="l-scheda" aria-current={signup ? 'page' : undefined}>Registrati</Link>
           </nav>
+
+          {DEMO_AUTH && (
+            <p className="l-campo__hint" role="note">
+              Modalità demo attiva: va bene qualsiasi nome e password, il backend non viene chiamato.
+            </p>
+          )}
 
           <form className="l-form" noValidate onSubmit={onSubmit}>
             <Field

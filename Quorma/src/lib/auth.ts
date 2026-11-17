@@ -69,8 +69,26 @@ async function post(path: string, body: unknown): Promise<AuthResponse> {
   throw new AuthError('Qualcosa è andato storto. Riprova.')
 }
 
-export const login = (d: LoginData) => post('/auth/login', d)
-export const register = (d: RegisterData) => post('/auth/register', d)
+// ---------- Accesso demo (senza backend) ----------
+// Con VITE_AUTH_DEMO=true nel file .env, accesso e registrazione accettano qualsiasi nome e password
+// senza chiamare il backend: serve a chi lavora sul frontend senza Docker.
+// Funziona solo con "npm run dev": nella build di produzione import.meta.env.DEV è false e il codice sparisce.
+export const DEMO_AUTH = import.meta.env.DEV && import.meta.env.VITE_AUTH_DEMO === 'true'
+
+function demoResponse(username: string): AuthResponse {
+  return {
+    token: 'demo',
+    tokenType: 'Bearer',
+    expiresInSeconds: 7 * 24 * 3600,
+    userId: '00000000-0000-0000-0000-000000000000',
+    username: username.trim() || 'demo',
+    role: 'PLAYER',
+  }
+}
+
+export const login = (d: LoginData) => (DEMO_AUTH ? Promise.resolve(demoResponse(d.username)) : post('/auth/login', d))
+export const register = (d: RegisterData) =>
+  DEMO_AUTH ? Promise.resolve(demoResponse(d.username)) : post('/auth/register', d)
 
 // ---------- Sessione ----------
 // "Ricordami" = localStorage (resta dopo la chiusura del browser), altrimenti sessionStorage.
