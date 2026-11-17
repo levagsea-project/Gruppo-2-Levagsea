@@ -27,9 +27,11 @@ public final class EffectRegistry {
             new Shape("T0", "E55", ResClass.C, "D_Permanente"),  // Camaleonte: counts as any suit for the hand
             new Shape("T0", "E1", ResClass.C, "D_FincheSorgenteInGioco"), // static ATK bonus (suit synergies, cards)
             new Shape("T0", "E34", ResClass.C, "D_FincheSorgenteInGioco"), // the group's creatures count as adjacent
+            new Shape("T0", "E52", ResClass.C, "D_FincheSorgenteInGioco"), // ATK cannot be lowered by effects
             new Shape("T0", "E56", ResClass.C, "D_Permanente"),  // Perforante: ignores part of the target's reductions
             new Shape("T19", "E1", ResClass.T, "D_Permanente"),  // Insaziabile: + share of base ATK on a kill
-            new Shape("T34", "E21", ResClass.R, "D_Istantanea")); // Traboccante: spill multiplier factor
+            new Shape("T34", "E21", ResClass.R, "D_Istantanea"),  // Traboccante: spill multiplier factor
+            new Shape("T34", "E22", ResClass.R, "D_Istantanea")); // spill treats the target's DEF as a share of itself
 
     /** The params of one effect mode: integer params with their range, string params with their one value. */
     private record ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults, Map<String, Set<String>> strings) {
@@ -57,6 +59,8 @@ public final class EffectRegistry {
                             Map.of("amount", new int[] {0, MAX}, "min_damage", new int[] {0, MAX}),
                             Map.of("min_damage", 1))),
             "E55", Map.of("", new ParamRule(Map.of(), Map.of())),
+            "E22", Map.of("", new ParamRule(Map.of("permille", new int[] {0, 1000}), Map.of())),
+            "E52", Map.of("", new ParamRule(Map.of(), Map.of())),
             "E34", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("group", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))),
             "E56", Map.of("", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of())));
 
@@ -65,7 +69,7 @@ public final class EffectRegistry {
     private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco");
 
     /** Conditions the engine evaluates while the creature is in play ({@code StaticEffects}). */
-    private static final Set<String> CONDITIONS = Set.of("C1", "C4", "C11");
+    private static final Set<String> CONDITIONS = Set.of("C1", "C4", "C11", "C22");
 
     /** The filters of target S41 ({@code params.filters}). */
     private static final Set<String> TARGET_FILTERS = Set.of("attacker");

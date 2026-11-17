@@ -20,7 +20,9 @@ public record Modifier(CreatureRef source, String abilityId, String effectId, Ki
         /** Ignores {@code value}% of the target's reductions (Perforante). */
         PIERCE_PCT,
         /** Spill multiplier × {@code value} / 1000 (Traboccante). */
-        SPILL_MULTIPLIER
+        SPILL_MULTIPLIER,
+        /** Spill treats the target's DEF before the blow as {@code value} / 1000 of itself. */
+        SPILL_DEF_PERMILLE
     }
 
     public Modifier {

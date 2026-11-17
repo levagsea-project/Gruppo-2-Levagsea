@@ -72,6 +72,18 @@ public final class Damage {
     }
 
     /**
+     * The DEF that spill uses: the target's DEF before the blow, treated as each share in turn (per mille, each step
+     * floored). With no share it is the DEF itself.
+     */
+    public static int spillDef(int targetDefBeforeBlow, List<Integer> permilles) {
+        long def = targetDefBeforeBlow;
+        for (int permille : permilles) {
+            def = def * permille / 1000;
+        }
+        return Math.toIntExact(def);
+    }
+
+    /**
      * Spill damage to the opponent's life when an attack kills:
      * {@code floor(max(0, damage - targetDefBeforeBlow) * multiplierPermille / 1000)}.
      *

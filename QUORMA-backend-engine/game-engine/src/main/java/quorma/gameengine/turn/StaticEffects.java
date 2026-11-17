@@ -19,7 +19,7 @@ import quorma.gameengine.model.Side;
  * not know where an expansion comes from. Conditions are checked on the board as it is now, so a destroyed creature
  * neither gives nor receives anything (ruleset 7.10.3).
  *
- * <p>Conditions: C1 (the source is an attacker), C4 (its controller has at least {@code level} creatures of
+ * <p>Conditions: C22 (the target's DEF is above the source's ATK, both as the cycle started), C1 (the source is an attacker), C4 (its controller has at least {@code level} creatures of
  * {@code suit}, counted with the destroyed ones, which stay until Refill), C11 (the source is adjacent to a living
  * creature of {@code suit}). Targets: S1 (the source) and S41 (living creatures adjacent to the source, with the
  * filter {@code attacker}). Effects: E1 {@code flat} (+ATK) and E34 (the group's creatures count as adjacent).</p>
@@ -32,7 +32,8 @@ final class StaticEffects {
      * The ATK that static E1 {@code flat} effects add to {@code receiver}, one modifier per effect, sources in lane
      * order and each source's abilities in order. {@code source} of a modifier is the creature that has the effect.
      */
-    static List<Modifier> atkBonuses(MatchState state, Evaluation evaluation, Side side, Creature receiver) {
+    static List<Modifier> atkBonuses(MatchState state, Evaluation evaluation, Side side, Creature receiver,
+            Creature target, CycleStart start) {
         List<Modifier> out = new ArrayList<>();
         if (receiver.destroyed()) {
             return out;
@@ -46,13 +47,21 @@ final class StaticEffects {
                     continue;
                 }
                 int amount = e.intParam("amount");
-                if (amount != 0 && conditionsHold(e, state, evaluation, side, source, true)
+                if (amount != 0 && conditionsHold(e, state, evaluation, side, source, true, target, start)
                         && appliesTo(e, state, evaluation, side, source, receiver)) {
                     out.add(new Modifier(CreatureRef.of(side, source), e.abilityId(), "E1", Modifier.Kind.ATK_BONUS, amount));
                 }
             }
         }
         return out;
+    }
+
+    /**
+     * True if the conditions of {@code e}, an ability of {@code source}, hold now (no blow, so C22 fails). For the
+     * replacement effects of a blow (Frattura 4 and 5).
+     */
+    static boolean holds(BoundExpansion e, MatchState state, Evaluation evaluation, Side side, Creature source) {
+        return conditionsHold(e, state, evaluation, side, source, true, null, null);
     }
 
     /** Whether the effect of {@code source} reaches {@code receiver}. */
@@ -80,13 +89,16 @@ final class StaticEffects {
 
     /**
      * @param useLinks whether E34 may make creatures adjacent; false while checking the conditions of E34 itself
+     * @param target   the creature the source's blow is aimed at, for C22; null when there is no blow, and C22 then fails
+     * @param start    the values taken when the cycle started, for C22
      */
     private static boolean conditionsHold(BoundExpansion e, MatchState state, Evaluation evaluation, Side side,
-            Creature source, boolean useLinks) {
+            Creature source, boolean useLinks, Creature target, CycleStart start) {
         for (ConditionDef c : e.conditions()) {
             boolean holds = switch (c.id()) {
                 case "C1" -> evaluation.hand(side).attackerLanes().contains(source.lane());
                 case "C4" -> count(state, side, suit(c)) >= ((Value.IntV) c.params().get("level")).v();
+                case "C22" -> target != null && start != null && start.def(target) > start.atk(source);
                 case "C11" -> state.player(side).creatures().stream()
                         .anyMatch(o -> o != source && !o.destroyed() && o.card().suit() == suit(c)
                                 && adjacent(state, evaluation, side, source, o, useLinks));
@@ -126,7 +138,7 @@ final class StaticEffects {
         for (BoundExpansion e : x.abilities("T0")) {
             if (e.effectId().equals("E34")
                     && e.stringParam("group").map(g -> g.toUpperCase(Locale.ROOT)).orElse("").equals(y.card().suit().name())
-                    && conditionsHold(e, state, evaluation, side, x, false)) {
+                    && conditionsHold(e, state, evaluation, side, x, false, null, null)) {
                 return true;
             }
         }

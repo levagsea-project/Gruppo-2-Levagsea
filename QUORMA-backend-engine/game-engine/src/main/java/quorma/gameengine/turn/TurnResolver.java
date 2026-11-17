@@ -174,6 +174,7 @@ public final class TurnResolver {
         record Blow(Attack attack, Creature attacker, Creature target, Strike strike) {}
 
         // Every blow is worked out from the state at the start of the cycle, then they all land.
+        CycleStart start = CycleStart.of(state, evaluation);
         List<Blow> blows = new ArrayList<>();
         for (Attack attack : attacks) {
             if (!attack.inCycle1()) continue;
@@ -184,7 +185,7 @@ public final class TurnResolver {
 
             if (attacker == null || target == null) continue;
 
-            Strike strike = Strike.of(rules, state, evaluation, attack.attacker(), attacker, targetRef.side(), target);
+            Strike strike = Strike.of(rules, state, evaluation, start, attack.attacker(), attacker, targetRef.side(), target);
             blows.add(new Blow(attack, attacker, target, strike));
         }
 
@@ -214,6 +215,7 @@ public final class TurnResolver {
      * triggers and the stack resolves before the next attack. Appends events to {@code log}.
      */
     public void cycle2(MatchState state, Evaluation evaluation, List<Attack> attacks, List<MatchEvent> log) {
+        CycleStart start = CycleStart.of(state, evaluation);
         for (Attack attack : attacks) {
             if (attack.inCycle1()) continue;
             Creature attacker = state.player(attack.attacker()).creatureAt(attack.attackerLane()).orElse(null);
@@ -232,7 +234,7 @@ public final class TurnResolver {
                 continue;
             }
 
-            Strike strike = Strike.of(rules, state, evaluation, attack.attacker(), attacker, targetRef.side(), target);
+            Strike strike = Strike.of(rules, state, evaluation, start, attack.attacker(), attacker, targetRef.side(), target);
 
             target.takeDamage(strike.damage());
             if (strike.spill() > 0) {
