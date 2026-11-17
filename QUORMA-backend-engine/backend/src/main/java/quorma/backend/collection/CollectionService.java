@@ -69,14 +69,14 @@ public class CollectionService {
         Map<Faction, Set<UUID>> cardIdsByFaction = new EnumMap<>(Faction.class);
         for (Card card : cards.findAllById(cardIds)) {
             cardById.put(card.getId(), card);
-            cardIdsByFaction.computeIfAbsent(Faction.fromDataName(card.getFaction()), f -> new HashSet<>())
+            cardIdsByFaction.computeIfAbsent(Faction.valueOf(card.getFaction()), f -> new HashSet<>())
                     .add(card.getId());
         }
 
         List<UUID> snapshotIds = new ArrayList<>();
         Map<UUID, CardDefinition> definitionByCardId = new HashMap<>();
         cardIdsByFaction.forEach((faction, ids) ->
-                snapshots.findFirstByFactionOrderByCreatedAtDesc(faction.dataName()).ifPresent(snapshot -> {
+                snapshots.findFirstByFactionOrderByCreatedAtDesc(faction.name()).ifPresent(snapshot -> {
                     snapshotIds.add(snapshot.getId());
                     for (CardDefinition definition : definitions.findBySnapshotIdAndCardIdIn(snapshot.getId(), ids)) {
                         definitionByCardId.put(definition.getCardId(), definition);
@@ -102,10 +102,10 @@ public class CollectionService {
                 instance.getId(),
                 card.getId(),
                 card.getCardCode(),
-                Faction.fromDataName(card.getFaction()).name(),
+                card.getFaction(),
                 card.getKind().name(),
                 definition == null ? null : definition.getName(),
-                card.getSubfaction(),
+                card.getSubfaction() == null ? null : card.getSubfaction().name(),
                 card.getSuit(),
                 card.getRank(),
                 definition == null ? null : definition.getAtk(),

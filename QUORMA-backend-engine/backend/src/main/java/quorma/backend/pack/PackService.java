@@ -86,7 +86,7 @@ public class PackService {
         if (type == null) {
             throw new PackException(HttpStatus.BAD_REQUEST, ErrorCodes.PACK_UNKNOWN_TYPE);
         }
-        String faction = Faction.valueOf(req.faction()).dataName();
+        String faction = req.faction();
 
         // 2. Lock the user row before reading the balance: a concurrent purchase of the same user waits here until
         // this transaction ends, then sees the balance it left.

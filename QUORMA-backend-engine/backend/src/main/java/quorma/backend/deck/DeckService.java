@@ -55,7 +55,7 @@ public class DeckService {
         Map<UUID, Long> counts = mine.isEmpty() ? Map.of() : deckCards.findByDeckIds(mine.stream().map(Deck::getId).toList())
                 .stream().collect(Collectors.groupingBy(c -> c.getId().deckId(), Collectors.counting()));
         return mine.stream()
-                .map(d -> new DeckSummary(d.getId(), d.getName(), Faction.fromDataName(d.getFaction()).name(),
+                .map(d -> new DeckSummary(d.getId(), d.getName(), d.getFaction(),
                         d.getSnapshotId(), d.isDefense(),
                         counts.getOrDefault(d.getId(), 0L).intValue(), d.getUpdatedAt()))
                 .toList();
@@ -80,7 +80,7 @@ public class DeckService {
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, new UUID(0, 0))) {
             throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_NAME_TAKEN);
         }
-        String faction = Faction.valueOf(req.faction()).dataName();
+        String faction = req.faction();
         List<DeckCardResponse> views = validate(ownerId, faction, req.snapshotId(), req.cardInstanceIds());
 
         Deck deck = new Deck(ownerId, name, faction, req.snapshotId(), Instant.now());
@@ -124,7 +124,7 @@ public class DeckService {
     private List<DeckCardResponse> validate(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds) {
         List<DeckError> errors = new ArrayList<>();
         List<DeckCardResponse> views = load(ownerId, faction, snapshotId, instanceIds, errors);
-        errors.addAll(validator.validate(Faction.fromDataName(faction), views));
+        errors.addAll(validator.validate(Faction.valueOf(faction), views));
         if (!errors.isEmpty()) {
             throw new DeckException(HttpStatus.BAD_REQUEST, ErrorCodes.DECK_INVALID, errors);
         }
@@ -199,7 +199,7 @@ public class DeckService {
                 continue;
             }
             result.add(new DeckCardResponse(inst.getId(), card.getId(), card.getCardCode(), card.getKind().name(),
-                    def.getName(), card.getSubfaction(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
+                    def.getName(), card.getSubfaction() == null ? null : card.getSubfaction().name(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
                     def.getAbilities(), card.getDeckSlot()));
         }
         return result;
@@ -227,7 +227,7 @@ public class DeckService {
     }
 
     private DeckResponse toResponse(Deck d, List<DeckCardResponse> cards) {
-        return new DeckResponse(d.getId(), d.getName(), Faction.fromDataName(d.getFaction()).name(), d.getSnapshotId(),
+        return new DeckResponse(d.getId(), d.getName(), d.getFaction(), d.getSnapshotId(),
                 d.isDefense(), d.getVersion(),
                 d.getCreatedAt(), d.getUpdatedAt(), cards);
     }

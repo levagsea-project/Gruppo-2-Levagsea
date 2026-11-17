@@ -81,15 +81,6 @@ The three pack types (`standard`, `advanced`, `elite`) in `application.yml`, wit
 
 `card_definitions.name` holds a single text, so card names cannot follow the player's language like the rest of the interface (`2026-11-11-error-codes-not-text`). Not designed: a table of names per locale, or label keys per card code. To decide with the card pool, and before the card names are final.
 
-### `2026-11-12-faction-ids-db`: Faction and subfaction identifiers are not neutral everywhere yet
-
-The pack and collection endpoints use the `Faction` constant name (`2026-11-12-faction-ids-neutral`). Still to do:
-
-- **Other endpoints.** Decks use the `Faction` constant name. Any later endpoint still has to take and return it (`Faction.PATTERN`).
-- **Database.** The `faction` columns and their CHECKs (`V2`, and the tables that repeat the column) store `Resistenza Umana`, unlike `suit`, which stores the constant name. Storing the constant too would remove the conversion, but it needs a new migration that rewrites CHECKs on append-only tables, and it reverses part of `2026-11-08-db-uses-engine-names`. Not decided.
-- **Subfaction.** Responses return it as stored (`Adattati`, `SEKTAC`). The same rule would give `ADATTATI`; needs a backend `Subfaction` enum like `Faction`.
-- **Labels.** `data/validate.py` (branch 76) builds label keys from the data name with a slug, which gives the same key as the constant in lower case, so no label changes.
-
 ## Resolved (only list those with future impact)
 
 
