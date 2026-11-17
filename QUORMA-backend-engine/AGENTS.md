@@ -12,7 +12,7 @@ This repo covers the Software team's perimeter (data, engine, backend) plus the 
 | `game-engine/` | Pure Java 25 deterministic simulation core. **No Spring** (enforced in its pom). Tested with plain JUnit | `game-engine/AGENTS.md` |
 | `engine-service/` | Spring Boot 4.1.x HTTP wrapper around `game-engine`, runs in a Docker container (port 8081) | `engine-service/AGENTS.md` |
 | `backend/` | Spring Boot API, PostgreSQL, economy, decks, trades, replays, telemetry | `backend/AGENTS.md` |
-| `docs/` | Ruleset, lore, architecture proposal, demo, decisions, known issues | `docs/AGENTS.md` |
+| `docs/` | Ruleset, lore, architecture proposal, decisions, known issues | `docs/AGENTS.md` |
 
 Working in a subfolder? Its `AGENTS.md` adds to this file. `CLAUDE.md` files only import the matching `AGENTS.md` (`@AGENTS.md`) so Claude Code and other agents read the same text.
 

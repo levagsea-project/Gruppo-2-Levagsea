@@ -36,7 +36,7 @@ Release is a checklist, done once, by one named person:
 
 1. No open entry in `docs/KNOWN-ISSUES.md` that changes a rule or an outcome (resolve it, or write the chosen behaviour into the rulebook).
 2. The rulebook, `data/` and the engine agree. `make validate` shows 0 errors. All engine tests pass.
-3. Golden files exist for every rule the demo exercises, plus draws, turn 50, empty lanes and simultaneous deaths (`game-engine/AGENTS.md`).
+3. Golden files exist for every rule the engine implements, plus draws, turn 50, empty lanes and simultaneous deaths (`game-engine/AGENTS.md`).
 4. Freeze the files:
    - `docs/rules/releases/regolamento-v1.0.md`: a copy of the rulebook with the version in its title and no "in sviluppo" note.
    - `data/releases/1.0/*.json`: a copy of the rule pack, plus a file `HASH` with the rule pack hash.
