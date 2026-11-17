@@ -1,5 +1,6 @@
 package quorma.gameengine.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ public final class Creature {
     private final CreatureCard card;
     private final int lane;
     private final List<BoundExpansion> abilities;
+    private List<BoundExpansion> synergyAbilities = List.of();
     private int currentDef;
     private int atkBonus;
     private final Map<String, Integer> stacks = new LinkedHashMap<>();
@@ -50,14 +52,35 @@ public final class Creature {
         return lane;
     }
 
-    /** The bound expansions of the card's abilities, in card order. */
-    public List<BoundExpansion> abilities() {
+    /** The bound expansions of the card's own abilities, in card order. */
+    public List<BoundExpansion> cardAbilities() {
         return abilities;
     }
 
-    /** The bound expansions with trigger {@code triggerId}, in card order. */
+    /**
+     * Every bound expansion the creature has: the card's abilities in card order, then the suit synergy tiers it
+     * has this turn (ruleset 7.10).
+     */
+    public List<BoundExpansion> abilities() {
+        if (synergyAbilities.isEmpty()) {
+            return abilities;
+        }
+        List<BoundExpansion> all = new ArrayList<>(abilities);
+        all.addAll(synergyAbilities);
+        return List.copyOf(all);
+    }
+
+    /** The expansions of {@link #abilities()} with trigger {@code triggerId}, in that order. */
     public List<BoundExpansion> abilities(String triggerId) {
-        return abilities.stream().filter(a -> a.triggerId().equals(triggerId)).toList();
+        return abilities().stream().filter(a -> a.triggerId().equals(triggerId)).toList();
+    }
+
+    /**
+     * Replaces the synergy abilities, which Evaluate sets for the turn: a copy of each expansion of the active
+     * tiers of this creature's suit, the creature being the source. Empty clears them.
+     */
+    public void setSynergyAbilities(List<BoundExpansion> expansions) {
+        this.synergyAbilities = List.copyOf(expansions);
     }
 
     /** True if the creature counts as any suit for the hand (Camaleonte, effect E55). Never for suit synergies. */

@@ -11,7 +11,8 @@ public record Ruleset(
         Vocab vocab,
         Map<String, KeywordDef> keywords,
         Map<String, SubfactionDef> subfactions,
-        Value.MapV balance) {
+        Value.MapV balance,
+        Map<String, SynergyDef> synergies) {
 
     /** Modifier when two subfactions have no relation (ruleset 9.1). Identity, not a tuning value. */
     public static final int NEUTRAL_PERMILLE = 1000;

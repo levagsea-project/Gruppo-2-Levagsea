@@ -11,6 +11,8 @@ import java.util.Objects;
 public record Modifier(CreatureRef source, String abilityId, String effectId, Kind kind, int value) {
 
     public enum Kind {
+        /** {@code value} more ATK (a suit synergy). */
+        ATK_BONUS,
         /** {@code value}% less damage (Scudo). */
         DAMAGE_REDUCTION_PCT,
         /** {@code value} less damage per blow (flat Scudo). */

@@ -11,9 +11,9 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 ## Fix before use
 
 
-### `2026-11-14-suit-synergies-not-in-engine`: The engine does not apply suit synergies
+### `2026-11-14-suit-synergies-not-in-engine`: The engine applies only some suit synergies
 
-Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures, and `synergies.json` keeps all twelve tiers live (`2026-11-14-mvp-ability-set`), but the engine has no code for them: Evaluate counts no suits and no synergy effect is ever applied. A match with three or more creatures of one suit therefore differs from the rulebook, silently. The golden files avoid such boards. Before real decks are simulated: implement the synergies on the live vocabulary (Vincolo, Frattura and Vestigio need new effects in `EffectRegistry`; Spira is inert anyway, `2026-11-14-spira-inert-without-evolutions`), or refuse to play a board that would trigger one.
+Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures, and `synergies.json` keeps all twelve tiers live (`2026-11-14-mvp-ability-set`). The engine counts the suits at Evaluate (`Synergies`) and applies Vincolo 3, 4 and 5 (`2026-11-17-synergies-engine`). Frattura, Vestigio and Spira are not applied yet, so a board with three or more creatures of those suits still differs from the rulebook, silently (Spira is inert anyway, `2026-11-14-spira-inert-without-evolutions`). The golden files avoid such boards.
 
 
 ## Gaps

@@ -14,6 +14,7 @@ import quorma.gameengine.data.ExpansionDef;
 import quorma.gameengine.data.KeywordDef;
 import quorma.gameengine.data.ParamSpec;
 import quorma.gameengine.data.Ruleset;
+import quorma.gameengine.data.SynergyDef;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.model.Ability;
 import quorma.gameengine.model.AbilityRef;
@@ -63,11 +64,12 @@ public final class AbilityBinder {
         String where = "card " + cardId + " " + abilityId;
         List<BoundExpansion> out = new ArrayList<>();
         for (ExpansionDef expansion : inline.expansions()) {
-            if (!expansion.conditions().isEmpty()) {
+            if (expansion.conditions().stream().anyMatch(c -> c.id().equals("K_PARAM"))) {
                 throw new AbilityException(
-                        where + ": conditions on an ability written on the card are not implemented by the engine yet");
+                        where + ": conditions on an ability written on the card are not implemented by the engine yet"
+                                + " (K_PARAM needs a keyword)");
             }
-            BoundExpansion bound = bindExpansion(where, abilityId, expansion, Map.of(), Map.of());
+            BoundExpansion bound = bindExpansion(where, abilityId, expansion, Map.of(), Map.of(), expansion.conditions());
             EffectRegistry.check(bound, where);
             out.add(bound);
         }
@@ -84,13 +86,32 @@ public final class AbilityBinder {
 
         List<BoundExpansion> out = new ArrayList<>();
         for (ExpansionDef expansion : keyword.expandsTo()) {
-            if (conditionsHold(where, expansion, params)) {
-                BoundExpansion bound = bindExpansion(where, keyword.id(), expansion, params, ref.params());
+            if (cardConditionsHold(where, expansion, params)) {
+                BoundExpansion bound = bindExpansion(where, keyword.id(), expansion, params, ref.params(),
+                        inPlayConditions(expansion));
                 EffectRegistry.check(bound, where);
                 out.add(bound);
             }
         }
         return out;
+    }
+
+    /**
+     * The expansions of a suit synergy tier ({@code synergies.json}) that the engine implements, bound for the
+     * creature that is their source. A tier expansion the engine does not implement yet is left out: it changes
+     * nothing, as before. Numbers come from {@code balance.json} ({@code $tune.synergies.<TIER>.<name>}).
+     */
+    public List<BoundExpansion> bindSynergy(SynergyDef tier) {
+        String where = "synergy " + tier.id();
+        List<BoundExpansion> out = new ArrayList<>();
+        for (ExpansionDef expansion : tier.expandsTo()) {
+            if (EffectRegistry.isImplemented(expansion)) {
+                BoundExpansion bound = bindExpansion(where, tier.id(), expansion, Map.of(), Map.of(), expansion.conditions());
+                EffectRegistry.check(bound, where);
+                out.add(bound);
+            }
+        }
+        return List.copyOf(out);
     }
 
     /**
@@ -147,11 +168,16 @@ public final class AbilityBinder {
         return out;
     }
 
-    /** {@code K_PARAM} conditions, evaluated on the card's params. Any other condition is not implemented yet. */
-    private static boolean conditionsHold(String where, ExpansionDef expansion, Map<String, Value> params) {
+    /** The conditions that are checked while the creature is in play: everything but {@code K_PARAM}. */
+    private static List<ConditionDef> inPlayConditions(ExpansionDef expansion) {
+        return expansion.conditions().stream().filter(c -> !"K_PARAM".equals(c.id())).toList();
+    }
+
+    /** {@code K_PARAM} conditions, evaluated on the card's params when the creature is bound. */
+    private static boolean cardConditionsHold(String where, ExpansionDef expansion, Map<String, Value> params) {
         for (ConditionDef condition : expansion.conditions()) {
             if (!"K_PARAM".equals(condition.id())) {
-                throw new AbilityException(where + ": condition " + condition.id() + " is not implemented by the engine yet");
+                continue;
             }
             if (!(condition.params().get("name") instanceof Value.StrV name)
                     || !(condition.params().get("equals") instanceof Value.StrV equals)) {
@@ -165,9 +191,9 @@ public final class AbilityBinder {
     }
 
     private BoundExpansion bindExpansion(String where, String abilityId, ExpansionDef expansion,
-            Map<String, Value> params, Map<String, Value> cardParams) {
-        if (!expansion.triggerParams().isEmpty() || !expansion.targetParams().isEmpty()) {
-            throw new AbilityException(where + ": trigger and target params are not implemented by the engine yet");
+            Map<String, Value> params, Map<String, Value> cardParams, List<ConditionDef> conditions) {
+        if (!expansion.triggerParams().isEmpty()) {
+            throw new AbilityException(where + ": trigger params are not implemented by the engine yet");
         }
         Map<String, Value> effectParams = new LinkedHashMap<>();
         for (Map.Entry<String, Value> e : expansion.effectParams().entrySet()) {
@@ -199,7 +225,7 @@ public final class AbilityBinder {
             stackKey = Optional.of(abilityId); // vocab.common_params.stack_key: defaults to the source's id
         }
         return new BoundExpansion(abilityId, expansion.triggerId(), expansion.effectId(), expansion.targetId(),
-                expansion.duration(), expansion.cls(), effectParams, maxStacks, stackKey);
+                expansion.targetParams(), conditions, expansion.duration(), expansion.cls(), effectParams, maxStacks, stackKey);
     }
 
     /** Resolves a reference to a plain integer, string or boolean. */
@@ -222,7 +248,11 @@ public final class AbilityBinder {
 
     private Value tune(String path, Map<String, Value> cardParams) {
         int dot = path.indexOf('.');
-        if (dot <= 0 || dot == path.length() - 1 || path.startsWith("synergies.")) {
+        if (path.startsWith("synergies.")) {
+            String[] parts = path.split("\\.");
+            return parts.length == 3 ? rules.synergyTune(parts[1], parts[2]).orElse(null) : null;
+        }
+        if (dot <= 0 || dot == path.length() - 1) {
             return null;
         }
         return rules.tune(path.substring(0, dot), path.substring(dot + 1), cardParams).orElse(null);

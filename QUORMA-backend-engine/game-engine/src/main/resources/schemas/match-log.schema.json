@@ -34,9 +34,9 @@
     "lane": { "type": "integer", "minimum": 1, "maximum": 5 },
     "card_id": { "type": "string", "minLength": 1, "maxLength": 64 },
     "ability_id": {
-      "description": "A keyword or evolution id, or INLINE_<n> for the n-th ability of the card (from 1, keywords included) when it is written on the card as expansions.",
+      "description": "A keyword or evolution id, INLINE_<n> for the n-th ability of the card (from 1, keywords included) when it is written on the card as expansions, or a suit synergy tier such as VINCOLO_3.",
       "type": "string",
-      "pattern": "^((K|EVO)_[A-Z0-9_]+|INLINE_[1-9][0-9]*)$"
+      "pattern": "^((K|EVO)_[A-Z0-9_]+|INLINE_[1-9][0-9]*|(VINCOLO|FRATTURA|SPIRA|VESTIGIO)_[345])$"
     },
     "effect_id": { "type": "string", "pattern": "^E[0-9]+$" },
     "trigger_id": { "type": "string", "pattern": "^(T[0-9]+|T_EVO)$" },
@@ -202,8 +202,8 @@
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
         "kind": {
-          "description": "damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante).",
-          "enum": ["damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier"]
+          "description": "atk_bonus: value more ATK (a suit synergy). damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante).",
+          "enum": ["atk_bonus", "damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier"]
         },
         "value": { "type": "integer", "minimum": 0 }
       }

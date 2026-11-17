@@ -25,18 +25,31 @@ public final class EffectRegistry {
     private static final Set<Shape> SHAPES = Set.of(
             new Shape("T0", "E28", ResClass.C, "D_Permanente"),  // Scudo: less damage taken
             new Shape("T0", "E55", ResClass.C, "D_Permanente"),  // Camaleonte: counts as any suit for the hand
+            new Shape("T0", "E1", ResClass.C, "D_FincheSorgenteInGioco"), // static ATK bonus (suit synergies, cards)
+            new Shape("T0", "E34", ResClass.C, "D_FincheSorgenteInGioco"), // the group's creatures count as adjacent
             new Shape("T0", "E56", ResClass.C, "D_Permanente"),  // Perforante: ignores part of the target's reductions
             new Shape("T19", "E1", ResClass.T, "D_Permanente"),  // Insaziabile: + share of base ATK on a kill
             new Shape("T34", "E21", ResClass.R, "D_Istantanea")); // Traboccante: spill multiplier factor
 
     /** The params of one effect mode: integer params with their range, string params with their one value. */
-    private record ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults) {}
+    private record ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults, Map<String, Set<String>> strings) {
+
+        ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults) {
+            this(ints, defaults, Map.of());
+        }
+
+        boolean takes(String name) {
+            return ints.containsKey(name) || strings.containsKey(name);
+        }
+    }
 
     private static final int MAX = Integer.MAX_VALUE;
 
     /** Per effect, per {@code mode} ({@code ""}: the effect has no mode). */
     private static final Map<String, Map<String, ParamRule>> PARAMS = Map.of(
-            "E1", Map.of("pct_base_atk", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of())),
+            "E1", Map.of(
+                    "pct_base_atk", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of()),
+                    "flat", new ParamRule(Map.of("amount", new int[] {0, MAX}), Map.of())),
             "E21", Map.of("", new ParamRule(Map.of("factor", new int[] {0, MAX}), Map.of())),
             "E28", Map.of(
                     "reduction_pct", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of()),
@@ -44,11 +57,20 @@ public final class EffectRegistry {
                             Map.of("amount", new int[] {0, MAX}, "min_damage", new int[] {0, MAX}),
                             Map.of("min_damage", 1))),
             "E55", Map.of("", new ParamRule(Map.of(), Map.of())),
+            "E34", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("group", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))),
             "E56", Map.of("", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of())));
 
     private static final Set<String> TRIGGERS = Set.of("T0", "T19", "T34");
-    private static final Set<String> TARGETS = Set.of("S1");
-    private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea");
+    private static final Set<String> TARGETS = Set.of("S1", "S41");
+    private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco");
+
+    /** Conditions the engine evaluates while the creature is in play ({@code StaticEffects}). */
+    private static final Set<String> CONDITIONS = Set.of("C1", "C4", "C11");
+
+    /** The filters of target S41 ({@code params.filters}). */
+    private static final Set<String> TARGET_FILTERS = Set.of("attacker");
+
+    private static final Set<String> SUITS = Set.of("Vincolo", "Frattura", "Spira", "Vestigio");
 
     private EffectRegistry() {}
 
@@ -64,6 +86,51 @@ public final class EffectRegistry {
             rule.defaults().forEach((name, value) -> out.putIfAbsent(name, new Value.IntV(value)));
         }
         return out;
+    }
+
+    /**
+     * True if the engine runs {@code expansion} as it is written in the data (before references are resolved): the
+     * same test as {@link #check}, without the ranges of the numbers. For data files that may hold more than the
+     * engine implements, such as {@code synergies.json}; a tier expansion that is not implemented changes nothing.
+     */
+    public static boolean isImplemented(quorma.gameengine.data.ExpansionDef x) {
+        Map<String, ParamRule> modes = PARAMS.get(x.effectId());
+        if (modes == null || x.triggerId() == null || !TRIGGERS.contains(x.triggerId())
+                || !x.triggerParams().isEmpty() || !TARGETS.contains(x.targetId())
+                || !DURATIONS.contains(x.duration())
+                || !SHAPES.contains(new Shape(x.triggerId(), x.effectId(), x.cls(), x.duration()))
+                || !x.common().isEmpty()) {
+            return false;
+        }
+        ParamRule rule = modes.get(x.effectParams().get("mode") instanceof Value.StrV s ? s.v() : "");
+        if (rule == null) {
+            return false;
+        }
+        for (String name : x.effectParams().keySet()) {
+            if (!name.equals("mode") && !rule.takes(name)) {
+                return false;
+            }
+        }
+        for (String name : rule.strings().keySet()) {
+            if (!(x.effectParams().get(name) instanceof Value.StrV s && rule.strings().get(name).contains(s.v()))) {
+                return false;
+            }
+        }
+        for (quorma.gameengine.data.ConditionDef c : x.conditions()) {
+            if (!CONDITIONS.contains(c.id())) {
+                return false;
+            }
+        }
+        return targetParamsOk(x.targetId(), x.targetParams());
+    }
+
+    private static boolean targetParamsOk(String targetId, Map<String, Value> params) {
+        if (targetId.equals("S41")) {
+            return params.keySet().stream().allMatch(k -> k.equals("filters"))
+                    && (params.get("filters") == null || params.get("filters") instanceof Value.ListV l
+                            && l.items().stream().allMatch(v -> v instanceof Value.StrV f && TARGET_FILTERS.contains(f.v())));
+        }
+        return params.isEmpty();
     }
 
     /**
@@ -87,6 +154,12 @@ public final class EffectRegistry {
         if (!DURATIONS.contains(expansion.duration())) {
             throw notImplemented(where, "duration " + expansion.duration());
         }
+        if (!targetParamsOk(expansion.targetId(), expansion.targetParams())) {
+            throw notImplemented(where, "target " + expansion.targetId() + " with params " + expansion.targetParams().keySet());
+        }
+        for (quorma.gameengine.data.ConditionDef c : expansion.conditions()) {
+            checkCondition(c, where);
+        }
         Optional<String> mode = expansion.stringParam("mode");
         ParamRule rule = modes.get(mode.orElse(""));
         if (rule == null) {
@@ -101,12 +174,33 @@ public final class EffectRegistry {
         checkParams(expansion, where, rule);
     }
 
+    private static void checkCondition(quorma.gameengine.data.ConditionDef c, String where) {
+        if (!CONDITIONS.contains(c.id())) {
+            throw notImplemented(where, "condition " + c.id());
+        }
+        boolean needsSuit = c.id().equals("C4") || c.id().equals("C11");
+        if (needsSuit && !(c.params().get("suit") instanceof Value.StrV s && SUITS.contains(s.v()))) {
+            throw new AbilityException(where + ": condition " + c.id() + " needs a param 'suit' (one of " + new java.util.TreeSet<>(SUITS) + ")");
+        }
+        if (c.id().equals("C4") && !(c.params().get("level") instanceof Value.IntV n && n.v() >= 1 && n.v() <= 5)) {
+            throw new AbilityException(where + ": condition C4 needs an integer param 'level' between 1 and 5");
+        }
+    }
+
     private static void checkParams(BoundExpansion expansion, String where, ParamRule rule) {
         String what = where + ": effect " + expansion.effectId()
                 + expansion.stringParam("mode").map(m -> " mode " + m).orElse("");
         for (String name : expansion.effectParams().keySet()) {
-            if (!name.equals("mode") && !rule.ints().containsKey(name)) {
+            if (!name.equals("mode") && !rule.takes(name)) {
                 throw new AbilityException(what + " does not take param '" + name + "'");
+            }
+        }
+        for (Map.Entry<String, Set<String>> e : rule.strings().entrySet()) {
+            if (!(expansion.effectParams().get(e.getKey()) instanceof Value.StrV s)) {
+                throw new AbilityException(what + " needs a text param '" + e.getKey() + "'");
+            }
+            if (!e.getValue().contains(s.v())) {
+                throw new AbilityException(what + ": param '" + e.getKey() + "' must be one of " + new java.util.TreeSet<>(e.getValue()) + ", got " + s.v());
             }
         }
         for (Map.Entry<String, int[]> e : rule.ints().entrySet()) {

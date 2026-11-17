@@ -28,7 +28,7 @@ Stack (from the architecture proposal): Java 25, Maven, JUnit. This module is pl
 The engine implements the vocabulary in `data/vocab.json`; it does not hard-code abilities.
 
 - Resolve `$param.x` from the card instance, and `$tune.<KEY>.<name>` from the card instance `params` first, then `data/balance.json` (`data/AGENTS.md` §3). Skip keys starting with `_` in `synergies.json`.
-- `per_creature` synergies: one copy per creature of that suit, source = that creature. `per_player`: one copy, source = the player.
+- `per_creature` synergies: one copy per creature of that suit, source = that creature. `per_player`: one copy, source = the player. Evaluate binds the active `per_creature` tiers onto the creatures (`SynergyTiers`); the effects are run by the code of their shape (`StaticEffects` for static ones), never by synergy-specific code.
 - An Evolution fires once per card instance per game (`max_triggers` 1).
 - Run the same ten checks as `data/validate.py` when loading a pool, or load only data that passed `make validate`.
 - Behaviour such as Custode's delayed destruction is data (`E12.then`, `lockout`, condition `C24`). Do not special-case it in code.
@@ -44,7 +44,7 @@ Only the live data ships (decision `2026-11-14-mvp-ability-set`): what `data/*.j
 ## Tests
 
 - JUnit for effects, edge cases (draws, turn 50, empty lanes, simultaneous deaths) and repeatability.
-- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit until synergies exist.
+- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit unless the scenario is about synergies (Frattura, Vestigio and Spira are not applied yet, `2026-11-17-synergies-engine`).
 - A golden file changes only when a rule changes deliberately. Say why in the commit and in `docs/DECISIONS.md`.
 
 ## Layout
@@ -55,7 +55,7 @@ game-engine/src/main/java/quorma/gameengine/
   input/     match input JSON reader
   data/      rule pack loader, Ruleset, rule pack hash
   effects/   ability binder, effect registry, stack, effect resolver
-  turn/      setup, turn phases, damage (Strike, Damage)
+  turn/      setup, turn phases, damage (Strike, Damage), suit synergy tiers (SynergyTiers), static effects (StaticEffects)
   hand/      poker hand evaluator
   model/     cards, creatures, players, match state
   log/       events, board snapshots

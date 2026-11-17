@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.List;
+import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Value;
 
@@ -15,6 +17,9 @@ import quorma.gameengine.data.Value;
  * {@link AbilityBinder} when a creature enters play.
  *
  * @param abilityId   the keyword the expansion comes from, for example {@code K_SCUDO}
+ * @param targetParams the target params as written, for example {@code filters} of S41
+ * @param conditions  the conditions left to check while the creature is in play (everything but {@code K_PARAM}),
+ *                    with literal params
  * @param effectParams resolved effect params, in file order: only {@link Value.IntV}, {@link Value.StrV} and
  *                    {@link Value.BoolV}
  * @param maxStacks   {@code max_stacks}, empty when the effect has no limit
@@ -25,6 +30,8 @@ public record BoundExpansion(
         String triggerId,
         String effectId,
         String targetId,
+        Map<String, Value> targetParams,
+        List<ConditionDef> conditions,
         String duration,
         ResClass cls,
         Map<String, Value> effectParams,
@@ -41,6 +48,8 @@ public record BoundExpansion(
         Objects.requireNonNull(maxStacks, "maxStacks");
         Objects.requireNonNull(stackKey, "stackKey");
         effectParams = Collections.unmodifiableMap(new LinkedHashMap<>(effectParams));
+        targetParams = Collections.unmodifiableMap(new LinkedHashMap<>(Objects.requireNonNull(targetParams, "targetParams")));
+        conditions = List.copyOf(Objects.requireNonNull(conditions, "conditions"));
     }
 
     /** An integer effect param. */

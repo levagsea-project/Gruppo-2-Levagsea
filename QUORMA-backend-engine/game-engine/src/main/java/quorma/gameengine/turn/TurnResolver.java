@@ -133,7 +133,9 @@ public final class TurnResolver {
         if (handB.type() != HandType.NONE) {
             multiplierB = rules.handMultiplierPermille(handB.type().name());
         }
-        return new Evaluation(handA, handB, multiplierA, multiplierB);
+        Synergies synergies = SynergyTiers.evaluate(rules, state);
+        SynergyTiers.bind(binder, rules, state, synergies);
+        return new Evaluation(handA, handB, multiplierA, multiplierB, synergies);
     }
 
     /**
@@ -182,8 +184,7 @@ public final class TurnResolver {
 
             if (attacker == null || target == null) continue;
 
-            Strike strike = Strike.of(rules, attack.attacker(), attacker, targetRef.side(), target,
-                    evaluation.multiplier(attack.attacker()));
+            Strike strike = Strike.of(rules, state, evaluation, attack.attacker(), attacker, targetRef.side(), target);
             blows.add(new Blow(attack, attacker, target, strike));
         }
 
@@ -231,8 +232,7 @@ public final class TurnResolver {
                 continue;
             }
 
-            Strike strike = Strike.of(rules, attack.attacker(), attacker, targetRef.side(), target,
-                    evaluation.multiplier(attack.attacker()));
+            Strike strike = Strike.of(rules, state, evaluation, attack.attacker(), attacker, targetRef.side(), target);
 
             target.takeDamage(strike.damage());
             if (strike.spill() > 0) {

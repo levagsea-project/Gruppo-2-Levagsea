@@ -11,6 +11,7 @@ import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.Modifier;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.Creature;
+import quorma.gameengine.model.MatchState;
 import quorma.gameengine.model.Side;
 
 /**
@@ -41,12 +42,18 @@ record Strike(
         spillModifiers = List.copyOf(spillModifiers);
     }
 
-    static Strike of(Ruleset rules, Side attackerSide, Creature attacker, Side targetSide, Creature target,
-            int handMultiplierPermille) {
+    static Strike of(Ruleset rules, MatchState state, Evaluation evaluation, Side attackerSide, Creature attacker,
+            Side targetSide, Creature target) {
+        int handMultiplierPermille = evaluation.multiplier(attackerSide);
         CreatureRef attackerRef = CreatureRef.of(attackerSide, attacker);
         CreatureRef targetRef = CreatureRef.of(targetSide, target);
 
+        // ATK that static effects (suit synergies, abilities) add, worked out on the board as it is now.
+        List<Modifier> atkBonuses = StaticEffects.atkBonuses(state, evaluation, attackerSide, attacker);
         int atk = attacker.currentAtk();
+        for (Modifier bonus : atkBonuses) {
+            atk = Math.addExact(atk, bonus.value());
+        }
         int advantage = rules.advantagePermille(
                 attacker.card().subfaction().dataName(), target.card().subfaction().dataName());
         int effectiveAtk = Damage.effectiveAtk(atk, advantage);
@@ -80,7 +87,7 @@ record Strike(
         int mitigation = Damage.mitigationPermille(pcts, pierce, mitigationFloor(rules));
         int damage = Damage.damage(effectiveAtk, Damage.pierce(flat, pierce), mitigation, minDamage);
 
-        List<Modifier> damageModifiers = new ArrayList<>();
+        List<Modifier> damageModifiers = new ArrayList<>(atkBonuses);
         if (effectiveAtk > 0) {
             damageModifiers.addAll(reductions);
             if (!reductions.isEmpty()) {

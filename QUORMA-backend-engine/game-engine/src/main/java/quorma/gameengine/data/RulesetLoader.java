@@ -21,7 +21,7 @@ import quorma.gameengine.json.CanonicalJson;
  */
 public final class RulesetLoader {
 
-    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json");
+    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json", "synergies.json");
 
     /** The files of the rule pack hash, in hash order (decision {@code 2026-11-14-match-log-schema}). */
     public static final List<String> HASHED_FILES = List.of(
@@ -99,7 +99,8 @@ public final class RulesetLoader {
                         section(vocab, "conditions"), section(vocab, "durations")),
                 keywords(roots.get("keyword.json")),
                 subfactions(roots.get("subfactions.json")),
-                roots.get("balance.json"));
+                roots.get("balance.json"),
+                synergies(roots.get("synergies.json")));
     }
 
     // ---- vocab ----
@@ -206,6 +207,43 @@ public final class RulesetLoader {
                 List.copyOf(conditions),
                 cls,
                 common);
+    }
+
+    // ---- synergies ----
+
+    /** Reads {@code synergies.json}: one entry per tier, in file order. Keys starting with {@code _} are notes. */
+    private static Map<String, SynergyDef> synergies(Value.MapV root) {
+        Map<String, SynergyDef> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> e : root.fields().entrySet()) {
+            if (e.getKey().startsWith("_")) {
+                continue;
+            }
+            String path = "synergies.json#" + e.getKey();
+            Value.MapV s = asMap(e.getValue(), path);
+            if (!(require(s, "tier", path) instanceof Value.IntV tier)) {
+                throw new RulesetException(path + ".tier: expected an integer");
+            }
+            List<String> replaces = new ArrayList<>();
+            if (s.get("replaces") != null) {
+                for (Value r : asList(s.get("replaces"), path + ".replaces")) {
+                    if (!(r instanceof Value.StrV id)) {
+                        throw new RulesetException(path + ".replaces: expected strings");
+                    }
+                    replaces.add(id.v());
+                }
+            }
+            List<ExpansionDef> expansions = new ArrayList<>();
+            List<Value> raw = asList(require(s, "expands_to", path), path + ".expands_to");
+            for (int i = 0; i < raw.size(); i++) {
+                expansions.add(expansion(asMap(raw.get(i), path + ".expands_to[" + i + "]"),
+                        path + ".expands_to[" + i + "]"));
+            }
+            out.put(e.getKey(), new SynergyDef(
+                    e.getKey(), requireString(s, "suit", path).toUpperCase(java.util.Locale.ROOT),
+                    Math.toIntExact(tier.v()), !(s.get("instantiation") instanceof Value.StrV i) || !i.v().equals("per_player"),
+                    replaces, expansions));
+        }
+        return java.util.Collections.unmodifiableMap(out);
     }
 
     // ---- subfactions ----

@@ -10,6 +10,7 @@ Anything may change until 1.0 is released. Changes before this log started are i
 
 | Date | Area | Change | Reference |
 |---|---|---|---|
+| 2026-11-17 | engine | Suit synergies: Evaluate fixes the active tiers of each side, and Vincolo 3, 4 and 5 add ATK to blows (`atk_bonus` modifiers, `ability_id` like `VINCOLO_3`). The MatchLog schema accepts both. No data changed, so no hash changed. | `2026-11-17-synergies-engine` |
 | 2026-11-17 | data | Camaleonte restored from `data/parked/` (keyword, balance entry, effect `E55`, Tier 1 role affinity, its open decision). New `ruleset_hash`. | `2026-11-17-camaleonte-best-hand` |
 | 2026-11-17 | engine | Evaluate lets a Camaleonte take the suit that gives the best hand (`WildSuit`, ties keep the lowest `Suit` ordinal). Goldens and example log: only `ruleset_hash` and `result_hash` changed. | `2026-11-17-camaleonte-best-hand` |
 | 2026-11-15 | data | `balance.json` stat costs retuned from the local simulation (Scudo 0.62 per X, Perforante 2, Insaziabile 5.2, Traboccante 6) and the matching parked entries. Placeholders; no structural change | `2026-11-15-stat-costs-simulated` |
