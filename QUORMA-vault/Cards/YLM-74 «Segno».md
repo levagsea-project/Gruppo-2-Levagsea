@@ -37,7 +37,7 @@ tags:
 # YLM-74 «Segno»
 
 > [!quote] Testo di colore
-> «Forma 61: non prevista. Funzione: nessuna. Classificazione: in attesa. Il rapporto è fermo da trentuno cicli. Nessuno sa cosa chiedere.» — Rapporto di rilevamento YLMOR, ciclo 113
+> «Forma 61: non prevista. Funzione: nessuna. Classificazione: in attesa. Il rapporto è fermo da trentuno cicli. Richiesta di chiarimento: non formulabile.» — Rapporto di rilevamento YLMOR, ciclo 113
 
 > [!info] Lore interna
 > YLM-74 «Segno» è un'unità [[YLMOR]] cresciuta in una [[Sala di riconfigurazione|sala di riconfigurazione]] abbandonata ai margini di [[Le Basse]], sotto la pioggia. Non è una macchina, non è un'arma, non è materia in riparazione: è una forma. Ha preso una configurazione che nessun processo YLMOR aveva previsto (forma non prevista) e che nessun processo riesce a ricondurre a una funzione. Non tiene insieme un nodo, non stabilizza correzioni EFFRIX, non chiude condotti. Sta lì. Il rapporto di rilevamento è fermo da trentuno cicli alla voce classificazione in attesa. Un'istanza YLMOR non aspetta: riceve una funzione o viene riassorbita. YLM-74 non ha ricevuto la prima e non ha subito la seconda, perché riassorbire richiede di dichiarare che cosa si riassorbe. La materia intorno continua a riconfigurarsi, lentamente, e la forma non è la stessa di trentuno cicli fa. Il [[Telaio]] non ha una categoria per l'inutile: ciò che non ha funzione non entra nel quorum, e ciò che non è nel quorum non dovrebbe occupare una sala. Le unità di manutenzione deviano il percorso per non attraversarla. Gli [[Spezzasigilli]] che l'hanno vista dicono che somiglia a un segno inciso, e che nessuno di loro è riuscito a ridisegnarlo due volte uguale.

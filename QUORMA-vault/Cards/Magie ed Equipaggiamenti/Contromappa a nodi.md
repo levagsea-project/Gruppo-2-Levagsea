@@ -28,10 +28,10 @@ tags:
 # Contromappa a nodi
 
 > [!quote] Testo di colore
-> «Un nodo per ogni nome di luogo, nell'ordine in cui si cammina. Non l'ho mai letta. Mi tiene le dita dove devo mettere i piedi.» — Segnaterra, a una recluta
+> «Un nodo per ogni nome di luogo, nell'ordine in cui si cammina. Le dita sanno dove mettere i piedi. Scioglila quando torni: io ormai non so più andare altrove.» — Segnaterra, a una recluta
 
 > [!info] Lore interna
-> La [[Contromappa]] è una mappa orale: una sequenza di nomi detti nell'ordine in cui si percorrono. La contromappa a nodi è la sua forma da portare addosso: un filo lungo come un braccio, con un nodo per ogni [[Nomi di luogo|nome di luogo]] e un modo diverso di annodare per ciascuno, in modo che le dita sappiano dove sono anche al buio. Si lega al polso della recluta all'inizio di una pattuglia e si scioglie alla fine, e il filo si riusa per un altro percorso. Nessun filo regge due percorsi nello stesso giorno. Per le macchine non è una mappa: è un oggetto senza coordinate. I [[Segnaterra]] la danno a chi arriva senza spiegarla. Il costo è di chi la porta: i nodi insegnano a camminare un percorso solo, e chi ne ha portati molti perde l'istinto di andare altrove. A chi non ha mai avuto un filo, dicono, ogni strada sembra troppo larga.
+> La [[Contromappa]] è una mappa orale: una sequenza di nomi detti nell'ordine in cui si percorrono. La contromappa a nodi è la sua forma da portare addosso: un filo lungo come un braccio, con un nodo per ogni [[Nomi di luogo|nome di luogo]] e un modo diverso di annodare per ciascuno, in modo che le dita sappiano dove sono anche al buio. Si lega al polso della recluta all'inizio di una pattuglia e si scioglie alla fine, e il filo si riusa per un altro percorso. Nessun filo regge due percorsi nello stesso giorno. Per le macchine non è una mappa: è un oggetto senza coordinate. I [[Segnaterra]] la danno a chi arriva senza spiegarla. I nodi insegnano a camminare un percorso solo, e chi ne ha portati molti perde l'istinto di andare altrove. A chi non ha mai avuto un filo, dicono, ogni strada sembra troppo larga.
 
 > [!info] Rivela / Nasconde
 > **Rivela:** che la Contromappa ha una forma da portare, fatta di nodi; che il filo si scioglie a fine percorso.
