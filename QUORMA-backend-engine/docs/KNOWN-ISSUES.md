@@ -19,11 +19,6 @@ Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures, and `synergies.
 ## Gaps
 
 
-### `2026-11-06-validator-python-only`: The ability validator exists only in Python
-
-`data/validate.py` implements the ten checks. The proposal says the engine validates ability coherence at deck validation. Either port the checks to Java (and keep `validate.py` as a CI gate), or call the engine only for deck-level rules.
-
-
 ### `2026-11-06-faction-swap-open-rules`: Faction-swap series: open rules
 
 Not decided yet: whether `FACTION_SWAP` is the main format; how the faction of game 3 is chosen; when game 3 is needed (a 1-1 split, or also after draws) and when a series ends; how the series outcome follows from the games; and how many games a series may last (after a drawn game 3 the rule is "swap and play again", with no stated cap). The schema stores each game and its factions and leaves these to the backend.
