@@ -1,0 +1,6 @@
+# Obsidian: stato personale di ogni utente, non si condivide
+.obsidian/workspace*.json
+.obsidian/cache
+.trash/
+# Assets: cartelle di asset che non devono essere versionate
+📁 Assets/
