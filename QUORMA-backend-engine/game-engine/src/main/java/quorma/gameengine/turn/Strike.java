@@ -127,6 +127,15 @@ record Strike(
                 handMultiplierPermille, spillMultiplier, spill, damageModifiers, spillModifiers);
     }
 
+    /**
+     * The blow when the target would have been destroyed but was saved with full DEF (E12): nothing is destroyed
+     * and the blow deals no spill.
+     */
+    Strike saved(int fullDef) {
+        return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, fullDef,
+                false, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of());
+    }
+
     /** The blow of a Cycle 1 mutual kill (ruleset 9.7): no spill, so Traboccante does not apply either. */
     Strike withoutSpill() {
         return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, defAfter,

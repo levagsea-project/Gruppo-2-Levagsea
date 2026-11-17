@@ -44,7 +44,7 @@ Only the live data ships (decision `2026-11-14-mvp-ability-set`): what `data/*.j
 ## Tests
 
 - JUnit for effects, edge cases (draws, turn 50, empty lanes, simultaneous deaths) and repeatability.
-- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit unless the scenario is about synergies (Vestigio and Spira are not applied yet, `2026-11-17-synergies-engine`).
+- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit unless the scenario is about synergies (Spira is not applied yet, `2026-11-17-synergies-engine`).
 - A golden file changes only when a rule changes deliberately. Say why in the commit and in `docs/DECISIONS.md`.
 
 ## Layout

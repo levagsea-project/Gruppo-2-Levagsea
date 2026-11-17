@@ -31,7 +31,10 @@ public final class EffectRegistry {
             new Shape("T0", "E56", ResClass.C, "D_Permanente"),  // Perforante: ignores part of the target's reductions
             new Shape("T19", "E1", ResClass.T, "D_Permanente"),  // Insaziabile: + share of base ATK on a kill
             new Shape("T34", "E21", ResClass.R, "D_Istantanea"),  // Traboccante: spill multiplier factor
-            new Shape("T34", "E22", ResClass.R, "D_Istantanea")); // spill treats the target's DEF as a share of itself
+            new Shape("T34", "E22", ResClass.R, "D_Istantanea"),  // spill treats the target's DEF as a share of itself
+            new Shape("T2", "E6", ResClass.T, "D_Istantanea"),    // heal at the start of a phase (Refill)
+            new Shape("T20", "E12", ResClass.R, "D_Istantanea"),  // saved from destruction (Vestigio 5)
+            new Shape("T29", "E1", ResClass.T, "D_FinoAUccisione")); // + ATK for a replacement until it kills (Vestigio 3)
 
     /** The params of one effect mode: integer params with their range, string params with their one value. */
     private record ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults, Map<String, Set<String>> strings) {
@@ -62,14 +65,19 @@ public final class EffectRegistry {
             "E22", Map.of("", new ParamRule(Map.of("permille", new int[] {0, 1000}), Map.of())),
             "E52", Map.of("", new ParamRule(Map.of(), Map.of())),
             "E34", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("group", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))),
-            "E56", Map.of("", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of())));
+            "E56", Map.of("", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of())),
+            "E6", Map.of("flat", new ParamRule(Map.of("amount", new int[] {0, MAX}), Map.of())),
+            "E12", Map.of("", new ParamRule(Map.of("lockout.reactivate_below", new int[] {1, 5}), Map.of(), Map.of(
+                    "then", Set.of("destroy_at_next_refill"),
+                    "lockout.key", Set.of(),
+                    "lockout.suit", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))));
 
-    private static final Set<String> TRIGGERS = Set.of("T0", "T19", "T34");
-    private static final Set<String> TARGETS = Set.of("S1", "S41");
-    private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco");
+    private static final Set<String> TRIGGERS = Set.of("T0", "T2", "T19", "T20", "T29", "T34");
+    private static final Set<String> TARGETS = Set.of("S1", "S12", "S27", "S41");
+    private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco", "D_FinoAUccisione");
 
     /** Conditions the engine evaluates while the creature is in play ({@code StaticEffects}). */
-    private static final Set<String> CONDITIONS = Set.of("C1", "C4", "C11", "C22");
+    private static final Set<String> CONDITIONS = Set.of("C1", "C4", "C11", "C22", "C24", "C25");
 
     /** The filters of target S41 ({@code params.filters}). */
     private static final Set<String> TARGET_FILTERS = Set.of("attacker");
@@ -100,7 +108,7 @@ public final class EffectRegistry {
     public static boolean isImplemented(quorma.gameengine.data.ExpansionDef x) {
         Map<String, ParamRule> modes = PARAMS.get(x.effectId());
         if (modes == null || x.triggerId() == null || !TRIGGERS.contains(x.triggerId())
-                || !x.triggerParams().isEmpty() || !TARGETS.contains(x.targetId())
+                || !triggerParamsOk(x.triggerId(), x.triggerParams()) || !TARGETS.contains(x.targetId())
                 || !DURATIONS.contains(x.duration())
                 || !SHAPES.contains(new Shape(x.triggerId(), x.effectId(), x.cls(), x.duration()))
                 || !x.common().isEmpty()) {
@@ -110,13 +118,16 @@ public final class EffectRegistry {
         if (rule == null) {
             return false;
         }
-        for (String name : x.effectParams().keySet()) {
+        Map<String, Value> flat = new LinkedHashMap<>();
+        flattenParams("", x.effectParams(), flat);
+        for (String name : flat.keySet()) {
             if (!name.equals("mode") && !rule.takes(name)) {
                 return false;
             }
         }
         for (String name : rule.strings().keySet()) {
-            if (!(x.effectParams().get(name) instanceof Value.StrV s && rule.strings().get(name).contains(s.v()))) {
+            Set<String> allowed = rule.strings().get(name);
+            if (!(flat.get(name) instanceof Value.StrV s && (allowed.isEmpty() || allowed.contains(s.v())))) {
                 return false;
             }
         }
@@ -128,7 +139,28 @@ public final class EffectRegistry {
         return targetParamsOk(x.targetId(), x.targetParams());
     }
 
+    private static void flattenParams(String prefix, Map<String, Value> params, Map<String, Value> out) {
+        for (Map.Entry<String, Value> e : params.entrySet()) {
+            if (e.getValue() instanceof Value.MapV m) {
+                flattenParams(prefix + e.getKey() + ".", m.fields(), out);
+            } else {
+                out.put(prefix + e.getKey(), e.getValue());
+            }
+        }
+    }
+
+    /** T2 takes the phase, and only Refill is implemented; no other trigger takes params. */
+    private static boolean triggerParamsOk(String triggerId, Map<String, Value> params) {
+        if (triggerId.equals("T2")) {
+            return params.size() == 1 && params.get("phase") instanceof Value.StrV p && p.v().equals("Rifornimento");
+        }
+        return params.isEmpty();
+    }
+
     private static boolean targetParamsOk(String targetId, Map<String, Value> params) {
+        if (targetId.equals("S12")) {
+            return params.size() == 1 && params.get("suit") instanceof Value.StrV s && SUITS.contains(s.v());
+        }
         if (targetId.equals("S41")) {
             return params.keySet().stream().allMatch(k -> k.equals("filters"))
                     && (params.get("filters") == null || params.get("filters") instanceof Value.ListV l
@@ -158,6 +190,9 @@ public final class EffectRegistry {
         if (!DURATIONS.contains(expansion.duration())) {
             throw notImplemented(where, "duration " + expansion.duration());
         }
+        if (!triggerParamsOk(expansion.triggerId(), expansion.triggerParams())) {
+            throw notImplemented(where, "trigger " + expansion.triggerId() + " with params " + expansion.triggerParams());
+        }
         if (!targetParamsOk(expansion.targetId(), expansion.targetParams())) {
             throw notImplemented(where, "target " + expansion.targetId() + " with params " + expansion.targetParams().keySet());
         }
@@ -182,7 +217,10 @@ public final class EffectRegistry {
         if (!CONDITIONS.contains(c.id())) {
             throw notImplemented(where, "condition " + c.id());
         }
-        boolean needsSuit = c.id().equals("C4") || c.id().equals("C11");
+        if (c.id().equals("C24") && !(c.params().get("key") instanceof Value.StrV k && !k.v().isEmpty())) {
+            throw new AbilityException(where + ": condition C24 needs a text param 'key'");
+        }
+        boolean needsSuit = c.id().equals("C4") || c.id().equals("C11") || c.id().equals("C25");
         if (needsSuit && !(c.params().get("suit") instanceof Value.StrV s && SUITS.contains(s.v()))) {
             throw new AbilityException(where + ": condition " + c.id() + " needs a param 'suit' (one of " + new java.util.TreeSet<>(SUITS) + ")");
         }
@@ -203,7 +241,7 @@ public final class EffectRegistry {
             if (!(expansion.effectParams().get(e.getKey()) instanceof Value.StrV s)) {
                 throw new AbilityException(what + " needs a text param '" + e.getKey() + "'");
             }
-            if (!e.getValue().contains(s.v())) {
+            if (!e.getValue().isEmpty() && !e.getValue().contains(s.v())) {
                 throw new AbilityException(what + ": param '" + e.getKey() + "' must be one of " + new java.util.TreeSet<>(e.getValue()) + ", got " + s.v());
             }
         }

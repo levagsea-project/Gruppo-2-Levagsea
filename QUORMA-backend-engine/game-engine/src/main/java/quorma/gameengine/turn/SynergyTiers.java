@@ -59,6 +59,17 @@ final class SynergyTiers {
                 }
                 creature.setSynergyAbilities(own);
             }
+            // per_player tiers: the source is the player. The suit counts are fixed now for the whole turn.
+            var player = state.player(side);
+            List<BoundExpansion> ofPlayer = new java.util.ArrayList<>();
+            for (String id : synergies.tiers(side)) {
+                SynergyDef tier = rules.synergies().get(id);
+                if (!tier.perCreature()) {
+                    ofPlayer.addAll(bound.computeIfAbsent(id, k -> binder.bindSynergy(tier)));
+                }
+            }
+            player.setPlayerAbilities(ofPlayer);
+            player.fixSuitCounts();
         }
     }
 }

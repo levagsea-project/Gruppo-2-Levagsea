@@ -22,6 +22,8 @@ public final class Creature {
     private List<BoundExpansion> synergyAbilities = List.of();
     private int currentDef;
     private int atkBonus;
+    private int untilKillAtk;
+    private boolean condemned;
     private final Map<String, Integer> stacks = new LinkedHashMap<>();
     private boolean destroyed;
 
@@ -102,12 +104,25 @@ public final class Creature {
      * (ruleset 9.1).
      */
     public int currentAtk() {
-        return Math.max(0, Math.addExact(card.atk(), atkBonus));
+        return Math.max(0, Math.addExact(Math.addExact(card.atk(), atkBonus), untilKillAtk));
     }
 
     /** Adds {@code amount} (may be negative) to the ATK bonus. The amount is already floored by the effect. */
     public void addAtk(int amount) {
         atkBonus = Math.addExact(atkBonus, amount);
+    }
+
+    /**
+     * Adds {@code amount} to the ATK until this creature destroys a creature (duration {@code D_FinoAUccisione}):
+     * {@link #endUntilKill()} takes it away.
+     */
+    public void addUntilKillAtk(int amount) {
+        untilKillAtk = Math.addExact(untilKillAtk, amount);
+    }
+
+    /** Ends the effects that last until this creature destroys a creature. */
+    public void endUntilKill() {
+        untilKillAtk = 0;
     }
 
     /** How many times an effect with stack key {@code key} has been applied, 0 if never. */
@@ -134,6 +149,27 @@ public final class Creature {
         if (currentDef <= 0) {
             destroyed = true;
         }
+    }
+
+    /** Raises DEF by {@code amount}, never above the base DEF. A destroyed creature is not healed. */
+    public void heal(int amount) {
+        if (!destroyed) {
+            currentDef = Math.min(card.def(), Math.addExact(currentDef, amount));
+        }
+    }
+
+    /**
+     * Saves the creature from destruction (effect E12 with {@code then = destroy_at_next_refill}): DEF goes back to
+     * the base DEF, and Refill destroys it if it is still in its lane.
+     */
+    public void saveWithFullDef() {
+        currentDef = card.def();
+        condemned = true;
+    }
+
+    /** True if the creature was saved and Refill will destroy it. */
+    public boolean condemned() {
+        return condemned;
     }
 
     /** Flags the creature destroyed without changing its DEF (for effects). */

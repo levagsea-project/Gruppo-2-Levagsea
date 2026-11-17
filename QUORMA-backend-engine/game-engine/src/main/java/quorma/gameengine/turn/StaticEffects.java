@@ -19,7 +19,7 @@ import quorma.gameengine.model.Side;
  * not know where an expansion comes from. Conditions are checked on the board as it is now, so a destroyed creature
  * neither gives nor receives anything (ruleset 7.10.3).
  *
- * <p>Conditions: C22 (the target's DEF is above the source's ATK, both as the cycle started), C1 (the source is an attacker), C4 (its controller has at least {@code level} creatures of
+ * <p>Conditions: C24 (the lockout key is not set), C25 (the creature took a lane left by a destroyed creature of the suit this turn), C22 (the target's DEF is above the source's ATK, both as the cycle started), C1 (the source is an attacker), C4 (its controller has at least {@code level} creatures of
  * {@code suit}, counted with the destroyed ones, which stay until Refill), C11 (the source is adjacent to a living
  * creature of {@code suit}). Targets: S1 (the source) and S41 (living creatures adjacent to the source, with the
  * filter {@code attacker}). Effects: E1 {@code flat} (+ATK) and E34 (the group's creatures count as adjacent).</p>
@@ -61,6 +61,8 @@ final class StaticEffects {
      * replacement effects of a blow (Frattura 4 and 5).
      */
     static boolean holds(BoundExpansion e, MatchState state, Evaluation evaluation, Side side, Creature source) {
+        // For an effect whose source is the player, {@code source} is the creature the conditions are about:
+        // the replacement for C25, the creature that is about to be destroyed for C24.
         return conditionsHold(e, state, evaluation, side, source, true, null, null);
     }
 
@@ -96,8 +98,10 @@ final class StaticEffects {
             Creature source, boolean useLinks, Creature target, CycleStart start) {
         for (ConditionDef c : e.conditions()) {
             boolean holds = switch (c.id()) {
-                case "C1" -> evaluation.hand(side).attackerLanes().contains(source.lane());
+                case "C1" -> evaluation != null && evaluation.hand(side).attackerLanes().contains(source.lane());
                 case "C4" -> count(state, side, suit(c)) >= ((Value.IntV) c.params().get("level")).v();
+                case "C24" -> !state.player(side).isLocked(((Value.StrV) c.params().get("key")).v());
+                case "C25" -> state.player(side).vacatedSuit(source.lane()).filter(s -> s == suit(c)).isPresent();
                 case "C22" -> target != null && start != null && start.def(target) > start.atk(source);
                 case "C11" -> state.player(side).creatures().stream()
                         .anyMatch(o -> o != source && !o.destroyed() && o.card().suit() == suit(c)
@@ -115,9 +119,9 @@ final class StaticEffects {
         return Suit.valueOf(((Value.StrV) c.params().get("suit")).v().toUpperCase(Locale.ROOT));
     }
 
-    /** Creatures of {@code suit} the player has, destroyed ones included: the count is fixed for the turn. */
+    /** Creatures of {@code suit} the player had at Evaluate, destroyed ones included: the count is fixed for the turn. */
     private static long count(MatchState state, Side side, Suit suit) {
-        return state.player(side).creatures().stream().filter(c -> c.card().suit() == suit).count();
+        return state.player(side).suitCount(suit);
     }
 
     /**

@@ -28,7 +28,7 @@ public final class EffectStack {
     /** Safety net: a stack that needs more resolutions than this is a loop in the data, an engine error. */
     public static final int MAX_RESOLUTIONS = 1000;
 
-    private record Pending(Side side, Creature source, BoundExpansion expansion) {}
+    private record Pending(Side side, Creature source, Creature target, BoundExpansion expansion) {}
 
     private final Deque<Pending> stack = new ArrayDeque<>();
     private final List<MatchEvent> log;
@@ -46,11 +46,19 @@ public final class EffectStack {
 
     /** Puts a triggered (class T) expansion of {@code source}, owned by {@code side}, on top of the stack. */
     public void push(Side side, Creature source, BoundExpansion expansion) {
+        push(side, source, source, expansion);
+    }
+
+    /**
+     * Puts a triggered expansion on top of the stack with a target other than its source: a suit synergy tier whose
+     * source is the player is logged with the creature it affects as source.
+     */
+    public void push(Side side, Creature source, Creature target, BoundExpansion expansion) {
         if (expansion.cls() != ResClass.T) {
             throw new IllegalArgumentException("only class T effects use the stack, got " + expansion.cls()
                     + " for " + expansion.abilityId() + " " + expansion.effectId());
         }
-        stack.push(new Pending(side, source, expansion));
+        stack.push(new Pending(side, source, target, expansion));
         log.add(new EffectTriggered(CreatureRef.of(side, source), expansion.abilityId(), expansion.triggerId(),
                 expansion.effectId(), stack.size()));
     }
@@ -82,8 +90,7 @@ public final class EffectStack {
     private void resolve(Pending top) {
         BoundExpansion e = top.expansion();
         CreatureRef source = CreatureRef.of(top.side(), top.source());
-        // S1, the only target implemented: the source itself (EffectRegistry).
-        Creature target = top.source();
+        Creature target = top.target();
         if (target.destroyed()) {
             log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), FizzleReason.TARGET_DESTROYED));
             return;

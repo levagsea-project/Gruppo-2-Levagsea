@@ -192,12 +192,9 @@ public final class AbilityBinder {
 
     private BoundExpansion bindExpansion(String where, String abilityId, ExpansionDef expansion,
             Map<String, Value> params, Map<String, Value> cardParams, List<ConditionDef> conditions) {
-        if (!expansion.triggerParams().isEmpty()) {
-            throw new AbilityException(where + ": trigger params are not implemented by the engine yet");
-        }
         Map<String, Value> effectParams = new LinkedHashMap<>();
         for (Map.Entry<String, Value> e : expansion.effectParams().entrySet()) {
-            effectParams.put(e.getKey(), resolve(where, e.getValue(), params, cardParams));
+            flatten(where, e.getKey(), e.getValue(), params, cardParams, effectParams);
         }
         effectParams = EffectRegistry.withDefaults(expansion.effectId(), effectParams);
 
@@ -224,8 +221,20 @@ public final class AbilityBinder {
         if (maxStacks.isPresent() && stackKey.isEmpty()) {
             stackKey = Optional.of(abilityId); // vocab.common_params.stack_key: defaults to the source's id
         }
-        return new BoundExpansion(abilityId, expansion.triggerId(), expansion.effectId(), expansion.targetId(),
+        return new BoundExpansion(abilityId, expansion.triggerId(), expansion.triggerParams(), expansion.effectId(), expansion.targetId(),
                 expansion.targetParams(), conditions, expansion.duration(), expansion.cls(), effectParams, maxStacks, stackKey);
+    }
+
+    /** Resolves a param; an object becomes one param per field, named {@code parent.field} (E12 {@code lockout}). */
+    private void flatten(String where, String name, Value value, Map<String, Value> params, Map<String, Value> cardParams,
+            Map<String, Value> out) {
+        if (value instanceof Value.MapV map) {
+            for (Map.Entry<String, Value> field : map.fields().entrySet()) {
+                flatten(where, name + "." + field.getKey(), field.getValue(), params, cardParams, out);
+            }
+        } else {
+            out.put(name, resolve(where, value, params, cardParams));
+        }
     }
 
     /** Resolves a reference to a plain integer, string or boolean. */

@@ -17,6 +17,7 @@ import quorma.gameengine.data.Value;
  * {@link AbilityBinder} when a creature enters play.
  *
  * @param abilityId   the keyword the expansion comes from, for example {@code K_SCUDO}
+ * @param triggerParams the trigger params, for example {@code phase} of T2
  * @param targetParams the target params as written, for example {@code filters} of S41
  * @param conditions  the conditions left to check while the creature is in play (everything but {@code K_PARAM}),
  *                    with literal params
@@ -28,6 +29,7 @@ import quorma.gameengine.data.Value;
 public record BoundExpansion(
         String abilityId,
         String triggerId,
+        Map<String, Value> triggerParams,
         String effectId,
         String targetId,
         Map<String, Value> targetParams,
@@ -48,6 +50,7 @@ public record BoundExpansion(
         Objects.requireNonNull(maxStacks, "maxStacks");
         Objects.requireNonNull(stackKey, "stackKey");
         effectParams = Collections.unmodifiableMap(new LinkedHashMap<>(effectParams));
+        triggerParams = Collections.unmodifiableMap(new LinkedHashMap<>(Objects.requireNonNull(triggerParams, "triggerParams")));
         targetParams = Collections.unmodifiableMap(new LinkedHashMap<>(Objects.requireNonNull(targetParams, "targetParams")));
         conditions = List.copyOf(Objects.requireNonNull(conditions, "conditions"));
     }

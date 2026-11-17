@@ -21,6 +21,7 @@ import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CardSetAside;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
+import quorma.gameengine.log.MatchEvent.CreatureSaved;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
 import quorma.gameengine.log.MatchEvent.DeckReshuffled;
 import quorma.gameengine.log.MatchEvent.EffectFizzled;
@@ -257,6 +258,11 @@ final class MatchLogWriter {
             case CreatureDestroyed d -> {
                 e.put("type", "creature_destroyed");
                 e.put("creature", ref(d.side(), d.lane(), d.cardId()));
+            }
+            case CreatureSaved s -> {
+                e.put("type", "creature_saved");
+                e.put("creature", ref(s.side(), s.lane(), s.cardId()));
+                e.put("ability_id", s.abilityId());
             }
             case EffectTriggered t -> {
                 e.put("type", "effect_triggered");

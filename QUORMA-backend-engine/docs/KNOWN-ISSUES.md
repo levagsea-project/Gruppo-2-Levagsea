@@ -11,9 +11,9 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 ## Fix before use
 
 
-### `2026-11-14-suit-synergies-not-in-engine`: The engine applies only some suit synergies
+### `2026-11-14-suit-synergies-not-in-engine`: Spira synergies are not applied
 
-Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures, and `synergies.json` keeps all twelve tiers live (`2026-11-14-mvp-ability-set`). The engine counts the suits at Evaluate and applies Vincolo and Frattura (`2026-11-17-synergies-engine`, `2026-11-17-frattura-synergy`). Vestigio and Spira are not applied yet, so a board with three or more creatures of those suits still differs from the rulebook, silently (Spira is inert anyway, `2026-11-14-spira-inert-without-evolutions`). The golden files avoid such boards.
+Ruleset 7.10 gives a synergy to a suit with 3, 4 or 5 creatures. The engine applies Vincolo, Frattura and Vestigio (`2026-11-17-synergies-engine`, `2026-11-17-frattura-synergy`, `2026-11-17-vestigio-synergy`). Spira 3, 4 and 5 count, multiply and force Evolutions, and no Evolution is live, so they change nothing (`2026-11-14-spira-inert-without-evolutions`). A board with three or more Spira creatures is played as the rulebook would play it without Evolutions. Close this issue together with that one when an Evolution is restored.
 
 
 ## Gaps

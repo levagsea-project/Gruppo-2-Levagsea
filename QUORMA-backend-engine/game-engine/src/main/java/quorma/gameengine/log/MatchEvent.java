@@ -61,6 +61,12 @@ public sealed interface MatchEvent {
     /** A creature was flagged destroyed. It stays in its lane until Refill. */
     record CreatureDestroyed(Side side, int lane, String cardId) implements MatchEvent {}
 
+    /**
+     * A creature that would have been destroyed was saved with full DEF (effect E12): Refill destroys it if it is
+     * still in its lane.
+     */
+    record CreatureSaved(Side side, int lane, String cardId, String abilityId) implements MatchEvent {}
+
     /** A triggered ability was put on the stack. {@code stackSize} counts the stack after the push. */
     record EffectTriggered(CreatureRef source, String abilityId, String triggerId, String effectId, int stackSize)
             implements MatchEvent {}

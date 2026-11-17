@@ -225,6 +225,7 @@
         { "$ref": "#/$defs/ev_attack_resolved" },
         { "$ref": "#/$defs/ev_attack_skipped" },
         { "$ref": "#/$defs/ev_creature_destroyed" },
+        { "$ref": "#/$defs/ev_creature_saved" },
         { "$ref": "#/$defs/ev_effect_triggered" },
         { "$ref": "#/$defs/ev_effect_resolved" },
         { "$ref": "#/$defs/ev_effect_fizzled" },
@@ -285,6 +286,17 @@
       "properties": {
         "type": { "const": "creature_destroyed" },
         "creature": { "$ref": "#/$defs/creature_ref" }
+      }
+    },
+    "ev_creature_saved": {
+      "description": "The creature would have been destroyed and was saved with full DEF (a suit synergy, Vestigio 5). Refill destroys it if it is still in its lane.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "creature", "ability_id"],
+      "properties": {
+        "type": { "const": "creature_saved" },
+        "creature": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" }
       }
     },
     "ev_effect_triggered": {

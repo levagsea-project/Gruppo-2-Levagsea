@@ -10,6 +10,7 @@ Anything may change until 1.0 is released. Changes before this log started are i
 
 | Date | Area | Change | Reference |
 |---|---|---|---|
+| 2026-11-17 | engine | Vestigio 3, 4 and 5: heal at the start of Refill, +ATK for a replacement until it kills, and a Vestigio about to be destroyed is saved once per activation (destroyed at Refill, lockout until fewer than 5 are in play). New MatchLog event `creature_saved`. Suit counts are fixed at Evaluate on the player. No data changed, no hash changed. | `2026-11-17-vestigio-synergy` |
 | 2026-11-17 | engine | Frattura 3, 4 and 5: +ATK against a target whose DEF is above the attacker's ATK as the cycle started; on a kill the spill multiplier and the DEF spill uses change. Two new modifier kinds in the MatchLog: none for the bonus (`atk_bonus`), `spill_def_permille` for the DEF share. No data changed, no hash changed. | `2026-11-17-frattura-synergy` |
 | 2026-11-17 | engine | Suit synergies: Evaluate fixes the active tiers of each side, and Vincolo 3, 4 and 5 add ATK to blows (`atk_bonus` modifiers, `ability_id` like `VINCOLO_3`). The MatchLog schema accepts both. No data changed, so no hash changed. | `2026-11-17-synergies-engine` |
 | 2026-11-17 | data | Camaleonte restored from `data/parked/` (keyword, balance entry, effect `E55`, Tier 1 role affinity, its open decision). New `ruleset_hash`. | `2026-11-17-camaleonte-best-hand` |

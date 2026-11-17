@@ -10,6 +10,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Function;
 import quorma.gameengine.data.Ruleset;
+import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
@@ -17,12 +18,14 @@ import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
+import quorma.gameengine.hand.Suit;
 import quorma.gameengine.hand.WildSuit;
 import quorma.gameengine.log.BoardSnapshot;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
+import quorma.gameengine.log.MatchEvent.CreatureSaved;
 import quorma.gameengine.log.MatchEvent.EquipmentApplied;
 import quorma.gameengine.log.MatchEvent.EquipmentLost;
 import quorma.gameengine.log.MatchEvent.EquipmentPending;
@@ -195,16 +198,24 @@ public final class TurnResolver {
                     other != blow && other.strike().killed()
                             && other.attacker() == blow.target() && other.target() == blow.attacker());
             Strike strike = mutualKill ? blow.strike().withoutSpill() : blow.strike();
+            Target targetRef = blow.attack().target().orElseThrow();
 
-            blow.target().takeDamage(strike.damage());
+            BoundExpansion rescue = strike.killed() ? rescue(state, evaluation, targetRef.side(), blow.target()) : null;
+            if (rescue != null) {
+                strike = strike.saved(blow.target().card().def());
+            } else {
+                blow.target().takeDamage(strike.damage());
+            }
             if (strike.spill() > 0) {
                 state.player(blow.attack().attacker().other()).loseLife(strike.spill());
             }
             log.add(strike.event(blow.attack(), 1, mutualKill));
-            if (strike.killed()) {
-                Target targetRef = blow.attack().target().orElseThrow();
+            if (rescue != null) {
+                log.add(new CreatureSaved(targetRef.side(), targetRef.lane(), blow.target().card().id(), rescue.abilityId()));
+            } else if (strike.killed()) {
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), blow.target().card().id()));
                 kills.add(new Kill(blow.attack().attacker(), blow.attacker()));
+                blow.attacker().endUntilKill();
             }
         }
         triggerKills(state, kills, log);
@@ -236,16 +247,45 @@ public final class TurnResolver {
 
             Strike strike = Strike.of(rules, state, evaluation, start, attack.attacker(), attacker, targetRef.side(), target);
 
-            target.takeDamage(strike.damage());
+            BoundExpansion rescue = strike.killed() ? rescue(state, evaluation, targetRef.side(), target) : null;
+            if (rescue != null) {
+                strike = strike.saved(target.card().def());
+            } else {
+                target.takeDamage(strike.damage());
+            }
             if (strike.spill() > 0) {
                 state.player(attack.attacker().other()).loseLife(strike.spill());
             }
             log.add(strike.event(attack, 2, false));
-            if (strike.killed()) {
+            if (rescue != null) {
+                log.add(new CreatureSaved(targetRef.side(), targetRef.lane(), target.card().id(), rescue.abilityId()));
+            } else if (strike.killed()) {
                 log.add(new CreatureDestroyed(targetRef.side(), targetRef.lane(), target.card().id()));
+                attacker.endUntilKill();
                 triggerKills(state, List.of(new Kill(attack.attacker(), attacker)), log);
             }
         }
+    }
+
+    /**
+     * T20 "about to be destroyed", effect E12: if {@code target} has a living effect that saves it (its conditions
+     * hold, for Vestigio 5 the lockout is not set) and it was not already saved, it is saved: DEF back to the base
+     * DEF, the lockout is set, and the blow it would have died of deals no spill. Returns that effect, or null.
+     */
+    private static BoundExpansion rescue(MatchState state, Evaluation evaluation, Side side, Creature target) {
+        if (target.condemned()) {
+            return null;
+        }
+        for (BoundExpansion e : target.abilities("T20")) {
+            if (e.effectId().equals("E12") && StaticEffects.holds(e, state, evaluation, side, target)) {
+                state.player(side).lock(e.stringParam("lockout.key").orElseThrow(),
+                        Suit.valueOf(e.stringParam("lockout.suit").orElseThrow().toUpperCase(java.util.Locale.ROOT)),
+                        e.intParam("lockout.reactivate_below"));
+                target.saveWithFullDef();
+                return e;
+            }
+        }
+        return null;
     }
 
     /** A creature that destroyed another with an attack. */
@@ -286,13 +326,23 @@ public final class TurnResolver {
     public void refill(MatchState state, List<MatchEvent> log) {
         Side[] order = prioritySides(state);
 
+        // 10.1: the effects that trigger at the start of Refill resolve first, and do not touch destroyed creatures.
+        startOfRefill(state, order, log);
+
         for (Side side : order) {
             var player = state.player(side);
+            player.clearVacated();
             for (int lane = 1; lane <= 5; lane++) {
                 Creature creature = player.creatureAt(lane).orElse(null);
+                // 10.2: a creature that was saved (E12) and is still in its lane is destroyed now.
+                if (creature != null && creature.condemned() && !creature.destroyed()) {
+                    creature.markDestroyed();
+                    log.add(new CreatureDestroyed(side, lane, creature.card().id()));
+                }
                 if (creature != null && creature.destroyed()) {
                     player.remove(lane);
                     player.discard().add(creature.card());
+                    player.noteVacated(lane, creature.card().suit());
                     log.add(new CreatureDiscarded(side, lane, creature.card().id()));
                 }
             }
@@ -314,6 +364,7 @@ public final class TurnResolver {
                     Creature drawn = new Creature(creatureCard, lane, binder.bind(creatureCard));
                     player.place(drawn);
                     log.add(new CardDrawn(side, lane, card.id()));
+                    onReplacementPlaced(state, side, drawn, log);
                     if (pendingEquipment != null) {
                         cardEffects.onEquipment(pendingEquipment, side, drawn);
                         log.add(new EquipmentApplied(side, lane, pendingEquipment.id(), card.id()));
@@ -336,6 +387,89 @@ public final class TurnResolver {
                 log.add(new EquipmentLost(side, pendingEquipment.id()));
             }
         }
+
+        // 10.10: what depends on the creatures in play after Refill (the lockout of Vestigio 5).
+        for (Side side : order) {
+            state.player(side).releaseLocks();
+        }
+    }
+
+    /**
+     * T2 with phase Rifornimento (10.1): the abilities of the creatures in play and of the player (suit synergies),
+     * pushed Potenze Artificiali first, then resolved. Destroyed creatures are neither sources nor targets. A tier
+     * whose source is the player is logged with the creature it affects as source.
+     */
+    private void startOfRefill(MatchState state, Side[] order, List<MatchEvent> log) {
+        EffectStack stack = new EffectStack(log);
+        for (Side side : order) {
+            var player = state.player(side);
+            for (Creature source : player.creatures()) {
+                if (!source.destroyed()) {
+                    pushRefillStart(state, side, source, source.abilities("T2"), stack);
+                }
+            }
+            pushRefillStart(state, side, null, player.playerAbilities().stream()
+                    .filter(e -> e.triggerId().equals("T2")).toList(), stack);
+        }
+        stack.resolveAll();
+    }
+
+    private static void pushRefillStart(MatchState state, Side side, Creature source, List<BoundExpansion> expansions,
+            EffectStack stack) {
+        for (BoundExpansion e : expansions) {
+            if (!"Rifornimento".equals(((Value.StrV) e.triggerParams().get("phase")).v())) {
+                continue;
+            }
+            for (Creature target : targetsOf(state, side, e, source)) {
+                if (StaticEffects.holds(e, state, null, side, target)) {
+                    stack.push(side, source != null ? source : target, target, e);
+                }
+            }
+        }
+    }
+
+    /** The living creatures an effect of the player or of {@code source} (null for the player) is aimed at. */
+    private static List<Creature> targetsOf(MatchState state, Side side, BoundExpansion e, Creature source) {
+        List<Creature> out = new ArrayList<>();
+        switch (e.targetId()) {
+            case "S1" -> {
+                if (source != null && !source.destroyed()) {
+                    out.add(source);
+                }
+            }
+            case "S12" -> {
+                Suit suit = Suit.valueOf(((Value.StrV) e.targetParams().get("suit")).v().toUpperCase(java.util.Locale.ROOT));
+                for (Creature c : state.player(side).creatures()) {
+                    if (!c.destroyed() && c.card().suit() == suit) {
+                        out.add(c);
+                    }
+                }
+            }
+            default -> { }
+        }
+        return out;
+    }
+
+    /**
+     * T29 (10.4): a creature was placed as a replacement. The abilities of the player (suit synergies) and of the
+     * creatures in play that trigger on it are pushed and resolved at once; their target S27 is the replacement.
+     */
+    private void onReplacementPlaced(MatchState state, Side side, Creature replacement, List<MatchEvent> log) {
+        EffectStack stack = new EffectStack(log);
+        var player = state.player(side);
+        for (BoundExpansion e : player.playerAbilities()) {
+            if (e.triggerId().equals("T29") && StaticEffects.holds(e, state, null, side, replacement)) {
+                stack.push(side, replacement, replacement, e);
+            }
+        }
+        for (Creature source : player.creatures()) {
+            for (BoundExpansion e : source.abilities("T29")) {
+                if (source != replacement && !source.destroyed() && StaticEffects.holds(e, state, null, side, replacement)) {
+                    stack.push(side, source, e.targetId().equals("S27") ? replacement : source, e);
+                }
+            }
+        }
+        stack.resolveAll();
     }
 
     /** End of turn (11): the result if the match is over, empty if it goes on. Appends events to {@code log}. */
