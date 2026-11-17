@@ -146,7 +146,7 @@ class GameEngineTest {
                 .contains("players.B.deck[0].abilities: card PA-SPI-K K_LETALE: unknown ability"));
         String spell = "{\"id\": \"S\", \"kind\": \"SPELL\", \"faction\": \"POTENZE_ARTIFICIALI\", \"abilities\": [{\"id\": \"K_SCUDO\"}]}";
         assertTrue(refused(input(1, "1.0-alpha", ACE, KING + ", " + spell))
-                .contains("players.B.deck[1].abilities: card S: spell and equipment effects are not implemented"));
+                .contains("players.B.deck[1].abilities: card S K_SCUDO: a spell has its effects written as expansions"));
     }
 
     @Test

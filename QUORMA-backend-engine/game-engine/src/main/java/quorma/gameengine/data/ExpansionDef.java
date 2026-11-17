@@ -8,6 +8,7 @@ import java.util.Set;
 
 /**
  * One (trigger, effect, target) tuple. JSON key {@code class} is {@code cls} here. Params may contain {@link Value.Ref}.
+ * {@code triggerId} is null for a class I expansion (spells and equipment have no trigger) and never otherwise.
  *
  * @param common the optional common params allowed on any expansion ({@code vocab.common_params}):
  *               {@code max_triggers}, {@code once_per_turn}, {@code max_stacks}, {@code stack_key}. Only the keys
@@ -26,6 +27,9 @@ public record ExpansionDef(
     public static final Set<String> COMMON_KEYS = Set.of("max_triggers", "once_per_turn", "max_stacks", "stack_key");
 
     public ExpansionDef {
+        if (triggerId == null && cls != ResClass.I) {
+            throw new IllegalArgumentException("only a class I expansion may have no trigger, got class " + cls);
+        }
         common = Collections.unmodifiableMap(new LinkedHashMap<>(common));
     }
 

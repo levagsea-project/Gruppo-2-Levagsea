@@ -191,38 +191,6 @@
     }
   },
   "effects": {
-    "E2": {
-      "name": "Aggiungi DEF attuale [AMOUNT]",
-      "class": [
-        "C",
-        "T",
-        "I"
-      ],
-      "description": "Aggiunge params.amount alla DEF attuale del bersaglio. Non è una cura: non aumenta la DEF massima.",
-      "params": {
-        "mode": {
-          "type": "enum",
-          "values": [
-            "flat",
-            "pct_base_def"
-          ],
-          "default": "flat"
-        },
-        "amount": {
-          "type": "int",
-          "optional": true
-        },
-        "permille": {
-          "type": "int",
-          "optional": true,
-          "description": "Per-mille della DEF base del bersaglio (200 = +20%)."
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only"
-    },
     "E3": {
       "name": "Aggiungi DEF base [AMOUNT]",
       "class": [
@@ -476,22 +444,6 @@
         "creature"
       ],
       "duration_mode": "any"
-    },
-    "E24": {
-      "name": "Reindirizza attacco",
-      "class": [
-        "T"
-      ],
-      "description": "Reindirizza l'attacco indicato verso il nuovo bersaglio params.new_target_id. L'attacco reindirizzato si risolve nello stesso ciclo dell'attacco originale.",
-      "params": {
-        "new_target_id": {
-          "type": "target_id"
-        }
-      },
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "instant_only"
     },
     "E25": {
       "name": "Previeni attacco",
@@ -1062,18 +1014,6 @@
         }
       }
     },
-    "E55": {
-      "name": "Conta come qualsiasi seme per la mano",
-      "class": [
-        "C",
-        "R"
-      ],
-      "target_kind": [
-        "creature"
-      ],
-      "duration_mode": "sustained_only",
-      "description": "Per colore, scala colore e quattro dello stesso seme il bersaglio conta come qualsiasi seme. Non influisce sulle sinergie dei semi."
-    },
     "E57": {
       "name": "Scarta le prime carte del mazzo [COUNT]",
       "class": [
@@ -1159,15 +1099,6 @@
         "declared_target"
       ]
     },
-    "T9": {
-      "name": "Quando è bersaglio di un attacco dichiarato",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Durante la fase di Dichiarazione, quando la creatura è scelta come bersaglio.",
-      "provides": [
-        "triggerer"
-      ]
-    },
     "T10": {
       "name": "Quando viene distrutta",
       "class": "T",
@@ -1188,17 +1119,6 @@
       "provides": [
         "triggerer",
         "damager"
-      ]
-    },
-    "T12": {
-      "name": "Quando sopravvive a danno da combattimento",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Quando la creatura subisce danno da combattimento e rimane in gioco.",
-      "provides": [
-        "damaged",
-        "damager",
-        "triggerer"
       ]
     },
     "T13": {
@@ -1388,27 +1308,6 @@
         "stack_effect"
       ]
     },
-    "T_EVO": {
-      "name": "Evoluzione [TRIGGER]",
-      "class": "T",
-      "uses_stack": true,
-      "description": "Wrapper: il trigger indicato da params.trigger_id conta come trigger di Evoluzione per le sinergie Spira. Un'Evoluzione si innesca al massimo UNA volta per istanza di carta in gioco (max_triggers = 1, vedi evolution_rules). Valori ammessi per params.trigger_id: qualsiasi trigger di classe T.",
-      "params": {
-        "trigger_id": {
-          "type": "trigger_id"
-        },
-        "trigger_params": {
-          "type": "object",
-          "optional": true
-        },
-        "max_triggers": {
-          "type": "int",
-          "const": 1,
-          "description": "Fisso a 1 per regola."
-        }
-      },
-      "provides": "inherit:params.trigger_id"
-    },
     "T35": {
       "name": "Quando una creatura alleata adiacente è bersaglio di un attacco dichiarato",
       "class": "T",
@@ -1521,22 +1420,6 @@
         "creature"
       ],
       "requires_context": "triggerer"
-    },
-    "S9": {
-      "name": "Tutte le tue creature",
-      "description": "Tutte le creature controllate dal giocatore che possiede l'effetto.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S10": {
-      "name": "Tutte le creature avversarie",
-      "description": "Tutte le creature controllate dall'avversario.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
     },
     "S11": {
       "name": "Tutte le creature",
@@ -1712,7 +1595,7 @@
     },
     "S28": {
       "name": "Carta pescata",
-      "description": "La carta appena pescata dal mazzo.",
+      "description": "La carta appena pescata dal mazzo. Per una magia o un equipaggiamento (contesto drawn_card) è la carta stessa.",
       "kind": [
         "card"
       ],

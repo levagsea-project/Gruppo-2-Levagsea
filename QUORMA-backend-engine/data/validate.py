@@ -63,19 +63,36 @@ def class_of_trigger(trigger_id, trigger_params):
 def rule_matches(rule, x):
     for field in ("trigger_id", "effect_id", "target_id"):
         want = rule.get(field)
-        if want is not None and x[field] not in as_list(want):
+        if want is not None and x.get(field) not in as_list(want):
             return False
     if "allowed_triggers" in rule:
         # whitelist rule: matches (= invalid) when effect matches and trigger not allowed
-        return x["trigger_id"] not in rule["allowed_triggers"] and x["effect_id"] in as_list(rule["effect_id"])
+        return x.get("trigger_id") not in rule["allowed_triggers"] and x["effect_id"] in as_list(rule["effect_id"])
     return True
 
 
-def check_expansion(where, x, origin):
-    t, e, s, d = x["trigger_id"], x["effect_id"], x["target_id"], x["duration"]
+def card_contexts(card_kind):
+    """The contexts a spell or equipment gives its targets (vocab card_contexts, parked until those cards exist)."""
+    section = vocab.get("card_contexts") or p_vocab.get("card_contexts") or {}
+    return section.get(card_kind, [])
+
+
+def check_expansion(where, x, origin, card_kind=None):
+    """card_kind is "spell" or "equipment" for an ability of such a card, None for keywords, evolutions and synergies."""
+    t, e, s, d = x.get("trigger_id"), x["effect_id"], x["target_id"], x["duration"]
     tp = x.get("trigger_params", {})
+    # a spell or equipment has no trigger (2026-11-17-class-i-no-trigger): only class I, only on those cards
+    if t is None:
+        if card_kind is None:
+            err(where, "only a spell or equipment expansion may have no trigger")
+            return
+        if x["class"] != "I":
+            err(where, f"an expansion without trigger must be class I, got {x['class']}")
+            return
     # 1 ids exist
     for kind, key, table in (("trigger", t, T), ("effect", e, E), ("target", s, S), ("duration", d, D)):
+        if key is None:
+            continue
         if key not in table:
             err(where, unknown(kind, key))
             return
@@ -84,12 +101,13 @@ def check_expansion(where, x, origin):
             err(where, unknown("condition", c["id"]))
     # 2 class
     cls = x["class"]
-    tcls = class_of_trigger(t, tp)
-    allowed = inv["class_rules"]["trigger_allowed_effect_classes"].get(t)
-    if allowed is None:
-        err(where, f"trigger {t} missing from class_rules")
-    elif cls not in allowed:
-        err(where, f"class {cls} not allowed for trigger {t} ({allowed})")
+    if t is not None:
+        class_of_trigger(t, tp)
+        allowed = inv["class_rules"]["trigger_allowed_effect_classes"].get(t)
+        if allowed is None:
+            err(where, f"trigger {t} missing from class_rules")
+        elif cls not in allowed:
+            err(where, f"class {cls} not allowed for trigger {t} ({allowed})")
     if cls not in E[e]["class"]:
         err(where, f"class {cls} not in effect {e} classes {E[e]['class']}")
     # 3 target kind
@@ -98,8 +116,9 @@ def check_expansion(where, x, origin):
         err(where, f"target {s} kinds {S[s]['kind']} do not fit effect {e} {E[e]['target_kind']}")
     # 4 trigger context
     ctx = S[s].get("requires_context")
-    if ctx and ctx not in provides_of(t, tp):
-        err(where, f"target {s} needs context '{ctx}' not provided by {t}")
+    provided = card_contexts(card_kind) if t is None else provides_of(t, tp)
+    if ctx and ctx not in provided:
+        err(where, f"target {s} needs context '{ctx}' not provided by " + (f"a {card_kind}" if t is None else t))
     # 5 duration
     mode = E[e]["duration_mode"]
     if mode == "instant_only" and d != "D_Istantanea":
@@ -107,7 +126,7 @@ def check_expansion(where, x, origin):
     if mode == "sustained_only" and d == "D_Istantanea":
         err(where, f"effect {e} is sustained_only, got {d}")
     # 6 class I only
-    if set(E[e]["class"]) == {"I"}:
+    if card_kind is None and set(E[e]["class"]) == {"I"}:
         err(where, f"class-I-only effect {e} in a creature ability")
     # 7 combination rules
     for r in inv["combination_rules"]:
@@ -144,14 +163,14 @@ def check_expansion(where, x, origin):
 
 for k, v in kw.items():
     for i, x in enumerate(v["expands_to"]):
-        if x["trigger_id"] == "T_EVO":  # 10
+        if x.get("trigger_id") == "T_EVO":  # 10
             err(f"keyword {k}[{i}]", "keywords must not use T_EVO")
         check_expansion(f"keyword {k}[{i}]", x, k)
     if v.get("balance_ref") not in bal["keywords"]:
         err(f"keyword {k}", "balance_ref missing in balance.json")
 for k, v in evo.items():
     for i, x in enumerate(v["expands_to"]):
-        if x["trigger_id"] != "T_EVO":
+        if x.get("trigger_id") != "T_EVO":
             err(f"evolution {k}[{i}]", "evolutions must use T_EVO")
         check_expansion(f"evolution {k}[{i}]", x, k)
     if v.get("balance_ref") not in bal["evolutions"]:

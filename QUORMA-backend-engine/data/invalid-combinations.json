@@ -12,6 +12,12 @@
       "T5": [
         "T"
       ],
+      "T9": [
+        "T"
+      ],
+      "T12": [
+        "T"
+      ],
       "T19": [
         "T"
       ],
@@ -23,6 +29,9 @@
       ],
       "T34": [
         "R"
+      ],
+      "T_EVO": [
+        "T"
       ]
     },
     "notes": [
@@ -41,5 +50,28 @@
     "keyword_grant": "Un'espansione con E14 deve indicare una keyword esistente in keyword.json e keyword_params conformi ai suoi params (campi richiesti presenti, nessun campo sconosciuto)."
   },
   "match_semantics": "Nei combination_rules un campo null significa 'qualsiasi'; una lista significa 'uno qualsiasi di'. Un'espansione è invalida se corrisponde a TUTTI i campi non nulli della regola.",
-  "combination_rules": []
+  "combination_rules": [
+    {
+      "rule_id": "IC001",
+      "trigger_id": [
+        "T_EVO",
+        "T15"
+      ],
+      "effect_id": "E17",
+      "target_id": null,
+      "reason": "Un'Evoluzione che innesca Evoluzioni crea un ciclo. Usare un trigger diverso."
+    },
+    {
+      "rule_id": "IC012",
+      "trigger_id": null,
+      "effect_id": "E24",
+      "target_id": null,
+      "allowed_triggers": [
+        "T8",
+        "T9",
+        "T35"
+      ],
+      "reason": "E24 reindirizza un attacco già dichiarato: è valido solo con T8, T9 o T35."
+    }
+  ]
 }

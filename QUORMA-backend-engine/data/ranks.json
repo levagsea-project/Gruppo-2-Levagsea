@@ -140,18 +140,23 @@
     "_note": "Abilita' che il pool favorisce per Tier (role_weight_pct). Un suggerimento, non un limite: ogni abilita' open resta idonea a ogni rango.",
     "1": [
       "K_SCUDO",
-      "K_PERFORANTE"
+      "K_PERFORANTE",
+      "K_CAMALEONTE",
+      "EVO_CRESCITA",
+      "EVO_TRINCEA"
     ],
     "2": [
       "K_PERFORANTE",
       "K_TRABOCCANTE",
       "K_INSAZIABILE",
-      "K_SCUDO"
+      "K_SCUDO",
+      "EVO_TRINCEA"
     ],
     "3": [
       "K_PERFORANTE",
       "K_TRABOCCANTE",
-      "K_INSAZIABILE"
+      "K_INSAZIABILE",
+      "EVO_CRESCITA"
     ],
     "4": [
       "K_INSAZIABILE",

@@ -7,7 +7,6 @@
 | `rules/` | Ruleset (Regolamento v1.0-alpha) as Markdown | **Authoritative source.** Contains the Vincolo 4 correction of 2026-11-01. The PDF in `pdf/` predates it. |
 | `lore/` | LEVAGSEA lore dossier v2.0 as Markdown | Put the original source here when available. |
 | `architecture/` | Architecture proposal (`Proposta Architettura.md`) | Same. |
-| `demo/` | The 3-turn gameplay demo | Has known errors, see `KNOWN-ISSUES.md` before using it as a test. |
 | `pdf/` | External PDF exports for humans to share | **Read-only.** Never edit. Not an export copy of a `.md` in this folder. |
 | `rules/VERSIONING.md` | How versions work: development until 1.0, immutable releases after it, replayability | **Proposed**, not a decision yet. |
 | `rules/CHANGELOG.md` | Short list of every change to rules, data and engine behaviour | Add a line with every rule change. |
@@ -20,7 +19,7 @@ Agents read Markdown far better than PDFs. Prefer `rules/`, `lore/`, `architectu
 
 - A PDF or TXT file in the **same folder as a `.md` source** (for example `Proposta Architettura.pdf` next to `Proposta Architettura.md`, or `regolamento-v1.0-alpha.pdf` next to `regolamento-v1.0-alpha.md`) is an **export copy for humans to share and read**, generated from the `.md` and may go stale or lose formatting.
 - **Agents must always use the `.md` file.** Ignore same-folder PDF and TXT export copies for any agent work. This rule applies across `docs/`.
-- `pdf/` holds **external PDF exports** (for example `demo-gameplay-3-turni.pdf`, `lore-levagsea-v2.0.pdf`) that are not export copies of a `.md` in the same folder. These are for humans to read; agents do not use them as source material and never edit them.
+- `pdf/` holds **external PDF exports** (for example `lore-levagsea-v2.0.pdf`) that are not export copies of a `.md` in the same folder. These are for humans to read; agents do not use them as source material and never edit them.
 
 ## Authority
 

@@ -21,7 +21,7 @@ import quorma.gameengine.json.CanonicalJson;
  */
 public final class RulesetLoader {
 
-    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json");
+    private static final List<String> FILES = List.of("vocab.json", "keyword.json", "subfactions.json", "balance.json", "synergies.json", "evolutions.json");
 
     /** The files of the rule pack hash, in hash order (decision {@code 2026-11-14-match-log-schema}). */
     public static final List<String> HASHED_FILES = List.of(
@@ -99,7 +99,9 @@ public final class RulesetLoader {
                         section(vocab, "conditions"), section(vocab, "durations")),
                 keywords(roots.get("keyword.json")),
                 subfactions(roots.get("subfactions.json")),
-                roots.get("balance.json"));
+                roots.get("balance.json"),
+                synergies(roots.get("synergies.json")),
+                evolutions(roots.get("evolutions.json")));
     }
 
     // ---- vocab ----
@@ -194,14 +196,78 @@ public final class RulesetLoader {
                 common.put(field.getKey(), field.getValue());
             }
         }
+        ResClass cls = resClass(requireString(m, "class", path), path + ".class");
+        // Spells and equipment have no trigger (2026-11-17-class-i-no-trigger): only a class I expansion may omit it.
+        String triggerId = cls == ResClass.I && (m.get("trigger_id") == null || m.get("trigger_id") instanceof Value.NullV)
+                ? null : requireString(m, "trigger_id", path);
         return new ExpansionDef(
-                requireString(m, "trigger_id", path), params(m.get("trigger_params")),
+                triggerId, params(m.get("trigger_params")),
                 requireString(m, "effect_id", path), params(m.get("effect_params")),
                 requireString(m, "target_id", path), params(m.get("target_params")),
                 requireString(m, "duration", path),
                 List.copyOf(conditions),
-                resClass(requireString(m, "class", path), path + ".class"),
+                cls,
                 common);
+    }
+
+    // ---- evolutions ----
+
+    /** Reads {@code evolutions.json}: one entry per Evolution, in file order. Keys starting with {@code _} are notes. */
+    private static Map<String, EvolutionDef> evolutions(Value.MapV root) {
+        Map<String, EvolutionDef> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> e : root.fields().entrySet()) {
+            if (e.getKey().startsWith("_")) {
+                continue;
+            }
+            String path = "evolutions.json#" + e.getKey();
+            Value.MapV evo = asMap(e.getValue(), path);
+            List<ExpansionDef> expansions = new ArrayList<>();
+            List<Value> raw = asList(require(evo, "expands_to", path), path + ".expands_to");
+            for (int i = 0; i < raw.size(); i++) {
+                expansions.add(expansion(asMap(raw.get(i), path + ".expands_to[" + i + "]"),
+                        path + ".expands_to[" + i + "]"));
+            }
+            out.put(e.getKey(), new EvolutionDef(e.getKey(), optString(evo, "name"), optString(evo, "balance_ref"),
+                    optString(evo, "description"), expansions));
+        }
+        return java.util.Collections.unmodifiableMap(out);
+    }
+
+    // ---- synergies ----
+
+    /** Reads {@code synergies.json}: one entry per tier, in file order. Keys starting with {@code _} are notes. */
+    private static Map<String, SynergyDef> synergies(Value.MapV root) {
+        Map<String, SynergyDef> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Value> e : root.fields().entrySet()) {
+            if (e.getKey().startsWith("_")) {
+                continue;
+            }
+            String path = "synergies.json#" + e.getKey();
+            Value.MapV s = asMap(e.getValue(), path);
+            if (!(require(s, "tier", path) instanceof Value.IntV tier)) {
+                throw new RulesetException(path + ".tier: expected an integer");
+            }
+            List<String> replaces = new ArrayList<>();
+            if (s.get("replaces") != null) {
+                for (Value r : asList(s.get("replaces"), path + ".replaces")) {
+                    if (!(r instanceof Value.StrV id)) {
+                        throw new RulesetException(path + ".replaces: expected strings");
+                    }
+                    replaces.add(id.v());
+                }
+            }
+            List<ExpansionDef> expansions = new ArrayList<>();
+            List<Value> raw = asList(require(s, "expands_to", path), path + ".expands_to");
+            for (int i = 0; i < raw.size(); i++) {
+                expansions.add(expansion(asMap(raw.get(i), path + ".expands_to[" + i + "]"),
+                        path + ".expands_to[" + i + "]"));
+            }
+            out.put(e.getKey(), new SynergyDef(
+                    e.getKey(), requireString(s, "suit", path).toUpperCase(java.util.Locale.ROOT),
+                    Math.toIntExact(tier.v()), !(s.get("instantiation") instanceof Value.StrV i) || !i.v().equals("per_player"),
+                    replaces, expansions));
+        }
+        return java.util.Collections.unmodifiableMap(out);
     }
 
     // ---- subfactions ----

@@ -6,11 +6,12 @@
 -- equipment) writes them the same way: an ordered list (2026-11-07-cards-share-abilities).
 -- Suit and rank use the engine's own values (2026-11-08-db-uses-engine-names): suit is the name of the
 -- quorma.gameengine.hand.Suit constant, rank is the number 1..13 (Ace = 1, Jack = 11, Queen = 12, King = 13).
+-- Faction and subfaction are stored the same way: the constant names of the engine enums (RESISTENZA_UMANA, ADATTATI).
 
 CREATE TABLE pool_snapshots
 (
     id              uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
-    faction         varchar(24) NOT NULL CHECK (faction IN ('Resistenza Umana', 'Potenze Artificiali')),
+    faction         varchar(24) NOT NULL CHECK (faction IN ('RESISTENZA_UMANA', 'POTENZE_ARTIFICIALI')),
     version_label   varchar(64) NOT NULL,
     ruleset_version varchar(32) NOT NULL,
     content_hash    varchar(64) NOT NULL UNIQUE CHECK (content_hash ~ '^[0-9a-f]{64}$'),
@@ -23,7 +24,7 @@ CREATE TABLE cards
 (
     id         uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
     card_code  varchar(64) NOT NULL UNIQUE,
-    faction    varchar(24) NOT NULL CHECK (faction IN ('Resistenza Umana', 'Potenze Artificiali')),
+    faction    varchar(24) NOT NULL CHECK (faction IN ('RESISTENZA_UMANA', 'POTENZE_ARTIFICIALI')),
     kind       varchar(12) NOT NULL CHECK (kind IN ('CREATURE', 'SPELL', 'EQUIPMENT')),
     subfaction varchar(24),
     suit       varchar(16),
@@ -38,8 +39,8 @@ CREATE TABLE cards
     CONSTRAINT cards_suit_valid CHECK (suit IS NULL OR suit IN ('VINCOLO', 'FRATTURA', 'SPIRA', 'VESTIGIO')),
     CONSTRAINT cards_rank_valid CHECK (rank IS NULL OR rank BETWEEN 1 AND 13),
     CONSTRAINT cards_subfaction_matches_faction CHECK (subfaction IS NULL
-        OR (faction = 'Resistenza Umana' AND subfaction IN ('Adattati', 'Spezzasigilli', 'Portanome', 'Segnaterra'))
-        OR (faction = 'Potenze Artificiali' AND subfaction IN ('SEKTAC', 'MEROZYN', 'EFFRIX', 'YLMOR'))),
+        OR (faction = 'RESISTENZA_UMANA' AND subfaction IN ('ADATTATI', 'SPEZZASIGILLI', 'PORTANOME', 'SEGNATERRA'))
+        OR (faction = 'POTENZE_ARTIFICIALI' AND subfaction IN ('SEKTAC', 'MEROZYN', 'EFFRIX', 'YLMOR'))),
     UNIQUE (id, faction, kind),
     UNIQUE (id, faction, deck_slot)
 );

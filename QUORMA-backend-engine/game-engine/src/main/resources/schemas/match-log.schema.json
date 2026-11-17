@@ -34,9 +34,9 @@
     "lane": { "type": "integer", "minimum": 1, "maximum": 5 },
     "card_id": { "type": "string", "minLength": 1, "maxLength": 64 },
     "ability_id": {
-      "description": "A keyword or evolution id, or INLINE_<n> for the n-th ability of the card (from 1, keywords included) when it is written on the card as expansions.",
+      "description": "A keyword or evolution id, INLINE_<n> for the n-th ability of the card (from 1, keywords included) when it is written on the card as expansions, or a suit synergy tier such as VINCOLO_3.",
       "type": "string",
-      "pattern": "^((K|EVO)_[A-Z0-9_]+|INLINE_[1-9][0-9]*)$"
+      "pattern": "^((K|EVO)_[A-Z0-9_]+|INLINE_[1-9][0-9]*|(VINCOLO|FRATTURA|SPIRA|VESTIGIO)_[345])$"
     },
     "effect_id": { "type": "string", "pattern": "^E[0-9]+$" },
     "trigger_id": { "type": "string", "pattern": "^(T[0-9]+|T_EVO)$" },
@@ -121,6 +121,7 @@
           "type": "array",
           "items": { "$ref": "#/$defs/declaration" }
         },
+        "opening": { "description": "Effects of Evaluate and Declare, in the order they happened: Evolutions that fired, redirects. Absent when there were none.", "type": "array", "items": { "$ref": "#/$defs/event" } },
         "cycle_1": { "type": "array", "items": { "$ref": "#/$defs/event" } },
         "cycle_2": { "type": "array", "items": { "$ref": "#/$defs/event" } },
         "refill": { "type": "array", "items": { "$ref": "#/$defs/event" } },
@@ -148,7 +149,8 @@
       "properties": {
         "attacker": { "$ref": "#/$defs/creature_ref" },
         "target": { "description": "null when the opponent had nothing to target.", "oneOf": [{ "$ref": "#/$defs/creature_ref" }, { "type": "null" }] },
-        "cycle": { "enum": [1, 2] }
+        "cycle": { "description": "The cycle of the attack as declared: a redirected attack keeps it.", "enum": [1, 2] },
+        "redirected_from": { "description": "Present when an effect redirected the attack: the target it was declared with.", "$ref": "#/$defs/creature_ref" }
       }
     },
 
@@ -202,8 +204,8 @@
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
         "kind": {
-          "description": "damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante).",
-          "enum": ["damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier"]
+          "description": "atk_bonus: value more ATK (a suit synergy). damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante). spill_def_permille: spill treats the target's DEF before the blow as value / 1000 of itself.",
+          "enum": ["atk_bonus", "damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier", "spill_def_permille"]
         },
         "value": { "type": "integer", "minimum": 0 }
       }
@@ -223,8 +225,11 @@
       "description": "One thing that happened. Discriminated by type.",
       "oneOf": [
         { "$ref": "#/$defs/ev_attack_resolved" },
+        { "$ref": "#/$defs/ev_attack_redirected" },
         { "$ref": "#/$defs/ev_attack_skipped" },
         { "$ref": "#/$defs/ev_creature_destroyed" },
+        { "$ref": "#/$defs/ev_creature_saved" },
+        { "$ref": "#/$defs/ev_card_effect_resolved" },
         { "$ref": "#/$defs/ev_effect_triggered" },
         { "$ref": "#/$defs/ev_effect_resolved" },
         { "$ref": "#/$defs/ev_effect_fizzled" },
@@ -277,6 +282,19 @@
         "reason": { "enum": ["NO_TARGET", "TARGET_DESTROYED", "ATTACKER_DESTROYED"] }
       }
     },
+    "ev_attack_redirected": {
+      "description": "Declare: an effect aimed an attack at another creature. The redirected attack resolves in the cycle of the original attack (ruleset 9.4).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "attacker", "from", "to", "ability_id"],
+      "properties": {
+        "type": { "const": "attack_redirected" },
+        "attacker": { "$ref": "#/$defs/creature_ref" },
+        "from": { "$ref": "#/$defs/creature_ref" },
+        "to": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" }
+      }
+    },
     "ev_creature_destroyed": {
       "description": "The creature is flagged destroyed and stays in its lane until Refill.",
       "type": "object",
@@ -285,6 +303,32 @@
       "properties": {
         "type": { "const": "creature_destroyed" },
         "creature": { "$ref": "#/$defs/creature_ref" }
+      }
+    },
+    "ev_card_effect_resolved": {
+      "description": "An effect of a spell or an equipment changed a creature, logged after spell_resolved or equipment_applied.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "card_id", "ability_id", "effect_id", "target", "changes"],
+      "properties": {
+        "type": { "const": "card_effect_resolved" },
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "effect_id": { "$ref": "#/$defs/effect_id" },
+        "target": { "$ref": "#/$defs/creature_ref" },
+        "changes": { "type": "array", "items": { "$ref": "#/$defs/stat_change" } }
+      }
+    },
+    "ev_creature_saved": {
+      "description": "The creature would have been destroyed and was saved with full DEF (a suit synergy, Vestigio 5). Refill destroys it if it is still in its lane.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "creature", "ability_id"],
+      "properties": {
+        "type": { "const": "creature_saved" },
+        "creature": { "$ref": "#/$defs/creature_ref" },
+        "ability_id": { "$ref": "#/$defs/ability_id" }
       }
     },
     "ev_effect_triggered": {
@@ -326,7 +370,7 @@
         "source": { "$ref": "#/$defs/creature_ref" },
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
-        "reason": { "enum": ["TARGET_DESTROYED"] }
+        "reason": { "enum": ["TARGET_DESTROYED", "NO_NEW_TARGET"] }
       }
     },
     "ev_creature_discarded": {

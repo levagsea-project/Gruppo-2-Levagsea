@@ -11,6 +11,7 @@ import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.Modifier;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.Creature;
+import quorma.gameengine.model.MatchState;
 import quorma.gameengine.model.Side;
 
 /**
@@ -41,12 +42,18 @@ record Strike(
         spillModifiers = List.copyOf(spillModifiers);
     }
 
-    static Strike of(Ruleset rules, Side attackerSide, Creature attacker, Side targetSide, Creature target,
-            int handMultiplierPermille) {
+    static Strike of(Ruleset rules, MatchState state, Evaluation evaluation, CycleStart start, Side attackerSide,
+            Creature attacker, Side targetSide, Creature target) {
+        int handMultiplierPermille = evaluation.multiplier(attackerSide);
         CreatureRef attackerRef = CreatureRef.of(attackerSide, attacker);
         CreatureRef targetRef = CreatureRef.of(targetSide, target);
 
+        // ATK that static effects (suit synergies, abilities) add, worked out on the board as it is now.
+        List<Modifier> atkBonuses = StaticEffects.atkBonuses(state, evaluation, attackerSide, attacker, target, start);
         int atk = attacker.currentAtk();
+        for (Modifier bonus : atkBonuses) {
+            atk = Math.addExact(atk, bonus.value());
+        }
         int advantage = rules.advantagePermille(
                 attacker.card().subfaction().dataName(), target.card().subfaction().dataName());
         int effectiveAtk = Damage.effectiveAtk(atk, advantage);
@@ -80,7 +87,7 @@ record Strike(
         int mitigation = Damage.mitigationPermille(pcts, pierce, mitigationFloor(rules));
         int damage = Damage.damage(effectiveAtk, Damage.pierce(flat, pierce), mitigation, minDamage);
 
-        List<Modifier> damageModifiers = new ArrayList<>();
+        List<Modifier> damageModifiers = new ArrayList<>(atkBonuses);
         if (effectiveAtk > 0) {
             damageModifiers.addAll(reductions);
             if (!reductions.isEmpty()) {
@@ -92,21 +99,41 @@ record Strike(
         int defAfter = Math.subtractExact(defBefore, damage);
         boolean killed = defAfter <= 0;
 
-        // The attacker's Traboccante (E21, T34 "about to deal spill"): only on a kill.
+        // The attacker's replacement effects when it is about to deal spill (T34), in ability order, only on a kill:
+        // E21 changes the hand multiplier (Traboccante, Frattura 4 and 5), E22 the DEF the spill uses (Frattura).
         List<Modifier> spillModifiers = new ArrayList<>();
         List<Integer> factors = new ArrayList<>();
+        List<Integer> defShares = new ArrayList<>();
         if (killed) {
-            for (BoundExpansion e : effects(attacker, "T34", "E21")) {
-                factors.add(e.intParam("factor"));
-                spillModifiers.add(new Modifier(attackerRef, e.abilityId(), e.effectId(),
-                        Modifier.Kind.SPILL_MULTIPLIER, e.intParam("factor")));
+            for (BoundExpansion e : attacker.abilities("T34")) {
+                if (!StaticEffects.holds(e, state, evaluation, attackerSide, attacker)) {
+                    continue;
+                }
+                if (e.effectId().equals("E21")) {
+                    factors.add(e.intParam("factor"));
+                    spillModifiers.add(new Modifier(attackerRef, e.abilityId(), e.effectId(),
+                            Modifier.Kind.SPILL_MULTIPLIER, e.intParam("factor")));
+                } else if (e.effectId().equals("E22")) {
+                    defShares.add(e.intParam("permille"));
+                    spillModifiers.add(new Modifier(attackerRef, e.abilityId(), e.effectId(),
+                            Modifier.Kind.SPILL_DEF_PERMILLE, e.intParam("permille")));
+                }
             }
         }
         int spillMultiplier = Damage.spillMultiplier(handMultiplierPermille, factors);
-        int spill = killed ? Damage.spill(damage, defBefore, spillMultiplier) : 0;
+        int spill = killed ? Damage.spill(damage, Damage.spillDef(defBefore, defShares), spillMultiplier) : 0;
 
         return new Strike(atk, advantage, effectiveAtk, mitigation, damage, defBefore, defAfter, killed,
                 handMultiplierPermille, spillMultiplier, spill, damageModifiers, spillModifiers);
+    }
+
+    /**
+     * The blow when the target would have been destroyed but was saved with full DEF (E12): nothing is destroyed
+     * and the blow deals no spill.
+     */
+    Strike saved(int fullDef) {
+        return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, fullDef,
+                false, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of());
     }
 
     /** The blow of a Cycle 1 mutual kill (ruleset 9.7): no spill, so Traboccante does not apply either. */

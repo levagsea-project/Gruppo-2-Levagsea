@@ -16,6 +16,8 @@
 
   "deck.not_found": "Mazzo non trovato",
   "deck.name_taken": "Hai già un mazzo con questo nome",
+  "deck.outdated": "Il mazzo non è utilizzabile: è obsoleto rispetto al pool di carte attuale. Modificalo per renderlo di nuovo valido",
+  "deck.defense_required": "Ti serve un mazzo di difesa valido per entrambe le fazioni prima di poter giocare",
   "deck.defense_undeletable": "Il mazzo di difesa non può essere eliminato",
   "deck.conflict": "Il nome del mazzo è già in uso, oppure l'istantanea non corrisponde alla fazione",
   "deck.invalid": "Il mazzo non è valido",

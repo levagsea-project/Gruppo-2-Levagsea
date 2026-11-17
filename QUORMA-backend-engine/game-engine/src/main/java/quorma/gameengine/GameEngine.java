@@ -131,9 +131,12 @@ public final class GameEngine {
                     } catch (AbilityException e) {
                         throw new MatchInputException(path + ".abilities: " + e.getMessage(), e);
                     }
-                } else if (!card.abilities().isEmpty()) {
-                    throw new MatchInputException(path + ".abilities: card " + card.id()
-                            + ": spell and equipment effects are not implemented by the engine yet");
+                } else {
+                    try {
+                        binder.bindImmediate(card);
+                    } catch (AbilityException e) {
+                        throw new MatchInputException(path + ".abilities: " + e.getMessage(), e);
+                    }
                 }
             }
         }

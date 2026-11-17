@@ -78,6 +78,8 @@ class RulesetLoaderTest {
         write(dir, "vocab.json", "{\"effects\":{},\"triggers\":{},\"targets\":{},\"conditions\":{},\"durations\":{}}");
         write(dir, "keyword.json", "{}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
+        write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{\"globals\":{\"mitigation_floor_permille\":650}}");
         assertEquals(Optional.of(new Value.IntV(650)), RulesetLoader.fromDirectory(dir).global("mitigation_floor_permille"));
 
@@ -85,11 +87,40 @@ class RulesetLoaderTest {
         assertEquals(Optional.of(new Value.IntV(800)), RulesetLoader.fromDirectory(dir).global("mitigation_floor_permille"));
     }
 
+    private static void keywordWith(Path dir, String expansion) throws Exception {
+        write(dir, "vocab.json", "{\"effects\":{},\"triggers\":{},\"targets\":{},\"conditions\":{},\"durations\":{}}");
+        write(dir, "keyword.json", "{\"K_X\":{\"name\":\"X\",\"class\":\"I\",\"expands_to\":[" + expansion + "]}}");
+        write(dir, "subfactions.json", "{\"subfactions\":{}}");
+        write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
+        write(dir, "balance.json", "{}");
+    }
+
+    private static final String BODY = "\"effect_id\":\"E1\",\"target_id\":\"S1\",\"duration\":\"D_Istantanea\"";
+
+    @Test
+    void aClassIExpansionMayHaveNoTrigger(@TempDir Path dir) throws Exception {
+        keywordWith(dir, "{" + BODY + ",\"class\":\"I\"}");
+        var expansion = RulesetLoader.fromDirectory(dir).keywords().get("K_X").expandsTo().get(0);
+        assertEquals(null, expansion.triggerId());
+        keywordWith(dir, "{\"trigger_id\":null," + BODY + ",\"class\":\"I\"}");
+        assertEquals(null, RulesetLoader.fromDirectory(dir).keywords().get("K_X").expandsTo().get(0).triggerId());
+    }
+
+    @Test
+    void anyOtherClassNeedsATrigger(@TempDir Path dir) throws Exception {
+        keywordWith(dir, "{" + BODY + ",\"class\":\"C\"}");
+        RulesetException e = assertThrows(RulesetException.class, () -> RulesetLoader.fromDirectory(dir));
+        assertTrue(e.getMessage().contains("trigger_id"), e.getMessage());
+    }
+
     @Test
     void duplicateKeyFails(@TempDir Path dir) throws Exception {
         write(dir, "vocab.json", "{\"effects\":{},\"triggers\":{},\"targets\":{},\"conditions\":{},\"durations\":{}}");
         write(dir, "keyword.json", "{}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
+        write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{\"a\":1,\"a\":2}");
         assertThrows(RulesetException.class, () -> RulesetLoader.fromDirectory(dir));
     }
@@ -99,6 +130,8 @@ class RulesetLoaderTest {
         write(dir, "vocab.json", "{\"effects\":{},\"triggers\":{},\"targets\":{},\"conditions\":{},\"durations\":{}}");
         write(dir, "keyword.json", "{\"K_X\":{\"name\":\"X\",\"class\":\"C\"}}");
         write(dir, "subfactions.json", "{\"subfactions\":{}}");
+        write(dir, "synergies.json", "{}");
+        write(dir, "evolutions.json", "{}");
         write(dir, "balance.json", "{}");
         RulesetException e = assertThrows(RulesetException.class, () -> RulesetLoader.fromDirectory(dir));
         assertTrue(e.getMessage().contains("keyword.json#K_X"), e.getMessage());

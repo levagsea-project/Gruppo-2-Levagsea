@@ -34,6 +34,8 @@ public final class ErrorCodes {
     public static final String DECK_NOT_FOUND = "deck.not_found";
     public static final String DECK_NAME_TAKEN = "deck.name_taken";
     public static final String DECK_DEFENSE_UNDELETABLE = "deck.defense_undeletable";
+    public static final String DECK_OUTDATED = "deck.outdated";
+    public static final String DECK_DEFENSE_REQUIRED = "deck.defense_required";
     public static final String DECK_CONFLICT = "deck.conflict";
     public static final String DECK_INVALID = "deck.invalid";
     public static final String DECK_SIZE = "deck.size";

@@ -20,6 +20,7 @@ import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardRepository;
 import quorma.backend.catalogue.Faction;
+import quorma.backend.catalogue.PoolSnapshot;
 import quorma.backend.catalogue.PoolSnapshotRepository;
 import quorma.backend.collection.CardInstance;
 import quorma.backend.collection.CardInstanceRepository;
@@ -36,10 +37,11 @@ public class DeckService {
     private final CardDefinitionRepository definitions;
     private final PoolSnapshotRepository snapshots;
     private final DeckValidator validator;
+    private final DeckEligibility eligibility;
 
     public DeckService(DeckRepository decks, DeckCardRepository deckCards, CardInstanceRepository instances,
                        CardRepository cards, CardDefinitionRepository definitions, PoolSnapshotRepository snapshots,
-                       DeckValidator validator) {
+                       DeckValidator validator, DeckEligibility eligibility) {
         this.decks = decks;
         this.deckCards = deckCards;
         this.instances = instances;
@@ -47,6 +49,7 @@ public class DeckService {
         this.definitions = definitions;
         this.snapshots = snapshots;
         this.validator = validator;
+        this.eligibility = eligibility;
     }
 
     @Transactional(readOnly = true)
@@ -55,8 +58,8 @@ public class DeckService {
         Map<UUID, Long> counts = mine.isEmpty() ? Map.of() : deckCards.findByDeckIds(mine.stream().map(Deck::getId).toList())
                 .stream().collect(Collectors.groupingBy(c -> c.getId().deckId(), Collectors.counting()));
         return mine.stream()
-                .map(d -> new DeckSummary(d.getId(), d.getName(), Faction.fromDataName(d.getFaction()).name(),
-                        d.getSnapshotId(), d.isDefense(),
+                .map(d -> new DeckSummary(d.getId(), d.getName(), d.getFaction(),
+                        d.getSnapshotId(), d.isDefense(), d.isOutdated(),
                         counts.getOrDefault(d.getId(), 0L).intValue(), d.getUpdatedAt()))
                 .toList();
     }
@@ -80,10 +83,11 @@ public class DeckService {
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, new UUID(0, 0))) {
             throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_NAME_TAKEN);
         }
-        String faction = Faction.valueOf(req.faction()).dataName();
+        String faction = req.faction();
         List<DeckCardResponse> views = validate(ownerId, faction, req.snapshotId(), req.cardInstanceIds());
 
         Deck deck = new Deck(ownerId, name, faction, req.snapshotId(), Instant.now());
+        deck.setOutdated(!isLatest(faction, req.snapshotId()));
         save(deck);
         deckCards.saveAll(toRows(deck, views));
         return toResponse(deck, views);
@@ -104,6 +108,8 @@ public class DeckService {
         deck = find(ownerId, deckId);
         deck.setName(name);
         deck.setSnapshotId(req.snapshotId());
+        // A legal deck on the latest snapshot is no longer outdated; on an older one it stays so.
+        deck.setOutdated(!isLatest(deck.getFaction(), req.snapshotId()));
         deck.setUpdatedAt(Instant.now());
         save(deck);
         deckCards.saveAll(toRows(deck, views));
@@ -120,11 +126,71 @@ public class DeckService {
         decks.delete(deck);
     }
 
+    /**
+     * Makes a deck the defense deck of its faction, replacing the current one. 409 {@code deck.outdated} for an
+     * outdated deck. This is how a blocked player gets playing again.
+     */
+    @Transactional
+    public DeckResponse setDefense(UUID ownerId, UUID deckId) {
+        Deck deck = find(ownerId, deckId);
+        eligibility.requireSelectable(deck);
+        if (!deck.isDefense()) {
+            for (Deck current : decks.findByOwnerIdAndDefenseTrue(ownerId)) {
+                if (current.getFaction().equals(deck.getFaction())) {
+                    current.setDefense(false);
+                    decks.saveAndFlush(current); // the unique index allows one defense deck per owner and faction
+                }
+            }
+            deck.setDefense(true);
+            save(deck);
+        }
+        return get(ownerId, deckId);
+    }
+
+    /**
+     * To call when a new pool snapshot is created (2026-11-17-deck-migration). Every deck of the snapshot's faction
+     * that is on another snapshot moves to it if it is legal there, and is flagged outdated if not. Decks that were
+     * outdated are tried again, since a newer snapshot may make them legal.
+     */
+    @Transactional
+    public void migrateTo(UUID snapshotId) {
+        PoolSnapshot snapshot = snapshots.findById(snapshotId)
+                .orElseThrow(() -> new DeckException(HttpStatus.BAD_REQUEST, ErrorCodes.DECK_SNAPSHOT_INVALID));
+        List<UUID> deckIds = decks.findByFactionAndSnapshotIdNot(snapshot.getFaction(), snapshotId).stream()
+                .map(Deck::getId).toList();
+        for (UUID deckId : deckIds) {
+            Deck deck = decks.findById(deckId).orElseThrow();
+            List<UUID> instanceIds = deckCards.findByDeckId(deckId).stream()
+                    .map(dc -> dc.getId().cardInstanceId()).toList();
+            List<DeckError> errors = new ArrayList<>();
+            List<DeckCardResponse> views = load(deck.getOwnerId(), deck.getFaction(), snapshotId, instanceIds, errors);
+            errors.addAll(validator.validate(Faction.valueOf(deck.getFaction()), views));
+            if (errors.isEmpty()) {
+                deckCards.deleteByDeckId(deckId);
+                // The bulk delete clears the persistence context, so reload the deck before updating it.
+                deck = decks.findById(deckId).orElseThrow();
+                deck.setSnapshotId(snapshotId);
+                deck.setOutdated(false);
+                deck.setUpdatedAt(Instant.now());
+                save(deck);
+                deckCards.saveAll(toRows(deck, views));
+            } else if (!deck.isOutdated()) {
+                deck.setOutdated(true);
+                save(deck);
+            }
+        }
+    }
+
+    private boolean isLatest(String faction, UUID snapshotId) {
+        return snapshots.findFirstByFactionOrderByCreatedAtDesc(faction)
+                .map(s -> s.getId().equals(snapshotId)).orElse(false);
+    }
+
     /** Runs {@link #load} then {@link DeckValidator}; throws 400 listing every broken rule. */
     private List<DeckCardResponse> validate(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds) {
         List<DeckError> errors = new ArrayList<>();
         List<DeckCardResponse> views = load(ownerId, faction, snapshotId, instanceIds, errors);
-        errors.addAll(validator.validate(Faction.fromDataName(faction), views));
+        errors.addAll(validator.validate(Faction.valueOf(faction), views));
         if (!errors.isEmpty()) {
             throw new DeckException(HttpStatus.BAD_REQUEST, ErrorCodes.DECK_INVALID, errors);
         }
@@ -199,7 +265,7 @@ public class DeckService {
                 continue;
             }
             result.add(new DeckCardResponse(inst.getId(), card.getId(), card.getCardCode(), card.getKind().name(),
-                    def.getName(), card.getSubfaction(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
+                    def.getName(), card.getSubfaction() == null ? null : card.getSubfaction().name(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
                     def.getAbilities(), card.getDeckSlot()));
         }
         return result;
@@ -227,8 +293,8 @@ public class DeckService {
     }
 
     private DeckResponse toResponse(Deck d, List<DeckCardResponse> cards) {
-        return new DeckResponse(d.getId(), d.getName(), Faction.fromDataName(d.getFaction()).name(), d.getSnapshotId(),
-                d.isDefense(), d.getVersion(),
+        return new DeckResponse(d.getId(), d.getName(), d.getFaction(), d.getSnapshotId(),
+                d.isDefense(), d.isOutdated(), d.getVersion(),
                 d.getCreatedAt(), d.getUpdatedAt(), cards);
     }
 }

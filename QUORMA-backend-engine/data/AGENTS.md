@@ -191,7 +191,7 @@ Suits are narrative principles, not locked ability lists (lore v2.0, section 06)
 
 ## 13. Parked data
 
-Only what the engine resolves is live (decision `2026-11-14-mvp-ability-set`): keywords Scudo, Perforante, Insaziabile, Traboccante, no Evolutions, all 12 suit synergies, and the vocab entries and rules they reach. Everything else waits in `parked/`, unchanged, so it can come back or serve as a model for new abilities.
+Only what the engine resolves is live. Everything else waits in `parked/`, unchanged, so it can come back or serve as a model for new abilities.
 
 | File | Holds |
 |---|---|

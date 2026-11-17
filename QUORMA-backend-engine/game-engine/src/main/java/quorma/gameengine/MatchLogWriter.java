@@ -17,10 +17,13 @@ import quorma.gameengine.log.BoardSnapshot;
 import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.log.MatchEvent.AttackResolved;
+import quorma.gameengine.log.MatchEvent.AttackRedirected;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CardSetAside;
+import quorma.gameengine.log.MatchEvent.CardEffectResolved;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
+import quorma.gameengine.log.MatchEvent.CreatureSaved;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
 import quorma.gameengine.log.MatchEvent.DeckReshuffled;
 import quorma.gameengine.log.MatchEvent.EffectFizzled;
@@ -148,7 +151,9 @@ final class MatchLogWriter {
 
     private static Map<String, Object> expansion(ExpansionDef x) {
         Map<String, Object> e = new LinkedHashMap<>();
-        e.put("trigger_id", x.triggerId());
+        if (x.triggerId() != null) {
+            e.put("trigger_id", x.triggerId());
+        }
         putIfAny(e, "trigger_params", x.triggerParams());
         e.put("effect_id", x.effectId());
         putIfAny(e, "effect_params", x.effectParams());
@@ -198,9 +203,17 @@ final class MatchLogWriter {
             d.put("attacker", ref(start, attack.attacker(), attack.attackerLane()));
             d.put("target", attack.target().map(target -> (Object) ref(start, target.side(), target.lane())).orElse(null));
             d.put("cycle", attack.cycle());
+            attack.redirectedFrom().ifPresent(from -> d.put("redirected_from", ref(start, from.side(), from.lane())));
             declarations.add(d);
         }
         out.put("declarations", declarations);
+        // Effects of Evaluate and Declare (Trincea, Spira 5, redirects); the hands and the targets have their own keys.
+        List<MatchEvent> opening = t.opening().stream()
+                .filter(e -> !(e instanceof MatchEvent.HandEvaluated) && !(e instanceof MatchEvent.TargetDeclared))
+                .toList();
+        if (!opening.isEmpty()) {
+            out.put("opening", events(opening, start));
+        }
         out.put("cycle_1", events(t.cycle1(), start));
         out.put("cycle_2", events(t.cycle2(), start));
         out.put("refill", events(t.refill(), start));
@@ -248,6 +261,13 @@ final class MatchLogWriter {
                 e.put("spill", a.spill());
                 e.put("modifiers", a.modifiers().stream().map(MatchLogWriter::modifier).toList());
             }
+            case AttackRedirected r -> {
+                e.put("type", "attack_redirected");
+                e.put("attacker", ref(start, r.attack().attacker(), r.attack().attackerLane()));
+                e.put("from", ref(start, r.attack().target().orElseThrow().side(), r.attack().target().orElseThrow().lane()));
+                e.put("to", ref(start, r.to().side(), r.to().lane()));
+                e.put("ability_id", r.abilityId());
+            }
             case AttackSkipped s -> {
                 e.put("type", "attack_skipped");
                 e.put("cycle", s.cycle());
@@ -257,6 +277,20 @@ final class MatchLogWriter {
             case CreatureDestroyed d -> {
                 e.put("type", "creature_destroyed");
                 e.put("creature", ref(d.side(), d.lane(), d.cardId()));
+            }
+            case CardEffectResolved c -> {
+                e.put("type", "card_effect_resolved");
+                e.put("side", c.side().name());
+                e.put("card_id", c.cardId());
+                e.put("ability_id", c.abilityId());
+                e.put("effect_id", c.effectId());
+                e.put("target", ref(c.target()));
+                e.put("changes", c.changes().stream().map(MatchLogWriter::change).toList());
+            }
+            case CreatureSaved s -> {
+                e.put("type", "creature_saved");
+                e.put("creature", ref(s.side(), s.lane(), s.cardId()));
+                e.put("ability_id", s.abilityId());
             }
             case EffectTriggered t -> {
                 e.put("type", "effect_triggered");

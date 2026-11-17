@@ -26,9 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeckController {
 
     private final DeckService decks;
+    private final DeckEligibility eligibility;
 
-    public DeckController(DeckService decks) {
+    public DeckController(DeckService decks, DeckEligibility eligibility) {
         this.decks = decks;
+        this.eligibility = eligibility;
     }
 
     @GetMapping
@@ -64,6 +66,21 @@ public class DeckController {
     public DeckResponse update(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id,
                                @Valid @RequestBody DeckUpdateRequest request) {
         return decks.update(userId(jwt), id, request);
+    }
+
+    @PostMapping("/{id}/defense")
+    @Operation(summary = "Make a deck the defense deck of its faction", description = "Replaces the current defense deck of that faction. An outdated deck cannot be chosen.")
+    @ApiResponse(responseCode = "200", description = "The deck, now the defense deck")
+    @ApiResponse(responseCode = "404", description = "Not found, or not mine", content = @Content)
+    @ApiResponse(responseCode = "409", description = "The deck is outdated. Body `code`: deck.outdated")
+    public DeckResponse setDefense(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+        return decks.setDefense(userId(jwt), id);
+    }
+
+    @GetMapping("/play-status")
+    @Operation(summary = "Can I play?", description = "A player needs a legal (not outdated) defense deck for both factions to start or accept a challenge or matchmaking. Lists the factions whose defense deck is outdated or missing, and every outdated deck. Ask for it when the home page opens: the state can change during a session.")
+    public DeckEligibility.PlayStatus playStatus(@AuthenticationPrincipal Jwt jwt) {
+        return eligibility.status(userId(jwt));
     }
 
     @DeleteMapping("/{id}")
