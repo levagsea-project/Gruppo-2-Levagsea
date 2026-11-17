@@ -233,24 +233,5 @@
         "class": "C"
       }
     ]
-  },
-  "K_CAMALEONTE": {
-    "name": "Camaleonte",
-    "class": "C",
-    "balance_ref": "K_CAMALEONTE",
-    "description": "Per i colori e il quattro dello stesso seme, questa creatura conta come qualsiasi seme. Non conta come altro seme per le sinergie di seme.",
-    "expands_to": [
-      {
-        "trigger_id": "T0",
-        "trigger_params": {},
-        "effect_id": "E55",
-        "effect_params": {},
-        "target_id": "S1",
-        "target_params": {},
-        "duration": "D_Permanente",
-        "conditions": [],
-        "class": "C"
-      }
-    ]
   }
 }

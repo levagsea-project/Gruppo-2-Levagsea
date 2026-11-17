@@ -24,6 +24,7 @@ public final class EffectRegistry {
 
     private static final Set<Shape> SHAPES = Set.of(
             new Shape("T0", "E28", ResClass.C, "D_Permanente"),  // Scudo: less damage taken
+            new Shape("T0", "E55", ResClass.C, "D_Permanente"),  // Camaleonte: counts as any suit for the hand
             new Shape("T0", "E56", ResClass.C, "D_Permanente"),  // Perforante: ignores part of the target's reductions
             new Shape("T19", "E1", ResClass.T, "D_Permanente"),  // Insaziabile: + share of base ATK on a kill
             new Shape("T34", "E21", ResClass.R, "D_Istantanea")); // Traboccante: spill multiplier factor
@@ -42,6 +43,7 @@ public final class EffectRegistry {
                     "flat", new ParamRule(
                             Map.of("amount", new int[] {0, MAX}, "min_damage", new int[] {0, MAX}),
                             Map.of("min_damage", 1))),
+            "E55", Map.of("", new ParamRule(Map.of(), Map.of())),
             "E56", Map.of("", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of())));
 
     private static final Set<String> TRIGGERS = Set.of("T0", "T19", "T34");

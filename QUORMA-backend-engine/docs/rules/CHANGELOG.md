@@ -10,6 +10,8 @@ Anything may change until 1.0 is released. Changes before this log started are i
 
 | Date | Area | Change | Reference |
 |---|---|---|---|
+| 2026-11-17 | data | Camaleonte restored from `data/parked/` (keyword, balance entry, effect `E55`, Tier 1 role affinity, its open decision). New `ruleset_hash`. | `2026-11-17-camaleonte-best-hand` |
+| 2026-11-17 | engine | Evaluate lets a Camaleonte take the suit that gives the best hand (`WildSuit`, ties keep the lowest `Suit` ordinal). Goldens and example log: only `ruleset_hash` and `result_hash` changed. | `2026-11-17-camaleonte-best-hand` |
 | 2026-11-15 | data | `balance.json` stat costs retuned from the local simulation (Scudo 0.62 per X, Perforante 2, Insaziabile 5.2, Traboccante 6) and the matching parked entries. Placeholders; no structural change | `2026-11-15-stat-costs-simulated` |
 | 2026-11-14 | rules | Rulebook text aligned with decisions already in force: 4.4 to 4.6 (when the stack resolves, effects triggered while it resolves go on top, an effect on a destroyed target does nothing), 9.5 (damage is reduced by the target's damage reductions) and 9.6 (spill uses the damage dealt). No outcome changes | `2026-11-14-stack-resolves-when-quiet`, `2026-11-14-spill-after-mitigation` |
 | 2026-11-14 | engine | The engine writes the canonical MatchLog JSON (`GameEngine.matchLog`) with `ruleset_hash`, `engine_version` and `result_hash`, and refuses an input whose `ruleset_hash` differs from its rule pack. The rule pack hash now also covers `subfactions.json` | `2026-11-14-match-log-writer`, `2026-11-14-match-log-schema` |

@@ -2,10 +2,12 @@ package quorma.gameengine.turn;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Function;
 import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.effects.AbilityBinder;
@@ -15,6 +17,7 @@ import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
+import quorma.gameengine.hand.WildSuit;
 import quorma.gameengine.log.BoardSnapshot;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
@@ -103,20 +106,23 @@ public final class TurnResolver {
         return new TurnReport(turn, evaluation, attacks, opening, cycle1, cycle2, refill, closing, board, result);
     }
 
+    /** The best hand of one side. A Camaleonte takes the suit that helps most ({@link WildSuit}). */
+    private HandResult hand(List<Creature> creatures) {
+        List<HandCard> cards = new ArrayList<>();
+        Set<Integer> wildLanes = new HashSet<>();
+        for (Creature creature : creatures) {
+            cards.add(new HandCard(creature.lane(), creature.card().rank(), creature.card().suit()));
+            if (creature.wildSuit()) {
+                wildLanes.add(creature.lane());
+            }
+        }
+        return WildSuit.evaluate(cards, wildLanes, handEvaluator, handComparator);
+    }
+
     /** Evaluate (7): each player's hand from their creatures in lane order, and the multiplier. */
     public Evaluation evaluate(MatchState state) {
-        List<HandCard> cardsA = new ArrayList<>();
-        List<HandCard> cardsB = new ArrayList<>();
-
-        for (Creature creature : state.player(Side.A).creatures()) {
-            cardsA.add(new HandCard(creature.lane(), creature.card().rank(), creature.card().suit()));
-        }
-        for (Creature creature : state.player(Side.B).creatures()) {
-            cardsB.add(new HandCard(creature.lane(), creature.card().rank(), creature.card().suit()));
-        }
-
-        HandResult handA = handEvaluator.apply(cardsA);
-        HandResult handB = handEvaluator.apply(cardsB);
+        HandResult handA = hand(state.player(Side.A).creatures());
+        HandResult handB = hand(state.player(Side.B).creatures());
 
         int multiplierA = 0;
         if (handA.type() != HandType.NONE) {

@@ -326,32 +326,6 @@
       "cap_class": "capped",
       "cap_reason": "copy_scaling: formazione della mano",
       "cap_risk": "copy_scaling"
-    },
-    "K_CAMALEONTE": {
-      "allowed_ranks": [
-        "2"
-      ],
-      "max_built_in": 4,
-      "stat_cost_pct": 25,
-      "family": "hand_forming_any_suit",
-      "favours": [
-        "one_suit"
-      ],
-      "params": {},
-      "display": {},
-      "sim": {
-        "status": "untested",
-        "ruleset_version": "1.0-alpha",
-        "date": null,
-        "five_build_matrix": null,
-        "cross_faction": null
-      },
-      "themes": [
-        "adaptation"
-      ],
-      "cap_class": "capped",
-      "cap_reason": "copy_scaling: formazione della mano",
-      "cap_risk": "copy_scaling"
     }
   },
   "evolutions": {
@@ -897,7 +871,6 @@
     "Provocazione + Muro può produrre stalli: simulare il tasso di turn limit.",
     "Letale e Doppio Colpo sono le keyword piu' swingy e condividono il rango A: insieme a Carnefice possono occupare al massimo 4 Assi per mazzo (quattro Letale, quattro Doppio Colpo o una combinazione).",
     "Eredità e Saccheggio usano vita flat (circa 5% della vita iniziale): verificare che non accorcino le partite sotto i 7 turni.",
-    "Camaleonte (E55) non conta come altro seme per sinergie e condizioni C4/C11. Confermato dal vocabolario; verificare in simulazione se Camaleonte e' troppo debole per le build un-seme.",
     "Spira 4 e 5 dipendono dalle Evoluzioni sulle carte Spira: verificare con pool_generation.evolution_slot_fill_pct. Le 11 Evoluzioni open sono idonee a ogni rango, Asso compreso.",
     "Il limite e' per rango: le abilita' swingy (Letale, Doppio Colpo, Primo Colpo, Custode e le loro Evoluzioni) stanno sui ranghi A, J, Q, K, cioe' fino a 16 carte per mazzo. In una simulazione semplificata Custode (Q, K, costo 15%) vale ancora circa +8 punti di vittoria in un mazzo di ranghi alti, dove tutte e 8 le carte sono in campo; con un solo rango (K) il valore scende a circa +2.5. Valutare se Custode va su un solo rango.",
     "Candidati a passare da capped a limited dopo i test: Flessibile (3,4) e Muro (2,3). Camaleonte, Primo Colpo, Letale e Doppio Colpo restano su un rango.",

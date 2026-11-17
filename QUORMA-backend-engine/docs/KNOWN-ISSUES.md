@@ -34,11 +34,6 @@ Not decided yet: whether `FACTION_SWAP` is the main format; how the faction of g
 Players must always have at least one legal deck per faction (`2026-11-06-starter-decks`). Decks are pinned to a pool snapshot (`decks.snapshot_id`), so a new snapshot does not touch existing decks; the problem appears when decks are moved to a new snapshot, or when an old one is retired. Not decided. Options: keep the old snapshot playable until the player migrates; mark a deck invalid and grant a fresh starter deck when no legal deck remains; or reject the new snapshot if it would leave players without one. Also open: where the starter deck templates are stored (no table yet).
 
 
-### `2026-11-07-camaleonte-suit-choice`: Which suit Camaleonte takes in a hand
-
-`2026-11-01-camaleonte-suit` says Camaleonte counts as any suit for Colore and Quattro dello stesso seme (not for synergies). Not decided: which suit the caller passes to the evaluator when several choices exist (for example a Camaleonte next to three Vincolo and two Spira). Proposal: the choice that gives the best hand, and on a tie the lowest `Suit` ordinal, so it stays deterministic. The evaluator only sees the effective suit in `HandCard`, so the rule belongs to whoever builds the hand input, not to `HandEvaluator`. No test yet.
-
-
 ### `2026-11-07-class-i-trigger`: Which trigger a spell or equipment expansion carries
 
 Spells and equipment have no trigger (`vocab.card_contexts`), and their effects are class `I` (immediate). But an `ExpansionDef` has a `triggerId`, and the loader requires it. Not decided what a spell's or equipment's expansion puts there: a dedicated "when drawn" trigger, `null`, or a loader exception for class `I`. To decide when the spell and equipment data are written, together with the validator and the loader. See `2026-11-07-cards-share-abilities`.

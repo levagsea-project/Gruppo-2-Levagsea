@@ -479,6 +479,18 @@
       ],
       "duration_mode": "sustained_only"
     },
+    "E55": {
+      "name": "Conta come qualsiasi seme per la mano",
+      "class": [
+        "C",
+        "R"
+      ],
+      "target_kind": [
+        "creature"
+      ],
+      "duration_mode": "sustained_only",
+      "description": "Per colore, scala colore e quattro dello stesso seme il bersaglio conta come qualsiasi seme. Non influisce sulle sinergie dei semi."
+    },
     "E56": {
       "name": "Ignora mitigazione [PCT]",
       "class": [

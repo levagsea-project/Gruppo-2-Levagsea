@@ -60,6 +60,11 @@ public final class Creature {
         return abilities.stream().filter(a -> a.triggerId().equals(triggerId)).toList();
     }
 
+    /** True if the creature counts as any suit for the hand (Camaleonte, effect E55). Never for suit synergies. */
+    public boolean wildSuit() {
+        return abilities.stream().anyMatch(a -> a.effectId().equals("E55"));
+    }
+
     public int currentDef() {
         return currentDef;
     }
