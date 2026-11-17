@@ -43,9 +43,9 @@
       "spell": 26
     },
     "by_link_status": {
-      "restore": 50,
-      "proposed": 59,
-      "new_vocab": 28,
+      "proposed": 58,
+      "restore": 45,
+      "new_vocab": 34,
       "live": 13
     },
     "proposed_abilities": 48,
@@ -55,7 +55,8 @@
         "E59",
         "E60",
         "E61",
-        "E63"
+        "E63",
+        "E64"
       ],
       "triggers": [
         "T38",
@@ -64,16 +65,25 @@
       "targets": [
         "S44",
         "S45",
-        "S46"
+        "S47"
       ],
       "conditions": [
-        "C26"
+        "C26",
+        "C27",
+        "C28"
       ],
       "extensions": [
         "E4 (value base)",
         "E32 (rank highest_ally)",
-        "C16 (subject)",
-        "S44 (of)"
+        "S44 (of)",
+        "T8 (attacker, target_scope)",
+        "T15 (source)",
+        "T18 (controller)",
+        "E23 (no conditions = whole combat)",
+        "E30 (one substitution per hand)",
+        "E36 (source discard, Refill continues)",
+        "S20 (recomputed at each Evaluate)",
+        "target_filters (damaged_this_turn)"
       ]
     },
     "duplicate_card_ids": [],
@@ -98,7 +108,6 @@
         "K_CONFORMITA",
         "K_CONTA_COME",
         "K_CUSTODE",
-        "K_DOPPIO_COLPO",
         "K_ECO",
         "K_FLESSIBILE",
         "K_INSAZIABILE",
@@ -222,6 +231,28 @@
         "duration_mode": "sustained_only",
         "params": {},
         "description": "La creatura bersaglio non conta per la mano di poker del suo giocatore. Resta in gioco e combatte, ma non forma combinazioni. Classe R: usare il trigger T4."
+      },
+      "E64": {
+        "name": "Effetto sulla prossima sostitutiva della corsia [EFFECT]",
+        "class": [
+          "T"
+        ],
+        "target_kind": [
+          "lane"
+        ],
+        "duration_mode": "instant_only",
+        "params": {
+          "effect_id": {
+            "type": "effect_id"
+          },
+          "effect_params": {
+            "type": "object"
+          },
+          "duration": {
+            "type": "duration_id"
+          }
+        },
+        "description": "Registra sulla corsia bersaglio un effetto in sospeso: la prossima creatura piazzata in quella corsia (Rifornimento o E36) riceve params.effect_id con params.effect_params e params.duration, come un equipaggiamento in sospeso (regolamento 3.4.3). L'effetto in sospeso resta anche se la sorgente lascia il gioco; si consuma alla prima creatura piazzata. Non cambia bersagli gia' dichiarati, quindi e' compatibile con IC011."
       }
     },
     "triggers": {
@@ -261,13 +292,18 @@
         "requires_context": null,
         "description": "Le creature avversarie nella corsia opposta alla sorgente e nelle due corsie adiacenti."
       },
-      "S46": {
-        "name": "Prima carta del mazzo del controllore",
+      "S47": {
+        "name": "Creatura di rango piu' alto tra le prime carte del mazzo [COUNT]",
         "kind": [
           "card"
         ],
         "requires_context": null,
-        "description": "La carta in cima al mazzo del giocatore che controlla la carta con l'effetto. Se il mazzo e' vuoto l'effetto non fa nulla. Serve a Riordino del verbale (E49 position bottom): nel vocabolario non esiste un bersaglio per le carte del mazzo."
+        "description": "Tra le prime params.count carte del mazzo del controllore, la carta creatura di rango piu' alto (2 < ... < K < A). Parita': la piu' vicina alla cima. Se tra quelle carte non c'e' nessuna creatura, l'effetto non fa nulla. Serve a Riordino del verbale.",
+        "params": {
+          "count": {
+            "type": "int"
+          }
+        }
       }
     },
     "conditions": {
@@ -284,6 +320,14 @@
           }
         },
         "description": "Il numero di creature alleate in corsie adiacenti alla sorgente e' almeno params.min e al massimo params.max (0, 1 o 2)."
+      },
+      "C27": {
+        "name": "Il danno ha distrutto la creatura danneggiata",
+        "description": "Il danno appena inflitto dalla sorgente (contesto damaged_creature del trigger T38) ha portato la DEF della creatura danneggiata a 0 o meno. Serve a Catena con on: kill."
+      },
+      "C28": {
+        "name": "La creatura distrutta era adiacente alla sorgente",
+        "description": "La creatura distrutta (contesto destroyed) era in una corsia adiacente a quella della sorgente nel momento della distruzione (differenza di 1, oppure collegate da E34 o da Vincolo 5). Serve ad Assimilazione con scope: adjacent."
       }
     },
     "enum_extensions": {
@@ -307,16 +351,44 @@
         "param": "rank",
         "add": "Valore speciale 'highest_ally': il rango della creatura alleata di rango piu' alto. Oggi rank e' un valore fisso. Serve a Registro dei pari."
       },
-      "C16": {
-        "param": "subject",
-        "add": "Parametro subject (source | target). Oggi C16 guarda solo la sorgente, che per una magia non e' una creatura. Serve a Delibera per differenza e Il nome che si toglie (subject target)."
-      },
       "S44": {
         "param": "of",
         "add": "Parametro 'of': ancorare S44 al bersaglio di un'altra espansione della stessa carta (S35 ecc.) invece che al contesto damaged_creature. Serve a Rettifica a catena."
+      },
+      "T8": {
+        "param": "attacker, target_scope",
+        "add": "attacker: opponent | own | any (default any). target_scope: any | self | self_or_adjacent (default any): self_or_adjacent = il bersaglio dichiarato e' la sorgente o una creatura alleata adiacente. Serve a Presagio (opponent + self_or_adjacent)."
+      },
+      "T15": {
+        "param": "source",
+        "add": "source: self | ally (default self). ally = l'Evoluzione innescata e' di una qualsiasi creatura del controllore diversa dalla sorgente, anche se forzata (Spira 5, E17). Serve ad Allievi."
+      },
+      "T18": {
+        "param": "controller",
+        "add": "controller: own | opponent | any (default any). own = la magia risolta e' del controllore della sorgente. Serve a Risonanza (own)."
+      },
+      "E23": {
+        "param": "(semantica)",
+        "add": "Senza condizioni E23 vale per tutta la sua durata: con D_FinoAllaFineDelCombattimento il bersaglio non infligge danno da combattimento alla sorgente ne' nel Ciclo 1 ne' nel Ciclo 2. Primo Colpo e' E23 + C6 + C21; Recisione e' E23 senza condizioni: il motore non deve trattare l'una come l'altra."
+      },
+      "E30": {
+        "param": "(regola di cumulo)",
+        "add": "Al massimo una sostituzione di rango E30 per mano e per giocatore. Il motore prova la mano senza sostituzioni e con ciascuna singola sostituzione disponibile e tiene la migliore; a parita' la prima trovata in ordine di corsia. Due creature che contano come Q non formano una coppia da sole. E54 (Contromappa) e E55 (Camaleonte) sono effetti diversi e non contano in questo limite."
+      },
+      "E36": {
+        "param": "source",
+        "add": "source: deck | discard (default deck). discard = l'ultima creatura entrata nella pila degli scarti del controllore, con DEF piena e senza i modificatori che aveva. Durante il Rifornimento, se E36 riempie la corsia che si stava rifornendo, il Rifornimento prosegue con la corsia vuota successiva: la carta pescata dopo la magia va li'. Con source deck durante il Rifornimento l'effetto e' quasi nullo, per questo le magie usano discard."
+      },
+      "S20": {
+        "param": "(semantica)",
+        "add": "Per un effetto sostenuto di classe C l'insieme S20 si ricalcola a ogni Valutazione: sono le creature che formano la combinazione della mano di quel turno. Una magia risolta nel Rifornimento protegge quindi la combinazione del turno successivo, non quella che ha appena combattuto. Fuori da una Valutazione valida (nessuna combinazione) l'insieme e' vuoto."
+      },
+      "target_filters": {
+        "param": "damaged_this_turn",
+        "add": "Nuovo valore di target_params.filters: la creatura ha subito danno (> 0) in questo turno. 'damaged' resta 'DEF attuale sotto la DEF base'. Serve a Delibera per differenza e Il nome che si toglie, al posto di C16 con subject."
       }
     },
-    "_next_free": "E64, T40, S47, C27 restano liberi (S46 usato da questa revisione). T22 non serve: Il registro precede usa T35 (parked)."
+    "_next_free": "E65, T40, S48, C29 restano liberi (S46 resta riservato: non e' piu' usato da nessuna carta, non va riusato). T22 non serve: Il registro precede usa T35 (parked)."
   },
   "abilities_proposed": {
     "K_SCUDO_COMUNITA": {
@@ -557,13 +629,46 @@
           "target_id": "S44",
           "target_params": {},
           "duration": "D_Istantanea",
-          "conditions": [],
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "on",
+                "equals": "hit"
+              }
+            }
+          ],
+          "class": "T"
+        },
+        {
+          "trigger_id": "T38",
+          "effect_id": "E58",
+          "effect_params": {
+            "source": "damage_dealt",
+            "permille": "$param.permille"
+          },
+          "target_id": "S44",
+          "target_params": {},
+          "duration": "D_Istantanea",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "on",
+                "equals": "kill"
+              }
+            },
+            {
+              "id": "C27"
+            }
+          ],
           "class": "T"
         }
       ],
       "stat_cost_pct": 2.0,
       "params": {
-        "permille": 300
+        "permille": 300,
+        "on": "hit"
       },
       "tier_scaled": [
         "permille"
@@ -574,10 +679,11 @@
       ],
       "suggested_cap_class": "open",
       "suggested_ranks": "tutti",
-      "note": "Assorbe Taglio dei legami e Ricaduta (balance-tuning-1.md). Parametro on: hit | kill.",
+      "note": "Assorbe Taglio dei legami e Ricaduta (balance-tuning-1.md). Parametro on: hit | kill (default hit); kill usa la condizione C27.",
       "used_by_cards": 5,
       "needs_restore": [],
       "needs_new_vocab": [
+        "C27",
         "E58",
         "S44",
         "T38"
@@ -834,7 +940,38 @@
           "target_id": "S1",
           "target_params": {},
           "duration": "D_Permanente",
-          "conditions": [],
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "scope",
+                "equals": "allies"
+              }
+            }
+          ],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_ASSIMILA"
+        },
+        {
+          "trigger_id": "T36",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "scope",
+                "equals": "any"
+              }
+            }
+          ],
           "class": "T",
           "max_stacks": 3,
           "stack_key": "K_ASSIMILA"
@@ -861,6 +998,32 @@
           "class": "T",
           "max_stacks": 3,
           "stack_key": "K_ASSIMILA"
+        },
+        {
+          "trigger_id": "T36",
+          "effect_id": "E1",
+          "effect_params": {
+            "mode": "pct_base_atk",
+            "permille": "$param.permille"
+          },
+          "target_id": "S1",
+          "target_params": {},
+          "duration": "D_Permanente",
+          "conditions": [
+            {
+              "id": "K_PARAM",
+              "params": {
+                "name": "scope",
+                "equals": "adjacent"
+              }
+            },
+            {
+              "id": "C28"
+            }
+          ],
+          "class": "T",
+          "max_stacks": 3,
+          "stack_key": "K_ASSIMILA"
         }
       ],
       "stat_cost_pct": 10.2,
@@ -876,13 +1039,15 @@
       ],
       "suggested_cap_class": "open",
       "suggested_ranks": "tutti",
-      "note": "param scope: allies | any (come kind di Scudo, via K_PARAM). Costo da balance-tuning-1.md.",
+      "note": "param scope: allies | any | adjacent (default allies), una espansione per valore via K_PARAM; adjacent usa C28. Tutte condividono stack_key K_ASSIMILA. Costo da balance-tuning-1.md.",
       "used_by_cards": 8,
       "needs_restore": [
         "T36",
         "T37"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "C28"
+      ]
     },
     "K_INDURISCE": {
       "name": "Indurimento",
@@ -1145,7 +1310,7 @@
       ],
       "stat_cost_pct": 6,
       "params": {
-        "permille": 80
+        "permille": 60
       },
       "tier_scaled": [
         "permille"
@@ -1156,7 +1321,7 @@
       ],
       "suggested_cap_class": "open",
       "suggested_ranks": "tutti",
-      "note": "Riscritta come carburante delle mani strette: carta alta ha 4 non attaccanti, coppia 3. Costo provvisorio da simulare.",
+      "note": "Riscritta come carburante delle mani strette: carta alta ha 4 non attaccanti, coppia 3. Valore base da 80 a 60 per mille a costo invariato (6): al vecchio valore Tacet +8,8 e Tobia +7,6 (report-set-base-1). Il costo -0.3 di tools/balance-sim/py/tuning_final.json non vale: fa fede questo file. Da tarare nel simulatore Java.",
       "used_by_cards": 3,
       "needs_restore": [],
       "needs_new_vocab": []
@@ -1861,7 +2026,7 @@
       "suggested_ranks": [
         "A"
       ],
-      "note": "Primo Colpo senza le condizioni Ciclo 1 e uccisione (costo 10 a J): su un Asso vale di piu. Il nemico non risponde mai al colpo.",
+      "note": "E23 senza condizioni, per tutto il combattimento (vocab_proposed.extensions.E23): il nemico non risponde mai al colpo. Non e' Primo Colpo (E23 + C6 + C21). Costo 25 confermato con la semantica giusta: Atona 50,0% complessivo (report-set-base-1).",
       "used_by_cards": 1,
       "needs_restore": [
         "D_FinoAllaFineDelCombattimento",
@@ -1869,12 +2034,14 @@
         "S43",
         "T22"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "E23 (no conditions = whole combat)"
+      ]
     },
     "K_PRESAGIO": {
       "name": "Presagio",
       "kind": "keyword",
-      "description": "Quando viene dichiarato un attacco avversario: le creature alleate adiacenti guadagnano +{bonus_pct}% della loro DEF base fino alla fine del turno; questa creatura perde {cost_pct}% della sua DEF base in modo permanente (massimo 4 volte).",
+      "description": "La prima volta in ogni turno che un attacco avversario viene dichiarato contro questa creatura o una creatura alleata adiacente: le creature alleate adiacenti guadagnano +{bonus_pct}% della loro DEF base fino alla fine del turno; questa creatura perde {cost_pct}% della sua DEF base in modo permanente (massimo 4 volte).",
       "expands_to": [
         {
           "trigger_id": "T8",
@@ -1889,8 +2056,10 @@
           "conditions": [],
           "class": "T",
           "trigger_params": {
-            "attacker": "opponent"
-          }
+            "attacker": "opponent",
+            "target_scope": "self_or_adjacent"
+          },
+          "once_per_turn": true
         },
         {
           "trigger_id": "T8",
@@ -1905,10 +2074,12 @@
           "conditions": [],
           "class": "T",
           "trigger_params": {
-            "attacker": "opponent"
+            "attacker": "opponent",
+            "target_scope": "self_or_adjacent"
           },
           "max_stacks": 4,
-          "stack_key": "K_PRESAGIO"
+          "stack_key": "K_PRESAGIO",
+          "once_per_turn": true
         }
       ],
       "stat_cost_pct": 6,
@@ -1925,13 +2096,15 @@
       ],
       "suggested_cap_class": "open",
       "suggested_ranks": "tutti",
-      "note": "Lorna avvisa i vicini e ne paga il prezzo: chi e' stato nominato perde DEF. T8 va ristretto agli attacchi avversari (trigger_params.attacker).",
+      "note": "Lorna avvisa i vicini e ne paga il prezzo. Una volta per turno e solo per attacchi contro di lei o i vicini (T8 attacker opponent, target_scope self_or_adjacent): senza limite il bonus si sommava per ogni attacco nemico (83,7% con l'abilita' su ogni creatura, report-set-base-1). Numeri da tarare nel simulatore Java.",
       "used_by_cards": 1,
       "needs_restore": [
         "D_FinoAllaFineDelTurno",
         "T8"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "T8 (attacker, target_scope)"
+      ]
     },
     "K_PRELIEVO": {
       "name": "Prelievo",
@@ -2031,7 +2204,7 @@
     "K_CONTA_COME": {
       "name": "Conta come",
       "kind": "keyword",
-      "description": "Per la mano di poker questa creatura conta anche come il rango {rank}, ma solo per coppia, doppia coppia, tris, full e poker.",
+      "description": "Per la mano di poker questa creatura conta anche come il rango {rank}, ma solo per coppia, doppia coppia, tris, full e poker. Si applica al massimo una sostituzione di rango per mano: se ce ne sono piu' d'una, vale quella che da' la mano migliore.",
       "expands_to": [
         {
           "trigger_id": "T0",
@@ -2070,13 +2243,15 @@
       ],
       "suggested_cap_class": "limited",
       "suggested_ranks": "tutti",
-      "note": "Unifica Sinodo, Quasi uguale e Nome preso: una sola regola, parametro rank, valida solo per i gruppi di rango (non per scale e colori). Costo dimezzato rispetto alle versioni per tutte le mani (27 e 20): provvisorio, da simulare. balance-tuning-1.md propone proprio questa restrizione.",
+      "note": "Unifica Sinodo, Quasi uguale e Nome preso: una sola regola, parametro rank, valida solo per i gruppi di rango (non per scale e colori). Costo dimezzato rispetto alle versioni per tutte le mani (27 e 20): provvisorio, da simulare. balance-tuning-1.md propone proprio questa restrizione. Regola di cumulo (report-set-base-1): al massimo una sostituzione per mano (vedi vocab_proposed.extensions.E30); senza limite l'abilita' su ogni creatura vinceva il 97,5%.",
       "used_by_cards": 5,
       "needs_restore": [
         "C9",
         "E30"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "E30 (one substitution per hand)"
+      ]
     },
     "EVO_ALLIEVI": {
       "name": "Allievi",
@@ -2122,7 +2297,9 @@
       "needs_restore": [
         "T15"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "T15 (source)"
+      ]
     },
     "EVO_PARTICOLATO": {
       "name": "Particolato",
@@ -2207,13 +2384,16 @@
     "EVO_RISONANZA": {
       "name": "Risonanza",
       "kind": "evolution",
-      "description": "Evoluzione — Quando una magia viene risolta: questa creatura guadagna +{bonus_pct}% del suo ATK base in modo permanente.",
+      "description": "Evoluzione — Quando una tua magia viene risolta: questa creatura guadagna +{bonus_pct}% del suo ATK base in modo permanente.",
       "expands_to": [
         {
           "trigger_id": "T_EVO",
           "trigger_params": {
             "trigger_id": "T18",
-            "max_triggers": 1
+            "max_triggers": 1,
+            "trigger_params": {
+              "controller": "own"
+            }
           },
           "effect_id": "E1",
           "effect_params": {
@@ -2240,12 +2420,14 @@
       ],
       "suggested_cap_class": "open",
       "suggested_ranks": "tutti",
-      "note": "Evoluzione nuova (deciso nel Passo 1): trigger T18, che oggi nessuna carta usa. Costo 5 come Allievi (+ATK permanente, trigger raro). Usata da 2 carte.",
+      "note": "Evoluzione nuova (deciso nel Passo 1): trigger T18 limitato alle magie del controllore (T18 controller own, 'ogni rito vicino'). Costo 5 come Allievi. Usata da 2 carte.",
       "used_by_cards": 2,
       "needs_restore": [
         "T18"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "T18 (controller)"
+      ]
     },
     "EVO_RINFORZO": {
       "name": "Rinforzo",
@@ -2330,14 +2512,19 @@
     "INL_POSTO_TENUTO": {
       "name": "Posto tenuto",
       "kind": "inline_effect",
-      "description": "Una volta per partita: quando questa creatura viene distrutta, una carta sostitutiva entra subito nella sua corsia.",
+      "description": "Una volta per partita: quando questa creatura viene distrutta, la prossima creatura piazzata nella sua corsia guadagna +{bonus_pct}% della sua DEF base in modo permanente.",
       "expands_to": [
         {
           "trigger_id": "T10",
           "trigger_params": {},
-          "effect_id": "E36",
+          "effect_id": "E64",
           "effect_params": {
-            "lane": "source_lane"
+            "effect_id": "E2",
+            "effect_params": {
+              "mode": "pct_base_def",
+              "permille": "$param.permille"
+            },
+            "duration": "D_Permanente"
           },
           "target_id": "S4",
           "target_params": {},
@@ -2348,21 +2535,25 @@
         }
       ],
       "stat_cost_pct": 10,
-      "params": {},
+      "params": {
+        "permille": 300
+      },
       "tier_scaled": [],
       "themes": [
         "persistence"
       ],
       "suggested_cap_class": "capped",
       "suggested_ranks": "A",
-      "note": "Effetto esteso di Lacuna «Posto Aperto». CONFLITTO: parked/invalid-combinations.json IC011 vieta E36 con T6/T10/T13/T19 (i bersagli sono fissati alla Dichiarazione). Va deciso se aggiungere un'eccezione o spostare l'effetto a T3 'Fine del combattimento'. E36 vuole lane numerica: qui 'source_lane' (S4).",
+      "note": "Effetto esteso di Lacuna «Posto Aperto». IC011 resta senza eccezioni (E36 con T10 cambierebbe un bersaglio dopo la Dichiarazione, e rinviato al Rifornimento non farebbe nulla): il posto tenuto diventa un effetto in sospeso sulla corsia (E64), come un equipaggiamento. Valore e costo da tarare nel simulatore Java (la versione E36 valeva +0,5).",
       "used_by_cards": 1,
       "needs_restore": [
-        "E36",
+        "E2",
         "S4",
         "T10"
       ],
-      "needs_new_vocab": []
+      "needs_new_vocab": [
+        "E64"
+      ]
     },
     "INL_SIGILLO_APERTO": {
       "name": "Sigillo aperto",
@@ -2433,11 +2624,6 @@
           "ref": "K_LETALE",
           "status": "parked",
           "form": "keyword"
-        },
-        {
-          "ref": "K_DOPPIO_COLPO",
-          "status": "parked",
-          "form": "keyword"
         }
       ],
       "ability_costs": [
@@ -2445,38 +2631,32 @@
           "ref": "K_LETALE",
           "cost_pct": 13,
           "theme_match_tax_pct": 3
-        },
-        {
-          "ref": "K_DOPPIO_COLPO",
-          "cost_pct": 15,
-          "theme_match_tax_pct": 3
         }
       ],
       "stat_model": {
         "archetype": "assalto",
         "def_atk_ratio": 1.5,
-        "cost_pct_total": 34,
+        "cost_pct_total": 16,
         "extra_cost_pct": 0,
-        "stat_points": 5280
+        "stat_points": 6720
       },
       "stats": {
-        "atk": 3000,
-        "def": 4550
+        "atk": 3850,
+        "def": 5750
       },
       "needs_restore": [
-        "K_DOPPIO_COLPO",
         "K_LETALE"
       ],
       "needs_new_vocab": [],
       "fit": "alto",
-      "note": "Imprevedibilita' e prezzo: Letale riscritto (spill al 35% della DEF) piu' Doppio Colpo. Il costo supera il tetto del 30%: decisione aperta.",
+      "note": "Imprevedibilita' e prezzo: Letale riscritto (spill al 35% della DEF). Doppio Colpo tolto: Letale uccide nel Ciclo 1 e lascia Doppio Colpo senza un secondo bersaglio (con entrambi -9,1; senza Doppio Colpo 50,6%, report-set-base-1).",
       "roles": [
         "attacco"
       ],
       "archetype": [
         "spill"
       ],
-      "over_cost_cap": true
+      "over_cost_cap": false
     },
     {
       "id": "BASE-RES-9-VES-POR",
@@ -4485,13 +4665,13 @@
       "stat_model": {
         "archetype": "assalto",
         "def_atk_ratio": 1.5,
-        "cost_pct_total": 14.6,
+        "cost_pct_total": 18.6,
         "extra_cost_pct": 4,
-        "stat_points": 6832
+        "stat_points": 6512
       },
       "stats": {
-        "atk": 3900,
-        "def": 5850
+        "atk": 3700,
+        "def": 5600
       },
       "needs_restore": [
         "S6"
@@ -7515,7 +7695,8 @@
           "ref": "K_ASSIMILA",
           "status": "proposed",
           "params": {
-            "permille": 144
+            "permille": 144,
+            "scope": "any"
           },
           "form": "keyword",
           "becomes": {
@@ -7927,12 +8108,15 @@
       "rank": "A",
       "suit": "Vestigio",
       "tier": 4,
-      "link_status": "proposed",
+      "link_status": "new_vocab",
       "abilities": [
         {
           "ref": "INL_POSTO_TENUTO",
           "status": "proposed",
-          "form": "inline"
+          "form": "inline",
+          "params": {
+            "permille": 300
+          }
         },
         {
           "ref": "K_LASCITO_CURA",
@@ -7977,9 +8161,11 @@
         "S4",
         "T10"
       ],
-      "needs_new_vocab": [],
+      "needs_new_vocab": [
+        "E64"
+      ],
       "fit": "medio",
-      "note": "Una volta per partita, quando cade, una sostitutiva entra subito nella sua corsia (T10 + E36). ATTENZIONE: la regola IC011 vieta E36 con T10 (parked/invalid-combinations.json): da decidere.",
+      "note": "Una volta per partita, quando cade, la prossima creatura piazzata nella sua corsia guadagna +30% DEF base (T10 + E64 sulla corsia). Compatibile con IC011.",
       "roles": [
         "difesa",
         "lascito"
@@ -8244,7 +8430,7 @@
           "ref": "K_CONTA_COME",
           "status": "proposed",
           "params": {
-            "rank": "Q"
+            "rank": "9"
           },
           "form": "keyword"
         },
@@ -9865,7 +10051,7 @@
       "can": "CAN-230",
       "kind": "spell",
       "faction": "Resistenza Umana",
-      "link_status": "restore",
+      "link_status": "new_vocab",
       "abilities": [
         {
           "inline": [
@@ -9909,9 +10095,11 @@
         "S20",
         "S38"
       ],
-      "needs_new_vocab": [],
+      "needs_new_vocab": [
+        "S20 (recomputed at each Evaluate)"
+      ],
       "fit": "alto",
-      "note": "Una lista concorde non si puo' piu' correggere: le creature che formano la combinazione (coppia, tris, full, poker) riducono il danno subito del 20% fino al prossimo Rifornimento. Il testimone che dimentica e' la tua creatura con meno DEF, che subisce 800 danni.",
+      "note": "Una lista concorde non si puo' piu' correggere: le creature che formano la combinazione del turno successivo (coppia, tris, full, poker; S20 si ricalcola alla Valutazione) riducono il danno subito del 20% fino al prossimo Rifornimento. Il testimone che dimentica e' la tua creatura con meno DEF, che subisce 800 danni.",
       "archetype": [
         "coppia",
         "doppia_coppia",
@@ -10040,14 +10228,16 @@
       "can": "CAN-263",
       "kind": "spell",
       "faction": "Resistenza Umana",
-      "link_status": "restore",
+      "link_status": "new_vocab",
       "abilities": [
         {
           "inline": [
             {
               "role": "benefit",
               "effect_id": "E36",
-              "effect_params": {},
+              "effect_params": {
+                "source": "discard"
+              },
               "target_id": "S32",
               "target_params": {},
               "duration": "D_Istantanea",
@@ -10079,9 +10269,11 @@
         "S32",
         "S40"
       ],
-      "needs_new_vocab": [],
+      "needs_new_vocab": [
+        "E36 (source discard, Refill continues)"
+      ],
       "fit": "medio",
-      "note": "La voce d'archivio di un morto registrato occupa una corsia vuota: piazza un sostituto dal mazzo nella prima corsia libera. Chi l'ha sentita non sa piu' rispondere: la tua creatura di rango piu' basso perde l'Evoluzione.",
+      "note": "La voce d'archivio di un morto registrato occupa una corsia vuota: l'ultima creatura entrata nella tua pila degli scarti torna nella prima corsia libera (E36 source discard). Chi l'ha sentita non sa piu' rispondere: la tua creatura di rango piu' basso perde l'Evoluzione. Dal mazzo, durante il Rifornimento, la sostitutiva sarebbe stata la stessa carta che arrivava comunque.",
       "archetype": [
         "tempo",
         "casuale"
@@ -10707,6 +10899,32 @@
               "class": "C"
             },
             {
+              "role": "benefit",
+              "trigger_id": "T0",
+              "effect_id": "E15",
+              "effect_params": {
+                "keyword": "K_PROVOCAZIONE"
+              },
+              "target_id": "S10",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "C"
+            },
+            {
+              "role": "benefit",
+              "trigger_id": "T0",
+              "effect_id": "E15",
+              "effect_params": {
+                "keyword": "K_MURO"
+              },
+              "target_id": "S10",
+              "target_params": {},
+              "duration": "D_FinoAlProssimoRifornimento",
+              "conditions": [],
+              "class": "C"
+            },
+            {
               "role": "cost",
               "effect_id": "E8",
               "effect_params": {
@@ -10727,11 +10945,13 @@
         "E15",
         "E8",
         "K_CUSTODE",
+        "K_MURO",
+        "K_PROVOCAZIONE",
         "S31"
       ],
       "needs_new_vocab": [],
       "fit": "alto",
-      "note": "Ritira la protezione a tutte le creature avversarie (Custode) fino al prossimo Rifornimento; chi la ritira firma anche per se': perde 500 vita.",
+      "note": "Ritira la protezione a tutte le creature avversarie (Custode, Provocazione, Muro) fino al prossimo Rifornimento; chi la ritira firma anche per se': perde 500 vita. Con il solo Custode trovava un bersaglio nell'8% dei lanci.",
       "archetype": [
         "controllo",
         "anti_custode"
@@ -10811,10 +11031,12 @@
               "role": "benefit",
               "effect_id": "E49",
               "effect_params": {
-                "position": "bottom"
+                "position": "top"
               },
-              "target_id": "S46",
-              "target_params": {},
+              "target_id": "S47",
+              "target_params": {
+                "count": 3
+              },
               "duration": "D_Istantanea",
               "conditions": [],
               "class": "I"
@@ -10841,10 +11063,10 @@
         "S31"
       ],
       "needs_new_vocab": [
-        "S46"
+        "S47"
       ],
       "fit": "medio",
-      "note": "La carta in cima al proprio mazzo passa in fondo (nel vocabolario non esiste 'la peggiore carta del mazzo': vedi S46). Costo 400 vita.",
+      "note": "Il verbale viene riordinato: tra le prime 3 carte del proprio mazzo, la creatura di rango piu' alto passa in cima (S47 + E49 top). Spostare la prima carta in fondo non cambiava nulla in una partita senza scelte. Costo 400 vita.",
       "archetype": [
         "mazzo",
         "casuale"
@@ -10858,14 +11080,16 @@
       "can": "CAN-307",
       "kind": "spell",
       "faction": "Potenze Artificiali",
-      "link_status": "restore",
+      "link_status": "new_vocab",
       "abilities": [
         {
           "inline": [
             {
               "role": "benefit",
               "effect_id": "E36",
-              "effect_params": {},
+              "effect_params": {
+                "source": "discard"
+              },
               "target_id": "S32",
               "target_params": {},
               "duration": "D_Istantanea",
@@ -10895,9 +11119,11 @@
         "E36",
         "S32"
       ],
-      "needs_new_vocab": [],
+      "needs_new_vocab": [
+        "E36 (source discard, Refill continues)"
+      ],
       "fit": "alto",
-      "note": "Una sostitutiva entra subito nella prima corsia vuota; arriva senza sapere cosa le manca: -20% ATK permanente.",
+      "note": "Una creatura caduta viene riassegnata: l'ultima creatura entrata nella tua pila degli scarti torna nella prima corsia vuota (E36 source discard); arriva senza sapere cosa le manca: -20% ATK permanente. Dal mazzo, durante il Rifornimento, la sostitutiva sarebbe stata la stessa carta che arrivava comunque.",
       "archetype": [
         "sostituzione",
         "tempo",
@@ -11068,7 +11294,7 @@
       "can": "CAN-310",
       "kind": "spell",
       "faction": "Potenze Artificiali",
-      "link_status": "restore",
+      "link_status": "new_vocab",
       "abilities": [
         {
           "inline": [
@@ -11079,18 +11305,12 @@
               "target_id": "S38",
               "target_params": {
                 "filters": [
-                  "enemy"
+                  "enemy",
+                  "damaged_this_turn"
                 ]
               },
               "duration": "D_Istantanea",
-              "conditions": [
-                {
-                  "id": "C16",
-                  "params": {
-                    "subject": "target"
-                  }
-                }
-              ],
+              "conditions": [],
               "class": "I"
             },
             {
@@ -11110,15 +11330,16 @@
         }
       ],
       "needs_restore": [
-        "C16",
         "E10",
         "E57",
         "S31",
         "S38"
       ],
-      "needs_new_vocab": [],
+      "needs_new_vocab": [
+        "target_filters (damaged_this_turn)"
+      ],
       "fit": "medio",
-      "note": "Distrugge la creatura avversaria di DEF piu' bassa, ma solo se ha subito danno in questo turno; scarta tre carte dal proprio mazzo. Richiede C16 con subject.",
+      "note": "Distrugge la creatura avversaria con DEF piu' bassa tra quelle che hanno subito danno in questo turno (filtro damaged_this_turn); scarta tre carte dal proprio mazzo.",
       "archetype": [
         "controllo",
         "rimozione"
@@ -11465,7 +11686,7 @@
       "can": "CAN-317",
       "kind": "spell",
       "faction": "Resistenza Umana",
-      "link_status": "restore",
+      "link_status": "new_vocab",
       "abilities": [
         {
           "inline": [
@@ -11476,18 +11697,12 @@
               "target_id": "S38",
               "target_params": {
                 "filters": [
-                  "enemy"
+                  "enemy",
+                  "damaged_this_turn"
                 ]
               },
               "duration": "D_Istantanea",
-              "conditions": [
-                {
-                  "id": "C16",
-                  "params": {
-                    "subject": "target"
-                  }
-                }
-              ],
+              "conditions": [],
               "class": "I"
             },
             {
@@ -11507,15 +11722,16 @@
         }
       ],
       "needs_restore": [
-        "C16",
         "E10",
         "E8",
         "S31",
         "S38"
       ],
-      "needs_new_vocab": [],
+      "needs_new_vocab": [
+        "target_filters (damaged_this_turn)"
+      ],
       "fit": "medio",
-      "note": "Distrugge la creatura avversaria di DEF piu' bassa se ha subito danno in questo turno; chi toglie il nome paga 500 vita. Richiede C16 con subject.",
+      "note": "Distrugge la creatura avversaria con DEF piu' bassa tra quelle che hanno subito danno in questo turno (filtro damaged_this_turn); chi toglie il nome paga 500 vita.",
       "archetype": [
         "controllo",
         "rimozione"
@@ -11549,8 +11765,10 @@
             },
             {
               "role": "cost",
-              "effect_id": "E48",
-              "effect_params": {},
+              "effect_id": "E57",
+              "effect_params": {
+                "count": 2
+              },
               "target_id": "S31",
               "target_params": {},
               "duration": "D_Istantanea",
@@ -11562,12 +11780,12 @@
         }
       ],
       "needs_restore": [
-        "E48",
+        "E57",
         "S31"
       ],
       "needs_new_vocab": [],
       "fit": "alto",
-      "note": "+30% DEF base; il pezzo preso da un'altra cosa disordina il mazzo: rimescola il proprio mazzo.",
+      "note": "+30% DEF base; il pezzo preso da un'altra cosa disordina il mazzo: scarta le prime 2 carte del proprio mazzo (E57). Il rimescolamento (E48) non era un costo in una partita senza scelte.",
       "archetype": [
         "difesa",
         "casuale"
@@ -12259,7 +12477,8 @@
     "EVO_EREDITA": {
       "from": "parked/evolutions.json",
       "change": "importo base da 600 a 300",
-      "why": "63% di vittorie a 600 (balance-playtest-1.md)."
+      "why": "63% di vittorie a 600 (balance-playtest-1.md).",
+      "applied": "2026-11-17: data/parked/balance.json amount 300 (le carte stampano gia' 240/300/450)."
     },
     "K_MURO": {
       "from": "parked/keyword.json",

@@ -595,10 +595,10 @@
       "max_built_in": 52,
       "stat_cost_pct": 14.3,
       "params": {
-        "amount": 600
+        "amount": 300
       },
       "display": {
-        "life": 600
+        "life": 300
       },
       "sim": {
         "status": "untested",
