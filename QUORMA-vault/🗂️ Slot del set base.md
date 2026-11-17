@@ -11,9 +11,9 @@ Questa nota è generata da `Strumenti/elenca_slot.py`: non modificarla a mano, r
 
 | | Occupati | Liberi |
 |---|---|---|
-| Potenze Artificiali | 30 | 22 |
-| Resistenza Umana | 37 | 15 |
-| **Totale** | **67** | **37** |
+| Potenze Artificiali | 34 | 18 |
+| Resistenza Umana | 41 | 11 |
+| **Totale** | **75** | **29** |
 
 ## Potenze Artificiali
 
@@ -23,22 +23,22 @@ Questa nota è generata da `Strumenti/elenca_slot.py`: non modificarla a mano, r
 | **3** | YLMOR · [[YLM-112 «Radice»]] | MEROZYN · **libero** | EFFRIX · [[Sportello dell'Assenso]] | SEKTAC · [[SEK-40 «Liturgia»]] |
 | **4** | SEKTAC · [[SEK-12 «Cordone»]] | EFFRIX · [[EFF-C4 «Banco di Conformità»]] | MEROZYN · [[MER-4B-N12-113-41 «Profezia»]] | YLMOR · [[YLM-19 «Sito»]] |
 | **5** | MEROZYN · **libero** | EFFRIX · [[Guardie di Riva Lenta]] | YLMOR · [[YLM-74 «Segno»]] | SEKTAC · **libero** |
-| **6** | YLMOR · **libero** | SEKTAC · [[Risponditore di Soccorso]] | EFFRIX · [[Anagrafe in Transito]] | MEROZYN · [[Annali di Ponte Vaio]] |
+| **6** | YLMOR · [[Recinto della Catena Corta]] | SEKTAC · [[Risponditore di Soccorso]] | EFFRIX · [[Anagrafe in Transito]] | MEROZYN · [[Annali di Ponte Vaio]] |
 | **7** | EFFRIX · [[EFF-58 «Catena»]] | YLMOR · [[YLM-66 «Sei Dita»]] | MEROZYN · [[MER-2C-N05-004-61 «Attesa»]] | SEKTAC · [[SEK-73 «Campana Muta»]] |
 | **8** | SEKTAC · **libero** | MEROZYN · **libero** | YLMOR · [[YLM-31 «Chiglia»]] | EFFRIX · [[EFF-29 «Scriptorium»]] |
 | **9** | YLMOR · **libero** | EFFRIX · [[EFF-91 «Una Erre»]] | SEKTAC · [[SEK-61 «Ombra»]] | MEROZYN · [[MER-1A-N00-001-09 «Ossario»]] |
 | **10** | MEROZYN · [[MER-7A-N02-090-10 «Orizzonte»]] | SEKTAC · [[SEK-88 «Inquisitore»]] | EFFRIX · **libero** | YLMOR · **libero** |
 | **J** | SEKTAC · **libero** | YLMOR · **libero** | MEROZYN · [[Lemma, Voce di Confronto]] | EFFRIX · [[Postilla dei Campi Vuoti]] |
-| **Q** | EFFRIX · [[Teodora «la Vescova»]] | MEROZYN · **libero** | SEKTAC · **libero** | YLMOR · **libero** |
-| **K** | YLMOR · **libero** | SEKTAC · **libero** | EFFRIX · **libero** | MEROZYN · [[Sinodo dei Due Conti]] |
-| **A** | EFFRIX · **libero** | SEKTAC · **libero** | YLMOR · **libero** | MEROZYN · **libero** |
+| **Q** | EFFRIX · [[Teodora «la Vescova»]] | MEROZYN · **libero** | SEKTAC · **libero** | YLMOR · [[Vitrea, la Città che Cresce]] |
+| **K** | YLMOR · **libero** | SEKTAC · **libero** | EFFRIX · [[Sereno, Volto d'Arruolamento]] | MEROZYN · [[Sinodo dei Due Conti]] |
+| **A** | EFFRIX · **libero** | SEKTAC · [[Atona «Mezzanotte»]] | YLMOR · **libero** | MEROZYN · **libero** |
 
 ### Slot liberi · Potenze Artificiali
 
-- **EFFRIX** (4): 2 Vestigio · 10 Spira · K Spira · A Vincolo
+- **EFFRIX** (3): 2 Vestigio · 10 Spira · A Vincolo
 - **MEROZYN** (5): 3 Frattura · 5 Vincolo · 8 Frattura · Q Frattura · A Vestigio
-- **SEKTAC** (6): 5 Vestigio · 8 Vincolo · J Vincolo · Q Spira · K Frattura · A Frattura
-- **YLMOR** (7): 6 Vincolo · 9 Vincolo · 10 Vestigio · J Frattura · Q Vestigio · K Vincolo · A Spira
+- **SEKTAC** (5): 5 Vestigio · 8 Vincolo · J Vincolo · Q Spira · K Frattura
+- **YLMOR** (5): 9 Vincolo · 10 Vestigio · J Frattura · K Vincolo · A Spira
 
 ## Resistenza Umana
 
@@ -53,18 +53,18 @@ Questa nota è generata da `Strumenti/elenca_slot.py`: non modificarla a mano, r
 | **8** | Portanome · [[Testimone degli Undici]] | Spezzasigilli · [[«Ninna», Persuasora di Cancelli]] | Segnaterra · [[«Zenit», Incisora del Cielo]] | Adattati · [[«Guanto», Vedova di Sutura]] |
 | **9** | Spezzasigilli · [[Veterano «Cesoia Fredda»]] | Adattati · [[«Fiato», che era dei nostri]] | Segnaterra · [[«Quota», Salitore della Torre]] | Portanome · [[Agiografo del Primo Ingegnere]] |
 | **10** | Segnaterra · **libero** | Portanome · [[«Velo», Officiante dei Corretti]] | Spezzasigilli · [[«Calligrafo», Lettore di Errori]] | Adattati · [[«Tre Dita», Ripartito dal Sito]] |
-| **J** | Portanome · [[Ilda, Voce di Riva Lenta]] | Segnaterra · **libero** | Adattati · [[Orsola, Madre della Pioggia]] | Spezzasigilli · **libero** |
-| **Q** | Adattati · **libero** | Spezzasigilli · **libero** | Portanome · **libero** | Segnaterra · **libero** |
+| **J** | Portanome · [[Ilda, Voce di Riva Lenta]] | Segnaterra · **libero** | Adattati · [[Orsola, Madre della Pioggia]] | Spezzasigilli · [[Lorna, Memoria in Anticipo]] |
+| **Q** | Adattati · [[Ottavio, Chi Non Vuole Morire]] | Spezzasigilli · **libero** | Portanome · [[Agnese, Voce nel Guscio]] | Segnaterra · [[Ibera, Erede dei Quattro Segni]] |
 | **K** | Spezzasigilli · **libero** | Segnaterra · **libero** | Portanome · **libero** | Adattati · **libero** |
 | **A** | Segnaterra · **libero** | Spezzasigilli · [[ARACNO «Anarco»]] | Adattati · **libero** | Portanome · **libero** |
 
 ### Slot liberi · Resistenza Umana
 
-- **Spezzasigilli** (4): 2 Vestigio · J Vestigio · Q Frattura · K Vincolo
-- **Segnaterra** (5): 10 Vincolo · J Frattura · Q Vestigio · K Frattura · A Vincolo
-- **Adattati** (3): Q Vincolo · K Vestigio · A Spira
-- **Portanome** (3): Q Spira · K Spira · A Vestigio
+- **Spezzasigilli** (3): 2 Vestigio · Q Frattura · K Vincolo
+- **Segnaterra** (4): 10 Vincolo · J Frattura · K Frattura · A Vincolo
+- **Portanome** (2): K Spira · A Vestigio
+- **Adattati** (2): K Vestigio · A Spira
 
 ---
 
-*Generata: 2026-11-15*
+*Generata: 2026-11-17*

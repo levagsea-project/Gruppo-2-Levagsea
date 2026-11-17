@@ -23,6 +23,7 @@ Elementi della lore ancora da formalizzare o in attesa di validazione.
 - **Primo Ingegnere**: figura leggendaria che avrebbe gettato le basi della Dottrina ([[Agiografo del Primo Ingegnere]]). Resta ambigua: nessuna carta deve confermarla o smentirla.
 - **Pioggia nera e Le Basse**: la pioggia di [[Pioggia nera|particolato SEKTAC]] è regionale (pianure e città controllate), non globale: altrove il sole si vede. Che cosa ci sia sopra le nuvole («la luce non cambia mai») resta aperto; una città sospesa è solo accennata.
 - **La grande offensiva**: se ne parla nei rifugi ([[La grande offensiva]]); nessuna carta deve ancora dire se sia cominciata.
+- **Il dopo di Lorna**: [[Lorna, Memoria in Anticipo]] sostiene di essere uscita dalla [[Sala dei conteggi]] in un dopo in cui la Resistenza ha perso. Resta un'affermazione sua: nessuna carta la conferma o la smentisce, e nessuna dice com'è andata.
 - **Politica planetaria**: Attribuzione puntuale di ogni sottofazione AI a sovrani, pianeti, alleanze e guerre.
 - **Dettagli secondari**: Cronologia fine, luoghi precisi, protagonisti ed episodi non ancora formalizzati nel progetto.
 - **Validazione esterna**: Disponibilità e compatibilità commerciale delle denominazioni delle sottofazioni AI.
