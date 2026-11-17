@@ -16,6 +16,8 @@
 
   "deck.not_found": "Deck not found",
   "deck.name_taken": "You already have a deck with this name",
+  "deck.outdated": "The deck cannot be used: it is outdated for the current card pool. Edit it to make it legal again",
+  "deck.defense_required": "You need a legal defense deck for both factions before you can play",
   "deck.defense_undeletable": "The defense deck cannot be deleted",
   "deck.conflict": "The deck name is already in use, or the snapshot does not match the faction",
   "deck.invalid": "The deck is not valid",

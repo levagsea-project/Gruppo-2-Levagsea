@@ -7,6 +7,6 @@ import java.util.UUID;
 /**
  * DTO for returning a deck with its cards.
  */
-public record DeckResponse(UUID id, String name, String faction, UUID snapshotId, boolean defense, Long version,
+public record DeckResponse(UUID id, String name, String faction, UUID snapshotId, boolean defense, boolean outdated, Long version,
                            Instant createdAt, Instant updatedAt, List<DeckCardResponse> cards) {
 }
