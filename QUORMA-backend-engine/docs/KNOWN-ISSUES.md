@@ -39,11 +39,6 @@ Players must always have at least one legal deck per faction (`2026-11-06-starte
 Spells and equipment have no trigger (`vocab.card_contexts`), and their effects are class `I` (immediate). But an `ExpansionDef` has a `triggerId`, and the loader requires it. Not decided what a spell's or equipment's expansion puts there: a dedicated "when drawn" trigger, `null`, or a loader exception for class `I`. To decide when the spell and equipment data are written, together with the validator and the loader. See `2026-11-07-cards-share-abilities`.
 
 
-### `2026-11-07-drawn-card-for-spells`: What `drawn_card` means for a spell
-
-`vocab.card_contexts` gives spells the context `drawn_card`, which target `S28` ("Carta pescata") uses. It does not say which card that is. Probably the spell itself, the card whose draw triggered the effect. To confirm with whoever defines the spell data before spells are written.
-
-
 ### `2026-11-07-cycle-2-ties-with-effects`: Same-lane Cycle 2 attacks and redirects
 
 Without effects, two attackers of different players on the same lane number cannot both be in Cycle 2 (each has an enemy in the opposite lane, so both attack in Cycle 1). With redirect effects (9.4) it can happen. The tie order is set (`2026-11-07-resolution-order-faction-then-side`), but the redirect rules (which cycle a redirected attack uses, what happens to a redirect to a destroyed creature) belong to the effects work and are not yet implemented.

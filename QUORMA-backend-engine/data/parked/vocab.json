@@ -1700,7 +1700,7 @@
     },
     "S28": {
       "name": "Carta pescata",
-      "description": "La carta appena pescata dal mazzo.",
+      "description": "La carta appena pescata dal mazzo. Per una magia o un equipaggiamento (contesto drawn_card) è la carta stessa.",
       "kind": [
         "card"
       ],
