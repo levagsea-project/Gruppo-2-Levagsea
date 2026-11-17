@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import quorma.backend.common.ErrorCodes;
 
 /**
  * Registration payload. Username and email limits mirror the CHECK constraints of the users table. The password
