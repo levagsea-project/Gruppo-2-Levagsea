@@ -1,0 +1,83 @@
+/* Componenti del QUORMA Design System usati dalla landing (tela, pulsanti, borchie, carta, marcatore, emblema).
+   Copiati dal foglio di stile del design system: se cambiano lì, aggiornali qui. */
+
+/* Token */
+:root{--ground-950:#081014;--ground-900:#0D171D;--canvas-800:#13222A;--canvas-700:#1C2F38;--steel-500:#5C707A;--steel-300:#8FA4AD;--silver-100:#D5E1E5;--silver-50:#F1F6F7;--petrol-500:#4AA6AD;--petrol-300:#8FD6DB;--petrol-900:#123A3F;--on-petrol:#081014;--ember-500:#E0874A;--ember-700:#A8502A;--ember-200:#FFD7B0;
+--adattati-deep:#1E1512;--adattati:#C9785A;--spezzasigilli-deep:#17151F;--spezzasigilli:#A98BE6;--portanome-deep:#1B1A14;--portanome:#E3D3A1;--segnaterra-deep:#131A12;--segnaterra:#9DBF6E;--sektac-deep:#0A131B;--sektac:#6FA9E0;--merozyn-deep:#1A0F1A;--merozyn:#D16FB4;--effrix-deep:#1A1510;--effrix:#E2B254;--ylmor-deep:#0C1917;--ylmor:#4FD1B0;
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-16:64px;--radius-none:0;--radius-sm:3px;--radius-round:9999px;--notch-sm:6px;--notch-md:10px;--notch-lg:14px;
+--depth:0 10px 28px rgba(0,0,0,.6);--glow-petrol:0 0 18px rgba(74,166,173,.55);--glow-ember:0 0 16px rgba(224,135,74,.7);
+--font-display:Cinzel,Georgia,serif;--font-sans:Inter,system-ui,sans-serif;--font-serif:Spectral,Georgia,serif}
+
+/* QUORMA — classi dei componenti. Si appoggia alle variabili dei token.
+   Materiali della homepage: filo d'argento brunito, pietra scura velata, luce petrolio. */
+:root{--borchia:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2018%22%3E%3Cpath%20d%3D%22M6%200%209%209%206%2018%203%209z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3Cpath%20d%3D%22M6%200%209%209H3z%22%20fill%3D%22%23fff%22%20fill-opacity%3D%22.35%22%2F%3E%3C%2Fsvg%3E");--borchia-h:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2014%2022%22%3E%3Cpath%20d%3D%22M14%2011%204%207%200%2011l4%204z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3C%2Fsvg%3E")}
+
+/* ---------- Argento e pietra: il materiale di base ----------
+   Un filo d'argento di 1px (in ::before) attorno a un interno di pietra scura velata.
+   La forma si sceglie con --forma: rettangolo, arco a sesto acuto o guglia. */
+.q-tela,.q-btn{--forma:none;position:relative;isolation:isolate;padding:1px}
+.q-tela::before,.q-btn::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(160deg,rgba(242,247,248,.7) 0%,rgba(124,144,152,.45) 25%,rgba(213,225,229,.6) 48%,rgba(62,80,88,.5) 74%,rgba(168,196,200,.65) 100%);clip-path:var(--forma)}
+
+/* ---------- Tela: pannello ---------- */
+.q-tela{display:flex;flex-direction:column;transition:filter .2s ease}
+.q-tela__in{position:relative;display:block;flex:1 1 auto;clip-path:var(--forma);padding:var(--space-6);color:var(--silver-100);background:linear-gradient(115deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,0) 40%),linear-gradient(180deg,rgba(21,36,44,.9) 0%,rgba(10,18,23,.94) 100%);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(213,225,229,.12),inset 0 0 0 1px rgba(74,166,173,.10),inset 0 -30px 40px rgba(0,0,0,.3);transition:box-shadow .2s ease}
+/* Arco a sesto acuto, con il pinnacolo in cima: card e mazzi */
+.q-tela--arco{--forma:polygon(0% 100%,0% 30px,0.38% 27px,1.52% 24px,3.41% 21px,6.03% 18.1px,9.37% 15.4px,13.4% 12.7px,18.08% 10.1px,23.4% 7.7px,29.29% 5.5px,35.72% 3.5px,42.64% 1.6px,50% 0px,57.36% 1.6px,64.28% 3.5px,70.71% 5.5px,76.6% 7.7px,81.92% 10.1px,86.6% 12.7px,90.63% 15.4px,93.97% 18.1px,96.59% 21px,98.48% 24px,99.62% 27px,100% 30px,100% 100%)}
+.q-tela--arco > .q-tela__in{padding-top:38px}
+/* Guglia: pillole di valori e valute */
+.q-tela--guglia{--forma:polygon(16px 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,16px 100%,0 50%)}
+.q-tela--guglia > .q-tela__in{clip-path:polygon(15.4px 0,calc(100% - 15.4px) 0,100% 50%,calc(100% - 15.4px) 100%,15.4px 100%,0 50%);padding:8px 34px}
+/* Acceso: selezione o elemento corrente */
+.q-acceso{filter:drop-shadow(0 0 10px rgba(74,166,173,.6))}
+.q-acceso::before{background:linear-gradient(160deg,#F2F7F8,#4AA6AD 45%,#BFE4E7)}
+.q-acceso > .q-tela__in{box-shadow:inset 0 0 0 1px rgba(74,166,173,.35),inset 0 0 26px rgba(74,166,173,.35),inset 0 1px 0 rgba(213,225,229,.2)}
+
+/* ---------- Pinnacolo: il rombo d'argento della homepage ---------- */
+.q-borchia{position:absolute;z-index:3;width:12px;height:18px;background:var(--borchia) center/contain no-repeat;filter:drop-shadow(0 0 6px rgba(74,166,173,.8));pointer-events:none}
+.q-borchia--n{top:-12px;left:50%;margin-left:-6px}
+.q-borchia--s{bottom:-12px;left:50%;margin-left:-6px}
+.q-borchia--w,.q-borchia--e{width:14px;height:22px;top:50%;margin-top:-11px;background-image:var(--borchia-h);filter:none}
+.q-borchia--w{left:-14px}
+.q-borchia--e{right:-14px;transform:scaleX(-1)}
+
+/* ---------- Divisorio: filo di luce petrolio ---------- */
+.q-divisorio{position:relative;display:block;height:1px;background:linear-gradient(90deg,rgba(74,166,173,0),rgba(74,166,173,.6) 18%,rgba(74,166,173,.6) 82%,rgba(74,166,173,0));box-shadow:0 0 6px rgba(74,166,173,.4)}
+.q-divisorio > .q-borchia{top:-9px;left:50%;margin-left:-6px}
+
+/* ---------- Pulsanti: guglie d'argento, tre materiali per priorità ---------- */
+.q-btn{--forma:polygon(16px 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,16px 100%,0 50%);display:inline-flex;text-decoration:none;cursor:pointer;vertical-align:middle;transition:filter .25s ease,transform .25s ease}
+.q-btn__in{display:flex;align-items:center;justify-content:center;gap:var(--space-2);width:100%;height:38px;padding:0 28px;box-sizing:border-box;clip-path:polygon(15.4px 0,calc(100% - 15.4px) 0,100% 50%,calc(100% - 15.4px) 100%,15.4px 100%,0 50%);font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;transition:box-shadow .25s ease,color .25s ease}
+.q-btn:focus-visible{outline:2px solid var(--petrol-300);outline-offset:4px}
+.q-btn[disabled],.q-btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;filter:grayscale(.7)}
+/* Acciaio: secondario */
+.q-btn--acciaio .q-btn__in{color:#BFE4E7;background:linear-gradient(115deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,0) 40%),linear-gradient(180deg,rgba(21,36,44,.9) 0%,rgba(10,18,23,.94) 100%);box-shadow:inset 0 1px 0 rgba(213,225,229,.12),inset 0 0 0 1px rgba(74,166,173,.10),inset 0 -30px 40px rgba(0,0,0,.3)}
+.q-btn--acciaio:hover .q-btn__in{color:var(--silver-50);box-shadow:inset 0 0 18px rgba(74,166,173,.55),inset 0 1px 0 rgba(213,225,229,.2)}
+/* Argento: importante */
+.q-btn--argento::before{background:linear-gradient(160deg,#F2F7F8 0%,#7C9098 22%,#D5E1E5 46%,#3E5058 72%,#A8C4C8 100%)}
+.q-btn--argento .q-btn__in{color:var(--ground-950);background:linear-gradient(180deg,#F2F7F8 0%,#C3D1D6 50%,#93A7AF 100%);box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 rgba(0,0,0,.25)}
+.q-btn--argento:hover{filter:drop-shadow(0 0 10px rgba(241,246,247,.35))}
+/* Sigillo: solo per entrare in partita, una volta per schermata */
+.q-btn--sigillo{padding:1.5px;margin:0 12px}
+.q-btn--sigillo::before{background:linear-gradient(160deg,#F2F7F8 0%,#7C9098 22%,#D5E1E5 46%,#3E5058 72%,#A8C4C8 100%)}
+.q-btn--sigillo .q-btn__in{gap:14px;min-width:250px;height:60px;padding:0 46px;font-size:20px;font-weight:800;letter-spacing:.26em;color:#E6F6F7;text-shadow:0 0 12px rgba(74,166,173,.9),0 0 2px rgba(74,166,173,.9);background:linear-gradient(115deg,rgba(255,255,255,.035) 0%,rgba(255,255,255,0) 38%),linear-gradient(180deg,#15242C 0%,#0C161B 100%);animation:q-respiro 4.5s ease-in-out infinite}
+.q-btn--sigillo:hover{filter:drop-shadow(0 0 22px rgba(74,166,173,.75));transform:translateY(-1px)}
+.q-btn--sigillo:hover .q-btn__in{box-shadow:inset 0 0 34px rgba(74,166,173,.75),inset 0 1px 0 rgba(213,225,229,.3)}
+.q-btn--sigillo > .q-borchia--w{left:-14px} .q-btn--sigillo > .q-borchia--e{right:-14px}
+.q-stella{display:block;width:16px;height:22px;flex:none;filter:drop-shadow(0 0 6px rgba(74,166,173,.9))}
+@keyframes q-respiro{0%,100%{box-shadow:inset 0 0 18px rgba(74,166,173,.35),inset 0 1px 0 rgba(213,225,229,.25)}50%{box-shadow:inset 0 0 28px rgba(74,166,173,.6),inset 0 1px 0 rgba(213,225,229,.25)}}
+
+/* ---------- Carta: card di carte e mazzi, ad arco ---------- */
+.q-carta > .q-tela__in{display:flex;flex-direction:column;padding:0}
+.q-carta__arte{position:relative;display:block;height:var(--arte-h,168px);background:var(--ground-950) center 20%/cover no-repeat}
+.q-carta__targa{display:flex;flex-direction:column;align-items:center;gap:1px;padding:14px 10px 12px;text-align:center}
+.q-carta__nome{font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#EEF4F5}
+.q-carta__sotto{font-family:var(--font-sans);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--petrol-300)}
+/* ---------- Marcatore di sezione ---------- */
+.q-marker{display:flex;align-items:center;gap:var(--space-3);color:var(--silver-100)}
+.q-marker__num{position:relative;flex:none;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px;font-weight:700;color:#EEF4F5;background:linear-gradient(180deg,#15242C,#0C161B);box-shadow:0 0 0 1px rgba(213,225,229,.45),inset 0 1px 0 rgba(213,225,229,.12);transform:rotate(45deg)}
+.q-marker__num > *{transform:rotate(-45deg)}
+.q-marker__title{font-family:var(--font-display);font-size:18px;line-height:24px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#EEF4F5}
+.q-marker__line{flex:1;height:1px;background:linear-gradient(90deg,rgba(74,166,173,.55),rgba(74,166,173,0));box-shadow:0 0 6px rgba(74,166,173,.4)}
+/* ---------- Medaglione delle sottofazioni ---------- */
+.q-emblema{--c:var(--petrol-500);--cd:var(--ground-950);width:64px;height:64px;border-radius:var(--radius-round);display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c) 22%,var(--cd)),var(--cd) 75%);box-shadow:0 0 0 2px var(--c),0 0 0 4px var(--ground-950),0 0 0 5px var(--steel-500);font-family:var(--font-display);font-size:20px;letter-spacing:.06em;color:var(--c)}
+@media (prefers-reduced-motion: reduce){.q-btn--sigillo .q-btn__in,.q-braci,.q-tela.q-braci,.q-btn.q-braci,.q-scintilla,.q-navata__item[aria-current="page"] .q-ogiva-wrap,.q-focolare__base,.q-focolare__lingua,.q-focolare__favilla,.q-ogiva-wrap.q-braci{animation:none}.q-scintilla,.q-focolare__lingua,.q-focolare__favilla{display:none}}

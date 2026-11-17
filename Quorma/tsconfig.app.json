@@ -16,11 +16,15 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Tipi generati da React Router in .react-router/types: con rootDirs i loro
+       import relativi (es. "../landing.js") trovano i file veri in src/ */
+    "rootDirs": [".", "./.react-router/types"],
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", ".react-router/types/**/*"]
 }
