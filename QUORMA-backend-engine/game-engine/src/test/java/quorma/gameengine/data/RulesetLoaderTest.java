@@ -85,6 +85,31 @@ class RulesetLoaderTest {
         assertEquals(Optional.of(new Value.IntV(800)), RulesetLoader.fromDirectory(dir).global("mitigation_floor_permille"));
     }
 
+    private static void keywordWith(Path dir, String expansion) throws Exception {
+        write(dir, "vocab.json", "{\"effects\":{},\"triggers\":{},\"targets\":{},\"conditions\":{},\"durations\":{}}");
+        write(dir, "keyword.json", "{\"K_X\":{\"name\":\"X\",\"class\":\"I\",\"expands_to\":[" + expansion + "]}}");
+        write(dir, "subfactions.json", "{\"subfactions\":{}}");
+        write(dir, "balance.json", "{}");
+    }
+
+    private static final String BODY = "\"effect_id\":\"E1\",\"target_id\":\"S1\",\"duration\":\"D_Istantanea\"";
+
+    @Test
+    void aClassIExpansionMayHaveNoTrigger(@TempDir Path dir) throws Exception {
+        keywordWith(dir, "{" + BODY + ",\"class\":\"I\"}");
+        var expansion = RulesetLoader.fromDirectory(dir).keywords().get("K_X").expandsTo().get(0);
+        assertEquals(null, expansion.triggerId());
+        keywordWith(dir, "{\"trigger_id\":null," + BODY + ",\"class\":\"I\"}");
+        assertEquals(null, RulesetLoader.fromDirectory(dir).keywords().get("K_X").expandsTo().get(0).triggerId());
+    }
+
+    @Test
+    void anyOtherClassNeedsATrigger(@TempDir Path dir) throws Exception {
+        keywordWith(dir, "{" + BODY + ",\"class\":\"C\"}");
+        RulesetException e = assertThrows(RulesetException.class, () -> RulesetLoader.fromDirectory(dir));
+        assertTrue(e.getMessage().contains("trigger_id"), e.getMessage());
+    }
+
     @Test
     void duplicateKeyFails(@TempDir Path dir) throws Exception {
         write(dir, "vocab.json", "{\"effects\":{},\"triggers\":{},\"targets\":{},\"conditions\":{},\"durations\":{}}");

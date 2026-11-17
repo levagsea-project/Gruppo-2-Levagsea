@@ -194,13 +194,17 @@ public final class RulesetLoader {
                 common.put(field.getKey(), field.getValue());
             }
         }
+        ResClass cls = resClass(requireString(m, "class", path), path + ".class");
+        // Spells and equipment have no trigger (2026-11-17-class-i-no-trigger): only a class I expansion may omit it.
+        String triggerId = cls == ResClass.I && (m.get("trigger_id") == null || m.get("trigger_id") instanceof Value.NullV)
+                ? null : requireString(m, "trigger_id", path);
         return new ExpansionDef(
-                requireString(m, "trigger_id", path), params(m.get("trigger_params")),
+                triggerId, params(m.get("trigger_params")),
                 requireString(m, "effect_id", path), params(m.get("effect_params")),
                 requireString(m, "target_id", path), params(m.get("target_params")),
                 requireString(m, "duration", path),
                 List.copyOf(conditions),
-                resClass(requireString(m, "class", path), path + ".class"),
+                cls,
                 common);
     }
 

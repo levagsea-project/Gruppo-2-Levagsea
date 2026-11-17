@@ -34,16 +34,6 @@ Not decided yet: whether `FACTION_SWAP` is the main format; how the faction of g
 Players must always have at least one legal deck per faction (`2026-11-06-starter-decks`). Decks are pinned to a pool snapshot (`decks.snapshot_id`), so a new snapshot does not touch existing decks; the problem appears when decks are moved to a new snapshot, or when an old one is retired. Not decided. Options: keep the old snapshot playable until the player migrates; mark a deck invalid and grant a fresh starter deck when no legal deck remains; or reject the new snapshot if it would leave players without one. Also open: where the starter deck templates are stored (no table yet).
 
 
-### `2026-11-07-class-i-trigger`: Which trigger a spell or equipment expansion carries
-
-Spells and equipment have no trigger (`vocab.card_contexts`), and their effects are class `I` (immediate). But an `ExpansionDef` has a `triggerId`, and the loader requires it. Not decided what a spell's or equipment's expansion puts there: a dedicated "when drawn" trigger, `null`, or a loader exception for class `I`. To decide when the spell and equipment data are written, together with the validator and the loader. See `2026-11-07-cards-share-abilities`.
-
-
-### `2026-11-07-cycle-2-ties-with-effects`: Same-lane Cycle 2 attacks and redirects
-
-Without effects, two attackers of different players on the same lane number cannot both be in Cycle 2 (each has an enemy in the opposite lane, so both attack in Cycle 1). With redirect effects (9.4) it can happen. The tie order is set (`2026-11-07-resolution-order-faction-then-side`), but the redirect rules (which cycle a redirected attack uses, what happens to a redirect to a destroyed creature) belong to the effects work and are not yet implemented.
-
-
 ### `2026-11-07-spell-equipment-hooks-no-data`: Spell and equipment hooks do nothing
 
 `CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves, discards and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`, `2026-11-08-equipment-discard-after-use`) and `RefillTest` covers that flow with a recording hook. When cards exist: replace the no-op default and test what the effects do.
