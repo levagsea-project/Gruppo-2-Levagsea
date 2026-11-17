@@ -21,7 +21,9 @@ import quorma.gameengine.data.Value;
 import quorma.gameengine.model.Ability;
 import quorma.gameengine.model.AbilityRef;
 import quorma.gameengine.model.CreatureCard;
+import quorma.gameengine.model.Card;
 import quorma.gameengine.model.InlineEffect;
+import quorma.gameengine.model.SpellCard;
 
 /**
  * The expansion parser: turns a card's abilities into {@link BoundExpansion}s, in card order.
@@ -51,6 +53,47 @@ public final class AbilityBinder {
     }
 
     /**
+     * The expansions of a spell or an equipment (ruleset 3.3, 3.4): written on the card as expansions of class I with
+     * no trigger, in card order. A keyword or an Evolution is for creatures, so a reference is refused. A spell aims
+     * at a whole side ({@code S9} your creatures, {@code S10} the opponent's); an equipment at the creature it is
+     * applied to ({@code S27}).
+     *
+     * @throws IllegalArgumentException for a creature
+     */
+    public List<BoundExpansion> bindImmediate(Card card) {
+        if (card instanceof CreatureCard) {
+            throw new IllegalArgumentException("not a spell or an equipment: " + card.id());
+        }
+        String thing = card instanceof SpellCard ? "a spell" : "an equipment";
+        Set<String> targets = card instanceof SpellCard ? Set.of("S9", "S10") : Set.of("S27");
+        List<BoundExpansion> out = new ArrayList<>();
+        List<Ability> abilities = card.abilities();
+        for (int i = 0; i < abilities.size(); i++) {
+            String where = "card " + card.id() + " " + inlineId(i + 1);
+            if (!(abilities.get(i) instanceof InlineEffect inline)) {
+                throw new AbilityException("card " + card.id() + " " + ((AbilityRef) abilities.get(i)).id()
+                        + ": " + thing + " has its effects written as expansions (keywords and evolutions are for creatures)");
+            }
+            for (ExpansionDef expansion : inline.expansions()) {
+                if (expansion.triggerId() != null || expansion.cls() != ResClass.I) {
+                    throw new AbilityException(where + ": an expansion of " + thing + " must be class I with no trigger");
+                }
+                if (!targets.contains(expansion.targetId())) {
+                    throw new AbilityException(where + ": " + thing + " aims at " + new java.util.TreeSet<>(targets)
+                            + ", not " + expansion.targetId());
+                }
+                if (expansion.conditions().stream().anyMatch(c -> !c.id().equals("C4"))) {
+                    throw new AbilityException(where + ": conditions on " + thing + " are not implemented by the engine yet");
+                }
+                BoundExpansion bound = bindExpansion(where, inlineId(i + 1), expansion, Map.of(), Map.of(), expansion.conditions());
+                EffectRegistry.check(bound, where);
+                out.add(bound);
+            }
+        }
+        return List.copyOf(out);
+    }
+
+    /**
      * The id of an ability written on the card (data/AGENTS.md section 12): {@code INLINE_<n>}, n being its
      * position among all the card's abilities, from 1, keywords included. It names the ability in errors and in
      * the MatchLog, and is its default stack key.
@@ -67,6 +110,9 @@ public final class AbilityBinder {
         String where = "card " + cardId + " " + abilityId;
         List<BoundExpansion> out = new ArrayList<>();
         for (ExpansionDef expansion : inline.expansions()) {
+            if (expansion.triggerId() == null) {
+                throw new AbilityException(where + ": an expansion with no trigger is for a spell or an equipment");
+            }
             if (expansion.conditions().stream().anyMatch(c -> c.id().equals("K_PARAM"))) {
                 throw new AbilityException(
                         where + ": conditions on an ability written on the card are not implemented by the engine yet"

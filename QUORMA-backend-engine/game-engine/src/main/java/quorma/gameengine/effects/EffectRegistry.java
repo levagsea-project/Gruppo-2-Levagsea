@@ -24,6 +24,9 @@ public final class EffectRegistry {
 
     private static final Set<Shape> SHAPES = Set.of(
             new Shape("T0", "E28", ResClass.C, "D_Permanente"),  // Scudo: less damage taken
+            new Shape(null, "E1", ResClass.I, "D_Permanente"),    // spell or equipment: permanent + ATK
+            new Shape(null, "E2", ResClass.I, "D_Permanente"),    // spell or equipment: permanent + DEF
+            new Shape(null, "E6", ResClass.I, "D_Istantanea"),    // spell or equipment: heal
             new Shape("T0", "E55", ResClass.C, "D_Permanente"),  // Camaleonte: counts as any suit for the hand
             new Shape("T0", "E1", ResClass.C, "D_FincheSorgenteInGioco"), // static ATK bonus (suit synergies, cards)
             new Shape("T0", "E34", ResClass.C, "D_FincheSorgenteInGioco"), // the group's creatures count as adjacent
@@ -84,7 +87,9 @@ public final class EffectRegistry {
                     "lockout.suit", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))));
 
     private static final Map<String, Map<String, ParamRule>> PARAMS_2 = Map.of(
-            "E2", Map.of("pct_base_def", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of())),
+            "E2", Map.of(
+                    "pct_base_def", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of()),
+                    "flat", new ParamRule(Map.of("amount", new int[] {0, MAX}), Map.of())),
             "E17", Map.of("", new ParamRule(Map.of(), Map.of())),
             "E24", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("new_target_id", Set.of("S7")))),
             "E19", Map.of("", new ParamRule(Map.of("factor", new int[] {0, MAX}), Map.of())));
@@ -98,7 +103,7 @@ public final class EffectRegistry {
     }
 
     private static final Set<String> TRIGGERS = Set.of("T0", "T2", "T5", "T9", "T12", "T19", "T20", "T29", "T34");
-    private static final Set<String> TARGETS = Set.of("S1", "S12", "S27", "S41");
+    private static final Set<String> TARGETS = Set.of("S1", "S9", "S10", "S12", "S27", "S41");
     private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco", "D_FinoAUccisione");
 
     /** Conditions the engine evaluates while the creature is in play ({@code StaticEffects}). */
@@ -132,8 +137,9 @@ public final class EffectRegistry {
      */
     public static boolean isImplemented(quorma.gameengine.data.ExpansionDef x) {
         Map<String, ParamRule> modes = PARAMS.get(x.effectId());
-        if (modes == null || x.triggerId() == null || !TRIGGERS.contains(x.triggerId())
+        if (modes == null || (x.triggerId() != null && !TRIGGERS.contains(x.triggerId()))
                 || !triggerParamsOk(x.triggerId(), x.triggerParams()) || !TARGETS.contains(x.targetId())
+                || (everyoneTarget(x.targetId()) && x.cls() != ResClass.I)
                 || !DURATIONS.contains(x.duration())
                 || !SHAPES.contains(new Shape(x.triggerId(), x.effectId(), x.cls(), x.duration()))
                 || !x.common().isEmpty()) {
@@ -182,6 +188,9 @@ public final class EffectRegistry {
 
     /** T2 takes the phase (only Refill is implemented), T5 the suit and level; no other trigger takes params. */
     private static boolean triggerParamsOk(String triggerId, Map<String, Value> params) {
+        if (triggerId == null) {
+            return params.isEmpty();
+        }
         if (triggerId.equals("T5")) {
             return params.size() == 2 && params.get("suit") instanceof Value.StrV s && SUITS.contains(s.v())
                     && params.get("level") instanceof Value.IntV n && n.v() >= 3 && n.v() <= 5;
@@ -190,6 +199,11 @@ public final class EffectRegistry {
             return params.size() == 1 && params.get("phase") instanceof Value.StrV p && p.v().equals("Rifornimento");
         }
         return params.isEmpty();
+    }
+
+    /** S9 and S10 name the creatures of a whole side: only the immediate effects of spells use them. */
+    private static boolean everyoneTarget(String targetId) {
+        return targetId.equals("S9") || targetId.equals("S10");
     }
 
     private static boolean targetParamsOk(String targetId, Map<String, Value> params) {
@@ -216,8 +230,11 @@ public final class EffectRegistry {
         if (modes == null) {
             throw notImplemented(where, "effect " + effect);
         }
-        if (!TRIGGERS.contains(expansion.triggerId())) {
+        if (expansion.triggerId() != null && !TRIGGERS.contains(expansion.triggerId())) {
             throw notImplemented(where, "trigger " + expansion.triggerId());
+        }
+        if (everyoneTarget(expansion.targetId()) && expansion.cls() != ResClass.I) {
+            throw notImplemented(where, "target " + expansion.targetId() + " outside a spell");
         }
         if (!TARGETS.contains(expansion.targetId())) {
             throw notImplemented(where, "target " + expansion.targetId());
@@ -307,7 +324,7 @@ public final class EffectRegistry {
     private static String supported(String effectId) {
         List<String> out = SHAPES.stream()
                 .filter(s -> s.effectId().equals(effectId))
-                .map(s -> s.triggerId() + "/" + s.cls() + "/" + s.duration())
+                .map(s -> (s.triggerId() == null ? "no trigger" : s.triggerId()) + "/" + s.cls() + "/" + s.duration())
                 .sorted()
                 .toList();
         return String.join(", ", out);

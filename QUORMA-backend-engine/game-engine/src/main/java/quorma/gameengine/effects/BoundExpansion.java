@@ -17,6 +17,7 @@ import quorma.gameengine.data.Value;
  * {@link AbilityBinder} when a creature enters play.
  *
  * @param abilityId   the keyword the expansion comes from, for example {@code K_SCUDO}
+ * @param triggerId   null for a class I expansion of a spell or equipment, which has no trigger
  * @param triggerParams the trigger params, for example {@code phase} of T2
  * @param targetParams the target params as written, for example {@code filters} of S41
  * @param conditions  the conditions left to check while the creature is in play (everything but {@code K_PARAM}),
@@ -47,11 +48,13 @@ public record BoundExpansion(
 
     public BoundExpansion {
         Objects.requireNonNull(abilityId, "abilityId");
-        Objects.requireNonNull(triggerId, "triggerId");
         Objects.requireNonNull(effectId, "effectId");
         Objects.requireNonNull(targetId, "targetId");
         Objects.requireNonNull(duration, "duration");
         Objects.requireNonNull(cls, "cls");
+        if (triggerId == null && cls != ResClass.I) {
+            throw new NullPointerException("triggerId: only a class I expansion (a spell or equipment effect) has no trigger");
+        }
         Objects.requireNonNull(maxStacks, "maxStacks");
         Objects.requireNonNull(stackKey, "stackKey");
         effectParams = Collections.unmodifiableMap(new LinkedHashMap<>(effectParams));

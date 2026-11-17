@@ -229,6 +229,7 @@
         { "$ref": "#/$defs/ev_attack_skipped" },
         { "$ref": "#/$defs/ev_creature_destroyed" },
         { "$ref": "#/$defs/ev_creature_saved" },
+        { "$ref": "#/$defs/ev_card_effect_resolved" },
         { "$ref": "#/$defs/ev_effect_triggered" },
         { "$ref": "#/$defs/ev_effect_resolved" },
         { "$ref": "#/$defs/ev_effect_fizzled" },
@@ -302,6 +303,21 @@
       "properties": {
         "type": { "const": "creature_destroyed" },
         "creature": { "$ref": "#/$defs/creature_ref" }
+      }
+    },
+    "ev_card_effect_resolved": {
+      "description": "An effect of a spell or an equipment changed a creature, logged after spell_resolved or equipment_applied.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "card_id", "ability_id", "effect_id", "target", "changes"],
+      "properties": {
+        "type": { "const": "card_effect_resolved" },
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "effect_id": { "$ref": "#/$defs/effect_id" },
+        "target": { "$ref": "#/$defs/creature_ref" },
+        "changes": { "type": "array", "items": { "$ref": "#/$defs/stat_change" } }
       }
     },
     "ev_creature_saved": {

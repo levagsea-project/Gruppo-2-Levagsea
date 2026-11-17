@@ -1421,22 +1421,6 @@
       ],
       "requires_context": "triggerer"
     },
-    "S9": {
-      "name": "Tutte le tue creature",
-      "description": "Tutte le creature controllate dal giocatore che possiede l'effetto.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
-    "S10": {
-      "name": "Tutte le creature avversarie",
-      "description": "Tutte le creature controllate dall'avversario.",
-      "kind": [
-        "creature"
-      ],
-      "requires_context": null
-    },
     "S11": {
       "name": "Tutte le creature",
       "description": "Tutte le creature in gioco, di entrambi i giocatori. Per l'ordine di risoluzione: corsia crescente, poi Potenze Artificiali prima di Resistenza Umana.",

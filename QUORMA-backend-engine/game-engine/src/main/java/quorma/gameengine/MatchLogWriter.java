@@ -21,6 +21,7 @@ import quorma.gameengine.log.MatchEvent.AttackRedirected;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
 import quorma.gameengine.log.MatchEvent.CardSetAside;
+import quorma.gameengine.log.MatchEvent.CardEffectResolved;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
 import quorma.gameengine.log.MatchEvent.CreatureSaved;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
@@ -150,7 +151,9 @@ final class MatchLogWriter {
 
     private static Map<String, Object> expansion(ExpansionDef x) {
         Map<String, Object> e = new LinkedHashMap<>();
-        e.put("trigger_id", x.triggerId());
+        if (x.triggerId() != null) {
+            e.put("trigger_id", x.triggerId());
+        }
         putIfAny(e, "trigger_params", x.triggerParams());
         e.put("effect_id", x.effectId());
         putIfAny(e, "effect_params", x.effectParams());
@@ -274,6 +277,15 @@ final class MatchLogWriter {
             case CreatureDestroyed d -> {
                 e.put("type", "creature_destroyed");
                 e.put("creature", ref(d.side(), d.lane(), d.cardId()));
+            }
+            case CardEffectResolved c -> {
+                e.put("type", "card_effect_resolved");
+                e.put("side", c.side().name());
+                e.put("card_id", c.cardId());
+                e.put("ability_id", c.abilityId());
+                e.put("effect_id", c.effectId());
+                e.put("target", ref(c.target()));
+                e.put("changes", c.changes().stream().map(MatchLogWriter::change).toList());
             }
             case CreatureSaved s -> {
                 e.put("type", "creature_saved");

@@ -202,7 +202,7 @@ class AbilityBinderTest {
                 .contains("card RU-VIN-A INLINE_1: effect E26 is not implemented"));
         assertTrue(refusedInline(expansion("T0", "E1", ResClass.C, "D_Permanente", "mode", "pct_base_atk", "permille", 100))
                 .contains("effect E1 with trigger T0, class C and duration D_Permanente is not implemented by the engine yet "
-                        + "(supported: T0/C/D_FincheSorgenteInGioco, T12/T/D_Permanente, T19/T/D_Permanente, T29/T/D_FinoAUccisione)"));
+                        + "(supported: T0/C/D_FincheSorgenteInGioco, T12/T/D_Permanente, T19/T/D_Permanente, T29/T/D_FinoAUccisione, no trigger/I/D_Permanente)"));
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.T, "D_Permanente", "mode", "reduction_pct", "pct", 10))
                 .contains("class T"), "the class must match the shape");
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.C, "D_Permanente", "mode", "reduction_pct"))

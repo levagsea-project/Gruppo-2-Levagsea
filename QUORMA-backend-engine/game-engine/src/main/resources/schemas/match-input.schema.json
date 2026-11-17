@@ -145,7 +145,7 @@
     "expansion": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["trigger_id", "effect_id", "target_id", "duration", "class"],
+      "required": ["effect_id", "target_id", "duration", "class"],
       "properties": {
         "trigger_id": { "type": "string" },
         "trigger_params": { "type": "object" },

@@ -13,6 +13,7 @@ import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.EffectResolver;
 import quorma.gameengine.effects.EffectStack;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
@@ -517,6 +518,7 @@ public final class TurnResolver {
                     if (pendingEquipment != null) {
                         cardEffects.onEquipment(pendingEquipment, side, drawn);
                         log.add(new EquipmentApplied(side, lane, pendingEquipment.id(), card.id()));
+                        applyImmediate(state, side, pendingEquipment, drawn, log);
                         player.discard().add(pendingEquipment);
                         pendingEquipment = null;
                     }
@@ -524,6 +526,7 @@ public final class TurnResolver {
                     cardEffects.onSpell(spell, side);
                     player.discard().add(spell);
                     log.add(new SpellResolved(side, lane, spell.id()));
+                    applyImmediate(state, side, spell, null, log);
                     lane--;
                 } else if (card instanceof EquipmentCard equipment) {
                     pendingEquipment = equipment;
@@ -540,6 +543,26 @@ public final class TurnResolver {
         // 10.10: what depends on the creatures in play after Refill (the lockout of Vestigio 5).
         for (Side side : order) {
             state.player(side).releaseLocks();
+        }
+    }
+
+    /**
+     * The effects written on a spell (10.5) or an equipment (10.6), in card order, each on the creatures it aims at:
+     * S9 the owner's living creatures and S10 the opponent's, in lane order; S27 the creature the equipment was applied
+     * to. Destroyed creatures are not affected. Each change is logged.
+     */
+    private void applyImmediate(MatchState state, Side owner, Card card, Creature receiver, List<MatchEvent> log) {
+        for (BoundExpansion e : binder.bindImmediate(card)) {
+            Side side = e.targetId().equals("S10") ? owner.other() : owner;
+            List<Creature> targets = switch (e.targetId()) {
+                case "S27" -> receiver == null || receiver.destroyed() ? List.of() : List.of(receiver);
+                default -> state.player(side).creatures().stream().filter(c -> !c.destroyed()).toList();
+            };
+            for (Creature target : targets) {
+                EffectResolver.Outcome outcome = EffectResolver.resolve(e, target);
+                log.add(new MatchEvent.CardEffectResolved(owner, card.id(), e.abilityId(), e.effectId(),
+                        CreatureRef.of(side, target), outcome.changes()));
+            }
         }
     }
 

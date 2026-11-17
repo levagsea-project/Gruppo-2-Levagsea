@@ -69,6 +69,18 @@ public sealed interface MatchEvent {
     record CreatureDestroyed(Side side, int lane, String cardId) implements MatchEvent {}
 
     /**
+     * An effect of a spell or an equipment changed a creature (ruleset 10.5, 10.6). Logged after
+     * {@code SpellResolved} or {@code EquipmentApplied}, one per effect and per creature it reached.
+     */
+    record CardEffectResolved(Side side, String cardId, String abilityId, String effectId, CreatureRef target,
+            List<StatChange> changes) implements MatchEvent {
+
+        public CardEffectResolved {
+            changes = List.copyOf(changes);
+        }
+    }
+
+    /**
      * A creature that would have been destroyed was saved with full DEF (effect E12): Refill destroys it if it is
      * still in its lane.
      */

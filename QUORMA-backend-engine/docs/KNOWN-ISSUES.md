@@ -19,10 +19,9 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 Not decided yet: whether `FACTION_SWAP` is the main format; how the faction of game 3 is chosen; when game 3 is needed (a 1-1 split, or also after draws) and when a series ends; how the series outcome follows from the games; and how many games a series may last (after a drawn game 3 the rule is "swap and play again", with no stated cap). The schema stores each game and its factions and leaves these to the backend.
 
 
-### `2026-11-07-spell-equipment-hooks-no-data`: Spell and equipment hooks do nothing
+### `2026-11-17-no-spell-equipment-data`: No spell or equipment cards are defined
 
-`CardEffects.onSpell` and `onEquipment` are no-ops (`TODO(spells-equipment)`) because no spell or equipment cards exist. Refill draws, resolves, discards and replaces them as decided (`2026-11-07-refill-spells-equipment-immediate`, `2026-11-08-equipment-discard-after-use`) and `RefillTest` covers that flow with a recording hook. When cards exist: replace the no-op default and test what the effects do.
-
+The engine plays spells and equipment with effects written on the card (`2026-11-17-spells-equipment`), but `data/` defines none: there is no `spells.json`, `balance.json` has no `spells` / `equipment` sections, pool generation does not make them, and `validate.py` has no pass over them (its `check_expansion` is ready, `2026-11-17-class-i-no-trigger`). Packs cannot be opened until some exist (`2026-11-12-pack-odds`). To decide: which effects they have (the engine runs ATK, DEF and heal on a side or on one creature), their rarity and cost, and what a keyword-granting equipment is (effect E14 is parked).
 
 ### `2026-11-14-vincolo-no-themed-ability`: No live ability carries Vincolo's theme
 

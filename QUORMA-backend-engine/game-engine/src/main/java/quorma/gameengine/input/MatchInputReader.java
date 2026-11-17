@@ -174,7 +174,7 @@ public final class MatchInputReader {
         for (int i = 0; i < raw.size(); i++) {
             String p = path + ".expansions[" + i + "]";
             Value.MapV x = object(raw.get(i), p);
-            keys(x, p, EXPANSION_KEYS, Set.of("trigger_id", "effect_id", "target_id", "duration", "class"));
+            keys(x, p, EXPANSION_KEYS, Set.of("effect_id", "target_id", "duration", "class"));
             try {
                 out.add(RulesetLoader.expansion(x, p));
             } catch (RulesetException e) {
