@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code / ComfyUI (locale)
+/CLAUDE.md
+/tools/
+
+# Build di React Router
+/build/
+/.react-router/
+.env
+# il modello delle variabili va condiviso (il .gitignore principale esclude .env*)
+!.env.example
