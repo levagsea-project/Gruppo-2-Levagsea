@@ -1,23 +1,31 @@
-// Le due valute in alto a destra.
-type CurrencyProps = { label: string; value: string; icon: string }
+import { currencies } from '../../data/player'
 
-function Currency({ label, value, icon }: CurrencyProps) {
-  return (
-    <div className="currency">
-      <span className="currency-icon">{icon}</span>
-      <div>
-        <div className="currency-label">{label}</div>
-        <div className="currency-value">{value}</div>
-      </div>
-    </div>
-  )
-}
+// Icone delle due valute: anello per la Valuta 1, rombo petrolio per la Valuta 2.
+const ICONS = [
+  <svg key="v1" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--silver-100)" strokeWidth="1.6">
+    <circle cx="12" cy="12" r="9" />
+    <circle cx="12" cy="12" r="4.5" />
+  </svg>,
+  <svg key="v2" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="rgba(74,166,173,0.25)" stroke="var(--petrol-500)" strokeWidth="1.6" strokeLinejoin="round">
+    <path d="M12 2 21 12l-9 10-9-10z" />
+  </svg>,
+]
 
+// Le due valute in alto a destra, nel riquadro a guglia del design system.
 export default function CurrencyBar() {
   return (
-    <div className="currency-bar">
-      <Currency icon="◎" label="VALUTA 1" value="12.500" />
-      <Currency icon="◆" label="VALUTA 2" value="250" />
+    <div className="currency-bar q-tela q-tela--guglia">
+      <div className="q-tela__in">
+        {currencies.map((c, i) => (
+          <div className="q-valore" key={c.label}>
+            {ICONS[i]}
+            <span className="q-valore__testo">
+              <span className="q-valore__etichetta">{c.label}</span>
+              <span className="q-valore__numero">{c.value}</span>
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
