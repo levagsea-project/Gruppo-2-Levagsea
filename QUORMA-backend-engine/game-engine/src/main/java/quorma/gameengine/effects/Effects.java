@@ -20,6 +20,9 @@ public final class Effects {
             new DestroyEffect(),
             new DiscardEffect(),
             new RemoveKeywordEffect(),
+            new KeywordGrantEffect(),
+            new EvolutionGrantEffect(),
+            new SelfGrantEffect(),
             new StackedGrantEffect(),
             new ScaledDamageEffect(),
             new CancelBonusesEffect());

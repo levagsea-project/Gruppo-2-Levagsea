@@ -379,6 +379,16 @@ final class Game implements EffectStack.Hooks, EffectContext {
     // ================================================================ effects on a creature
 
     @Override
+    public AbilityBinder binder() {
+        return binder;
+    }
+
+    @Override
+    public boolean hasAbility(Creature creature, String abilityId) {
+        return board().abilities(creature).stream().anyMatch(x -> x.abilityId().equals(abilityId));
+    }
+
+    @Override
     public boolean noBonus(Creature target) {
         return board().noBonus(target);
     }
@@ -415,27 +425,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
         if (effect != null) {
             return effect.apply(this, new Effect.Use(e, item.side(), side, source, lasting, item.context(), after), t);
         }
-        return switch (e.effectId()) {
-            case "E14" -> {
-                String keyword = e.stringParam("keyword").orElseThrow();
-                t.grant(new Grant(keyword, binder.bindKeyword("effect " + e.abilityId() + " E14", keyword,
-                        e.nested("keyword_params")), lasting, true));
-                yield Outcome.NONE;
-            }
-            case "E16" -> {
-                String evolution = e.stringParam("evolution_id").orElseThrow();
-                if (board().abilities(t).stream().noneMatch(x -> x.abilityId().equals(evolution))) {
-                    t.grant(new Grant(evolution, binder.bindEvolution("effect " + e.abilityId() + " E16", evolution,
-                            e.nested("evolution_params")), lasting, true));
-                }
-                yield Outcome.NONE;
-            }
-            case "E18" -> {
-                t.grant(new Grant(e.abilityId(), List.of(e.asStatic("S1", Lasting.PERMANENT)), lasting, false));
-                yield Outcome.NONE;
-            }
-            default -> throw new IllegalStateException("no resolution for effect " + e.effectId() + " on a creature");
-        };
+        throw new IllegalStateException("no resolution for effect " + e.effectId() + " on a creature");
     }
 
     /** E8 (lose) or E9 (gain) life. */

@@ -1,6 +1,7 @@
 package quorma.gameengine.effects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -13,8 +14,9 @@ import quorma.gameengine.model.Creature;
 
 /**
  * One focused test per effect class that moved out of {@code Game}, without the stack or the turn: the effect, a
- * {@link FakeContext} and a creature. Numbers worked out by hand. E15 and E28 (which need keyword and grant
- * machinery) are covered by {@code BaseSetTest} and {@code BaseSetEffectsTest}.
+ * {@link FakeContext} and a creature. Numbers worked out by hand. E28 (stacking grant) and the
+ * positive case of E16 need bound abilities of the real vocabulary and are covered by {@code BaseSetTest} and
+ * {@code BaseSetEffectsTest}.
  */
 class EffectClassesTest {
 
@@ -155,6 +157,38 @@ class EffectClassesTest {
         FakeContext ctx = new FakeContext();
         assertEquals(Outcome.NONE, apply(new DiscardEffect(), ctx, EffectFixtures.use("E13", Map.of(), t), t));
         assertEquals(List.of("discard B"), ctx.calls);
+    }
+
+    // ---- E14, E15, E16, E18
+
+    @Test
+    void e14GrantsAKeywordAndE15TakesItAway() {
+        Creature t = EffectFixtures.creature(1000, 3000);
+        Map<String, Value> keyword = Map.of("keyword", new Value.StrV("K_PRIMO_COLPO"));
+        assertEquals(Outcome.NONE, apply(new KeywordGrantEffect(), new FakeContext(),
+                EffectFixtures.use("E14", keyword, t), t));
+        assertTrue(t.has("K_PRIMO_COLPO"));
+        assertEquals(Outcome.NONE, apply(new RemoveKeywordEffect(), new FakeContext(),
+                EffectFixtures.use("E15", keyword, t), t));
+        assertFalse(t.has("K_PRIMO_COLPO"));
+    }
+
+    @Test
+    void e16GrantsNothingWhenTheCreatureAlreadyHasTheEvolution() {
+        Creature t = EffectFixtures.creature(1000, 3000);
+        FakeContext ctx = new FakeContext();
+        ctx.hasAbility = true;
+        Map<String, Value> evolution = Map.of("evolution_id", new Value.StrV("NOT_BOUND_AT_ALL"));
+        assertEquals(Outcome.NONE, apply(new EvolutionGrantEffect(), ctx, EffectFixtures.use("E16", evolution, t), t));
+        assertEquals(0, t.abilities().size());
+    }
+
+    @Test
+    void e18GrantsAStaticCopyOfItself() {
+        Creature t = EffectFixtures.creature(1000, 3000);
+        Effect.Use use = EffectFixtures.use("E18", Map.of(), t);
+        assertEquals(Outcome.NONE, apply(new SelfGrantEffect(), new FakeContext(), use, t));
+        assertTrue(t.has(use.expansion().abilityId()));
     }
 
     // ---- E59

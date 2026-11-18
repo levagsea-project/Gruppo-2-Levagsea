@@ -14,6 +14,12 @@ public interface EffectContext {
     /** The per-mille factor on healing {@code target} receives (1000 unless E51 reaches it). */
     int healPermille(Creature target);
 
+    /** The binder that turns a keyword or an Evolution granted by an effect into expansions. */
+    AbilityBinder binder();
+
+    /** True if {@code creature} has the ability {@code abilityId}, written on its card or granted. */
+    boolean hasAbility(Creature creature, String abilityId);
+
     /** True if a bonus must not apply to {@code target} (E61). */
     boolean noBonus(Creature target);
 

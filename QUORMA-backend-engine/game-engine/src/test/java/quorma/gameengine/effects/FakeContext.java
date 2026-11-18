@@ -16,7 +16,18 @@ class FakeContext implements EffectContext {
     boolean noBonus;
     int adjacentAllies;
     boolean saves;
+    boolean hasAbility;
     final List<String> calls = new ArrayList<>();
+
+    @Override
+    public AbilityBinder binder() {
+        return EffectFixtures.BINDER;
+    }
+
+    @Override
+    public boolean hasAbility(Creature creature, String abilityId) {
+        return hasAbility;
+    }
 
     @Override
     public int healPermille(Creature target) {
