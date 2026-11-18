@@ -29,64 +29,12 @@ public final class EffectRegistry {
     private static final Set<String> SUITS = Set.of("Vincolo", "Frattura", "Spira", "Vestigio");
     private static final Set<String> RANKS = Set.of("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K");
 
-    /** The params of one effect mode. */
-    private record ParamRule(
-            Map<String, int[]> ints,
-            Map<String, int[]> optionalInts,
-            Map<String, Set<String>> strings,
-            Map<String, Set<String>> optionalStrings,
-            Set<String> optionalBools,
-            Set<String> prefixes,
-            Map<String, Integer> defaults) {
-
-        static ParamRule none() {
-            return new ParamRule(Map.of(), Map.of(), Map.of(), Map.of(), Set.of(), Set.of(), Map.of());
-        }
-
-        static ParamRule ints(Map<String, int[]> ints) {
-            return new ParamRule(ints, Map.of(), Map.of(), Map.of(), Set.of(), Set.of(), Map.of());
-        }
-
-        ParamRule optInts(Map<String, int[]> more) {
-            return new ParamRule(ints, more, strings, optionalStrings, optionalBools, prefixes, defaults);
-        }
-
-        ParamRule strings(Map<String, Set<String>> more) {
-            return new ParamRule(ints, optionalInts, more, optionalStrings, optionalBools, prefixes, defaults);
-        }
-
-        ParamRule optStrings(Map<String, Set<String>> more) {
-            return new ParamRule(ints, optionalInts, strings, more, optionalBools, prefixes, defaults);
-        }
-
-        ParamRule bools(Set<String> more) {
-            return new ParamRule(ints, optionalInts, strings, optionalStrings, more, prefixes, defaults);
-        }
-
-        ParamRule prefixes(Set<String> more) {
-            return new ParamRule(ints, optionalInts, strings, optionalStrings, optionalBools, more, defaults);
-        }
-
-        ParamRule defaults(Map<String, Integer> more) {
-            return new ParamRule(ints, optionalInts, strings, optionalStrings, optionalBools, prefixes, more);
-        }
-
-        boolean takes(String name) {
-            if (ints.containsKey(name) || optionalInts.containsKey(name) || strings.containsKey(name)
-                    || optionalStrings.containsKey(name) || optionalBools.contains(name)) {
-                return true;
-            }
-            int dot = name.indexOf('.');
-            return dot > 0 && prefixes.contains(name.substring(0, dot));
-        }
-    }
-
     private static int[] range(int lo, int hi) {
-        return new int[] {lo, hi};
+        return ParamRule.range(lo, hi);
     }
 
-    private static final int[] ANY = range(MIN, MAX);
-    private static final int[] NON_NEGATIVE = range(0, MAX);
+    private static final int[] ANY = ParamRule.ANY;
+    private static final int[] NON_NEGATIVE = ParamRule.NON_NEGATIVE;
 
     /** Per effect: the classes it is implemented for. */
     private static final Map<String, Set<ResClass>> CLASSES = new LinkedHashMap<>();
@@ -108,24 +56,12 @@ public final class EffectRegistry {
     private static final Set<ResClass> CTI = Set.of(ResClass.C, ResClass.T, ResClass.I);
 
     static {
-        Set<String> atkScale = Set.of("own_evolutions_triggered", "non_attackers", "creatures_in_play", "own_empty_lanes");
-        effect("E1", CTI, Map.of(
-                "pct_base_atk", ParamRule.none().optInts(Map.of("permille", ANY, "pct", ANY))
-                        .optStrings(Map.of("scale_by", atkScale)),
-                "flat", ParamRule.ints(Map.of("amount", ANY)).optStrings(Map.of("scale_by", atkScale))));
-        effect("E2", CTI, Map.of(
-                "pct_base_def", ParamRule.ints(Map.of("permille", ANY)).optStrings(Map.of("scale_by", Set.of("adjacent_allies"))),
-                "flat", ParamRule.ints(Map.of("amount", ANY)).optStrings(Map.of("scale_by", Set.of("adjacent_allies")))));
+        for (Effect effect : Effects.all()) {
+            effect(effect.id(), effect.classes(), effect.modes());
+        }
         effect("E3", I, Map.of("", ParamRule.ints(Map.of("amount", ANY))));
-        effect("E4", T, Map.of("", ParamRule.none().optInts(Map.of("value", NON_NEGATIVE))
-                .optStrings(Map.of("value", Set.of("base")))));
-        effect("E6", TI, Map.of(
-                "flat", ParamRule.ints(Map.of("amount", NON_NEGATIVE)),
-                "pct_base_def", ParamRule.ints(Map.of("permille", NON_NEGATIVE))));
-        effect("E7", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
         effect("E8", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
         effect("E9", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
-        effect("E10", TI, Map.of("", ParamRule.none()));
         effect("E11", R, Map.of("", ParamRule.ints(Map.of("count", range(1, MAX)))
                 .optInts(Map.of("set_def", range(1, MAX))).bools(Set.of("spill_on_prevent"))
                 .defaults(Map.of("set_def", 1))));
@@ -133,14 +69,7 @@ public final class EffectRegistry {
                 .optInts(Map.of("lockout.reactivate_below", range(1, 5)))
                 .optStrings(Map.of("then", Set.of("none", "destroy_at_next_refill"), "lockout.key", Set.of(),
                         "lockout.suit", SUITS))));
-        effect("E13", TI, Map.of("", ParamRule.none()));
-        effect("E14", CT, Map.of("", ParamRule.none().strings(Map.of("keyword", Set.of()))
-                .prefixes(Set.of("keyword_params"))));
-        effect("E15", CT, Map.of("", ParamRule.none().strings(Map.of("keyword", Set.of()))));
-        effect("E16", CT, Map.of("", ParamRule.none().strings(Map.of("evolution_id", Set.of()))
-                .prefixes(Set.of("evolution_params"))));
         effect("E17", T, Map.of("", ParamRule.none()));
-        effect("E18", CT, Map.of("", ParamRule.none()));
         effect("E19", C, Map.of("", ParamRule.ints(Map.of("factor", NON_NEGATIVE))));
         effect("E21", R, Map.of("", ParamRule.ints(Map.of("factor", NON_NEGATIVE))));
         effect("E22", R, Map.of("", ParamRule.ints(Map.of("permille", range(0, 1000)))));
@@ -148,10 +77,6 @@ public final class EffectRegistry {
         effect("E24", T, Map.of("", ParamRule.none().strings(Map.of("new_target_id", Set.of("S1", "S7")))));
         effect("E25", R, Map.of("", ParamRule.none()));
         effect("E26", C, Map.of("", ParamRule.none()));
-        effect("E28", CT, Map.of(
-                "reduction_pct", ParamRule.ints(Map.of("pct", range(0, 100))),
-                "flat", ParamRule.ints(Map.of("amount", NON_NEGATIVE, "min_damage", NON_NEGATIVE))
-                        .defaults(Map.of("min_damage", 1))));
         effect("E29", R, Map.of("", ParamRule.none().optInts(Map.of("amount", NON_NEGATIVE)).bools(Set.of("once"))));
         effect("E30", C, Map.of("", ParamRule.none().strings(Map.of("rank", RANKS))));
         Set<String> ranksOrAlly = new java.util.HashSet<>(RANKS);
@@ -171,9 +96,6 @@ public final class EffectRegistry {
         effect("E55", C, Map.of("", ParamRule.none()));
         effect("E56", C, Map.of("", ParamRule.ints(Map.of("pct", range(0, 100)))));
         effect("E57", I, Map.of("", ParamRule.ints(Map.of("count", NON_NEGATIVE))));
-        effect("E58", T, Map.of("", ParamRule.ints(Map.of("permille", NON_NEGATIVE))
-                .strings(Map.of("source", Set.of("damage_taken", "damage_dealt", "own_atk")))));
-        effect("E59", T, Map.of("", ParamRule.none()));
         effect("E60", C, Map.of("", ParamRule.none()));
         effect("E61", C, Map.of("", ParamRule.none()));
         effect("E63", R, Map.of("", ParamRule.none()));
@@ -304,9 +226,9 @@ public final class EffectRegistry {
         if (rule == null) {
             return Optional.of(notImplemented("effect " + effect + " with mode " + (mode.isEmpty() ? "(none)" : mode)));
         }
-        if (effect.equals("E1") && mode.equals("pct_base_atk")
-                && !effectParams.containsKey("permille") && !effectParams.containsKey("pct")) {
-            return Optional.of("effect E1 mode pct_base_atk needs param 'permille' (or 'pct')");
+        Optional<String> own = Effects.find(effect).flatMap(x -> x.validate(mode, effectParams));
+        if (own.isPresent()) {
+            return own;
         }
         return paramsProblem(effect, mode, rule, effectParams, strict);
     }

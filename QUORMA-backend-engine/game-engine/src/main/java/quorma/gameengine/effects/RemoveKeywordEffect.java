@@ -1,5 +1,8 @@
 package quorma.gameengine.effects;
 
+import java.util.Map;
+import java.util.Set;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.model.Creature;
 
 /** E15: the creature loses a keyword for as long as the duration says. */
@@ -8,6 +11,16 @@ public final class RemoveKeywordEffect implements Effect {
     @Override
     public String id() {
         return "E15";
+    }
+
+    @Override
+    public Set<ResClass> classes() {
+        return Set.of(ResClass.C, ResClass.T);
+    }
+
+    @Override
+    public Map<String, ParamRule> modes() {
+        return Map.of("", ParamRule.none().strings(Map.of("keyword", Set.of())));
     }
 
     @Override

@@ -1,6 +1,11 @@
 package quorma.gameengine.effects;
 
+import static quorma.gameengine.effects.ParamRule.NON_NEGATIVE;
+
+import java.util.Map;
 import java.util.OptionalInt;
+import java.util.Set;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.model.Creature;
 
 /** E58: damage by an effect, a share ({@code permille}) of the source's ATK or of the amount that triggered it. */
@@ -9,6 +14,17 @@ public final class ScaledDamageEffect implements Effect {
     @Override
     public String id() {
         return "E58";
+    }
+
+    @Override
+    public Set<ResClass> classes() {
+        return Set.of(ResClass.T);
+    }
+
+    @Override
+    public Map<String, ParamRule> modes() {
+        return Map.of("", ParamRule.ints(Map.of("permille", NON_NEGATIVE))
+                .strings(Map.of("source", Set.of("damage_taken", "damage_dealt", "own_atk"))));
     }
 
     @Override

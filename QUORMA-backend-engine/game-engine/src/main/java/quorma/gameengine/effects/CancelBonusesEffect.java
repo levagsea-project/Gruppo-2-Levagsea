@@ -1,7 +1,10 @@
 package quorma.gameengine.effects;
 
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
+import java.util.Set;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.StatChange;
 import quorma.gameengine.model.Creature;
 
@@ -11,6 +14,16 @@ public final class CancelBonusesEffect implements Effect {
     @Override
     public String id() {
         return "E59";
+    }
+
+    @Override
+    public Set<ResClass> classes() {
+        return Set.of(ResClass.T);
+    }
+
+    @Override
+    public Map<String, ParamRule> modes() {
+        return Map.of("", ParamRule.none());
     }
 
     @Override

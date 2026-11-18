@@ -1,5 +1,6 @@
 package quorma.gameengine.effects;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,6 +33,11 @@ public final class Effects {
     /** The class for {@code effectId}, empty while that effect is still resolved by the old switch in {@code Game}. */
     public static Optional<Effect> find(String effectId) {
         return Optional.ofNullable(BY_ID.get(effectId));
+    }
+
+    /** Every class, in the order they are registered. */
+    public static Collection<Effect> all() {
+        return BY_ID.values();
     }
 
     private static Map<String, Effect> register(Effect... effects) {

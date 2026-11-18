@@ -1,6 +1,11 @@
 package quorma.gameengine.effects;
 
+import static quorma.gameengine.effects.ParamRule.ANY;
+
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.StatChange;
 import quorma.gameengine.model.Creature;
 
@@ -13,6 +18,19 @@ public final class DefEffect implements Effect {
     @Override
     public String id() {
         return "E2";
+    }
+
+    @Override
+    public Set<ResClass> classes() {
+        return Set.of(ResClass.C, ResClass.T, ResClass.I);
+    }
+
+    @Override
+    public Map<String, ParamRule> modes() {
+        return Map.of(
+                "pct_base_def", ParamRule.ints(Map.of("permille", ANY))
+                        .optStrings(Map.of("scale_by", Set.of("adjacent_allies"))),
+                "flat", ParamRule.ints(Map.of("amount", ANY)).optStrings(Map.of("scale_by", Set.of("adjacent_allies"))));
     }
 
     @Override

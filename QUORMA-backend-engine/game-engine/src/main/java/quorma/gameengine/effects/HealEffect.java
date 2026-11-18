@@ -1,7 +1,12 @@
 package quorma.gameengine.effects;
 
+import static quorma.gameengine.effects.ParamRule.NON_NEGATIVE;
+
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
+import java.util.Set;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.StatChange;
 import quorma.gameengine.model.Creature;
 
@@ -11,6 +16,18 @@ public final class HealEffect implements Effect {
     @Override
     public String id() {
         return "E6";
+    }
+
+    @Override
+    public Set<ResClass> classes() {
+        return Set.of(ResClass.T, ResClass.I);
+    }
+
+    @Override
+    public Map<String, ParamRule> modes() {
+        return Map.of(
+                "flat", ParamRule.ints(Map.of("amount", NON_NEGATIVE)),
+                "pct_base_def", ParamRule.ints(Map.of("permille", NON_NEGATIVE)));
     }
 
     @Override

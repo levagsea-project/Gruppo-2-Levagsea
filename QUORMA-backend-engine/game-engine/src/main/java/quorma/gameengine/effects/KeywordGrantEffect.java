@@ -1,5 +1,8 @@
 package quorma.gameengine.effects;
 
+import java.util.Map;
+import java.util.Set;
+import quorma.gameengine.data.ResClass;
 import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Grant;
 
@@ -9,6 +12,17 @@ public final class KeywordGrantEffect implements Effect {
     @Override
     public String id() {
         return "E14";
+    }
+
+    @Override
+    public Set<ResClass> classes() {
+        return Set.of(ResClass.C, ResClass.T);
+    }
+
+    @Override
+    public Map<String, ParamRule> modes() {
+        return Map.of("", ParamRule.none().strings(Map.of("keyword", Set.of()))
+                .prefixes(Set.of("keyword_params")));
     }
 
     @Override
