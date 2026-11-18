@@ -61,9 +61,12 @@ game-engine/src/main/java/quorma/gameengine/
   data/      rule pack loader, Ruleset, rule pack hash
   effects/   ability binder, effect registry, stack, one Effect class per effect ID (`Effects` looks them up),
              `EffectContext` (what an effect may ask of the turn), `PerMille` math
-  turn/      setup, turn phases (TurnResolver), one turn's effects: triggers, stack resolution, damage and destruction by
-             effects, spells and equipment (Game), the table as effects see it: static effects, reach, conditions,
-             adjacency, selections (Board), hand effects (Hands), damage (Strike, Damage), suit synergy tiers (SynergyTiers)
+  turn/      setup, turn phases (TurnResolver), one turn's effects (Game: wires the pieces below, implements the stack
+             hooks and EffectContext, spells, equipment, draws and placements), triggers (TriggerDispatcher: which
+             abilities listen and in what order), targets of an effect (TargetSelector), damage and destruction by
+             effects with the T20/T21 replacements (Destruction), the table as effects see it: static effects, reach,
+             conditions, adjacency, selections (Board), hand effects (Hands), damage (Strike, Damage), suit synergy
+             tiers (SynergyTiers)
   hand/      poker hand evaluator
   model/     cards, creatures, players, match state
   log/       events, board snapshots

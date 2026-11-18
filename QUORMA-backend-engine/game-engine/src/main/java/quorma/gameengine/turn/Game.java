@@ -1,7 +1,6 @@
 package quorma.gameengine.turn;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +20,10 @@ import quorma.gameengine.effects.Followups;
 import quorma.gameengine.effects.Outcome;
 import quorma.gameengine.effects.TargetIds;
 import quorma.gameengine.effects.TriggerContext;
-import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.FizzleReason;
 import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.log.MatchEvent.CardDrawn;
-import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
-import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
-import quorma.gameengine.log.MatchEvent.CreatureSaved;
 import quorma.gameengine.log.MatchEvent.EffectFizzled;
 import quorma.gameengine.log.MatchEvent.EffectResolved;
 import quorma.gameengine.log.MatchEvent.EquipmentApplied;
@@ -65,6 +60,10 @@ final class Game implements EffectStack.Hooks, EffectContext {
     Evaluation evaluation;
     int cycle;
 
+    final TriggerDispatcher triggers;
+    final TargetSelector selector;
+    final Destruction destruction;
+
     /** An equipment drawn and waiting for the next creature, per side (ruleset 10.6). */
     private final Map<Side, EquipmentCard> pendingEquipment = new LinkedHashMap<>();
 
@@ -74,6 +73,9 @@ final class Game implements EffectStack.Hooks, EffectContext {
         this.state = Objects.requireNonNull(state, "state");
         this.evaluation = evaluation;
         this.cardEffects = Objects.requireNonNull(cardEffects, "cardEffects");
+        this.triggers = new TriggerDispatcher(state, this::board);
+        this.selector = new TargetSelector(state);
+        this.destruction = new Destruction(state, this::board);
     }
 
     Board board() {
@@ -100,126 +102,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
             return;
         }
         EffectStack stack = stack(log);
-        fire(events, stack);
+        triggers.fire(events, stack);
         stack.resolveAll();
-    }
-
-    private record Candidate(int sideRank, int lane, int seq, EffectStack.Item item) {}
-
-    /**
-     * Pushes the triggered abilities that listen to {@code events}, in ruleset 4.3 order: Potenze Artificiali
-     * first, each side in lane order (the player's own abilities, such as suit tiers, after its creatures), a
-     * creature's abilities in order. Conditions are checked now.
-     */
-    void fire(List<GameEvent> events, EffectStack stack) {
-        Board b = board();
-        List<Candidate> out = new ArrayList<>();
-        Side[] order = b.prioritySides();
-        for (GameEvent event : events) {
-            switch (event) {
-                case GameEvent.Destroyed d -> {
-                    TriggerContext ctx = TriggerContext.destroyed(d.victim(), d.killerSide(), d.killer());
-                    listen(b, out, order, d.side(), d.victim(), "T10", e -> true, ctx, true);
-                    for (Creature c : state.player(d.side()).creatures()) {
-                        if (c != d.victim()) {
-                            listen(b, out, order, d.side(), c, "T36", e -> true, ctx, false);
-                        }
-                    }
-                    for (Creature c : state.player(d.side().other()).creatures()) {
-                        listen(b, out, order, d.side().other(), c, "T37", e -> true, ctx, false);
-                    }
-                    if (d.killer() != null) {
-                        listen(b, out, order, d.killerSide(), d.killer(), "T19", e -> true, ctx, true);
-                    }
-                }
-                case GameEvent.Damaged d -> {
-                    TriggerContext ctx = TriggerContext.damagedBy(d.damagerSide(), d.damager(), d.amount());
-                    listen(b, out, order, d.side(), d.victim(), "T13", e -> {
-                        String source = e.triggerParam("source").orElse("qualsiasi");
-                        return source.equals("qualsiasi") || source.equals(d.combat() ? "combattimento" : "effetto");
-                    }, ctx, true);
-                }
-                case GameEvent.Dealt d -> listen(b, out, order, d.side(), d.attacker(), "T38", e -> true,
-                        TriggerContext.dealt(d.victimSide(), d.victim(), d.amount(), d.killed()), true);
-                case GameEvent.Survived s -> listen(b, out, order, s.side(), s.creature(), "T12", e -> true,
-                        TriggerContext.NONE, false);
-                case GameEvent.Spilled s -> listen(b, out, order, s.side(), s.attacker(), "T11", e -> true,
-                        TriggerContext.NONE, true);
-                case GameEvent.EvolutionFired f -> {
-                    for (Creature c : state.player(f.side()).creatures()) {
-                        listen(b, out, order, f.side(), c, "T15", e -> {
-                            boolean ally = e.triggerParam("source").orElse("self").equals("ally");
-                            return ally ? c != f.creature() : c == f.creature();
-                        }, TriggerContext.NONE, false);
-                    }
-                }
-                case GameEvent.SpellCast s -> {
-                    for (Side side : order) {
-                        for (Creature c : state.player(side).creatures()) {
-                            listen(b, out, order, side, c, "T18", e -> {
-                                String controller = e.triggerParam("controller").orElse("any");
-                                boolean byController = controller.equals("any")
-                                        || controller.equals(side == s.side() ? "own" : "opponent");
-                                return byController && e.triggerParam("spell_id").map(id -> id.equals(s.cardId())).orElse(true);
-                            }, TriggerContext.NONE, false);
-                        }
-                    }
-                }
-                case GameEvent.PhaseStart p -> {
-                    for (Side side : order) {
-                        for (Creature c : state.player(side).creatures()) {
-                            listen(b, out, order, side, c, "T2", e -> e.triggerParam("phase").orElse("").equals(p.phase()),
-                                    TriggerContext.NONE, false);
-                        }
-                    }
-                }
-                case GameEvent.EndOfTurn _ -> {
-                    for (Side side : order) {
-                        for (Creature c : state.player(side).creatures()) {
-                            listen(b, out, order, side, c, "T26", e -> true, TriggerContext.NONE, false);
-                        }
-                    }
-                }
-                case GameEvent.Attacks a -> {
-                    listen(b, out, order, a.side(), a.attacker(), "T6", e -> true,
-                            TriggerContext.attacking(a.targetSide(), a.target(), a.side(), a.attacker()), false);
-                    listen(b, out, order, a.targetSide(), a.target(), "T7", e -> true,
-                            TriggerContext.attacking(a.targetSide(), a.target(), a.side(), a.attacker()), false);
-                }
-            }
-        }
-        out.sort(Comparator.comparingInt(Candidate::sideRank).thenComparingInt(Candidate::lane)
-                .thenComparingInt(Candidate::seq));
-        for (Candidate c : out) {
-            stack.push(c.item());
-        }
-    }
-
-    private void listen(Board b, List<Candidate> out, Side[] order, Side side, Creature source, String trigger,
-            java.util.function.Predicate<BoundExpansion> params, TriggerContext ctx, boolean evenIfDestroyed) {
-        if (source.destroyed() && !evenIfDestroyed) {
-            return;
-        }
-        for (BoundExpansion e : b.abilities(source, trigger)) {
-            if (e.effectId().equals("E24") || e.effectId().equals("E17") || !params.test(e)
-                    || !b.holds(e, side, source, Board.Ctx.of(ctx))) {
-                continue;
-            }
-            out.add(new Candidate(side == order[0] ? 0 : 1, source.lane(), out.size(),
-                    EffectStack.Item.triggered(side, source, e, scaleOf(b, side, source, e), ctx)));
-        }
-    }
-
-    /** The factor of the creature's E19 (Spira 4) for an Evolution, 1000 otherwise. */
-    int scaleOf(Board b, Side side, Creature source, BoundExpansion e) {
-        if (!e.evolution() || source.destroyed()) {
-            return 1000;
-        }
-        long factor = 1000;
-        for (Board.Active a : b.reaching("E19", source, Board.Ctx.NONE)) {
-            factor = factor * a.e().intParam("factor") / 1000;
-        }
-        return Math.toIntExact(factor);
     }
 
     // ================================================================ stack hooks
@@ -245,7 +129,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
     @Override
     public void pushed(EffectStack.Item item, EffectStack stack) {
         if (item.expansion().evolution()) {
-            fire(List.of(new GameEvent.EvolutionFired(item.side(), item.source())), stack);
+            triggers.fire(List.of(new GameEvent.EvolutionFired(item.side(), item.source())), stack);
         }
     }
 
@@ -280,9 +164,9 @@ final class Game implements EffectStack.Hooks, EffectContext {
             }
             targets = List.of(item.target());
         } else {
-            targets = targets(b, item);
+            targets = selector.targets(b, item);
             if (targets.isEmpty()) {
-                FizzleReason reason = singleCreatureTarget(e.targetId()) ? FizzleReason.TARGET_DESTROYED : FizzleReason.NO_TARGET;
+                FizzleReason reason = TargetSelector.singleCreatureTarget(e.targetId()) ? FizzleReason.TARGET_DESTROYED : FizzleReason.NO_TARGET;
                 log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), reason));
                 return;
             }
@@ -298,74 +182,9 @@ final class Game implements EffectStack.Hooks, EffectContext {
                     outcome.changes(), outcome.stacks()));
             log.addAll(after.logs());
             if (!after.events().isEmpty()) {
-                fire(after.events(), stack);
+                triggers.fire(after.events(), stack);
             }
         }
-    }
-
-    private static boolean singleCreatureTarget(String targetId) {
-        return List.of("S1", "S2", "S26", "S27", "S43", "S6", "S7").contains(targetId);
-    }
-
-    /** The living creatures a triggered effect reaches when it resolves. */
-    private List<Creature> targets(Board b, EffectStack.Item item) {
-        BoundExpansion e = item.expansion();
-        Side side = item.side();
-        Creature source = item.source();
-        TriggerContext ctx = item.context();
-        List<Creature> out = new ArrayList<>();
-        switch (e.targetId()) {
-            case "S1" -> add(out, source);
-            case "S2" -> add(out, ctx.triggerer());
-            case "S26" -> add(out, ctx.damager());
-            case "S27" -> add(out, ctx.replacement());
-            case "S43" -> add(out, ctx.declaredTarget());
-            case "S6" -> state.player(side.other()).creatureAt(source.lane()).ifPresent(c -> add(out, c));
-            case "S7" -> state.player(side).creatures().stream()
-                    .filter(c -> c != source && !c.destroyed() && b.adjacent(side, source, c))
-                    .min(Comparator.comparingInt(Creature::lane)).ifPresent(out::add);
-            case "S9" -> state.player(side).creatures().forEach(c -> add(out, c));
-            case "S10" -> state.player(side.other()).creatures().forEach(c -> add(out, c));
-            case "S11" -> b.everyone().forEach(c -> add(out, c));
-            case "S12" -> {
-                Suit suit = Suit.valueOf(((Value.StrV) e.targetParams().get("suit")).v().toUpperCase(java.util.Locale.ROOT));
-                state.player(side).creatures().stream().filter(c -> c.card().suit() == suit).forEach(c -> add(out, c));
-            }
-            case "S41" -> {
-                for (Creature c : state.player(side).creatures()) {
-                    if (c != source && !c.destroyed() && b.adjacent(side, source, c)
-                            && b.filtersHold(e.filters(), side, side, c)) {
-                        out.add(c);
-                    }
-                }
-            }
-            case "S44" -> {
-                if (ctx.damaged() != null) {
-                    neighbours(ctx.damagedSide(), ctx.damaged()).forEach(out::add);
-                }
-            }
-            case "S33", "S35", "S37", "S38", "S39", "S40" ->
-                    b.select(e.targetId(), e.targetParams(), side).ifPresent(out::add);
-            default -> throw new IllegalStateException("target " + e.targetId() + " has no selection for a triggered effect");
-        }
-        return out;
-    }
-
-    private static void add(List<Creature> out, Creature c) {
-        if (c != null && !c.destroyed() && !c.leftPlay()) {
-            out.add(c);
-        }
-    }
-
-    /** The living creatures of {@code side} in the lanes next to {@code c} (S44: lanes differing by 1). */
-    List<Creature> neighbours(Side side, Creature c) {
-        List<Creature> out = new ArrayList<>();
-        for (int lane : new int[] {c.lane() - 1, c.lane() + 1}) {
-            if (lane >= 1 && lane <= 5) {
-                state.player(side).creatureAt(lane).filter(x -> !x.destroyed()).ifPresent(out::add);
-            }
-        }
-        return out;
     }
 
     private BoundExpansion laneEffect(BoundExpansion e64) {
@@ -400,12 +219,27 @@ final class Game implements EffectStack.Hooks, EffectContext {
 
     @Override
     public boolean saveFromDestruction(Side side, Creature t, Followups after) {
-        Board.Active rescue = rescue(side, t);
-        if (rescue == null) {
-            return false;
-        }
-        after.logs().add(new CreatureSaved(side, t.lane(), t.card().id(), rescue.e().abilityId()));
-        return true;
+        return destruction.saveFromDestruction(side, t, after);
+    }
+
+    @Override
+    public List<StatChange> damage(Side sourceSide, Creature source, Side side, Creature t, int amount, Followups after) {
+        return destruction.damage(sourceSide, source, side, t, amount, after);
+    }
+
+    @Override
+    public void destroy(Side sourceSide, Creature source, Side side, Creature t, Followups after) {
+        destruction.destroy(sourceSide, source, side, t, after);
+    }
+
+    @Override
+    public void destroyed(Side side, Creature t, Side sourceSide, Creature source, Followups after) {
+        destruction.destroyed(side, t, sourceSide, source, after);
+    }
+
+    @Override
+    public void discard(Side side, Creature t, Followups after) {
+        destruction.discard(side, t, after);
     }
 
     @Override
@@ -439,124 +273,6 @@ final class Game implements EffectStack.Hooks, EffectContext {
     }
 
     // ================================================================ damage and destruction
-
-    /**
-     * Damage by an effect (not combat): T21 replacements first (E29), then T20 if it would destroy. Logs the
-     * destruction or the save after the effect's own line, and fires T13 and the destruction triggers.
-     *
-     * @param source the creature whose ability deals it, null for a spell
-     */
-    @Override
-    public List<StatChange> damage(Side sourceSide, Creature source, Side side, Creature t, int amount, Followups after) {
-        int before = t.currentDef();
-        if (t.destroyed() || amount <= 0) {
-            return List.of(new StatChange(StatChange.Stat.DEF, before, before));
-        }
-        amount = preventDamage(t, amount).left();
-        if (amount <= 0) {
-            return List.of(new StatChange(StatChange.Stat.DEF, before, before));
-        }
-        after.events().add(new GameEvent.Damaged(side, t, amount, sourceSide, source, false));
-        if (amount >= before && saveFromDestruction(side, t, after)) {
-            return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
-        }
-        t.takeDamage(amount);
-        if (t.destroyed()) {
-            destroyed(side, t, sourceSide, source, after);
-        }
-        return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
-    }
-
-    /** What is left of some damage after T21 replacements, and the last ability that prevented part of it. */
-    record Prevention(int left, String abilityId) {}
-
-    /** T21 with E29: prevents the next damage ({@code once}) or part of it ({@code amount}). */
-    Prevention preventDamage(Creature t, int amount) {
-        String by = null;
-        for (Board.Active a : board().replacements("T21", t)) {
-            if (!a.e().effectId().equals("E29") || amount <= 0) {
-                continue;
-            }
-            markReplacement(a, t);
-            by = a.e().abilityId();
-            amount = a.e().boolParam("once", false) ? 0 : Math.max(0, amount - a.e().intParam("amount", 0));
-        }
-        return new Prevention(amount, by);
-    }
-
-    /** E10: destroys {@code t} (not damage), unless a T20 replacement saves it. */
-    @Override
-    public void destroy(Side sourceSide, Creature source, Side side, Creature t, Followups after) {
-        if (t.destroyed()) {
-            return;
-        }
-        if (saveFromDestruction(side, t, after)) {
-            return;
-        }
-        t.markDestroyed();
-        destroyed(side, t, sourceSide, source, after);
-    }
-
-    @Override
-    public void destroyed(Side side, Creature t, Side sourceSide, Creature source, Followups after) {
-        after.logs().add(new CreatureDestroyed(side, t.lane(), t.card().id()));
-        after.events().add(new GameEvent.Destroyed(side, t, source != null ? sourceSide : null, source));
-        if (source != null) {
-            source.endUntilKill();
-        }
-    }
-
-    /** E13: puts {@code t} in its owner's discard pile, with no destruction (no T10, no T20). */
-    @Override
-    public void discard(Side side, Creature t, Followups after) {
-        PlayerState p = state.player(side);
-        p.remove(t.lane());
-        p.discard().add(t.card());
-        after.logs().add(new CreatureDiscarded(side, t.lane(), t.card().id()));
-    }
-
-    /**
-     * T20 "about to be destroyed": the first replacement that saves {@code target} (E12: DEF back to the base DEF,
-     * destroyed at the next Refill if {@code then} says so, a lockout set; E11: DEF set to {@code set_def}). A creature
-     * already saved and waiting for Refill is not saved again. Returns the replacement, or null.
-     */
-    Board.Active rescue(Side side, Creature target) {
-        if (target.condemned()) {
-            return null;
-        }
-        for (Board.Active a : board().replacements("T20", target)) {
-            BoundExpansion e = a.e();
-            switch (e.effectId()) {
-                case "E12" -> {
-                    if (e.stringParam("lockout.key").isPresent()) {
-                        state.player(side).lock(e.stringParam("lockout.key").orElseThrow(),
-                                Suit.valueOf(e.stringParam("lockout.suit").orElseThrow().toUpperCase(java.util.Locale.ROOT)),
-                                e.intParam("lockout.reactivate_below"));
-                    }
-                    target.saveWithFullDef("destroy_at_next_refill".equals(e.stringParam("then").orElse("none")));
-                }
-                case "E11" -> {
-                    target.setDef(e.intParam("set_def"));
-                    target.undestroy();
-                }
-                default -> {
-                    continue;
-                }
-            }
-            markReplacement(a, target);
-            return a;
-        }
-        return null;
-    }
-
-    /** Counts a replacement that applied: on its aura, or on the creature whose ability it is. */
-    void markReplacement(Board.Active a, Creature c) {
-        if (a.aura() != null) {
-            a.aura().markTriggered();
-        } else {
-            (a.source() != null ? a.source() : c).markTriggered(a.e(), turn());
-        }
-    }
 
     // ================================================================ durations
 
@@ -663,7 +379,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
             for (BoundExpansion e : b.abilities(source, "T29")) {
                 if (b.holds(e, side, replacement, Board.Ctx.of(ctx))) {
                     stack.push(new EffectStack.Item(side, source, e.targetId().equals(TargetIds.REPLACEMENT) ? replacement : source, e,
-                            "T29", scaleOf(b, side, source, e), ctx));
+                            "T29", triggers.scaleOf(b, side, source, e), ctx));
                 }
             }
         }
@@ -757,36 +473,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
                 }
                 default -> { }
             }
-            List<Creature> targets = new ArrayList<>();
-            switch (e.targetId()) {
-                case "S27" -> {
-                    if (receiver != null && !receiver.destroyed()) {
-                        targets.add(receiver);
-                    }
-                }
-                case "S9" -> state.player(owner).creatures().forEach(c -> add(targets, c));
-                case "S10" -> state.player(owner.other()).creatures().forEach(c -> add(targets, c));
-                case "S11" -> b.everyone().forEach(c -> add(targets, c));
-                case "S44" -> {
-                    String of = e.targetParams().get("of") instanceof Value.StrV s ? s.v() : null;
-                    Creature anchor = of == null ? null : chosen.get(of);
-                    if (anchor != null) {
-                        Side anchorSide = state.player(owner).creatures().contains(anchor) ? owner : owner.other();
-                        for (Creature n : neighbours(anchorSide, anchor)) {
-                            if (b.filtersHold(e.filters(), owner, anchorSide, n)) {
-                                targets.add(n);
-                            }
-                        }
-                    }
-                }
-                default -> {
-                    Creature c = b.select(e.targetId(), e.targetParams(), owner).orElse(null);
-                    if (c != null) {
-                        chosen.putIfAbsent(e.targetId(), c);
-                        targets.add(c);
-                    }
-                }
-            }
+            List<Creature> targets = selector.immediateTargets(b, e, owner, receiver, chosen);
             for (Creature t : targets) {
                 if (t.destroyed() || t.leftPlay()) {
                     continue;

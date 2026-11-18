@@ -241,7 +241,7 @@ public final class TurnResolver {
 
     private static void push(Game g, Board b, EffectStack stack, Side side, Creature source, BoundExpansion e,
             TriggerContext ctx) {
-        stack.push(EffectStack.Item.triggered(side, source, e, g.scaleOf(b, side, source, e), ctx));
+        stack.push(EffectStack.Item.triggered(side, source, e, g.triggers.scaleOf(b, side, source, e), ctx));
     }
 
     /** T8 params: who attacks ({@code attacker}: opponent, own, any) and at whom ({@code target_scope}). */
@@ -357,7 +357,7 @@ public final class TurnResolver {
                     for (BoundExpansion evolution : b.abilities(creature)) {
                         if (evolution.evolution()) {
                             stack.push(EffectStack.Item.triggered(side, creature, evolution, "T5",
-                                    g.scaleOf(b, side, creature, evolution), TriggerContext.NONE));
+                                    g.triggers.scaleOf(b, side, creature, evolution), TriggerContext.NONE));
                         }
                     }
                 }
@@ -520,7 +520,7 @@ public final class TurnResolver {
         Board b = g.board();
         for (Board.Active a : b.replacements("T39", target)) {
             if (a.e().effectId().equals("E25") && attackerSide != targetSide) {
-                g.markReplacement(a, target);
+                g.destruction.markReplacement(a, target);
                 log.add(new AttackSkipped(attack, cycle, SkipReason.PREVENTED));
                 return false;
             }
@@ -573,7 +573,7 @@ public final class TurnResolver {
             boolean mutualKill, List<MatchEvent> log, Windows windows) {
         Side attackerSide = attack.attacker();
         Target targetRef = attack.target().orElseThrow();
-        Board.Active rescue = strike.killed() ? g.rescue(targetRef.side(), target) : null;
+        Board.Active rescue = strike.killed() ? g.destruction.rescue(targetRef.side(), target) : null;
         if (rescue != null) {
             boolean keepSpill = rescue.e().effectId().equals("E11") && rescue.e().boolParam("spill_on_prevent", false);
             if (rescue.e().effectId().equals("E11")) {
@@ -741,7 +741,7 @@ public final class TurnResolver {
             for (Creature target : targetsOf(g.state, side, e, source)) {
                 if (b.holds(e, side, target, Board.Ctx.NONE)) {
                     stack.push(new EffectStack.Item(side, source != null ? source : target, target, e, e.triggerId(),
-                            source != null ? g.scaleOf(b, side, source, e) : 1000, TriggerContext.NONE));
+                            source != null ? g.triggers.scaleOf(b, side, source, e) : 1000, TriggerContext.NONE));
                 }
             }
         }

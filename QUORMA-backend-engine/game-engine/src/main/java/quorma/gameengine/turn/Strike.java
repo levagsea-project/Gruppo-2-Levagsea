@@ -115,7 +115,7 @@ record Strike(
             damage = 0;
         }
         if (damage > 0 && land) {
-            Game.Prevention p = g.preventDamage(target, damage);
+            Destruction.Prevention p = g.destruction.preventDamage(target, damage);
             if (p.left() != damage) {
                 damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), p.abilityId(), "E29",
                         Modifier.Kind.DAMAGE_PREVENTED, damage - p.left()));
