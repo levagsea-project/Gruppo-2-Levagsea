@@ -12,7 +12,17 @@ import java.util.Optional;
 public final class Effects {
 
     private static final Map<String, Effect> BY_ID = register(
-            new HealEffect());
+            new AtkEffect(),
+            new DefEffect(),
+            new AtkToBaseEffect(),
+            new HealEffect(),
+            new DamageEffect(),
+            new DestroyEffect(),
+            new DiscardEffect(),
+            new RemoveKeywordEffect(),
+            new StackedGrantEffect(),
+            new ScaledDamageEffect(),
+            new CancelBonusesEffect());
 
     private Effects() {}
 

@@ -13,6 +13,7 @@ import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectRegistry;
+import quorma.gameengine.effects.PerMille;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.HandType;
 import quorma.gameengine.hand.Suit;
@@ -424,7 +425,7 @@ final class Board {
             if (!a.e().effectId().equals("E1") || !reaches(a, side, receiver) || !holds(a, receiver, ctx)) {
                 continue;
             }
-            int amount = Math.multiplyExact(baseAmount(a.e(), receiver.card().atk()), scale(a, side));
+            int amount = Math.multiplyExact(PerMille.baseAmount(a.e(), receiver.card().atk()), scale(a, side));
             if (amount == 0 || (amount > 0 && noBonus) || (amount < 0 && noReduce)) {
                 continue;
             }
@@ -433,15 +434,6 @@ final class Board {
                     amount > 0 ? Modifier.Kind.ATK_BONUS : Modifier.Kind.ATK_MALUS, Math.abs(amount)));
         }
         return out;
-    }
-
-    /** The amount of an E1 or E2: {@code amount} (flat) or a share of {@code base} ({@code permille}, or {@code pct}). */
-    static int baseAmount(BoundExpansion e, int base) {
-        if ("flat".equals(e.stringParam("mode").orElse("flat"))) {
-            return e.intParam("amount");
-        }
-        int permille = e.effectParams().containsKey("permille") ? e.intParam("permille") : e.intParam("pct") * 10;
-        return Math.toIntExact(Math.floorDiv((long) base * permille, 1000L));
     }
 
     /** The multiplier of {@code scale_by}, counted now; 1 without it. */

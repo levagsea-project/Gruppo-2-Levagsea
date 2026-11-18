@@ -379,6 +379,26 @@ final class Game implements EffectStack.Hooks, EffectContext {
     // ================================================================ effects on a creature
 
     @Override
+    public boolean noBonus(Creature target) {
+        return board().noBonus(target);
+    }
+
+    @Override
+    public int adjacentAllyCount(Side side, Creature creature) {
+        return board().adjacentAllies(side, creature).size();
+    }
+
+    @Override
+    public boolean saveFromDestruction(Side side, Creature t, Followups after) {
+        Board.Active rescue = rescue(side, t);
+        if (rescue == null) {
+            return false;
+        }
+        after.logs().add(new CreatureSaved(side, t.lane(), t.card().id(), rescue.e().abilityId()));
+        return true;
+    }
+
+    @Override
     public int healPermille(Creature target) {
         return board().healPermille(target);
     }
@@ -396,31 +416,10 @@ final class Game implements EffectStack.Hooks, EffectContext {
             return effect.apply(this, new Effect.Use(e, item.side(), side, source, lasting, item.context(), after), t);
         }
         return switch (e.effectId()) {
-            case "E1" -> stacked(e, t, () -> addAtk(e, t, lasting, 1));
-            case "E2" -> stacked(e, t, () -> addDef(e, side, t, lasting,
-                    e.stringParam("scale_by").isPresent() ? board().adjacentAllies(item.side(), source).size() : 1,
-                    item.side(), source, after));
-            case "E4" -> {
-                t.setAtkToBase(e.abilityId(), lasting);
-                yield Outcome.NONE;
-            }
-            case "E7" -> new Outcome(damage(item.side(), source, side, t, e.intParam("amount"), after), OptionalInt.empty());
-            case "E10" -> {
-                destroy(item.side(), source, side, t, after);
-                yield Outcome.NONE;
-            }
-            case "E13" -> {
-                discard(side, t, after);
-                yield Outcome.NONE;
-            }
             case "E14" -> {
                 String keyword = e.stringParam("keyword").orElseThrow();
                 t.grant(new Grant(keyword, binder.bindKeyword("effect " + e.abilityId() + " E14", keyword,
                         e.nested("keyword_params")), lasting, true));
-                yield Outcome.NONE;
-            }
-            case "E15" -> {
-                t.removeKeyword(e.stringParam("keyword").orElseThrow(), lasting);
                 yield Outcome.NONE;
             }
             case "E16" -> {
@@ -435,75 +434,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
                 t.grant(new Grant(e.abilityId(), List.of(e.asStatic("S1", Lasting.PERMANENT)), lasting, false));
                 yield Outcome.NONE;
             }
-            case "E28" -> stacked(e, t, () -> {
-                t.grant(new Grant(e.abilityId(), List.of(e.asStatic("S1", Lasting.PERMANENT)), lasting, false));
-                return List.of();
-            });
-            case "E58" -> {
-                int base = switch (e.stringParam("source").orElseThrow()) {
-                    case "own_atk" -> source.currentAtk();
-                    default -> item.context().amount();
-                };
-                int amount = Math.toIntExact(Math.floorDiv((long) base * e.intParam("permille"), 1000L));
-                yield new Outcome(damage(item.side(), source, side, t, amount, after), OptionalInt.empty());
-            }
-            case "E59" -> {
-                int atk = t.currentAtk();
-                int def = t.currentDef();
-                t.cancelBonuses();
-                yield new Outcome(List.of(new StatChange(StatChange.Stat.ATK, atk, t.currentAtk()),
-                        new StatChange(StatChange.Stat.DEF, def, t.currentDef())), OptionalInt.empty());
-            }
             default -> throw new IllegalStateException("no resolution for effect " + e.effectId() + " on a creature");
         };
-    }
-
-    /** Applies {@code change} unless the effect's stack key reached {@code max_stacks}; counts the stack. */
-    private Outcome stacked(BoundExpansion e, Creature t, java.util.function.Supplier<List<StatChange>> change) {
-        OptionalInt stacks = OptionalInt.empty();
-        if (e.stackKey().isPresent()) {
-            String key = e.stackKey().get();
-            int applied = t.stacks(key);
-            if (e.maxStacks().isPresent() && applied >= e.maxStacks().getAsInt()) {
-                return new Outcome(List.of(), OptionalInt.of(applied));
-            }
-            stacks = OptionalInt.of(t.addStack(key));
-        }
-        return new Outcome(change.get(), stacks);
-    }
-
-    /** E1: ATK + {@code amount} or a share of the base ATK, times {@code scale}, for as long as {@code lasting} says. */
-    private List<StatChange> addAtk(BoundExpansion e, Creature t, Lasting lasting, int scale) {
-        int before = t.currentAtk();
-        int amount = Math.multiplyExact(Board.baseAmount(e, t.card().atk()), scale);
-        String duration = lasting.duration();
-        t.addAtk(amount, duration.equals(Lasting.WHILE_SOURCE) && lasting.source() == null ? Lasting.permanent() : lasting);
-        return List.of(new StatChange(StatChange.Stat.ATK, before, t.currentAtk()));
-    }
-
-    /**
-     * E2: DEF + {@code amount} or a share of the base DEF, times {@code scale}. A bonus does not apply to a creature
-     * reached by E61. A malus that brings DEF to 0 or less destroys the creature (by effect).
-     */
-    private List<StatChange> addDef(BoundExpansion e, Side side, Creature t, Lasting lasting, int scale,
-            Side sourceSide, Creature source, Followups after) {
-        int before = t.currentDef();
-        int amount = Math.multiplyExact(Board.baseAmount(e, t.baseDef()), scale);
-        if (amount > 0 && board().noBonus(t)) {
-            return List.of(new StatChange(StatChange.Stat.DEF, before, before));
-        }
-        if (amount < 0 && before + amount <= 0) {
-            Board.Active rescue = rescue(side, t);
-            if (rescue != null) {
-                after.logs().add(new CreatureSaved(side, t.lane(), t.card().id(), rescue.e().abilityId()));
-                return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
-            }
-        }
-        t.addDef(amount, lasting);
-        if (t.destroyed()) {
-            destroyed(side, t, sourceSide, source, after);
-        }
-        return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
     }
 
     /** E8 (lose) or E9 (gain) life. */
@@ -526,7 +458,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
      *
      * @param source the creature whose ability deals it, null for a spell
      */
-    List<StatChange> damage(Side sourceSide, Creature source, Side side, Creature t, int amount, Followups after) {
+    @Override
+    public List<StatChange> damage(Side sourceSide, Creature source, Side side, Creature t, int amount, Followups after) {
         int before = t.currentDef();
         if (t.destroyed() || amount <= 0) {
             return List.of(new StatChange(StatChange.Stat.DEF, before, before));
@@ -536,12 +469,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
             return List.of(new StatChange(StatChange.Stat.DEF, before, before));
         }
         after.events().add(new GameEvent.Damaged(side, t, amount, sourceSide, source, false));
-        if (amount >= before) {
-            Board.Active rescue = rescue(side, t);
-            if (rescue != null) {
-                after.logs().add(new CreatureSaved(side, t.lane(), t.card().id(), rescue.e().abilityId()));
-                return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
-            }
+        if (amount >= before && saveFromDestruction(side, t, after)) {
+            return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
         }
         t.takeDamage(amount);
         if (t.destroyed()) {
@@ -568,20 +497,20 @@ final class Game implements EffectStack.Hooks, EffectContext {
     }
 
     /** E10: destroys {@code t} (not damage), unless a T20 replacement saves it. */
-    void destroy(Side sourceSide, Creature source, Side side, Creature t, Followups after) {
+    @Override
+    public void destroy(Side sourceSide, Creature source, Side side, Creature t, Followups after) {
         if (t.destroyed()) {
             return;
         }
-        Board.Active rescue = rescue(side, t);
-        if (rescue != null) {
-            after.logs().add(new CreatureSaved(side, t.lane(), t.card().id(), rescue.e().abilityId()));
+        if (saveFromDestruction(side, t, after)) {
             return;
         }
         t.markDestroyed();
         destroyed(side, t, sourceSide, source, after);
     }
 
-    private void destroyed(Side side, Creature t, Side sourceSide, Creature source, Followups after) {
+    @Override
+    public void destroyed(Side side, Creature t, Side sourceSide, Creature source, Followups after) {
         after.logs().add(new CreatureDestroyed(side, t.lane(), t.card().id()));
         after.events().add(new GameEvent.Destroyed(side, t, source != null ? sourceSide : null, source));
         if (source != null) {
@@ -590,7 +519,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
     }
 
     /** E13: puts {@code t} in its owner's discard pile, with no destruction (no T10, no T20). */
-    private void discard(Side side, Creature t, Followups after) {
+    @Override
+    public void discard(Side side, Creature t, Followups after) {
         PlayerState p = state.player(side);
         p.remove(t.lane());
         p.discard().add(t.card());
@@ -902,20 +832,9 @@ final class Game implements EffectStack.Hooks, EffectContext {
                     after), t).changes();
         }
         return switch (e.effectId()) {
-            case "E1" -> stacked(e, t, () -> addAtk(e, t, Lasting.permanent(), 1)).changes();
-            case "E2" -> stacked(e, t, () -> addDef(e, side, t, Lasting.permanent(), 1, owner, null, after)).changes();
             case "E3" -> {
                 t.addBaseDef(e.intParam("amount"));
                 yield List.of(new StatChange(StatChange.Stat.DEF, t.currentDef(), t.currentDef()));
-            }
-            case "E7" -> damage(owner, null, side, t, e.intParam("amount"), after);
-            case "E10" -> {
-                destroy(owner, null, side, t, after);
-                yield List.of();
-            }
-            case "E13" -> {
-                discard(side, t, after);
-                yield List.of();
             }
             default -> throw new IllegalStateException("no immediate resolution for effect " + e.effectId());
         };
