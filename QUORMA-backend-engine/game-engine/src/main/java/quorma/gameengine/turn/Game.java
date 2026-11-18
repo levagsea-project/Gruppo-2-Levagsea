@@ -204,9 +204,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
                     || !b.holds(e, side, source, Board.Ctx.of(ctx))) {
                 continue;
             }
-            Creature fixed = e.targetId().equals("S1") ? source : null;
             out.add(new Candidate(side == order[0] ? 0 : 1, source.lane(), out.size(),
-                    new EffectStack.Item(side, source, fixed, e, trigger, scaleOf(b, side, source, e), ctx)));
+                    EffectStack.Item.triggered(side, source, e, scaleOf(b, side, source, e), ctx)));
         }
     }
 
@@ -653,7 +652,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
         TriggerContext ctx = TriggerContext.placed(replacement);
         for (BoundExpansion e : player.playerAbilities()) {
             if (e.triggerId().equals("T29") && b.holds(e, side, replacement, Board.Ctx.of(ctx))) {
-                stack.push(new EffectStack.Item(side, replacement, replacement, e, "T29", 1000, ctx));
+                stack.push(EffectStack.Item.onCreature(side, replacement, e, "T29", ctx));
             }
         }
         for (Creature source : player.creatures()) {
@@ -671,7 +670,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
             BoundExpansion e = aura.expansion();
             if ("T29".equals(e.triggerId()) && aura.canTrigger() && b.holds(e, side, replacement, Board.Ctx.of(ctx))) {
                 aura.markTriggered();
-                stack.push(new EffectStack.Item(side, replacement, replacement, e, "T29", 1000, ctx));
+                stack.push(EffectStack.Item.onCreature(side, replacement, e, "T29", ctx));
             }
         }
         stack.resolveAll();

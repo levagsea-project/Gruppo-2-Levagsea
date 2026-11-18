@@ -131,6 +131,25 @@ class EffectStackTest {
     }
 
     @Test
+    void aTriggeredItemIsAimedAtItsSourceOnlyForS1() {
+        Creature x = insaziabile("X", 1, 4000);
+        BoundExpansion e = onKill(x); // Insaziabile aims at S1
+        EffectStack.Item item = EffectStack.Item.triggered(Side.A, x, e, 1000, TriggerContext.NONE);
+        assertEquals(x, item.target());
+        assertEquals("T19", item.triggerId());
+        assertEquals("T5", EffectStack.Item.triggered(Side.A, x, e, "T5", 1000, TriggerContext.NONE).triggerId());
+    }
+
+    @Test
+    void anItemOnACreatureHasItAsSourceAndTarget() {
+        Creature x = insaziabile("X", 1, 4000);
+        EffectStack.Item item = EffectStack.Item.onCreature(Side.B, x, onKill(x), "T29", TriggerContext.NONE);
+        assertEquals(x, item.source());
+        assertEquals(x, item.target());
+        assertEquals(1000, item.scalePermille());
+    }
+
+    @Test
     void onlyTriggeredEffectsGoOnTheStack() {
         Creature x = creature("X", 1, 1000, new AbilityRef("K_TRABOCCANTE"));
         assertThrows(IllegalArgumentException.class, () -> stack.push(Side.A, x, x.abilities("T34").get(0)));

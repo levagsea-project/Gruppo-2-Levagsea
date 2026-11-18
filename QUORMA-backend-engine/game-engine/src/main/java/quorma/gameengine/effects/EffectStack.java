@@ -47,6 +47,28 @@ public final class EffectStack {
             Objects.requireNonNull(expansion, "expansion");
             Objects.requireNonNull(context, "context");
         }
+
+        /**
+         * An ability of {@code source} that fired on its own trigger. An effect aimed at the source itself (S1) has
+         * its target fixed now; any other finds its targets when it resolves.
+         */
+        public static Item triggered(Side side, Creature source, BoundExpansion expansion, int scalePermille,
+                TriggerContext context) {
+            return triggered(side, source, expansion, expansion.triggerId(), scalePermille, context);
+        }
+
+        /** Like {@link #triggered(Side, Creature, BoundExpansion, int, TriggerContext)} with another trigger shown in the log. */
+        public static Item triggered(Side side, Creature source, BoundExpansion expansion, String triggerId,
+                int scalePermille, TriggerContext context) {
+            Creature fixed = expansion.targetId().equals("S1") ? source : null;
+            return new Item(side, source, fixed, expansion, triggerId, scalePermille, context);
+        }
+
+        /** An effect of the player or of a spell that affects {@code creature}, which is also its source (no scaling). */
+        public static Item onCreature(Side side, Creature creature, BoundExpansion expansion, String triggerId,
+                TriggerContext context) {
+            return new Item(side, creature, creature, expansion, triggerId, 1000, context);
+        }
     }
 
     /** What the turn code decides about the effects on the stack. */

@@ -240,8 +240,7 @@ public final class TurnResolver {
 
     private static void push(Game g, Board b, EffectStack stack, Side side, Creature source, BoundExpansion e,
             TriggerContext ctx) {
-        stack.push(new EffectStack.Item(side, source, e.targetId().equals("S1") ? source : null, e, e.triggerId(),
-                g.scaleOf(b, side, source, e), ctx));
+        stack.push(EffectStack.Item.triggered(side, source, e, g.scaleOf(b, side, source, e), ctx));
     }
 
     /** T8 params: who attacks ({@code attacker}: opponent, own, any) and at whom ({@code target_scope}). */
@@ -356,8 +355,7 @@ public final class TurnResolver {
                     }
                     for (BoundExpansion evolution : b.abilities(creature)) {
                         if (evolution.evolution()) {
-                            stack.push(new EffectStack.Item(side, creature,
-                                    evolution.targetId().equals("S1") ? creature : null, evolution, "T5",
+                            stack.push(EffectStack.Item.triggered(side, creature, evolution, "T5",
                                     g.scaleOf(b, side, creature, evolution), TriggerContext.NONE));
                         }
                     }
