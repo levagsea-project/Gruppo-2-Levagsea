@@ -1,12 +1,12 @@
 import HexButton from '../ui/HexButton'
 
-// I bottoni in fondo al pannello. Solo ELIMINA fa qualcosa, per ora.
-export default function DeckActions({ onDelete }: { onDelete: () => void }) {
+// I bottoni in fondo al pannello. GIOCA apre la pagina Gioca, ELIMINA cancella; gli altri non fanno ancora nulla.
+export default function DeckActions({ onPlay, onDelete }: { onPlay: () => void; onDelete: () => void }) {
   return (
     <div className="deck-actions">
       <div className="deck-play">
         <span className="play-dot" />
-        <HexButton variant="primary" icon="✦">GIOCA</HexButton>
+        <HexButton variant="primary" icon="✦" onClick={onPlay}>GIOCA</HexButton>
         <span className="play-dot" />
       </div>
       <HexButton variant="light">MODIFICA</HexButton>

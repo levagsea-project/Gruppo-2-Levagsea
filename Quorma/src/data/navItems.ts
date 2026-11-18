@@ -2,7 +2,7 @@
 import type { NavIconName } from '../components/layout/NavIcon'
 
 // Tutte le pagine che esistono nell'app. Aggiungi qui il nome di una nuova pagina.
-export type Page = 'home' | 'mazzi' | 'nuovo-mazzo' | 'regole' | 'altro' // 'altro' esiste solo su telefono
+export type Page = 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'regole' | 'altro' // 'altro' esiste solo su telefono
 
 export type NavItemData = {
   label: string
@@ -13,7 +13,7 @@ export type NavItemData = {
 
 export const navItems: NavItemData[] = [
   { label: 'Home', icon: 'home', page: 'home' },
-  { label: 'Gioca', icon: 'gioca' },
+  { label: 'Gioca', icon: 'gioca', page: 'gioca' },
   { label: 'Sfide', icon: 'sfide', alert: 'ricompense da riscuotere' },
   { label: 'Collezione', icon: 'collezione', alert: 'buste da aprire' },
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi' },

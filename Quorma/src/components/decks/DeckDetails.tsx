@@ -4,10 +4,10 @@ import Stat from '../ui/Stat'
 import SuitList from './SuitList'
 import DeckActions from './DeckActions'
 
-type Props = { deck: Deck | null; onDelete: (id: string) => void }
+type Props = { deck: Deck | null; onPlay: () => void; onDelete: (id: string) => void }
 
 // Pannello a destra con i dettagli del mazzo scelto.
-export default function DeckDetails({ deck, onDelete }: Props) {
+export default function DeckDetails({ deck, onPlay, onDelete }: Props) {
   if (!deck) {
     return (
       <aside className="deck-details">
@@ -37,7 +37,7 @@ export default function DeckDetails({ deck, onDelete }: Props) {
         {valid ? 'Mazzo valido, pronto per giocare.' : 'Mazzo incompleto.'}
       </p>
 
-      <DeckActions onDelete={() => onDelete(deck.id)} />
+      <DeckActions onPlay={onPlay} onDelete={() => onDelete(deck.id)} />
     </aside>
   )
 }

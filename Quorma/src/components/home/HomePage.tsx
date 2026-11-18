@@ -14,7 +14,7 @@ export default function HomePage({ lastDeck, onNavigate }: Props) {
     <main className="home">
       <div className="home-desktop">
         <CurrencyBar />
-        <HeroText />
+        <HeroText onPlay={() => onNavigate('gioca')} />
         <InfoCards />
       </div>
       <MobileHome lastDeck={lastDeck} onNavigate={onNavigate} />

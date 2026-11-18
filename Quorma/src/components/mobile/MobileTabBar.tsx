@@ -7,7 +7,7 @@ type Tab = { label: string; icon: NavIconName | 'altro'; page?: Page; alert?: st
 // Le 5 schede in basso. "section" = le pagine in cui la scheda resta accesa.
 const TABS: Tab[] = [
   { label: 'Home', icon: 'home', page: 'home', section: ['home'] },
-  { label: 'Gioca', icon: 'gioca', section: [] },
+  { label: 'Gioca', icon: 'gioca', page: 'gioca', section: ['gioca'] },
   { label: 'Collezione', icon: 'collezione', alert: 'buste da aprire', section: [] },
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi', section: ['mazzi', 'nuovo-mazzo'] },
   { label: 'Altro', icon: 'altro', page: 'altro', alert: 'nuove proposte di scambio', section: ['altro', 'regole'] },

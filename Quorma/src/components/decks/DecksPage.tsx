@@ -10,10 +10,11 @@ type Props = {
   onSelect: (id: string) => void
   onDelete: (id: string) => void
   onNewDeck: () => void
+  onPlay: () => void
 }
 
 // Pagina Mazzi: titolo + griglia a sinistra, dettagli a destra.
-export default function DecksPage({ decks, selected, onSelect, onDelete, onNewDeck }: Props) {
+export default function DecksPage({ decks, selected, onSelect, onDelete, onNewDeck, onPlay }: Props) {
   return (
     <main className="page">
       <CurrencyBar />
@@ -34,7 +35,7 @@ export default function DecksPage({ decks, selected, onSelect, onDelete, onNewDe
           />
         </section>
 
-        <DeckDetails deck={selected} onDelete={onDelete} />
+        <DeckDetails deck={selected} onPlay={onPlay} onDelete={onDelete} />
       </div>
     </main>
   )

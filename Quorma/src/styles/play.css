@@ -1,0 +1,89 @@
+/* Pagina Gioca (design: Pagina-Gioca, desktop e mobile) */
+.page.play-page { gap: 26px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+.play-step { display: flex; flex-direction: column; gap: 16px; }
+.play-page .q-marker__title { margin: 0; }
+
+/* scelta cliccabile (modalità o mazzo) */
+.pick { display: block; width: 100%; padding: 0; text-align: left; cursor: pointer; transition: transform .15s ease; }
+.pick:hover { transform: translateY(-2px); }
+.pick:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 6px; }
+.pick:hover .q-tela:not(.q-acceso) > .q-tela__in { box-shadow: inset 0 0 18px rgba(74,166,173,.45), inset 0 1px 0 rgba(213,225,229,.2); }
+.pick--off { opacity: .5; filter: grayscale(.6); cursor: not-allowed; }
+.pick--off:hover { transform: none; }
+
+/* 1 · modalità */
+.play-modi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.play-modo { height: 100%; }
+.play-modo > .q-tela__in { display: flex; flex-direction: column; gap: 6px; padding: 34px 22px 18px; }
+.play-modo__testa { display: flex; align-items: center; gap: 12px; color: var(--steel-300); }
+.play-modo__testa svg { flex: none; width: 20px; height: 20px; }
+.play-modo__titolo { font-family: var(--font-display); font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #EEF4F5; }
+.play-modo__linea { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(74,166,173,.55), rgba(74,166,173,0)); box-shadow: 0 0 6px rgba(74,166,173,.4); }
+.play-modo__desc { font-size: 14px; line-height: 20px; color: #A9BCC3; }
+.play-modo__meta { font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--steel-300); }
+.q-acceso .play-modo__testa, .q-acceso .play-modo__meta { color: var(--petrol-300); }
+
+/* 2 · mazzi, con le carte impilate dietro */
+.play-mazzi { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 196px)); gap: 32px 44px; }
+.play-page .q-carta { --arte-h: 168px; }
+.play-page .q-carta__arte { background-size: cover; background-position: center 30%; }
+.play-conta { margin-top: 4px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--silver-100); }
+.play-conta--off { color: var(--steel-300); }
+.q-mazzo { position: relative; isolation: isolate; display: block; margin: 12px 12px 0 0; filter: drop-shadow(-3px 6px 10px rgba(0,0,0,.5)); }
+.q-mazzo__strato { position: absolute; inset: 0; z-index: -1; padding: 1px; clip-path: var(--forma-arco);
+  background: linear-gradient(160deg, rgba(242,247,248,.55) 0%, rgba(124,144,152,.35) 30%, rgba(213,225,229,.45) 55%, rgba(62,80,88,.4) 100%); transform: translate(var(--sx, 6px), var(--sy, -6px)); }
+.q-mazzo__strato::after { content: ""; display: block; height: 100%; clip-path: var(--forma-arco); background: linear-gradient(180deg, #14232A 0%, #0A1418 100%); }
+.q-mazzo__strato + .q-mazzo__strato { --sx: 12px; --sy: -12px; z-index: -2; opacity: .75; }
+.q-mazzo { --forma-arco: polygon(0% 100%,0% 30px,0.38% 27px,1.52% 24px,3.41% 21px,6.03% 18.1px,9.37% 15.4px,13.4% 12.7px,18.08% 10.1px,23.4% 7.7px,29.29% 5.5px,35.72% 3.5px,42.64% 1.6px,50% 0px,57.36% 1.6px,64.28% 3.5px,70.71% 5.5px,76.6% 7.7px,81.92% 10.1px,86.6% 12.7px,90.63% 15.4px,93.97% 18.1px,96.59% 21px,98.48% 24px,99.62% 27px,100% 30px,100% 100%); }
+
+/* nessun mazzo */
+.play-vuoto { max-width: 420px; }
+.play-vuoto > .q-tela__in { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px 22px; }
+.play-vuoto p { font-size: 14px; color: #A9BCC3; }
+
+/* "Gestisci" nel titolo: solo su telefono (su desktop c'è il bottone in fondo) */
+.play-gestisci { display: none; flex: none; align-items: center; min-height: 44px; padding: 0; cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--petrol-300); }
+
+/* riepilogo e avvio */
+.play-azione { margin-top: auto; display: flex; flex-direction: column; gap: 16px; }
+.play-azione__riga { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+.play-riepilogo { display: flex; flex-direction: column; gap: 2px; }
+.play-riepilogo span { font-family: var(--font-display); font-size: 20px; line-height: 26px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--silver-50); }
+.play-riepilogo small { font-size: 14px; color: var(--steel-300); }
+.play-bottoni { display: flex; align-items: center; gap: 22px; }
+.play-page .q-btn[disabled] { cursor: not-allowed; }
+
+@media (max-width: 1279px) {
+  .play-modo > .q-tela__in { padding: 30px 18px 16px; }
+  .play-modo__titolo { font-size: 15px; letter-spacing: .1em; }
+}
+@media (max-width: 1023px) {
+  .play-modi { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+}
+
+/* ---------- Telefono ---------- */
+@media (max-width: 767px) {
+  .page.play-page { overflow: visible; gap: 20px; }
+  .play-modo > .q-tela__in { padding: 24px 18px 14px; }
+  .play-modo__titolo { font-size: 15px; line-height: 20px; letter-spacing: .12em; }
+  .play-gestisci { display: flex; }
+  .play-gestisci-btn { display: none !important; }
+
+  /* mazzi in fila, scorrono di lato */
+  .play-mazzi { display: flex; gap: 24px; margin: 0 -16px; padding: 12px 16px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none; }
+  .play-mazzi::-webkit-scrollbar { display: none; }
+  .play-mazzi > .pick { flex: none; width: 150px; scroll-snap-align: start; }
+  .play-page .q-carta { --arte-h: 120px; }
+  .play-page .q-carta__nome { font-size: 14px; }
+
+  /* riepilogo + Inizia partita attaccati sopra le schede */
+  .play-azione { position: sticky; bottom: 78px; z-index: 15; gap: 10px; margin: auto -16px -20px; padding: 12px 16px;
+    background: linear-gradient(0deg, rgba(8,16,20,.96) 55%, rgba(8,16,20,0)); }
+  .play-azione > .q-divisorio { display: none; }
+  .play-azione__riga { flex-direction: column; align-items: stretch; gap: 10px; }
+  .play-riepilogo { align-items: center; text-align: center; }
+  .play-riepilogo span { font-size: 15px; line-height: 20px; font-weight: 700; }
+  .play-riepilogo small { font-size: 12px; }
+  .play-bottoni { flex-direction: column; align-items: stretch; }
+  .play-page .q-btn--sigillo .q-btn__in { min-width: 0; height: 54px; padding: 0 30px; font-size: 16px; letter-spacing: .2em; }
+}

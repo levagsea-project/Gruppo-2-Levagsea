@@ -53,7 +53,7 @@ export default function MobileHome({ lastDeck, onNavigate }: Props) {
               </span>
             </div>
             {lastDeck ? (
-              <button type="button" className="q-btn q-btn--sigillo">
+              <button type="button" className="q-btn q-btn--sigillo" onClick={() => onNavigate('gioca')}>
                 <span className="q-btn__in">
                   <Star />
                   Gioca

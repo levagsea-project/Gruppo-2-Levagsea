@@ -1,7 +1,7 @@
 import PlayButton from './PlayButton'
 
 // Titolo, descrizione e bottone: la parte di testo a sinistra.
-export default function HeroText() {
+export default function HeroText({ onPlay }: { onPlay: () => void }) {
   return (
     <div className="hero-text">
       <span className="hero-line" />
@@ -14,7 +14,7 @@ export default function HeroText() {
         Un ordine artificiale che si proclama perfetto. Una frattura al suo
         interno. Un'umanità che sopravvive.
       </p>
-      <PlayButton />
+      <PlayButton onClick={onPlay} />
     </div>
   )
 }
