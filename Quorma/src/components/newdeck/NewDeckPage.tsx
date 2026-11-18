@@ -11,7 +11,7 @@ export default function NewDeckPage({ onCancel }: { onCancel: () => void }) {
   const [chosen, setChosen] = useState<FactionId>('artificiali') // fazione scelta
 
   return (
-    <main className="page">
+    <main className="page newdeck-page">
       <CurrencyBar />
       <PageTitle title="NUOVO MAZZO" subtitle="SCEGLI LA FAZIONE PRINCIPALE" />
 

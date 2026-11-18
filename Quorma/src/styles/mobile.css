@@ -13,7 +13,7 @@
     overflow: visible; min-height: calc(100dvh - 56px); padding: 18px 16px 112px; display: flex; flex-direction: column; gap: 20px;
     background:
       radial-gradient(ellipse 120% 70% at 60% 30%, rgba(8,16,20,.72) 0%, rgba(8,16,20,.95) 100%),
-      url('/hero-bg.jpg') 58% 0 / auto 100vh no-repeat,
+      var(--sfondo, url('/hero-bg.jpg')) 58% 0 / auto 100vh no-repeat,
       #081014;
   }
   .currency-bar { display: none; }

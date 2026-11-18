@@ -16,7 +16,7 @@ type Props = {
 // Pagina Mazzi: titolo + griglia a sinistra, dettagli a destra.
 export default function DecksPage({ decks, selected, onSelect, onDelete, onNewDeck, onPlay }: Props) {
   return (
-    <main className="page">
+    <main className="page decks-page">
       <CurrencyBar />
       <PageTitle title="MAZZI" subtitle="I TUOI MAZZI" />
 
