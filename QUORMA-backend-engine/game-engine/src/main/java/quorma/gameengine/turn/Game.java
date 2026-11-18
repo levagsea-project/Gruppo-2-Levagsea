@@ -167,7 +167,7 @@ final class Game implements EffectStack.Hooks {
                         }
                     }
                 }
-                case GameEvent.EndOfTurn eot -> {
+                case GameEvent.EndOfTurn _ -> {
                     for (Side side : order) {
                         for (Creature c : state.player(side).creatures()) {
                             listen(b, out, order, side, c, "T26", e -> true, TriggerContext.NONE, false);
