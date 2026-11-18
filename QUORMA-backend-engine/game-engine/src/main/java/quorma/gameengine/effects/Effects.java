@@ -15,6 +15,7 @@ public final class Effects {
     private static final Map<String, Effect> BY_ID = register(
             new AtkEffect(),
             new DefEffect(),
+            new BaseDefEffect(),
             new AtkToBaseEffect(),
             new HealEffect(),
             new DamageEffect(),
@@ -30,7 +31,7 @@ public final class Effects {
 
     private Effects() {}
 
-    /** The class for {@code effectId}, empty while that effect is still resolved by the old switch in {@code Game}. */
+    /** The class for {@code effectId}; empty for an ID that resolves no effect on a creature (player, static, replacement). */
     public static Optional<Effect> find(String effectId) {
         return Optional.ofNullable(BY_ID.get(effectId));
     }

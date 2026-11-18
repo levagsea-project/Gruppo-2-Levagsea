@@ -414,18 +414,16 @@ final class Game implements EffectStack.Hooks, EffectContext {
     }
 
     /**
-     * Applies a triggered or immediate effect to the living creature {@code t} of {@code side}. {@code item} gives its
-     * source and trigger context (for an immediate effect, a stand-in with no source creature behaviour beyond the
-     * duration).
+     * Applies a triggered effect to the living creature {@code t} of {@code side} through its {@link Effect} class.
+     * {@code item} gives its source and trigger context. An ID with no class is an engine bug: the registry only lets
+     * through effects that have one.
      */
     private Outcome apply(BoundExpansion e, EffectStack.Item item, Side side, Creature t, Followups after) {
         Creature source = item.source();
         Lasting lasting = lasting(e.duration(), source);
-        Effect effect = Effects.find(e.effectId()).orElse(null);
-        if (effect != null) {
-            return effect.apply(this, new Effect.Use(e, item.side(), side, source, lasting, item.context(), after), t);
-        }
-        throw new IllegalStateException("no resolution for effect " + e.effectId() + " on a creature");
+        Effect effect = Effects.find(e.effectId()).orElseThrow(
+                () -> new IllegalStateException("no resolution for effect " + e.effectId() + " on a creature"));
+        return effect.apply(this, new Effect.Use(e, item.side(), side, source, lasting, item.context(), after), t);
     }
 
     /** E8 (lose) or E9 (gain) life. */
@@ -816,18 +814,10 @@ final class Game implements EffectStack.Hooks, EffectContext {
     }
 
     private List<StatChange> immediateOn(Side owner, BoundExpansion e, Side side, Creature t, Followups after) {
-        Effect effect = Effects.find(e.effectId()).orElse(null);
-        if (effect != null) {
-            return effect.apply(this, new Effect.Use(e, owner, side, null, Lasting.permanent(), TriggerContext.NONE,
-                    after), t).changes();
-        }
-        return switch (e.effectId()) {
-            case "E3" -> {
-                t.addBaseDef(e.intParam("amount"));
-                yield List.of(new StatChange(StatChange.Stat.DEF, t.currentDef(), t.currentDef()));
-            }
-            default -> throw new IllegalStateException("no immediate resolution for effect " + e.effectId());
-        };
+        Effect effect = Effects.find(e.effectId())
+                .orElseThrow(() -> new IllegalStateException("no immediate resolution for effect " + e.effectId()));
+        return effect.apply(this, new Effect.Use(e, owner, side, null, Lasting.permanent(), TriggerContext.NONE,
+                after), t).changes();
     }
 
     /** E57: the top {@code count} cards of {@code player}'s deck go to the discard pile with no effect. */

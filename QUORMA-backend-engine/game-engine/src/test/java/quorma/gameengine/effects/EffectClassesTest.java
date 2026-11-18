@@ -107,6 +107,18 @@ class EffectClassesTest {
         assertEquals(3400, t.currentDef());
     }
 
+    // ---- E3
+
+    @Test
+    void e3RaisesTheBaseDefWithoutHealing() {
+        Creature t = EffectFixtures.creature(1000, 3000);
+        // The fixture binds triggered abilities; E3 is immediate-only, so borrow an expansion with an "amount" param.
+        Effect.Use use = EffectFixtures.use("E7", Map.of("amount", new Value.IntV(500)), t);
+        apply(new BaseDefEffect(), new FakeContext(), use, t);
+        assertEquals(3500, t.baseDef());
+        assertEquals(3000, t.currentDef(), "the cap moves, the current DEF does not");
+    }
+
     // ---- E4
 
     @Test

@@ -59,7 +59,6 @@ public final class EffectRegistry {
         for (Effect effect : Effects.all()) {
             effect(effect.id(), effect.classes(), effect.modes());
         }
-        effect("E3", I, Map.of("", ParamRule.ints(Map.of("amount", ANY))));
         effect("E8", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
         effect("E9", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
         effect("E11", R, Map.of("", ParamRule.ints(Map.of("count", range(1, MAX)))
