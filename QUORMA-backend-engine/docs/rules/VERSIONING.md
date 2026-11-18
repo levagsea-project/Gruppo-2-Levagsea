@@ -10,7 +10,7 @@ A version of the game is three things that must always travel together:
 | Part | Where | Identified by |
 |---|---|---|
 | Rulebook | `docs/rules/regolamento-*.md` | the ruleset version string |
-| Rule pack | `data/*.json` (`vocab`, `keyword`, `evolutions`, `synergies`, `balance`, `invalid-combinations`) | **rule pack hash**: SHA-256 of the canonical re-serialization (`docs/plans/ruleset-loader.md` section 5) |
+| Rule pack | `data/*.json` (`vocab`, `keyword`, `evolutions`, `synergies`, `balance`, `invalid-combinations`, `subfactions`) | **rule pack hash**: SHA-256 of the canonical re-serialization (`docs/plans/ruleset-loader.md` section 5) |
 | Engine | `game-engine` code | **engine version** (the Maven version plus the git commit) |
 
 A match already records all of them: `matches.ruleset_version`, `matches.ruleset_hash`, `matches.engine_version` (backend migration V6), and ruleset 12.2 requires the same. Nothing in the schema has to change for this policy.
@@ -36,7 +36,7 @@ Release is a checklist, done once, by one named person:
 
 1. No open entry in `docs/KNOWN-ISSUES.md` that changes a rule or an outcome (resolve it, or write the chosen behaviour into the rulebook).
 2. The rulebook, `data/` and the engine agree. `make validate` shows 0 errors. All engine tests pass.
-3. Golden files exist for every rule the demo exercises, plus draws, turn 50, empty lanes and simultaneous deaths (`game-engine/AGENTS.md`).
+3. Golden files exist for every rule the engine implements, plus draws, turn 50, empty lanes and simultaneous deaths (`game-engine/AGENTS.md`).
 4. Freeze the files:
    - `docs/rules/releases/regolamento-v1.0.md`: a copy of the rulebook with the version in its title and no "in sviluppo" note.
    - `data/releases/1.0/*.json`: a copy of the rule pack, plus a file `HASH` with the rule pack hash.
@@ -74,7 +74,7 @@ If you are not sure whether a change alters an outcome, it does: run the golden 
 4. **CI replays every released version on every build.** The golden files of 1.0, 1.1, 2.0, ... run in the normal test run. A code change that breaks the replay of an old version fails the build. This is what enforces the freeze on the code side.
 5. **Bug fixes after the release.** If the bug changes the result of version 1.0 matches or golden files, 1.0 keeps its old behaviour (the fix applies from the next version, behind the version check). A fix that changes no stored result and no golden file is a normal change. A bug that must be fixed in 1.0 anyway is a decision for `DECISIONS.md`, and affected stored matches are marked as played on a faulty version, not rewritten.
 6. **Fallback if the version checks grow too heavy:** keep a tagged engine image per major version (`engine-service:1.x`, `engine-service:2.x`) and let the backend route a replay to the image of the match's `engine_version`. Not needed at 1.0.
-7. **The backend** uses only released versions for real matches (a table or a configured list of allowed `ruleset_version` + `ruleset_hash` pairs) and stores the three identifiers it already has. A card pool snapshot is also pinned to a ruleset version (`pool_snapshots.ruleset_version`); a new ruleset version needs a new snapshot (see `2026-11-06-ruleset-change-illegal-deck` for the open problem with existing decks).
+7. **The backend** uses only released versions for real matches (a table or a configured list of allowed `ruleset_version` + `ruleset_hash` pairs) and stores the three identifiers it already has. A card pool snapshot is also pinned to a ruleset version (`pool_snapshots.ruleset_version`); a new ruleset version needs a new snapshot (what happens to existing decks: `2026-11-17-deck-migration`).
 
 ## 6. Naming and files
 

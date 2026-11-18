@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static quorma.gameengine.testkit.Attacks.hit;
+import static quorma.gameengine.testkit.Blows.plain;
 import static quorma.gameengine.testkit.Attacks.noTarget;
 import static quorma.gameengine.testkit.Evaluators.evaluation;
 import static quorma.gameengine.testkit.Evaluators.hand;
@@ -13,7 +14,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import quorma.gameengine.hand.HandType;
 import quorma.gameengine.log.MatchEvent;
-import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.MatchState;
@@ -56,7 +56,7 @@ class Cycle1Test {
         // effective ATK 4000, target DEF 1500 before the blow: spill (4000 - 1500) * 1100 / 1000 = 2750
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.A, 3, 3), 1, 4000, 1000, 1500, -2500, true, 2750, false),
+                        plain(hit(Side.A, 3, 3), 1, 4000, 1000, 4000, 1500, -2500, true, 2750, false, 1100),
                         new CreatureDestroyed(Side.B, 3, "9F")),
                 log);
         PlayerState b = state.player(Side.B);
@@ -73,7 +73,7 @@ class Cycle1Test {
 
         List<MatchEvent> log = cycle1(state, List.of(hit(Side.A, 3, 3)));
 
-        assertEquals(List.of(new AttackResolved(hit(Side.A, 3, 3), 1, 1000, 1000, 3000, 2000, false, 0, false)), log);
+        assertEquals(List.of(plain(hit(Side.A, 3, 3), 1, 1000, 1000, 1000, 3000, 2000, false, 0, false, 1100)), log);
         assertEquals(12000, state.player(Side.B).life());
         assertFalse(Boards.creature(state.player(Side.B), 3).destroyed());
     }
@@ -90,7 +90,7 @@ class Cycle1Test {
         // DEF 1000 before the blow, ATK 1000: it kills, and (1000 - 1000) * 1100 / 1000 = 0
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.A, 3, 3), 1, 1000, 1000, 1000, 0, true, 0, false),
+                        plain(hit(Side.A, 3, 3), 1, 1000, 1000, 1000, 1000, 0, true, 0, false, 1100),
                         new CreatureDestroyed(Side.B, 3, "9F")),
                 third);
         assertEquals(12000, state.player(Side.B).life());
@@ -106,9 +106,9 @@ class Cycle1Test {
 
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.B, 3, 3), 1, 3000, 1000, 1500, -1500, true, 0, true),
+                        plain(hit(Side.B, 3, 3), 1, 3000, 1000, 3000, 1500, -1500, true, 0, true, 1000),
                         new CreatureDestroyed(Side.A, 3, "4V"),
-                        new AttackResolved(hit(Side.A, 3, 3), 1, 4000, 1000, 2000, -2000, true, 0, true),
+                        plain(hit(Side.A, 3, 3), 1, 4000, 1000, 4000, 2000, -2000, true, 0, true, 1100),
                         new CreatureDestroyed(Side.B, 3, "9F")),
                 log);
         assertEquals(12000, state.player(Side.A).life());
@@ -135,8 +135,8 @@ class Cycle1Test {
 
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.B, 3, 3), 1, 3000, 1000, 5000, 2000, false, 0, false),
-                        new AttackResolved(hit(Side.A, 3, 3), 1, 4000, 1000, 2000, -2000, true, 2200, false),
+                        plain(hit(Side.B, 3, 3), 1, 3000, 1000, 3000, 5000, 2000, false, 0, false, 1000),
+                        plain(hit(Side.A, 3, 3), 1, 4000, 1000, 4000, 2000, -2000, true, 2200, false, 1100),
                         new CreatureDestroyed(Side.B, 3, "9F")),
                 log);
         // spill (4000 - 2000) * 1100 / 1000 = 2200
@@ -168,7 +168,7 @@ class Cycle1Test {
 
         List<MatchEvent> log = cycle1(state, List.of(hit(Side.A, 3, 3)));
 
-        assertEquals(List.of(new AttackResolved(hit(Side.A, 3, 3), 1, 0, 1000, 1500, 1500, false, 0, false)), log);
+        assertEquals(List.of(plain(hit(Side.A, 3, 3), 1, 0, 1000, 0, 1500, 1500, false, 0, false, 1100)), log);
         assertEquals(12000, state.player(Side.B).life());
     }
 
@@ -181,7 +181,7 @@ class Cycle1Test {
 
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.B, 3, 3), 1, 4000, 1000, 1500, -2500, true, 2500, false),
+                        plain(hit(Side.B, 3, 3), 1, 4000, 1000, 4000, 1500, -2500, true, 2500, false, 1000),
                         new CreatureDestroyed(Side.A, 3, "4V")),
                 log);
         assertEquals(12000 - 2500, state.player(Side.A).life());
@@ -200,7 +200,7 @@ class Cycle1Test {
         // spill (4400 - 1500) * 1100 / 1000 = 3190
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.A, 3, 3), 1, 4400, 1100, 1500, -2900, true, 3190, false),
+                        plain(hit(Side.A, 3, 3), 1, 4000, 1100, 4400, 1500, -2900, true, 3190, false, 1100),
                         new CreatureDestroyed(Side.B, 3, "9F")),
                 log);
         assertEquals(12000 - 3190, state.player(Side.B).life());
@@ -218,7 +218,7 @@ class Cycle1Test {
         // spill (3600 - 1500) * 1100 / 1000 = 2310
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.A, 3, 3), 1, 3600, 900, 1500, -2100, true, 2310, false),
+                        plain(hit(Side.A, 3, 3), 1, 4000, 900, 3600, 1500, -2100, true, 2310, false, 1100),
                         new CreatureDestroyed(Side.B, 3, "9F")),
                 log);
         assertEquals(12000 - 2310, state.player(Side.B).life());
@@ -244,9 +244,9 @@ class Cycle1Test {
         // A1 kills B1: (4000 - 1500) * 1100 / 1000 = 2750. B2 kills A2: (3000 - 2000) * 1000 / 1000 = 1000
         assertEquals(
                 List.of(
-                        new AttackResolved(hit(Side.A, 1, 1), 1, 4000, 1000, 1500, -2500, true, 2750, false),
+                        plain(hit(Side.A, 1, 1), 1, 4000, 1000, 4000, 1500, -2500, true, 2750, false, 1100),
                         new CreatureDestroyed(Side.B, 1, "9F"),
-                        new AttackResolved(hit(Side.B, 2, 2), 1, 3000, 1000, 2000, -1000, true, 1000, false),
+                        plain(hit(Side.B, 2, 2), 1, 3000, 1000, 3000, 2000, -1000, true, 1000, false, 1000),
                         new CreatureDestroyed(Side.A, 2, "4F")),
                 log);
         assertEquals(12000 - 2750, state.player(Side.B).life());

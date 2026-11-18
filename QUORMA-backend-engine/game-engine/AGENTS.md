@@ -28,27 +28,39 @@ Stack (from the architecture proposal): Java 25, Maven, JUnit. This module is pl
 The engine implements the vocabulary in `data/vocab.json`; it does not hard-code abilities.
 
 - Resolve `$param.x` from the card instance, and `$tune.<KEY>.<name>` from the card instance `params` first, then `data/balance.json` (`data/AGENTS.md` §3). Skip keys starting with `_` in `synergies.json`.
-- `per_creature` synergies: one copy per creature of that suit, source = that creature. `per_player`: one copy, source = the player.
+- `per_creature` synergies: one copy per creature of that suit, source = that creature. `per_player`: one copy, source = the player. Evaluate binds the active `per_creature` tiers onto the creatures (`SynergyTiers`); the effects are run by the code of their shape (`StaticEffects` for static ones), never by synergy-specific code.
 - An Evolution fires once per card instance per game (`max_triggers` 1).
 - Run the same ten checks as `data/validate.py` when loading a pool, or load only data that passed `make validate`.
 - Behaviour such as Custode's delayed destruction is data (`E12.then`, `lockout`, condition `C24`). Do not special-case it in code.
 
 ## MVP scope
 
-Build the subset the demo exercises first: Scudo, Primo Colpo, Letale, Rigenerante; Evolutions Temprato, Predatore, Eredità; synergies Vincolo 3 and 4 and the other tier-3/4 effects as needed. Everything else comes later. No spell or equipment cards exist yet (none are defined in `data/`).
+Only the live data ships (decision `2026-11-14-mvp-ability-set`): what `data/*.json` holds is what the engine resolves, and `data/` is the one place that says which abilities those are. Everything else is in `data/parked/`, which is not bundled in the jar; bring an ability back only when the engine is ready to resolve it (`data/AGENTS.md` §13). A creature may also have an ability written on the card (trigger, effect, target, no keyword) in one of the shapes of the live keywords, with its own numbers (`2026-11-14-inline-abilities`). A spell or equipment has its effects written on the card as expansions of class I with no trigger (`2026-11-17-spells-equipment`).
+
+## Entry point
+
+`GameEngine.matchLog(inputJson)` plays one match and returns the canonical MatchLog JSON. `GameEngine.simulate` returns the same match as Java objects (`Simulation`). Input and log follow the JSON Schemas in `src/main/resources/schemas/` (`2026-11-14-match-log-schema`); bad input is a `MatchInputException` whose message starts with the JSON path. Steps: input checks, shuffle, setup (`2026-11-14-match-setup`), turns, log (`2026-11-14-match-log-writer`).
 
 ## Tests
 
 - JUnit for effects, edge cases (draws, turn 50, empty lanes, simultaneous deaths) and repeatability.
-- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical. Compute expected values by hand and from the ruleset, never from the engine's own output.
+- **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit unless the scenario is about synergies (`2026-11-17-synergies-engine`).
 - A golden file changes only when a rule changes deliberately. Say why in the commit and in `docs/DECISIONS.md`.
 
-## Suggested layout
+## Layout
 
 ```
-game-engine/
-  pom.xml
-  src/main/java/.../engine/   (rng, model, data, phases, effects, log)
-  src/test/java/...
-  src/test/resources/golden/
+game-engine/src/main/java/quorma/gameengine/
+  GameEngine, Simulation, MatchLogWriter, EngineVersion   entry point and the MatchLog
+  input/     match input JSON reader
+  data/      rule pack loader, Ruleset, rule pack hash
+  effects/   ability binder, effect registry, stack, effect resolver
+  turn/      setup, turn phases, damage (Strike, Damage), suit synergy tiers (SynergyTiers), static effects (StaticEffects)
+  hand/      poker hand evaluator
+  model/     cards, creatures, players, match state
+  log/       events, board snapshots
+  rng/       SplitMix64, Fisher-Yates
+  json/      canonical JSON writer and SHA-256
+game-engine/src/main/resources/schemas/      input and MatchLog JSON Schemas, example log
+game-engine/src/test/resources/golden/       golden files
 ```

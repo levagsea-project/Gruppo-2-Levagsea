@@ -1,0 +1,49 @@
+filters:
+  or:
+    - file.hasTag("tipo/magia")
+    - file.hasTag("tipo/equipaggiamento")
+properties:
+  note.id:
+    displayName: ID
+  note.tipo_carta:
+    displayName: Tipo
+views:
+  - type: table
+    name: Tutte
+    order:
+      - file.name
+      - tipo_carta
+      - fazione
+      - definizione
+      - id
+      - stato
+      - autore
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: Per tipo
+    groupBy:
+      property: tipo_carta
+      direction: ASC
+    order:
+      - file.name
+      - fazione
+      - definizione
+      - stato
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: Per fazione
+    groupBy:
+      property: fazione
+      direction: ASC
+    order:
+      - file.name
+      - tipo_carta
+      - definizione
+      - stato
+    sort:
+      - property: id
+        direction: ASC

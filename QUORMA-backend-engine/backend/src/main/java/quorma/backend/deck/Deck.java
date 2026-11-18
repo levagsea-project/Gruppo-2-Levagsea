@@ -51,6 +51,10 @@ public class Deck {
     @Setter
     private boolean defense;
 
+    /** True when the deck is not on the latest snapshot of its faction and could not be moved to it. */
+    @Setter
+    private boolean outdated;
+
     public Deck(UUID ownerId, String name, String faction, UUID snapshotId, Instant updatedAt) {
         this.ownerId = ownerId;
         this.name = name;

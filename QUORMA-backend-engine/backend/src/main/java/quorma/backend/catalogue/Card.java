@@ -34,7 +34,8 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardKind kind;
 
-    private String subfaction;
+    @Enumerated(EnumType.STRING)
+    private Subfaction subfaction;
 
     private String suit;
 
@@ -48,7 +49,7 @@ public class Card {
     @Column(insertable = false, updatable = false)
     private String deckSlot;
 
-    public Card(String cardCode, String faction, CardKind kind, String subfaction, String suit, Short rank) {
+    public Card(String cardCode, String faction, CardKind kind, Subfaction subfaction, String suit, Short rank) {
         this.cardCode = cardCode;
         this.faction = faction;
         this.kind = kind;

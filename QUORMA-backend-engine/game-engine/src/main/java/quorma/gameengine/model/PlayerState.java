@@ -1,9 +1,16 @@
 package quorma.gameengine.model;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.hand.Suit;
 
 /** One player's side of the table: life, five lanes, the deck and the discard pile. */
 public final class PlayerState {
@@ -15,6 +22,15 @@ public final class PlayerState {
     private final Creature[] lanes = new Creature[LANES];
     private final List<Card> deck;
     private final List<Card> discard = new ArrayList<>();
+
+    // ---- per-turn state of the suit synergies (ruleset 7.10), set by Evaluate and Refill ----
+    private List<BoundExpansion> playerAbilities = List.of();
+    private Map<Suit, Integer> suitCounts;
+    private final Map<Integer, Suit> vacated = new HashMap<>();
+    private final Map<String, Lock> locks = new LinkedHashMap<>();
+
+    /** A lockout set by an effect (E12): ends when, after Refill, the player has fewer than {@code below} of {@code suit}. */
+    private record Lock(Suit suit, int below) {}
 
     /** @param deck cards in draw order: index 0 is the top. The list is copied. */
     public PlayerState(Faction faction, int life, List<Card> deck) {
@@ -68,6 +84,71 @@ public final class PlayerState {
     /** The live discard pile, in the order cards were discarded. */
     public List<Card> discard() {
         return discard;
+    }
+
+    /**
+     * The expansions of the active {@code per_player} suit synergy tiers, bound by Evaluate for this turn: their
+     * source is the player, not a creature.
+     */
+    public List<BoundExpansion> playerAbilities() {
+        return playerAbilities;
+    }
+
+    public void setPlayerAbilities(List<BoundExpansion> expansions) {
+        this.playerAbilities = List.copyOf(expansions);
+    }
+
+    /** Evaluate: fixes the creature count of each suit for the turn, destroyed ones included (7.10.3). */
+    public void fixSuitCounts() {
+        Map<Suit, Integer> counts = new EnumMap<>(Suit.class);
+        for (Creature c : creatures()) {
+            counts.merge(c.card().suit(), 1, Integer::sum);
+        }
+        suitCounts = counts;
+    }
+
+    /** Creatures of {@code suit}: the count fixed by Evaluate, or the creatures in play if none was fixed. */
+    public int suitCount(Suit suit) {
+        if (suitCounts != null) {
+            return suitCounts.getOrDefault(suit, 0);
+        }
+        return (int) creatures().stream().filter(c -> c.card().suit() == suit).count();
+    }
+
+    /** Refill: forgets which lanes a destroyed creature left, before this refill's discards note them. */
+    public void clearVacated() {
+        vacated.clear();
+    }
+
+    /** Refill: a destroyed creature of {@code suit} was discarded from {@code lane} (condition C25). */
+    public void noteVacated(int lane, Suit suit) {
+        vacated.put(lane, suit);
+    }
+
+    /** The suit of the creature destroyed in {@code lane} this turn, if any. */
+    public Optional<Suit> vacatedSuit(int lane) {
+        return Optional.ofNullable(vacated.get(lane));
+    }
+
+    /** Sets the lockout {@code key} (effect E12 with {@code lockout}). */
+    public void lock(String key, Suit suit, int reactivateBelow) {
+        locks.put(Objects.requireNonNull(key, "key"), new Lock(suit, reactivateBelow));
+    }
+
+    public boolean isLocked(String key) {
+        return locks.containsKey(key);
+    }
+
+    /** End of Refill (10.10): lifts every lockout whose suit now has fewer creatures in play than it needs. */
+    public void releaseLocks() {
+        Iterator<Lock> it = locks.values().iterator();
+        while (it.hasNext()) {
+            Lock lock = it.next();
+            long inPlay = creatures().stream().filter(c -> c.card().suit() == lock.suit()).count();
+            if (inPlay < lock.below()) {
+                it.remove();
+            }
+        }
     }
 
     /** Puts a creature in its lane. The lane must be empty. */

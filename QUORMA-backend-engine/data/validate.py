@@ -26,6 +26,24 @@ E, T, S = vocab["effects"], vocab["triggers"], vocab["targets"]
 D, C = vocab["durations"], vocab["conditions"]
 as_list = lambda x: x if isinstance(x, list) else [x]
 
+# parked/: abilities, vocab and rules taken out of the live files until needed. Never loaded by the engine.
+parked_dir = root / "parked"
+load_parked = lambda n: json.loads((parked_dir / n).read_text(encoding="utf-8")) if (parked_dir / n).exists() else {}
+p_vocab, p_kw, p_evo = load_parked("vocab.json"), load_parked("keyword.json"), load_parked("evolutions.json")
+p_bal, p_inv = load_parked("balance.json"), load_parked("invalid-combinations.json")
+VOCAB_SECTIONS = ("effects", "triggers", "targets", "conditions", "durations")
+parked_ids = {i: s for s in VOCAB_SECTIONS for i in p_vocab.get(s, {})}
+parked_abilities = set(p_kw) | set(p_evo)
+
+
+def unknown(kind, key):
+    """Error text for a missing id: says where to restore it from when it is parked."""
+    if key in parked_ids:
+        return f"{kind} {key} is parked: move it back from parked/vocab.json ({parked_ids[key]})"
+    if key in parked_abilities:
+        return f"{kind} {key} is parked: move it back from parked/ (see data/AGENTS.md section 13)"
+    return f"unknown {kind} {key}"
+
 
 def provides_of(trigger_id, trigger_params):
     if trigger_id == "T_EVO":
@@ -45,33 +63,51 @@ def class_of_trigger(trigger_id, trigger_params):
 def rule_matches(rule, x):
     for field in ("trigger_id", "effect_id", "target_id"):
         want = rule.get(field)
-        if want is not None and x[field] not in as_list(want):
+        if want is not None and x.get(field) not in as_list(want):
             return False
     if "allowed_triggers" in rule:
         # whitelist rule: matches (= invalid) when effect matches and trigger not allowed
-        return x["trigger_id"] not in rule["allowed_triggers"] and x["effect_id"] in as_list(rule["effect_id"])
+        return x.get("trigger_id") not in rule["allowed_triggers"] and x["effect_id"] in as_list(rule["effect_id"])
     return True
 
 
-def check_expansion(where, x, origin):
-    t, e, s, d = x["trigger_id"], x["effect_id"], x["target_id"], x["duration"]
+def card_contexts(card_kind):
+    """The contexts a spell or equipment gives its targets (vocab card_contexts, parked until those cards exist)."""
+    section = vocab.get("card_contexts") or p_vocab.get("card_contexts") or {}
+    return section.get(card_kind, [])
+
+
+def check_expansion(where, x, origin, card_kind=None):
+    """card_kind is "spell" or "equipment" for an ability of such a card, None for keywords, evolutions and synergies."""
+    t, e, s, d = x.get("trigger_id"), x["effect_id"], x["target_id"], x["duration"]
     tp = x.get("trigger_params", {})
+    # a spell or equipment has no trigger (2026-11-17-class-i-no-trigger): only class I, only on those cards
+    if t is None:
+        if card_kind is None:
+            err(where, "only a spell or equipment expansion may have no trigger")
+            return
+        if x["class"] != "I":
+            err(where, f"an expansion without trigger must be class I, got {x['class']}")
+            return
     # 1 ids exist
     for kind, key, table in (("trigger", t, T), ("effect", e, E), ("target", s, S), ("duration", d, D)):
+        if key is None:
+            continue
         if key not in table:
-            err(where, f"unknown {kind} {key}")
+            err(where, unknown(kind, key))
             return
     for c in x.get("conditions", []):
         if c["id"] not in C:
-            err(where, f"unknown condition {c['id']}")
+            err(where, unknown("condition", c["id"]))
     # 2 class
     cls = x["class"]
-    tcls = class_of_trigger(t, tp)
-    allowed = inv["class_rules"]["trigger_allowed_effect_classes"].get(t)
-    if allowed is None:
-        err(where, f"trigger {t} missing from class_rules")
-    elif cls not in allowed:
-        err(where, f"class {cls} not allowed for trigger {t} ({allowed})")
+    if t is not None:
+        class_of_trigger(t, tp)
+        allowed = inv["class_rules"]["trigger_allowed_effect_classes"].get(t)
+        if allowed is None:
+            err(where, f"trigger {t} missing from class_rules")
+        elif cls not in allowed:
+            err(where, f"class {cls} not allowed for trigger {t} ({allowed})")
     if cls not in E[e]["class"]:
         err(where, f"class {cls} not in effect {e} classes {E[e]['class']}")
     # 3 target kind
@@ -80,8 +116,9 @@ def check_expansion(where, x, origin):
         err(where, f"target {s} kinds {S[s]['kind']} do not fit effect {e} {E[e]['target_kind']}")
     # 4 trigger context
     ctx = S[s].get("requires_context")
-    if ctx and ctx not in provides_of(t, tp):
-        err(where, f"target {s} needs context '{ctx}' not provided by {t}")
+    provided = card_contexts(card_kind) if t is None else provides_of(t, tp)
+    if ctx and ctx not in provided:
+        err(where, f"target {s} needs context '{ctx}' not provided by " + (f"a {card_kind}" if t is None else t))
     # 5 duration
     mode = E[e]["duration_mode"]
     if mode == "instant_only" and d != "D_Istantanea":
@@ -89,7 +126,7 @@ def check_expansion(where, x, origin):
     if mode == "sustained_only" and d == "D_Istantanea":
         err(where, f"effect {e} is sustained_only, got {d}")
     # 6 class I only
-    if set(E[e]["class"]) == {"I"}:
+    if card_kind is None and set(E[e]["class"]) == {"I"}:
         err(where, f"class-I-only effect {e} in a creature ability")
     # 7 combination rules
     for r in inv["combination_rules"]:
@@ -100,7 +137,7 @@ def check_expansion(where, x, origin):
         p = x["effect_params"]
         k = kw.get(p.get("keyword"))
         if not k:
-            err(where, f"E14 grants unknown keyword {p.get('keyword')}")
+            err(where, "E14 grants " + unknown("keyword", p.get("keyword")))
         else:
             schema, given = k.get("params", {}), p.get("keyword_params", {})
             for n, spec in schema.items():
@@ -118,7 +155,7 @@ def check_expansion(where, x, origin):
             ent = bal["keywords"].get(parts[0]) or bal["evolutions"].get(parts[0])
             ok = bool(ent) and (parts[1] in ent.get("params", {}) or parts[1] in ent)
         if not ok:
-            err(where, f"unresolved $tune.{ref}")
+            err(where, f"unresolved $tune.{ref}" + (f" ({parts[0]} is parked)" if parts[0] in parked_abilities else ""))
     for ref in re.findall(r"\$param\.([a-z_]+)", json.dumps(x)):
         if ref not in kw.get(origin, {}).get("params", {}):
             err(where, f"$param.{ref} not declared by {origin}")
@@ -126,14 +163,14 @@ def check_expansion(where, x, origin):
 
 for k, v in kw.items():
     for i, x in enumerate(v["expands_to"]):
-        if x["trigger_id"] == "T_EVO":  # 10
+        if x.get("trigger_id") == "T_EVO":  # 10
             err(f"keyword {k}[{i}]", "keywords must not use T_EVO")
         check_expansion(f"keyword {k}[{i}]", x, k)
     if v.get("balance_ref") not in bal["keywords"]:
         err(f"keyword {k}", "balance_ref missing in balance.json")
 for k, v in evo.items():
     for i, x in enumerate(v["expands_to"]):
-        if x["trigger_id"] != "T_EVO":
+        if x.get("trigger_id") != "T_EVO":
             err(f"evolution {k}[{i}]", "evolutions must use T_EVO")
         check_expansion(f"evolution {k}[{i}]", x, k)
     if v.get("balance_ref") not in bal["evolutions"]:
@@ -230,7 +267,7 @@ if ranks_doc:
             continue
         for i in ids:
             if i not in bal["keywords"] and i not in bal["evolutions"]:
-                err(f"ranks.json role_affinity {t}", f"unknown ability {i}")
+                err(f"ranks.json role_affinity {t}", unknown("ability", i))
 
 # Theme lint (balance.json -> suit_themes / themes)
 suit_themes = bal.get("suit_themes", {})
@@ -280,6 +317,9 @@ if ranks_doc and "themed_draw_pct" in bal.get("pool_generation", {}):
     ft = bal["pool_generation"]["fit_targets"]
     lo_s = lo_r = 100.0
     for slot in ("keywords", "evolutions"):
+        if not bal[slot]:
+            print(f"INFO  fit {slot}: skipped, no live {slot}")
+            continue
         for suit in bal["suit_themes"]:
             if suit.startswith("_"):
                 continue
@@ -333,6 +373,68 @@ for key, ok in (("strong", lambda x: x > 1000), ("weak", lambda x: 0 < x < 1000)
     val = adv.get(key)
     if not isinstance(val, int) or isinstance(val, bool) or not ok(val):
         err("balance.json subfaction_advantage_permille", f"'{key}' must be an integer per-mille ({'> 1000' if key == 'strong' else 'between 1 and 999'}), got {val!r}")
+
+# Parked (parked/*.json): an id lives in exactly one place, and new ids never reuse a parked one
+for name, live_t, park_t in [(s, vocab[s], p_vocab.get(s, {})) for s in VOCAB_SECTIONS] + [
+        ("keyword.json", kw, p_kw), ("evolutions.json", evo, p_evo),
+        ("balance.json keywords", bal["keywords"], p_bal.get("keywords", {})),
+        ("balance.json evolutions", bal["evolutions"], p_bal.get("evolutions", {})),
+        ("class_rules", inv["class_rules"]["trigger_allowed_effect_classes"],
+         p_inv.get("class_rules", {}).get("trigger_allowed_effect_classes", {}))]:
+    for i in sorted(set(live_t) & set(park_t)):
+        err(f"parked {name}", f"{i} is both live and parked")
+for k in p_kw:
+    if k not in p_bal.get("keywords", {}):
+        err(f"parked keyword {k}", "no matching entry in parked/balance.json keywords")
+for k in p_evo:
+    if k not in p_bal.get("evolutions", {}):
+        err(f"parked evolution {k}", "no matching entry in parked/balance.json evolutions")
+live_rules = {r["rule_id"] for r in inv["combination_rules"]}
+for r in p_inv.get("combination_rules", []):
+    if r["rule_id"] in live_rules:
+        err("parked invalid-combinations.json", f"{r['rule_id']} is both live and parked")
+for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targets",)), ("C", ("conditions",))):
+    nums = [int(i[1:]) for s in sections for i in list(vocab[s]) + list(p_vocab.get(s, {}))
+            if i[1:].isdigit() and i.startswith(prefix)]
+    print(f"INFO  next free {prefix} id: {prefix}{max(nums) + 1 if nums else 0} (live and parked counted)")
+
+# Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
+# Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.
+labels_dir = root / "labels"
+if labels_dir.is_dir():
+    placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
+    locales = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(labels_dir.glob("*.json"))}
+    base_name = "it" if "it" in locales else next(iter(locales), None)
+    for loc, table in locales.items():
+        for k, v in table.items():
+            if not isinstance(v, str) or not v.strip():
+                err(f"labels/{loc}.json", f"'{k}' must be a non-empty string")
+    if base_name:
+        base = locales[base_name]
+        for loc, table in locales.items():
+            if loc == base_name:
+                continue
+            for k in sorted(base.keys() - table.keys()):
+                err(f"labels/{loc}.json", f"missing key '{k}' (present in {base_name}.json)")
+            for k in sorted(table.keys() - base.keys()):
+                err(f"labels/{loc}.json", f"extra key '{k}' (absent from {base_name}.json)")
+            for k in base.keys() & table.keys():
+                if isinstance(base[k], str) and isinstance(table[k], str) and placeholders(base[k]) != placeholders(table[k]):
+                    err(f"labels/{loc}.json", f"'{k}' placeholders {sorted(placeholders(table[k]))} differ from {base_name}.json {sorted(placeholders(base[k]))}")
+        slug = lambda s: re.sub(r"[^a-z0-9]+", "_", s.lower()).strip("_")
+        c = vocab["constants"]
+        # Hand types are keyed by the engine's HandType code (the keys of hand_multipliers_permille), as the
+        # MatchLog writes them; the other groups by the slug of the data name, which equals the constant in lower case.
+        hand_codes = [k for k in bal["hand_multipliers_permille"] if not k.startswith("_")]
+        for code in hand_codes:
+            if f"game.hand_type.{code.lower()}" not in base:
+                err(f"labels/{base_name}.json", f"no label 'game.hand_type.{code.lower()}' for hand type '{code}'")
+        wanted = [("faction", c["factions"]), ("suit", c["suits"]), ("phase", c["phases"]),
+                  ("subfaction", [s_ for v_ in c["subfactions"].values() for s_ in v_])]
+        for group, names in wanted:
+            for n in names:
+                if f"game.{group}.{slug(n)}" not in base:
+                    err(f"labels/{base_name}.json", f"no label 'game.{group}.{slug(n)}' for vocab value '{n}'")
 
 for w in warnings:
     print("WARN ", w)
