@@ -56,6 +56,20 @@ class EffectClassesTest {
         assertEquals(2500, t.currentAtk());
     }
 
+    @Test
+    void e1ShareWithNoStackKeyHasNoLimit() {
+        Creature t = EffectFixtures.creature(1000, 3000);
+        Map<String, Value> share = Map.of("mode", new Value.StrV("pct_base_atk"), "permille", new Value.IntV(100));
+        Effect.Use use = EffectFixtures.use("E1", share, t);
+        Outcome last = null;
+        for (int i = 0; i < 5; i++) {
+            last = apply(new AtkEffect(), new FakeContext(), use, t);
+        }
+        assertEquals(1500, t.currentAtk());
+        assertEquals(OptionalInt.empty(), last.stacks());
+        assertEquals(Map.of(), t.stacks());
+    }
+
     // ---- E2
 
     @Test

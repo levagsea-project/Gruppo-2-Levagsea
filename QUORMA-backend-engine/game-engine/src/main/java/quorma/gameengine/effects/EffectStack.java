@@ -62,54 +62,20 @@ public final class EffectStack {
         void resolve(Item item, EffectStack stack, List<MatchEvent> log);
     }
 
-    /**
-     * The hooks of the stack alone: an Evolution fires once per creature, and an effect resolves on its fixed target
-     * through {@link EffectResolver}, fizzling when the target is destroyed.
-     */
-    public static final Hooks BASIC = new Hooks() {
-        @Override
-        public boolean allow(Item item) {
-            if (!item.source().canTrigger(item.expansion())) {
-                return false;
-            }
-            item.source().markTriggered(item.expansion());
-            return true;
-        }
-
-        @Override
-        public void resolve(Item item, EffectStack stack, List<MatchEvent> log) {
-            BoundExpansion e = item.expansion();
-            CreatureRef source = CreatureRef.of(item.side(), item.source());
-            Creature target = item.target() != null ? item.target() : item.source();
-            if (target.destroyed()) {
-                log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), FizzleReason.TARGET_DESTROYED));
-                return;
-            }
-            Outcome outcome = EffectResolver.resolve(e.scaled(item.scalePermille()), target);
-            log.add(new EffectResolved(source, e.abilityId(), e.effectId(), CreatureRef.of(item.side(), target),
-                    outcome.changes(), outcome.stacks()));
-        }
-    };
-
     private final Deque<Item> stack = new ArrayDeque<>();
     private final List<MatchEvent> log;
     private final int maxResolutions;
     private final Hooks hooks;
 
-    /** @param log where the stack appends its events */
-    public EffectStack(List<MatchEvent> log) {
-        this(log, BASIC);
-    }
-
+    /**
+     * @param log   where the stack appends its events
+     * @param hooks what the caller decides: whether an effect may fire and what it does when it resolves
+     */
     public EffectStack(List<MatchEvent> log, Hooks hooks) {
         this(log, MAX_RESOLUTIONS, hooks);
     }
 
-    EffectStack(List<MatchEvent> log, int maxResolutions) {
-        this(log, maxResolutions, BASIC);
-    }
-
-    private EffectStack(List<MatchEvent> log, int maxResolutions, Hooks hooks) {
+    EffectStack(List<MatchEvent> log, int maxResolutions, Hooks hooks) {
         this.log = Objects.requireNonNull(log, "log");
         this.maxResolutions = maxResolutions;
         this.hooks = Objects.requireNonNull(hooks, "hooks");
