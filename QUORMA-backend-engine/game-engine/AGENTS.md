@@ -37,6 +37,10 @@ The engine implements the vocabulary in `data/vocab.json`; it does not hard-code
 
 Only the live data ships (decision `2026-11-14-mvp-ability-set`): what `data/*.json` holds is what the engine resolves, and `data/` is the one place that says which abilities those are. Everything else is in `data/parked/`, which is not bundled in the jar; bring an ability back only when the engine is ready to resolve it (`data/AGENTS.md` §13). A creature may also have an ability written on the card (trigger, effect, target, no keyword) with its own numbers (`2026-11-14-inline-abilities`), an Evolution included (`T_EVO`). A spell or equipment has its effects written on the card as expansions: class I with no trigger for what happens when it is drawn, and lasting ones with a trigger (`2026-11-17-spells-equipment`, `2026-11-17-base-set-engine`). `EffectRegistry` checks each piece of an expansion (trigger, effect per class and mode, target, duration, conditions); the whole base set uses only implemented pieces.
 
+## Effects
+
+What an effect does to a creature lives in one class per vocabulary ID in `effects/` (`AtkEffect` for E1, `HealEffect` for E6, ...), behind the `Effect` interface, and `Game` only looks it up in `Effects` and calls it (`2026-11-18-effect-classes`). An effect class holds the resolution of the ID with all its modes, its allowed resolution classes and param rules (`classes()`, `modes()`, `validate()`), which `EffectRegistry` applies when a card is bound. To add or change an effect: edit its class, register it in `Effects`, add a test next to `EffectClassesTest` (use `FakeContext`). If it needs something from the turn that `EffectContext` does not offer, add one method there and implement it in `Game`; never pass `Game` or `Board` to an effect. Registration order is fixed (a `LinkedHashMap`), never iterate a `HashMap` of effects. Effects on a player (E8, E9), static (class C) and replacement (class R) ones are still resolved by `Game`, `Board`, `Strike` and `TurnResolver`; the S… targets and C… conditions of `Board` are not classes yet.
+
 ## Entry point
 
 `GameEngine.matchLog(inputJson)` plays one match and returns the canonical MatchLog JSON. `GameEngine.simulate` returns the same match as Java objects (`Simulation`). Input and log follow the JSON Schemas in `src/main/resources/schemas/` (`2026-11-14-match-log-schema`); bad input is a `MatchInputException` whose message starts with the JSON path. Steps: input checks, shuffle, setup (`2026-11-14-match-setup`), turns, log (`2026-11-14-match-log-writer`).
@@ -55,7 +59,8 @@ game-engine/src/main/java/quorma/gameengine/
   GameEngine, Simulation, MatchLogWriter, EngineVersion   entry point and the MatchLog
   input/     match input JSON reader
   data/      rule pack loader, Ruleset, rule pack hash
-  effects/   ability binder, effect registry, stack, effect resolver
+  effects/   ability binder, effect registry, stack, one Effect class per effect ID (`Effects` looks them up),
+             `EffectContext` (what an effect may ask of the turn), `PerMille` math
   turn/      setup, turn phases (TurnResolver), one turn's effects: triggers, stack resolution, damage and destruction by
              effects, spells and equipment (Game), the table as effects see it: static effects, reach, conditions,
              adjacency, selections (Board), hand effects (Hands), damage (Strike, Damage), suit synergy tiers (SynergyTiers)
