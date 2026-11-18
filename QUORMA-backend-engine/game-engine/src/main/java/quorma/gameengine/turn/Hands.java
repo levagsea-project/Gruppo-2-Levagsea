@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import quorma.gameengine.data.ConditionDef;
+import quorma.gameengine.effects.HandTypeCondition;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandResult;
@@ -138,7 +139,7 @@ final class Hands {
         Set<HandType> out = null;
         for (ConditionDef c : e.conditions()) {
             if (c.id().equals("C9")) {
-                out = Board.handTypes(c);
+                out = HandTypeCondition.handTypes(c);
             }
         }
         return out;

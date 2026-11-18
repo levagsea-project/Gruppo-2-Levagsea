@@ -126,21 +126,9 @@ public final class EffectRegistry {
     private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco",
             "D_FinoAUccisione", "D_FinoAlProssimoRifornimento", "D_FinoAllaFineDelCombattimento", "D_FinoAllaFineDelTurno");
 
-    /** Conditions the engine evaluates. */
-    private static final Set<String> CONDITIONS = Set.of("C1", "C2", "C4", "C6", "C9", "C11", "C21", "C22", "C24",
-            "C25", "C26", "C27", "C28");
-
     /** The filters of {@code target_params.filters}. */
     public static final Set<String> TARGET_FILTERS = Set.of("attacker", "non_attacker", "own", "ally", "enemy",
             "damaged", "not_damaged", "damaged_this_turn", "suit:Vincolo", "suit:Frattura", "suit:Spira", "suit:Vestigio");
-
-    /** Hand type names of C9, in Italian as in the vocabulary, with the engine's {@code HandType} names. */
-    public static final Map<String, String> HAND_TYPES = Map.ofEntries(
-            Map.entry("Five of a kind", "FIVE_OF_A_KIND"), Map.entry("Scala reale", "ROYAL_FLUSH"),
-            Map.entry("Scala colore", "STRAIGHT_FLUSH"), Map.entry("Poker", "FOUR_OF_A_KIND"),
-            Map.entry("Full", "FULL_HOUSE"), Map.entry("Colore", "FLUSH"), Map.entry("Scala", "STRAIGHT"),
-            Map.entry("Tris", "THREE_OF_A_KIND"), Map.entry("Quattro dello stesso seme", "FOUR_OF_A_SUIT"),
-            Map.entry("Doppia coppia", "TWO_PAIR"), Map.entry("Coppia", "PAIR"), Map.entry("Carta alta", "HIGH_CARD"));
 
     private EffectRegistry() {}
 
@@ -369,36 +357,11 @@ public final class EffectRegistry {
     }
 
     private static Optional<String> conditionProblem(ConditionDef c) {
-        if (!CONDITIONS.contains(c.id())) {
+        Optional<Condition> condition = Conditions.find(c.id());
+        if (condition.isEmpty()) {
             return Optional.of(notImplemented("condition " + c.id()));
         }
-        Map<String, Value> p = c.params();
-        boolean needsSuit = c.id().equals("C4") || c.id().equals("C11") || c.id().equals("C25");
-        if (needsSuit && !(p.get("suit") instanceof Value.StrV s && SUITS.contains(s.v()))) {
-            return Optional.of("condition " + c.id() + " needs a param 'suit' (one of " + new TreeSet<>(SUITS) + ")");
-        }
-        if (c.id().equals("C4") && !(p.get("level") instanceof Value.IntV n && n.v() >= 1 && n.v() <= 5)) {
-            return Optional.of("condition C4 needs an integer param 'level' between 1 and 5");
-        }
-        if (c.id().equals("C24") && !(p.get("key") instanceof Value.StrV k && !k.v().isEmpty())) {
-            return Optional.of("condition C24 needs a text param 'key'");
-        }
-        if (c.id().equals("C26")) {
-            for (String name : p.keySet()) {
-                if (!(name.equals("min") || name.equals("max")) || !(p.get(name) instanceof Value.IntV n) || n.v() < 0 || n.v() > 2) {
-                    return Optional.of("condition C26 takes integer params 'min' and 'max' between 0 and 2");
-                }
-            }
-        }
-        if (c.id().equals("C9")) {
-            List<Value> types = p.get("hand_type") instanceof Value.ListV l ? l.items()
-                    : p.get("hand_type") != null ? List.of(p.get("hand_type")) : List.of();
-            if (types.isEmpty() || !types.stream().allMatch(v -> v instanceof Value.StrV s && HAND_TYPES.containsKey(s.v()))) {
-                return Optional.of("condition C9 needs a param 'hand_type' (one of " + new TreeSet<>(HAND_TYPES.keySet())
-                        + ", or a list of them)");
-            }
-        }
-        return Optional.empty();
+        return condition.get().validate(c);
     }
 
     private static String notImplemented(String what) {

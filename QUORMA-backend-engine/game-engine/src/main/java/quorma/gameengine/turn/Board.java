@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.Condition;
+import quorma.gameengine.effects.ConditionContext;
+import quorma.gameengine.effects.Conditions;
 import quorma.gameengine.effects.EffectRegistry;
 import quorma.gameengine.effects.PerMille;
 import quorma.gameengine.effects.TriggerContext;
@@ -515,57 +517,93 @@ final class Board {
     }
 
     private boolean conditionsHold(BoundExpansion e, Side side, Creature source, boolean useLinks, Ctx ctx) {
+        ConditionContext view = new Eval(useLinks, ctx);
         for (ConditionDef c : e.conditions()) {
-            boolean holds = switch (c.id()) {
-                case "C1" -> source != null && attacker(side, source);
-                case "C2" -> source != null && !attacker(side, source);
-                case "C4" -> state.player(side).suitCount(suit(c)) >= ((Value.IntV) c.params().get("level")).v();
-                case "C6" -> cycle == 1;
-                case "C9" -> evaluation != null && handTypes(c).contains(evaluation.hand(side).type());
-                case "C11" -> source != null && state.player(side).creatures().stream()
-                        .anyMatch(o -> o != source && !o.destroyed() && o.card().suit() == suit(c)
-                                && adjacent(side, source, o, useLinks));
-                case "C21" -> Boolean.TRUE.equals(ctx.wouldKill());
-                case "C22" -> source != null && ctx.target() != null && ctx.start() != null
-                        && ctx.start().def(ctx.target()) > ctx.start().atk(source);
-                case "C24" -> !state.player(side).isLocked(((Value.StrV) c.params().get("key")).v());
-                case "C25" -> source != null
-                        && state.player(side).vacatedSuit(source.lane()).filter(s -> s == suit(c)).isPresent();
-                case "C26" -> source != null && between(adjacentAllies(side, source).size(), c);
-                case "C27" -> ctx.trigger().killed();
-                case "C28" -> source != null && ctx.trigger().destroyed() != null
-                        && wasAdjacent(side, source, ctx.trigger().destroyed(), ctx.trigger().destroyedLane());
-                default -> throw new IllegalStateException("condition " + c.id() + " has no evaluation (EffectRegistry let it through)");
-            };
-            if (!holds) {
+            Condition condition = Conditions.find(c.id()).orElseThrow(() -> new IllegalStateException(
+                    "condition " + c.id() + " has no evaluation (EffectRegistry let it through)"));
+            if (!condition.holds(view, c, side, source)) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean between(int n, ConditionDef c) {
-        long min = c.params().get("min") instanceof Value.IntV v ? v.v() : 0;
-        long max = c.params().get("max") instanceof Value.IntV v ? v.v() : 2;
-        return n >= min && n <= max;
+    /** What the conditions of one evaluation may read: this board, the blow or trigger in {@code ctx}. */
+    private final class Eval implements ConditionContext {
+
+        private final boolean useLinks;
+        private final Ctx ctx;
+
+        Eval(boolean useLinks, Ctx ctx) {
+            this.useLinks = useLinks;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public boolean attacker(Side side, Creature creature) {
+            return Board.this.attacker(side, creature);
+        }
+
+        @Override
+        public int suitCount(Side side, Suit suit) {
+            return state.player(side).suitCount(suit);
+        }
+
+        @Override
+        public boolean firstCycle() {
+            return cycle == 1;
+        }
+
+        @Override
+        public Optional<HandType> handType(Side side) {
+            return evaluation == null ? Optional.empty() : Optional.of(evaluation.hand(side).type());
+        }
+
+        @Override
+        public boolean hasAdjacentOfSuit(Side side, Creature source, Suit suit) {
+            return state.player(side).creatures().stream().anyMatch(o -> o != source && !o.destroyed()
+                    && o.card().suit() == suit && adjacent(side, source, o, useLinks));
+        }
+
+        @Override
+        public boolean wouldKill() {
+            return Boolean.TRUE.equals(ctx.wouldKill());
+        }
+
+        @Override
+        public boolean targetDefAboveAtkAtCycleStart(Creature source) {
+            return ctx.target() != null && ctx.start() != null && ctx.start().def(ctx.target()) > ctx.start().atk(source);
+        }
+
+        @Override
+        public boolean locked(Side side, String key) {
+            return state.player(side).isLocked(key);
+        }
+
+        @Override
+        public boolean vacatedSuit(Side side, int lane, Suit suit) {
+            return state.player(side).vacatedSuit(lane).filter(s -> s == suit).isPresent();
+        }
+
+        @Override
+        public int adjacentAllyCount(Side side, Creature creature) {
+            return adjacentAllies(side, creature).size();
+        }
+
+        @Override
+        public TriggerContext trigger() {
+            return ctx.trigger();
+        }
+
+        @Override
+        public boolean wasAdjacent(Side side, Creature source, Creature destroyed, int lane) {
+            return Board.this.wasAdjacent(side, source, destroyed, lane);
+        }
     }
 
     /** C28: the destroyed creature was in a lane next to the source (or linked to it by E34) when it was destroyed. */
     private boolean wasAdjacent(Side side, Creature source, Creature destroyed, int lane) {
         return Math.abs(lane - source.lane()) == 1 || linked(side, source, destroyed);
-    }
-
-    static Set<HandType> handTypes(ConditionDef c) {
-        List<Value> raw = c.params().get("hand_type") instanceof Value.ListV l ? l.items() : List.of(c.params().get("hand_type"));
-        java.util.EnumSet<HandType> out = java.util.EnumSet.noneOf(HandType.class);
-        for (Value v : raw) {
-            out.add(HandType.valueOf(EffectRegistry.HAND_TYPES.get(((Value.StrV) v).v())));
-        }
-        return out;
-    }
-
-    private static Suit suit(ConditionDef c) {
-        return Suit.valueOf(((Value.StrV) c.params().get("suit")).v().toUpperCase(Locale.ROOT));
     }
 
     // ---------------------------------------------------------------- selection (target_selection_rules)
