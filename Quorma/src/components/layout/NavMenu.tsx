@@ -13,8 +13,8 @@ export default function NavMenu({ current, onNavigate }: Props) {
   const section = current === 'nuovo-mazzo' ? 'mazzi' : current
 
   return (
-    <nav>
-      <ul className="nav-menu">
+    <nav aria-label="Navigazione principale">
+      <ul className="q-navata__menu">
         {navItems.map((item) => (
           <NavItem
             key={item.label}

@@ -1,23 +1,121 @@
-.sidebar { display: flex; flex-direction: column; background: linear-gradient(180deg, #071218, #050c10); border-right: 1px solid var(--border); padding: 20px 14px 0; }
-.logo { font-family: var(--serif); font-size: 22px; letter-spacing: 1px; color: #dfe9ec; text-shadow: 0 0 12px var(--cyan-dim); margin-bottom: 22px; }
+/* Barra laterale ("La Navata") copiata dal QUORMA Design System: se cambia lì, aggiornala qui.
+   Colori e font arrivano dalle variabili di styles/landing/quorma-ds.css. */
 
-.nav-menu { display: flex; flex-direction: column; gap: 9px; }
-.nav-item { display: flex; align-items: center; gap: 14px; }
-.nav-icon { width: 21px; height: 25px; display: grid; place-items: center; font-size: 11px; color: var(--muted); background: #0b1c22; border: 1px solid var(--border); border-radius: 10px 10px 3px 3px; }
-.nav-label { font-family: var(--serif); font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase; color: #b9c8cc; }
-.nav-item.is-active .nav-icon { color: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 10px var(--cyan-dim); }
-.nav-item.is-active .nav-label { color: #fff; font-weight: 700; }
-.nav-item.is-alert .nav-icon { color: var(--orange); border-color: var(--orange); box-shadow: 0 0 10px rgba(232, 134, 58, 0.4); }
+/* ---------- La Navata ---------- */
+.q-navata{position:relative;display:flex;flex-direction:column;gap:20px;min-height:0;overflow-y:auto;scrollbar-width:none;box-sizing:border-box;padding:30px 0 26px;background:linear-gradient(180deg,rgba(8,16,20,.86),rgba(8,16,20,.74));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-right:1px solid rgba(213,225,229,.14);z-index:2}
+.q-navata::after{content:"";position:absolute;top:0;bottom:0;right:6px;width:1px;background:linear-gradient(180deg,rgba(74,166,173,0),rgba(74,166,173,.35) 30%,rgba(74,166,173,.35) 70%,rgba(74,166,173,0));pointer-events:none}
+.q-navata__logo{display:block;padding:0 28px}
+.q-navata__logo img{display:block;width:180px;max-width:100%;height:auto;filter:drop-shadow(0 0 12px rgba(74,166,173,.25))}
+.q-navata__menu{display:flex;flex-direction:column;padding:0 16px 0 24px}
+.q-navata__item{display:flex;align-items:center;gap:14px;height:47px;color:var(--steel-300);text-decoration:none;font-family:var(--font-display);font-size:13.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.q-navata__item:hover{color:var(--silver-50)}
+.q-navata__item:focus-visible{outline:2px solid var(--petrol-300);outline-offset:2px}
+.q-navata__item[aria-current="page"]{color:var(--silver-50)}
 
-.sidebar-bottom { margin: auto -14px 0; }
-.player-card { margin: 0 14px 14px; padding: 8px; border: 1px solid var(--border); background: rgba(10, 30, 38, 0.7); }
-.player-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.player-avatar { width: 26px; height: 30px; display: grid; place-items: center; font-size: 9px; font-family: var(--serif); border: 1px solid var(--cyan); border-radius: 10px 10px 3px 3px; }
-.player-name { font-family: var(--serif); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-.player-level { font-size: 8px; letter-spacing: 1.5px; color: var(--cyan); margin-top: 2px; }
-.player-xp { display: flex; justify-content: space-between; margin-top: 5px; font-size: 7.5px; color: var(--muted); }
+/* Ogiva: lo zoccolo dell'icona, ad arco acuto */
+.q-ogiva,.q-ogiva__in{clip-path:polygon(0% 100%,0% 40%,0.38% 35.97%,1.52% 31.98%,3.41% 28.05%,6.03% 24.2%,9.37% 20.48%,13.4% 16.91%,18.08% 13.51%,23.4% 10.31%,29.29% 7.34%,35.72% 4.62%,42.64% 2.16%,50% 0%,57.36% 2.16%,64.28% 4.62%,70.71% 7.34%,76.6% 10.31%,81.92% 13.51%,86.6% 16.91%,90.63% 20.48%,93.97% 24.2%,96.59% 28.05%,98.48% 31.98%,99.62% 35.97%,100% 40%,100% 100%)}
+.q-ogiva-wrap{position:relative;flex:none;display:block}
+.q-ogiva{display:block;width:32px;height:40px;padding:1px;box-sizing:border-box;background:linear-gradient(160deg,rgba(213,225,229,.45),rgba(124,144,152,.25) 50%,rgba(168,196,200,.4))}
+.q-ogiva__in{position:relative;display:flex;align-items:flex-end;justify-content:center;width:100%;height:100%;padding-bottom:6px;box-sizing:border-box;background:linear-gradient(180deg,var(--canvas-800),#0B1418)}
+.q-navata__item:hover .q-ogiva{background:linear-gradient(160deg,rgba(242,247,248,.8),rgba(124,144,152,.6) 40%,rgba(168,196,200,.8))}
 
-.sidebar-footer { border-top: 1px solid var(--border); padding: 12px 20px 10px; font-size: 7.5px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
-.footer-row { display: flex; gap: 14px; }
-.footer-row:nth-child(-n+2) a:first-child { width: 52px; }
-.sidebar-footer p { margin-top: 4px; font-size: 7px; }
+/* Icona: grigia, chiara al passaggio, quasi bianca se attiva, color brace con una novità */
+.q-navata__ico{position:relative;display:block;width:18px;height:18px;color:#9DB2BA}
+.q-navata__item:hover .q-navata__ico{color:var(--silver-100)}
+.q-navata__item[aria-current="page"] .q-navata__ico{color:#E6F6F7}
+.q-ogiva-wrap.q-braci .q-navata__ico{color:var(--ember-200)}
+
+/* Voce attiva: il focolare */
+.q-navata__item[aria-current="page"] .q-ogiva-wrap{animation:q-alone 1.9s infinite}
+.q-navata__item[aria-current="page"] .q-ogiva{background:linear-gradient(160deg,var(--silver-50),var(--petrol-500) 45%,#BFE4E7)}
+.q-navata__item[aria-current="page"] .q-ogiva__in{background:radial-gradient(circle at 50% 75%,#2A6A70 0%,#12262D 75%)}
+@keyframes q-alone{0%,100%{filter:drop-shadow(0 0 7px rgba(74,166,173,.75))}35%{filter:drop-shadow(0 0 12px rgba(74,166,173,.95))}60%{filter:drop-shadow(0 0 6px rgba(74,166,173,.6))}80%{filter:drop-shadow(0 0 10px rgba(74,166,173,.85))}}
+
+.q-focolare{position:absolute;inset:0;pointer-events:none}
+.q-focolare__base{position:absolute;left:-25%;right:-25%;bottom:-28%;height:78%;background:radial-gradient(ellipse at 50% 100%,rgba(170,232,236,.9) 0%,rgba(74,166,173,.6) 34%,rgba(74,166,173,0) 70%);transform-origin:50% 100%;animation:q-tremola 1.7s infinite}
+@keyframes q-tremola{0%{opacity:.75;transform:scaleY(1)}18%{opacity:1;transform:scaleY(1.1)}33%{opacity:.68;transform:scaleY(.94)}52%{opacity:.95;transform:scaleY(1.14)}70%{opacity:.78;transform:scaleY(1)}86%{opacity:.9;transform:scaleY(1.06)}100%{opacity:.75;transform:scaleY(1)}}
+.q-focolare__lingua{position:absolute;bottom:-3px;width:11px;height:18px;margin-left:-5.5px;border-radius:50% 50% 45% 45%;background:radial-gradient(ellipse at 50% 70%,rgba(230,250,252,.95) 0%,rgba(74,166,173,.55) 55%,rgba(74,166,173,0) 75%);filter:blur(1.4px);opacity:0;animation:q-sorge 1.5s ease-in infinite}
+@keyframes q-sorge{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:.9}100%{transform:translateY(-24px) scale(.25);opacity:0}}
+.q-focolare__favilla{position:absolute;bottom:3px;width:2px;height:2px;border-radius:50%;background:#E6F6F7;box-shadow:0 0 4px var(--petrol-300);opacity:0;animation:q-favilla 2.4s linear infinite}
+@keyframes q-favilla{0%{transform:translate(0,0);opacity:0}12%{opacity:1}100%{transform:translate(var(--dx,0),-32px);opacity:0}}
+
+/* Braci sull'ogiva: novità nella sezione */
+.q-scintilla{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--ember-200);box-shadow:0 0 6px var(--ember-500);opacity:0;animation:q-sale 2.6s linear infinite;pointer-events:none}
+@keyframes q-sale{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(var(--dx,6px),-34px);opacity:0}}
+.q-ogiva-wrap.q-braci{box-shadow:none;animation:q-brace-ogiva 2.8s ease-in-out infinite}
+.q-ogiva-wrap.q-braci .q-ogiva{background:linear-gradient(160deg,var(--ember-200),var(--ember-500) 45%,var(--ember-700))}
+.q-ogiva-wrap.q-braci .q-ogiva__in{background:radial-gradient(circle at 50% 85%,#4A2414 0%,#140D0A 75%)}
+.q-ogiva-wrap.q-braci .q-scintilla{bottom:6px}
+@keyframes q-brace-ogiva{0%,100%{filter:drop-shadow(0 0 5px rgba(224,135,74,.55))}45%{filter:drop-shadow(0 0 10px rgba(224,135,74,.9))}70%{filter:drop-shadow(0 0 6px rgba(224,135,74,.6))}}
+
+/* ---------- Profilo in fondo alla navata ---------- */
+.q-profilo{display:block;margin:auto 16px 0 20px;padding:1px;color:var(--silver-100);background:linear-gradient(160deg,rgba(242,247,248,.7) 0%,rgba(124,144,152,.45) 25%,rgba(213,225,229,.6) 48%,rgba(62,80,88,.5) 74%,rgba(168,196,200,.65) 100%)}
+.q-profilo__in{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:12px 14px;background:linear-gradient(115deg,rgba(255,255,255,.035) 0%,rgba(255,255,255,0) 38%),linear-gradient(180deg,#15242C 0%,#0C161B 100%);box-shadow:inset 0 1px 0 rgba(213,225,229,.12),inset 0 0 0 1px rgba(74,166,173,.1),inset 0 -30px 40px rgba(0,0,0,.35);transition:box-shadow .2s ease}
+.q-profilo:hover .q-profilo__in{box-shadow:inset 0 0 18px rgba(74,166,173,.55),inset 0 1px 0 rgba(213,225,229,.2)}
+.q-profilo__testa{display:flex;align-items:center;gap:12px}
+.q-profilo__dati{display:flex;flex-direction:column;gap:3px;line-height:1.2}
+.q-profilo__xp{display:block}
+.q-profilo__avatar{flex:none;filter:drop-shadow(0 0 8px rgba(74,166,173,.85))}
+.q-profilo__avatar .q-ogiva{width:40px;height:50px;background:linear-gradient(160deg,var(--silver-50),var(--petrol-500) 45%,#BFE4E7)}
+.q-profilo__avatar .q-ogiva__in{padding-bottom:9px;background:radial-gradient(circle at 50% 75%,#2A6A70 0%,#12262D 75%);font-family:var(--font-display);font-size:14px;color:var(--silver-50)}
+.q-profilo__nome{display:block;font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:.05em;color:var(--silver-50)}
+.q-profilo__liv{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--petrol-300)}
+.q-profilo__liv::before{content:"";width:7px;height:7px;transform:rotate(45deg);background:var(--petrol-500);box-shadow:0 0 6px rgba(74,166,173,.9)}
+
+/* Barra dell'esperienza a segmenti: --xp = percentuale */
+.q-xp{display:block;padding:1px;background:linear-gradient(160deg,rgba(242,247,248,.7) 0%,rgba(124,144,152,.45) 25%,rgba(213,225,229,.6) 48%,rgba(62,80,88,.5) 74%,rgba(168,196,200,.65) 100%)}
+.q-xp__bar{position:relative;display:block;height:10px;background:#071014;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
+.q-xp__bar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--xp,0%);background:linear-gradient(90deg,#2E7F86 0%,var(--petrol-500) 60%,#BFE4E7 100%);box-shadow:0 0 10px rgba(74,166,173,.85)}
+.q-xp__bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(7,16,20,0) 0,rgba(7,16,20,0) calc(10% - 1px),rgba(7,16,20,.9) calc(10% - 1px),rgba(7,16,20,.9) 10%)}
+.q-xp__segno{position:absolute;left:var(--xp,0%);top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;transform:rotate(45deg);background:var(--silver-50);box-shadow:0 0 8px var(--petrol-300);z-index:1}
+.q-xp__dati{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;font-weight:500;letter-spacing:.02em;color:var(--steel-300)}
+.q-xp__dati b{font-weight:600;color:var(--silver-50)}
+
+/* ---------- Piè della navata ---------- */
+.q-navata__piede{display:flex;flex-direction:column;gap:10px;padding:14px 28px 0;border-top:1px solid rgba(213,225,229,.1);font-size:13px;color:var(--steel-300)}
+.q-navata__piede a{color:inherit;text-decoration:none}
+.q-navata__piede a:hover{color:var(--petrol-300)}
+.q-navata__info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px}
+.q-navata__legali{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12px}
+.q-navata__copy{font-size:12px;letter-spacing:.06em}
+
+/* ---------- Sotto i 1280px: solo icone ---------- */
+@media (max-width:1279px){
+  .q-navata{padding:22px 0 18px;gap:14px}
+  .q-navata::after{right:0}
+  .q-navata__logo{padding:0;display:flex;justify-content:center}
+  .q-navata__logo img{width:44px;height:44px;object-fit:cover;object-position:0 50%}
+  .q-navata__menu{padding:0;align-items:center}
+  .q-navata__item{gap:0;justify-content:center;width:56px}
+  .q-navata__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .q-profilo{margin:auto 14px 0}
+  .q-profilo__in{padding:8px 6px;align-items:center}
+  .q-profilo__dati,.q-profilo__xp{display:none}
+  .q-navata__piede{padding:12px 6px 0;font-size:11px;align-items:center;text-align:center}
+  .q-navata__info,.q-navata__legali{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px}
+  .q-navata__copy{display:none}
+}
+
+/* ---------- Schermi bassi (es. 1280×720): voci più compatte ---------- */
+@media (min-width:1280px) and (max-height:860px){
+  .q-navata{padding:20px 0 16px;gap:12px}
+  .q-navata__logo img{width:150px}
+  .q-navata__item{height:40px}
+  .q-profilo__in{padding:10px 12px;gap:8px}
+  .q-profilo__avatar .q-ogiva{width:34px;height:42px}
+  .q-navata__piede{padding-top:10px;gap:6px;font-size:12px}
+  .q-navata__copy{display:none}
+}
+
+/* Pagina più alta dello schermo (es. Regole su tablet): la navata resta ferma mentre la pagina scorre */
+@media (min-width:768px) and (max-width:1279px){
+  .q-navata{position:sticky;top:0;height:100dvh}
+}
+
+/* Telefono: la navata sparisce, al suo posto barra in alto e schede in basso (styles/mobile.css) */
+@media (max-width:767px){ .q-navata{display:none} }
+
+@media (prefers-reduced-motion:reduce){
+  .q-scintilla,.q-navata__item[aria-current="page"] .q-ogiva-wrap,.q-focolare__base,.q-focolare__lingua,.q-focolare__favilla,.q-ogiva-wrap.q-braci{animation:none}
+  .q-scintilla,.q-focolare__lingua,.q-focolare__favilla{display:none}
+}
