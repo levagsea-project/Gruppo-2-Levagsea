@@ -27,6 +27,11 @@ dist-ssr
 /CLAUDE.md
 /tools/
 
+# Impeccable (skill di design, locale)
+/.impeccable/
+/PRODUCT.md
+/DESIGN.md
+
 # Build di React Router
 /build/
 /.react-router/
