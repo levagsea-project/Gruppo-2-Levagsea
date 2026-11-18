@@ -1,7 +1,6 @@
 package quorma.gameengine.effects;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.OptionalInt;
 import quorma.gameengine.log.StatChange;
 import quorma.gameengine.model.Creature;
@@ -14,20 +13,6 @@ import quorma.gameengine.model.Creature;
  * is an engine bug.</p>
  */
 public final class EffectResolver {
-
-    /**
-     * What resolving changed.
-     *
-     * @param changes the target's stats before and after, empty when the effect changed nothing
-     * @param stacks  the count for the effect's stack key after resolving, empty if it has none
-     */
-    public record Outcome(List<StatChange> changes, OptionalInt stacks) {
-
-        public Outcome {
-            changes = List.copyOf(changes);
-            Objects.requireNonNull(stacks, "stacks");
-        }
-    }
 
     private EffectResolver() {}
 

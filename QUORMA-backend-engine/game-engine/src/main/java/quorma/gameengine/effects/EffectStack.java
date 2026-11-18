@@ -85,7 +85,7 @@ public final class EffectStack {
                 log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), FizzleReason.TARGET_DESTROYED));
                 return;
             }
-            EffectResolver.Outcome outcome = EffectResolver.resolve(e.scaled(item.scalePermille()), target);
+            Outcome outcome = EffectResolver.resolve(e.scaled(item.scalePermille()), target);
             log.add(new EffectResolved(source, e.abilityId(), e.effectId(), CreatureRef.of(item.side(), target),
                     outcome.changes(), outcome.stacks()));
         }

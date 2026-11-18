@@ -13,7 +13,12 @@ import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.Effect;
+import quorma.gameengine.effects.EffectContext;
 import quorma.gameengine.effects.EffectStack;
+import quorma.gameengine.effects.Effects;
+import quorma.gameengine.effects.Followups;
+import quorma.gameengine.effects.Outcome;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.CreatureRef;
@@ -50,7 +55,7 @@ import quorma.gameengine.model.SpellCard;
  * effects (with the replacements T20 and T21), applies spells and equipment, and ends what lasts until a moment of the
  * turn ({@link #expire}).
  */
-final class Game implements EffectStack.Hooks {
+final class Game implements EffectStack.Hooks, EffectContext {
 
     final Ruleset rules;
     final AbilityBinder binder;
@@ -244,13 +249,6 @@ final class Game implements EffectStack.Hooks {
         }
     }
 
-    /** Follow-ups of an effect: log lines to append after its own, then events to fire. */
-    private record Followups(List<MatchEvent> logs, List<GameEvent> events) {
-        Followups() {
-            this(new ArrayList<>(), new ArrayList<>());
-        }
-    }
-
     @Override
     public void resolve(EffectStack.Item item, EffectStack stack, List<MatchEvent> log) {
         BoundExpansion e = item.expansion().scaled(item.scalePermille());
@@ -380,9 +378,9 @@ final class Game implements EffectStack.Hooks {
 
     // ================================================================ effects on a creature
 
-    /** What resolving changed on a creature. */
-    record Outcome(List<StatChange> changes, OptionalInt stacks) {
-        static final Outcome NONE = new Outcome(List.of(), OptionalInt.empty());
+    @Override
+    public int healPermille(Creature target) {
+        return board().healPermille(target);
     }
 
     /**
@@ -393,6 +391,10 @@ final class Game implements EffectStack.Hooks {
     private Outcome apply(BoundExpansion e, EffectStack.Item item, Side side, Creature t, Followups after) {
         Creature source = item.source();
         Lasting lasting = lasting(e.duration(), source);
+        Effect effect = Effects.find(e.effectId()).orElse(null);
+        if (effect != null) {
+            return effect.apply(this, new Effect.Use(e, item.side(), side, source, lasting, item.context(), after), t);
+        }
         return switch (e.effectId()) {
             case "E1" -> stacked(e, t, () -> addAtk(e, t, lasting, 1));
             case "E2" -> stacked(e, t, () -> addDef(e, side, t, lasting,
@@ -402,7 +404,6 @@ final class Game implements EffectStack.Hooks {
                 t.setAtkToBase(e.abilityId(), lasting);
                 yield Outcome.NONE;
             }
-            case "E6" -> heal(e, t);
             case "E7" -> new Outcome(damage(item.side(), source, side, t, e.intParam("amount"), after), OptionalInt.empty());
             case "E10" -> {
                 destroy(item.side(), source, side, t, after);
@@ -503,16 +504,6 @@ final class Game implements EffectStack.Hooks {
             destroyed(side, t, sourceSide, source, after);
         }
         return List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef()));
-    }
-
-    /** E6: heal a flat amount or a share of the base DEF, times the E51 factor of the target. */
-    private Outcome heal(BoundExpansion e, Creature t) {
-        int before = t.currentDef();
-        int amount = "flat".equals(e.stringParam("mode").orElse("flat")) ? e.intParam("amount")
-                : Math.toIntExact(Math.floorDiv((long) t.baseDef() * e.intParam("permille"), 1000L));
-        int factor = board().healPermille(t);
-        t.heal(Math.toIntExact((long) amount * factor / 1000));
-        return new Outcome(List.of(new StatChange(StatChange.Stat.DEF, before, t.currentDef())), OptionalInt.empty());
     }
 
     /** E8 (lose) or E9 (gain) life. */
@@ -905,6 +896,11 @@ final class Game implements EffectStack.Hooks {
     }
 
     private List<StatChange> immediateOn(Side owner, BoundExpansion e, Side side, Creature t, Followups after) {
+        Effect effect = Effects.find(e.effectId()).orElse(null);
+        if (effect != null) {
+            return effect.apply(this, new Effect.Use(e, owner, side, null, Lasting.permanent(), TriggerContext.NONE,
+                    after), t).changes();
+        }
         return switch (e.effectId()) {
             case "E1" -> stacked(e, t, () -> addAtk(e, t, Lasting.permanent(), 1)).changes();
             case "E2" -> stacked(e, t, () -> addDef(e, side, t, Lasting.permanent(), 1, owner, null, after)).changes();
@@ -912,7 +908,6 @@ final class Game implements EffectStack.Hooks {
                 t.addBaseDef(e.intParam("amount"));
                 yield List.of(new StatChange(StatChange.Stat.DEF, t.currentDef(), t.currentDef()));
             }
-            case "E6" -> heal(e, t).changes();
             case "E7" -> damage(owner, null, side, t, e.intParam("amount"), after);
             case "E10" -> {
                 destroy(owner, null, side, t, after);

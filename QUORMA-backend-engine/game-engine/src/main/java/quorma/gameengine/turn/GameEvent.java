@@ -4,7 +4,7 @@ import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Side;
 
 /** Something that happened and may trigger abilities. {@link Game#fire} turns events into stack pushes. */
-sealed interface GameEvent {
+public sealed interface GameEvent {
 
     /** {@code victim} was destroyed (T10 on it, T36 on its allies, T37 on the other side, T19 on the killer). */
     record Destroyed(Side side, Creature victim, Side killerSide, Creature killer) implements GameEvent {}

@@ -33,8 +33,8 @@ class EffectResolverTest {
         return new Creature(card, 1, BINDER.bind(card));
     }
 
-    private static EffectResolver.Outcome atk(int before, int after, int stacks) {
-        return new EffectResolver.Outcome(
+    private static Outcome atk(int before, int after, int stacks) {
+        return new Outcome(
                 List.of(new StatChange(StatChange.Stat.ATK, before, after)), OptionalInt.of(stacks));
     }
 
@@ -46,7 +46,7 @@ class EffectResolverTest {
         assertEquals(atk(4000, 4600, 1), EffectResolver.resolve(e, x));
         assertEquals(atk(4600, 5200, 2), EffectResolver.resolve(e, x), "600 again: a share of the base ATK");
         assertEquals(atk(5200, 5800, 3), EffectResolver.resolve(e, x));
-        assertEquals(new EffectResolver.Outcome(List.of(), OptionalInt.of(3)), EffectResolver.resolve(e, x));
+        assertEquals(new Outcome(List.of(), OptionalInt.of(3)), EffectResolver.resolve(e, x));
         assertEquals(5800, x.currentAtk());
         assertEquals(Map.of("K_INSAZIABILE", 3), x.stacks());
     }
@@ -65,7 +65,7 @@ class EffectResolverTest {
                 "S1", Map.of(), "D_Permanente", List.of(), ResClass.T);
         Creature x = creature(1000, new InlineEffect(List.of(grow)));
         BoundExpansion e = x.abilities("T19").get(0);
-        EffectResolver.Outcome last = null;
+        Outcome last = null;
         for (int i = 0; i < 5; i++) {
             last = EffectResolver.resolve(e, x);
         }
