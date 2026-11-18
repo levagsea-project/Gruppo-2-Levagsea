@@ -35,7 +35,13 @@ final class EffectFixtures {
 
     /** The effect {@code effectId} with {@code params}, as the binder bakes it into a creature's inline ability. */
     static BoundExpansion expansion(String effectId, Map<String, Value> params) {
-        ExpansionDef def = new ExpansionDef("T19", Map.of(), effectId, params, "S1", Map.of(), "D_Permanente",
+        return expansion(effectId, params, "S1", Map.of());
+    }
+
+    /** Like {@link #expansion(String, Map)} with another target and its params. */
+    static BoundExpansion expansion(String effectId, Map<String, Value> params, String targetId,
+            Map<String, Value> targetParams) {
+        ExpansionDef def = new ExpansionDef("T19", Map.of(), effectId, params, targetId, targetParams, "D_Permanente",
                 List.of(), ResClass.T);
         CreatureCard card = new CreatureCard("S", 5, Suit.VINCOLO, Subfaction.ADATTATI, 1000, 3000,
                 List.of(new InlineEffect(List.of(def))));

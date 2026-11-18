@@ -119,10 +119,6 @@ public final class EffectRegistry {
     private static final Set<String> PHASES = Set.of("Valutazione", "Dichiarazione", "Inizio del combattimento",
             "Ciclo 1", "Ciclo 2", "Fine del combattimento", "Rifornimento", "Fine del turno");
 
-    private static final Set<String> TARGETS = Set.of("S1", "S2", "S4", "S6", "S7", "S9", "S10", "S11", "S12", "S17",
-            "S20", "S26", "S27", "S30", "S31", "S32", "S33", "S35", "S37", "S38", "S39", "S40", "S41", "S43", "S44",
-            "S45", "S47");
-
     private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco",
             "D_FinoAUccisione", "D_FinoAlProssimoRifornimento", "D_FinoAllaFineDelCombattimento", "D_FinoAllaFineDelTurno");
 
@@ -179,7 +175,7 @@ public final class EffectRegistry {
         if (trigger != null && !TRIGGERS.containsKey(trigger)) {
             return Optional.of(notImplemented("trigger " + trigger));
         }
-        if (!TARGETS.contains(target)) {
+        if (Targets.find(target).isEmpty()) {
             return Optional.of(notImplemented("target " + target));
         }
         if (!DURATIONS.contains(duration)) {
@@ -331,29 +327,10 @@ public final class EffectRegistry {
     }
 
     private static Optional<String> targetParamsProblem(String target, Map<String, Value> params) {
-        String bad = notImplemented("target " + target + " with params " + params.keySet());
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-            boolean ok = switch (e.getKey()) {
-                case "filters" -> e.getValue() instanceof Value.ListV l && l.items().stream()
-                        .allMatch(v -> v instanceof Value.StrV f && TARGET_FILTERS.contains(f.v()));
-                case "suit" -> target.equals("S12") && e.getValue() instanceof Value.StrV s && SUITS.contains(s.v());
-                case "of" -> target.equals("S44") && e.getValue() instanceof Value.StrV s
-                        && Set.of("S33", "S35", "S37", "S38", "S39", "S40").contains(s.v());
-                case "from" -> e.getValue() instanceof Value.StrV s && Set.of("S9", "S10", "S11").contains(s.v());
-                case "count" -> target.equals("S47") && e.getValue() instanceof Value.IntV n && n.v() >= 1;
-                default -> false;
-            };
-            if (!ok) {
-                return Optional.of(bad);
-            }
+        if (Targets.find(target).orElseThrow().acceptsParams(params)) {
+            return Optional.empty();
         }
-        if (target.equals("S12") && !(params.get("suit") instanceof Value.StrV)) {
-            return Optional.of(bad);
-        }
-        if (target.equals("S47") && !(params.get("count") instanceof Value.IntV)) {
-            return Optional.of(bad);
-        }
-        return Optional.empty();
+        return Optional.of(notImplemented("target " + target + " with params " + params.keySet()));
     }
 
     private static Optional<String> conditionProblem(ConditionDef c) {

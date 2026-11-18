@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.function.Function;
 import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.effects.HandTypeCondition;
+import quorma.gameengine.effects.RankedTarget;
+import quorma.gameengine.effects.Targets;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandResult;
@@ -69,12 +71,9 @@ final class Hands {
     }
 
     private static java.util.Optional<Creature> pick(Board b, BoundExpansion e, Side side, Creature source) {
-        return switch (e.targetId()) {
-            case "S1" -> java.util.Optional.ofNullable(source);
-            case "S6" -> source == null ? java.util.Optional.empty()
-                    : b.state().player(side.other()).creatureAt(source.lane()).filter(x -> !x.destroyed());
-            default -> b.select(e.targetId(), e.targetParams(), side);
-        };
+        return Targets.find(e.targetId())
+                .orElseThrow(() -> new IllegalStateException("not a selection target: " + e.targetId()))
+                .pick(b, e, side, source);
     }
 
     /** The best hand of {@code side}: its creatures in lane order (destroyed ones included), minus {@code excluded}. */
@@ -150,8 +149,8 @@ final class Hands {
         int best = 0;
         int bestRank = 0;
         for (Creature x : b.state().player(side).creatures()) {
-            if (x != c && !x.destroyed() && Board.rankValue(x) > best) {
-                best = Board.rankValue(x);
+            if (x != c && !x.destroyed() && RankedTarget.rankValue(x) > best) {
+                best = RankedTarget.rankValue(x);
                 bestRank = x.card().rank();
             }
         }

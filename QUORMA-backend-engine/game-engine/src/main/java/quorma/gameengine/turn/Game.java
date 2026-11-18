@@ -18,7 +18,10 @@ import quorma.gameengine.effects.EffectStack;
 import quorma.gameengine.effects.Effects;
 import quorma.gameengine.effects.Followups;
 import quorma.gameengine.effects.Outcome;
+import quorma.gameengine.effects.RankedTarget;
+import quorma.gameengine.effects.Target;
 import quorma.gameengine.effects.TargetIds;
+import quorma.gameengine.effects.Targets;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.FizzleReason;
@@ -61,7 +64,6 @@ final class Game implements EffectStack.Hooks, EffectContext {
     int cycle;
 
     final TriggerDispatcher triggers;
-    final TargetSelector selector;
     final Destruction destruction;
 
     /** An equipment drawn and waiting for the next creature, per side (ruleset 10.6). */
@@ -74,7 +76,6 @@ final class Game implements EffectStack.Hooks, EffectContext {
         this.evaluation = evaluation;
         this.cardEffects = Objects.requireNonNull(cardEffects, "cardEffects");
         this.triggers = new TriggerDispatcher(state, this::board);
-        this.selector = new TargetSelector(state);
         this.destruction = new Destruction(state, this::board);
     }
 
@@ -139,14 +140,14 @@ final class Game implements EffectStack.Hooks, EffectContext {
         CreatureRef source = CreatureRef.of(item.side(), item.source());
         Board b = board();
         switch (e.targetId()) {
-            case "S30", "S31" -> {
-                Side player = e.targetId().equals("S31") ? item.side() : item.side().other();
+            case TargetIds.OPPONENT_PLAYER, TargetIds.OWN_PLAYER -> {
+                Side player = e.targetId().equals(TargetIds.OWN_PLAYER) ? item.side() : item.side().other();
                 StatChange change = changeLife(e, player);
                 log.add(new EffectResolved(source, e.abilityId(), e.effectId(), new TargetRef.PlayerRef(player),
                         List.of(change), OptionalInt.empty()));
                 return;
             }
-            case "S4" -> {
+            case TargetIds.LANE -> {
                 PlayerState p = state.player(item.side());
                 BoundExpansion pending = laneEffect(e);
                 p.addLaneEffect(new LaneEffect(item.source().lane(), item.source().card().id(), pending));
@@ -164,9 +165,11 @@ final class Game implements EffectStack.Hooks, EffectContext {
             }
             targets = List.of(item.target());
         } else {
-            targets = selector.targets(b, item);
+            targets = Targets.find(e.targetId()).orElseThrow(() -> new IllegalStateException(
+                    "target " + e.targetId() + " has no selection for a triggered effect"))
+                    .select(b, item.side(), item.source(), item.context(), e);
             if (targets.isEmpty()) {
-                FizzleReason reason = TargetSelector.singleCreatureTarget(e.targetId()) ? FizzleReason.TARGET_DESTROYED : FizzleReason.NO_TARGET;
+                FizzleReason reason = Targets.find(e.targetId()).map(Target::single).orElse(false) ? FizzleReason.TARGET_DESTROYED : FizzleReason.NO_TARGET;
                 log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), reason));
                 return;
             }
@@ -423,7 +426,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
         Board b = board();
         for (BoundExpansion e : binder.bindLasting(card)) {
             Lasting lasting = new Lasting(e.duration(), turn(), null);
-            boolean selection = List.of("S33", "S35", "S37", "S38", "S39", "S40").contains(e.targetId());
+            boolean selection = Targets.find(e.targetId()).filter(RankedTarget.class::isInstance).isPresent();
             if ("T0".equals(e.triggerId()) && selection) {
                 Creature target = chosen.containsKey(e.targetId()) ? chosen.get(e.targetId())
                         : b.select(e.targetId(), e.targetParams(), owner).orElse(null);
@@ -448,8 +451,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
         for (BoundExpansion e : binder.bindImmediate(card)) {
             Board b = board();
             switch (e.targetId()) {
-                case "S30", "S31" -> {
-                    Side player = e.targetId().equals("S31") ? owner : owner.other();
+                case TargetIds.OPPONENT_PLAYER, TargetIds.OWN_PLAYER -> {
+                    Side player = e.targetId().equals(TargetIds.OWN_PLAYER) ? owner : owner.other();
                     if (e.effectId().equals("E57")) {
                         mill(player, e, log);
                         continue;
@@ -463,17 +466,19 @@ final class Game implements EffectStack.Hooks, EffectContext {
                             new TargetRef.PlayerRef(player), List.of(change)));
                     continue;
                 }
-                case "S32" -> {
+                case TargetIds.DISCARD_PILE -> {
                     returnFromDiscard(owner, e, card, log);
                     continue;
                 }
-                case "S47" -> {
+                case TargetIds.DECK_TOP -> {
                     moveInDeck(owner, e, log);
                     continue;
                 }
                 default -> { }
             }
-            List<Creature> targets = selector.immediateTargets(b, e, owner, receiver, chosen);
+            List<Creature> targets = Targets.find(e.targetId()).orElseThrow(
+                    () -> new IllegalStateException("not a selection target: " + e.targetId()))
+                    .selectImmediate(b, e, owner, receiver, chosen);
             for (Creature t : targets) {
                 if (t.destroyed() || t.leftPlay()) {
                     continue;

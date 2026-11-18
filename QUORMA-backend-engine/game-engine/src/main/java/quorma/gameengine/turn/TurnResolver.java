@@ -14,6 +14,7 @@ import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
 import quorma.gameengine.effects.TargetIds;
+import quorma.gameengine.effects.Targets;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
@@ -738,7 +739,7 @@ public final class TurnResolver {
                 }
                 continue;
             }
-            for (Creature target : targetsOf(g.state, side, e, source)) {
+            for (Creature target : targetsOf(b, side, e, source)) {
                 if (b.holds(e, side, target, Board.Ctx.NONE)) {
                     stack.push(new EffectStack.Item(side, source != null ? source : target, target, e, e.triggerId(),
                             source != null ? g.triggers.scaleOf(b, side, source, e) : 1000, TriggerContext.NONE));
@@ -748,25 +749,8 @@ public final class TurnResolver {
     }
 
     /** The living creatures an effect of the player or of {@code source} (null for the player) is aimed at (S1, S12). */
-    private static List<Creature> targetsOf(MatchState state, Side side, BoundExpansion e, Creature source) {
-        List<Creature> out = new ArrayList<>();
-        switch (e.targetId()) {
-            case "S1" -> {
-                if (source != null && !source.destroyed()) {
-                    out.add(source);
-                }
-            }
-            case "S12" -> {
-                Suit suit = Suit.valueOf(((Value.StrV) e.targetParams().get("suit")).v().toUpperCase(java.util.Locale.ROOT));
-                for (Creature c : state.player(side).creatures()) {
-                    if (!c.destroyed() && c.card().suit() == suit) {
-                        out.add(c);
-                    }
-                }
-            }
-            default -> { }
-        }
-        return out;
+    private static List<Creature> targetsOf(Board b, Side side, BoundExpansion e, Creature source) {
+        return Targets.find(e.targetId()).map(t -> t.ofPlayerAbility(b, side, source, e)).orElse(List.of());
     }
 
     // ================================================================ End of turn

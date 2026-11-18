@@ -1,7 +1,6 @@
 package quorma.gameengine.turn;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +15,10 @@ import quorma.gameengine.effects.ConditionContext;
 import quorma.gameengine.effects.Conditions;
 import quorma.gameengine.effects.EffectRegistry;
 import quorma.gameengine.effects.PerMille;
+import quorma.gameengine.effects.RankedTarget;
+import quorma.gameengine.effects.Targets;
+import quorma.gameengine.effects.TargetIds;
+import quorma.gameengine.effects.TargetView;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.HandType;
 import quorma.gameengine.hand.Suit;
@@ -39,7 +42,7 @@ import quorma.gameengine.model.Side;
  *
  * <p>A destroyed creature neither gives nor receives static effects (ruleset 7.10.3).</p>
  */
-final class Board {
+final class Board implements TargetView {
 
     /** A static effect in force: from a creature ({@code source}) or from a spell of {@code side} ({@code aura}). */
     record Active(Side side, Creature source, BoundExpansion e, Aura aura) {
@@ -105,7 +108,8 @@ final class Board {
     }
 
     /** Every creature in play, in lane order, Potenze Artificiali first within a lane, destroyed ones included. */
-    List<Creature> everyone() {
+    @Override
+    public List<Creature> everyone() {
         List<Creature> out = new ArrayList<>();
         Side[] order = prioritySides();
         for (int lane = 1; lane <= 5; lane++) {
@@ -250,24 +254,14 @@ final class Board {
             return false;
         }
         Creature source = a.source();
-        boolean own = side == a.side();
-        boolean ok = switch (a.e().targetId()) {
-            case "S1", "S27" -> source == null ? false : receiver == source;
-            case "S41" -> source != null && own && receiver != source && adjacent(side, source, receiver);
-            case "S6" -> source != null && !own && receiver.lane() == source.lane();
-            case "S45" -> source != null && !own && Math.abs(receiver.lane() - source.lane()) <= 1;
-            case "S9" -> own;
-            case "S10" -> !own;
-            case "S11" -> true;
-            case "S17" -> own && attacker(side, receiver);
-            case "S20" -> own && inCombination(side, receiver);
-            default -> false;
-        };
+        boolean ok = Targets.find(a.e().targetId())
+                .map(t -> t.reaches(this, a.side(), source, side, receiver)).orElse(false);
         return ok && filtersHold(a.e().filters(), a.side(), side, receiver);
     }
 
     /** {@code target_params.filters}, seen from {@code controller}, on {@code receiver} of {@code side}. */
-    boolean filtersHold(List<String> filters, Side controller, Side side, Creature receiver) {
+    @Override
+    public boolean filtersHold(List<String> filters, Side controller, Side side, Creature receiver) {
         for (String f : filters) {
             boolean ok = switch (f) {
                 case "attacker" -> attacker(side, receiver);
@@ -288,12 +282,14 @@ final class Board {
     }
 
     /** True if {@code c} of {@code side} attacks this turn (selected by the hand). */
-    boolean attacker(Side side, Creature c) {
+    @Override
+    public boolean attacker(Side side, Creature c) {
         return evaluation != null && evaluation.hand(side).attackerLanes().contains(c.lane());
     }
 
     /** True if {@code c} is one of the creatures forming the combination of its player's hand (S20). */
-    boolean inCombination(Side side, Creature c) {
+    @Override
+    public boolean inCombination(Side side, Creature c) {
         if (evaluation == null) {
             return false;
         }
@@ -301,14 +297,42 @@ final class Board {
         return type != HandType.HIGH_CARD && type != HandType.NONE && attacker(side, c);
     }
 
+    @Override
+    public List<Creature> creatures(Side side) {
+        return state.player(side).creatures();
+    }
+
+    @Override
+    public Optional<Creature> creatureAt(Side side, int lane) {
+        return state.player(side).creatureAt(lane);
+    }
+
+    @Override
+    public int factionRank(Creature c) {
+        return state.player(sideOf(c)).faction() == Faction.POTENZE_ARTIFICIALI ? 0 : 1;
+    }
+
     // ---------------------------------------------------------------- adjacency
+
+    /** The living creatures of {@code side} in the lanes next to {@code c} (S44: lanes differing by 1). */
+    @Override
+    public List<Creature> neighbours(Side side, Creature c) {
+        List<Creature> out = new ArrayList<>();
+        for (int lane : new int[] {c.lane() - 1, c.lane() + 1}) {
+            if (lane >= 1 && lane <= 5) {
+                state.player(side).creatureAt(lane).filter(x -> !x.destroyed()).ifPresent(out::add);
+            }
+        }
+        return out;
+    }
 
     /**
      * Ruleset 7.10.4: two creatures of one player are adjacent when their lanes differ by exactly 1 (lanes 1 and 5
      * are not adjacent), or when an E34 of one of them says the other counts as adjacent to it (its suit, or every
      * creature of its player). A creature reached by E60 is adjacent to no one.
      */
-    boolean adjacent(Side side, Creature a, Creature b) {
+    @Override
+    public boolean adjacent(Side side, Creature a, Creature b) {
         return adjacent(side, a, b, true);
     }
 
@@ -504,7 +528,7 @@ final class Board {
 
     private boolean reachesAura(Active a, Side side, Creature c) {
         return switch (a.e().targetId()) {
-            case "S39" -> select("S39", a.e().targetParams(), a.side()).filter(x -> x == c).isPresent();
+            case TargetIds.HIGHEST_RANK -> select(TargetIds.HIGHEST_RANK, a.e().targetParams(), a.side()).filter(x -> x == c).isPresent();
             default -> reaches(a, side, c);
         };
     }
@@ -608,26 +632,24 @@ final class Board {
 
     // ---------------------------------------------------------------- selection (target_selection_rules)
 
-    /** Rank value for comparisons: Ace high (14). */
-    static int rankValue(Creature c) {
-        return c.card().rank() == 1 ? 14 : c.card().rank();
-    }
-
     /**
      * A selection target ({@code S33} lowest lane, {@code S35} highest ATK, {@code S37} highest DEF, {@code S38}
      * lowest DEF, {@code S39} highest rank, {@code S40} lowest rank) among the living creatures of both sides that
      * pass the filters (seen from {@code controller}; {@code from: S10} is the opponent's creatures). Ties as in each
      * target's description: lowest lane, Potenze Artificiali first, then rank, then suit order.
      */
-    Optional<Creature> select(String targetId, Map<String, Value> params, Side controller) {
+    @Override
+    public Optional<Creature> select(String targetId, Map<String, Value> params, Side controller) {
+        RankedTarget ranked = Targets.find(targetId).filter(RankedTarget.class::isInstance).map(RankedTarget.class::cast)
+                .orElseThrow(() -> new IllegalStateException("not a selection target: " + targetId));
         List<String> filters = new ArrayList<>();
         if (params.get("filters") instanceof Value.ListV l) {
             l.items().forEach(v -> filters.add(((Value.StrV) v).v()));
         }
         if (params.get("from") instanceof Value.StrV from) {
             switch (from.v()) {
-                case "S9" -> filters.add("own");
-                case "S10" -> filters.add("enemy");
+                case TargetIds.OWN_CREATURES -> filters.add("own");
+                case TargetIds.ENEMY_CREATURES -> filters.add("enemy");
                 default -> { }
             }
         }
@@ -637,24 +659,6 @@ final class Board {
                 pool.add(c);
             }
         }
-        Comparator<Creature> byLane = Comparator.comparingInt(Creature::lane);
-        Comparator<Creature> byFaction = Comparator.comparingInt(c ->
-                state.player(sideOf(c)).faction() == Faction.POTENZE_ARTIFICIALI ? 0 : 1);
-        Comparator<Creature> rankHigh = Comparator.comparingInt((Creature c) -> -rankValue(c));
-        Comparator<Creature> rankLow = Comparator.comparingInt(Board::rankValue);
-        Comparator<Creature> bySuit = Comparator.comparingInt(c -> c.card().suit().ordinal());
-        Comparator<Creature> order = switch (targetId) {
-            case "S33" -> byLane.thenComparing(byFaction);
-            case "S35" -> Comparator.comparingInt((Creature c) -> -c.currentAtk()).thenComparing(byLane)
-                    .thenComparing(byFaction).thenComparing(rankHigh).thenComparing(bySuit);
-            case "S37" -> Comparator.comparingInt((Creature c) -> -c.currentDef()).thenComparing(byLane)
-                    .thenComparing(byFaction).thenComparing(rankHigh).thenComparing(bySuit);
-            case "S38" -> Comparator.comparingInt(Creature::currentDef).thenComparing(byLane)
-                    .thenComparing(byFaction).thenComparing(rankLow).thenComparing(bySuit);
-            case "S39" -> rankHigh.thenComparing(byLane).thenComparing(byFaction).thenComparing(bySuit);
-            case "S40" -> rankLow.thenComparing(byLane).thenComparing(byFaction).thenComparing(bySuit);
-            default -> throw new IllegalStateException("not a selection target: " + targetId);
-        };
-        return pool.stream().min(order);
+        return pool.stream().min(ranked.order(this));
     }
 }

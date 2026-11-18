@@ -39,7 +39,7 @@ Only the live data ships (decision `2026-11-14-mvp-ability-set`): what `data/*.j
 
 ## Effects
 
-What an effect does to a creature lives in one class per vocabulary ID in `effects/` (`AtkEffect` for E1, `HealEffect` for E6, ...), behind the `Effect` interface, and `Game` only looks it up in `Effects` and calls it (`2026-11-18-effect-classes`). An effect class holds the resolution of the ID with all its modes, its allowed resolution classes and param rules (`classes()`, `modes()`, `validate()`), which `EffectRegistry` applies when a card is bound. To add or change an effect: edit its class, register it in `Effects`, add a test next to `EffectClassesTest` (use `FakeContext`). If it needs something from the turn that `EffectContext` does not offer, add one method there and implement it in `Game`; never pass `Game` or `Board` to an effect. Registration order is fixed (a `LinkedHashMap`), never iterate a `HashMap` of effects. Effects on a player (E8, E9), static (class C) and replacement (class R) ones are still resolved by `Game`, `Board`, `Strike` and `TurnResolver`; the S… targets of `Board` are not classes yet. Conditions (C…) follow the same pattern: one `Condition` class per ID in `effects/` (`Conditions` looks them up), reading the table only through `ConditionContext` (implemented by `Board`), with its param checks in `validate` (`2026-11-19-condition-classes`).
+What an effect does to a creature lives in one class per vocabulary ID in `effects/` (`AtkEffect` for E1, `HealEffect` for E6, ...), behind the `Effect` interface, and `Game` only looks it up in `Effects` and calls it (`2026-11-18-effect-classes`). An effect class holds the resolution of the ID with all its modes, its allowed resolution classes and param rules (`classes()`, `modes()`, `validate()`), which `EffectRegistry` applies when a card is bound. To add or change an effect: edit its class, register it in `Effects`, add a test next to `EffectClassesTest` (use `FakeContext`). If it needs something from the turn that `EffectContext` does not offer, add one method there and implement it in `Game`; never pass `Game` or `Board` to an effect. Registration order is fixed (a `LinkedHashMap`), never iterate a `HashMap` of effects. Effects on a player (E8, E9), static (class C) and replacement (class R) ones are still resolved by `Game`, `Board`, `Strike` and `TurnResolver`. Conditions (C…) and targets (S…) follow the same pattern: one `Condition` / `Target` class per ID in `effects/` (`Conditions`, `Targets` look them up), reading the table only through `ConditionContext` / `TargetView` (implemented by `Board`), with their param checks in the class (`2026-11-19-condition-classes`, `2026-11-19-target-classes`). A target has one method per way its ID is used (a static effect reaching creatures, a triggered effect choosing when it resolves, a spell or equipment aiming, a player's ability, a hand effect); the ranked ones (S33, S35, S37, S38, S39, S40) only say their order. Targets that are not creatures (S4 lane, S30/S31 players, S32 discard pile, S47 deck) are classes with only an ID and a param check: `Game` acts on them by ID (`TargetIds`).
 
 ## Entry point
 
@@ -59,11 +59,12 @@ game-engine/src/main/java/quorma/gameengine/
   GameEngine, Simulation, MatchLogWriter, EngineVersion   entry point and the MatchLog
   input/     match input JSON reader
   data/      rule pack loader, Ruleset, rule pack hash
-  effects/   ability binder, effect registry, stack, one Effect class per effect ID (`Effects` looks them up),
-             `EffectContext` (what an effect may ask of the turn), `PerMille` math
+  effects/   ability binder, effect registry, stack, one Effect / Condition / Target class per vocabulary ID
+             (`Effects`, `Conditions`, `Targets` look them up), `EffectContext`, `ConditionContext` and `TargetView` (what
+             they may ask of the turn), `PerMille` math
   turn/      setup, turn phases (TurnResolver), one turn's effects (Game: wires the pieces below, implements the stack
              hooks and EffectContext, spells, equipment, draws and placements), triggers (TriggerDispatcher: which
-             abilities listen and in what order), targets of an effect (TargetSelector), damage and destruction by
+             abilities listen and in what order), damage and destruction by
              effects with the T20/T21 replacements (Destruction), the table as effects see it: static effects, reach,
              conditions, adjacency, selections (Board), hand effects (Hands), damage (Strike, Damage), suit synergy
              tiers (SynergyTiers)
