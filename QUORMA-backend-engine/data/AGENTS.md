@@ -59,6 +59,7 @@ String values in params can point elsewhere. Resolve them before the engine uses
 | `$param.<name>` | The value written on the card instance, e.g. card has `{"id":"K_SCUDO","params":{"x":15}}` so `$param.x` = 15. |
 | `$tune.<KEY>.<name>` | `balance.json` → `keywords[KEY]` or `evolutions[KEY]`. Looks in the card instance's `params` first (values written at pool creation, e.g. tier scaling), then in `params` of the balance entry, then at its top level (e.g. `max_stacks`). |
 | `$tune.synergies.<TIER>.<name>` | `balance.json` → `synergies[TIER][name]`. |
+| `-$param.<name>`, `-$tune.<KEY>.<name>` | The resolved integer, negated: a malus written with the number of a bonus (Slancio's DEF cost). |
 
 Text placeholders such as `{reduction_pct}` or `{x}` in descriptions are filled from the keyword's card params or from `balance.json` → `display`.
 
@@ -138,8 +139,8 @@ The structure files are meant to pass all ten checks with zero errors. Run the v
 3. Validate.
 
 **New vocab piece**
-- New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID printed by `make validate` (`next free E id`, currently `E58`); it counts parked IDs too. Never renumber or reuse IDs.
-- New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (next free `T` id from `make validate`, currently `T38`).
+- New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID printed by `make validate` (`next free E id`, currently `E65`); it counts parked IDs too. Never renumber or reuse IDs.
+- New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (next free `T` id from `make validate`, currently `T40`).
 - New target: give it `kind` and `requires_context` (use `null` if none).
 - Replacement effects (`R`) must have a trigger that can express the moment ("sta per…"). If none exists, add one.
 
@@ -186,7 +187,8 @@ Suits are narrative principles, not locked ability lists (lore v2.0, section 06)
 - **Names:** use the Italian faction and subfaction names exactly as in the ruleset (e.g. SEKTAC, MEROZYN, EFFRIX, YLMOR, Adattati, Spezzasigilli, Portanome, Segnaterra).
 - **Subfaction relations are reciprocal and only exist between the two factions.** Two subfactions of one faction are neutral (1000). `validate.py` checks reciprocity, the two rings of four, and that `balance.json` has `strong` above 1000 and `weak` below it. The cycle ids are `MONDO` and `IDENTITA`; display names follow the lore ("Il Mondo", "L'Identità").
 - **All cards write abilities the same way** (decision `2026-11-07-cards-share-abilities`). A creature, a spell and an equipment each have an ordered list of abilities. An ability is a reference to a keyword or evolution by id with the card's own params, or a whole effect written as expansions, and any card may have either. Spells and equipment differ only in when they fire (on draw, class `I`) and in which targets apply (none that need a trigger's context).
-- **No spell or equipment cards exist yet.** There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections. Their vocabulary (class `I` effects, `card_contexts`) is parked in `parked/vocab.json` so they can be added later; when they are, add the card file, the balance entries and the validator checks together.
+- **Spells and equipment are not in `data/` yet.** The base set's 46 are written in `docs/cards/card-effects.json` and the engine resolves their effects; their vocabulary (class `I` effects, `card_contexts`) is live. There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections: when they move here, add the card file, the balance entries and the validator checks together.
+- **Abilities the form policy writes on the card** (`form: inline` in `docs/cards/card-effects.json`) have no entry here: a card writes their expansions with its own numbers, an Evolution keeps its `T_EVO` wrapper (`2026-11-17-base-set-engine`). `tools/base-set/export_cards.py` writes the base set as engine cards.
 - **No effect may depend on player input or information.** Players decide nothing during a match, so an effect that only reveals information or needs a choice does nothing. `E50` (reveal top card) was removed for this reason and replaced by `E57` (discard the top cards of a deck). Never reuse the `E50` ID.
 
 ## 13. Parked data

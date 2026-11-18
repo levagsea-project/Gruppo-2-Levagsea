@@ -32,10 +32,21 @@ import quorma.gameengine.model.SpellCard;
  */
 public final class AbilityBinder {
 
+    /** Targets a spell's immediate effects may aim at: groups, selections, the players, lanes and the deck. */
+    private static final Set<String> SPELL_TARGETS = Set.of("S9", "S10", "S11", "S30", "S31", "S32", "S33", "S35",
+            "S37", "S38", "S39", "S40", "S44", "S47");
+
+    /** Targets an equipment's immediate effects may aim at: the creature it is applied to and the players. */
+    private static final Set<String> EQUIPMENT_TARGETS = Set.of("S27", "S30", "S31");
+
     private final Ruleset rules;
 
     public AbilityBinder(Ruleset rules) {
         this.rules = Objects.requireNonNull(rules, "rules");
+    }
+
+    public Ruleset rules() {
+        return rules;
     }
 
     /** The bound expansions of every ability of {@code card}, abilities in card order, expansions in file order. */
@@ -45,7 +56,8 @@ public final class AbilityBinder {
         for (int i = 0; i < abilities.size(); i++) {
             switch (abilities.get(i)) {
                 case AbilityRef ref -> out.addAll(ref.id().startsWith("EVO_")
-                        ? bindEvolution(card.id(), ref) : bindKeyword(card.id(), ref));
+                        ? bindEvolution("card " + card.id() + " " + ref.id(), ref.id(), ref.params())
+                        : bindKeyword("card " + card.id() + " " + ref.id(), ref.id(), ref.params()));
                 case InlineEffect inline -> out.addAll(bindInline(card.id(), inlineId(i + 1), inline));
             }
         }
@@ -53,39 +65,56 @@ public final class AbilityBinder {
     }
 
     /**
-     * The expansions of a spell or an equipment (ruleset 3.3, 3.4): written on the card as expansions of class I with
-     * no trigger, in card order. A keyword or an Evolution is for creatures, so a reference is refused. A spell aims
-     * at a whole side ({@code S9} your creatures, {@code S10} the opponent's); an equipment at the creature it is
-     * applied to ({@code S27}).
+     * The immediate expansions of a spell or an equipment (ruleset 3.3, 3.4): class I with no trigger, in card order.
+     * A keyword or an Evolution is for creatures, so a reference is refused. A spell aims at groups of creatures,
+     * selections ({@code S33}-{@code S40}), the players, an empty lane or its deck; an equipment at the creature it
+     * is applied to ({@code S27}) or the players.
      *
      * @throws IllegalArgumentException for a creature
      */
     public List<BoundExpansion> bindImmediate(Card card) {
+        return bindCard(card).stream().filter(e -> e.cls() == ResClass.I).toList();
+    }
+
+    /**
+     * The lasting expansions of a spell or an equipment: the ones with a trigger. An equipment gives them to the
+     * creature it is applied to (its {@code S27} becomes {@code S1}, except with T29, where S27 is the replacement); a
+     * spell leaves them on its player's side of the table for their duration.
+     */
+    public List<BoundExpansion> bindLasting(Card card) {
+        return bindCard(card).stream().filter(e -> e.cls() != ResClass.I).toList();
+    }
+
+    private List<BoundExpansion> bindCard(Card card) {
         if (card instanceof CreatureCard) {
             throw new IllegalArgumentException("not a spell or an equipment: " + card.id());
         }
-        String thing = card instanceof SpellCard ? "a spell" : "an equipment";
-        Set<String> targets = card instanceof SpellCard ? Set.of("S9", "S10") : Set.of("S27");
+        boolean spell = card instanceof SpellCard;
+        String thing = spell ? "a spell" : "an equipment";
+        Set<String> targets = spell ? SPELL_TARGETS : EQUIPMENT_TARGETS;
         List<BoundExpansion> out = new ArrayList<>();
         List<Ability> abilities = card.abilities();
         for (int i = 0; i < abilities.size(); i++) {
-            String where = "card " + card.id() + " " + inlineId(i + 1);
+            String id = inlineId(i + 1);
+            String where = "card " + card.id() + " " + id;
             if (!(abilities.get(i) instanceof InlineEffect inline)) {
                 throw new AbilityException("card " + card.id() + " " + ((AbilityRef) abilities.get(i)).id()
                         + ": " + thing + " has its effects written as expansions (keywords and evolutions are for creatures)");
             }
-            for (ExpansionDef expansion : inline.expansions()) {
-                if (expansion.triggerId() != null || expansion.cls() != ResClass.I) {
-                    throw new AbilityException(where + ": an expansion of " + thing + " must be class I with no trigger");
-                }
-                if (!targets.contains(expansion.targetId())) {
+            List<ExpansionDef> expansions = inline.expansions();
+            for (int j = 0; j < expansions.size(); j++) {
+                ExpansionDef expansion = expansions.get(j);
+                if (expansion.triggerId() == null && !targets.contains(expansion.targetId())) {
                     throw new AbilityException(where + ": " + thing + " aims at " + new java.util.TreeSet<>(targets)
                             + ", not " + expansion.targetId());
                 }
-                if (expansion.conditions().stream().anyMatch(c -> !c.id().equals("C4"))) {
-                    throw new AbilityException(where + ": conditions on " + thing + " are not implemented by the engine yet");
+                if (expansion.conditions().stream().anyMatch(c -> c.id().equals("K_PARAM"))) {
+                    throw new AbilityException(where + ": K_PARAM needs a keyword");
                 }
-                BoundExpansion bound = bindExpansion(where, inlineId(i + 1), expansion, Map.of(), Map.of(), expansion.conditions());
+                if ("T_EVO".equals(expansion.triggerId())) {
+                    throw new AbilityException(where + ": " + thing + " has no Evolution (T_EVO is for creatures)");
+                }
+                BoundExpansion bound = bindExpansion(where, id, j, expansion, Map.of(), Map.of(), expansion.conditions());
                 EffectRegistry.check(bound, where);
                 out.add(bound);
             }
@@ -104,12 +133,15 @@ public final class AbilityBinder {
 
     /**
      * An ability written on the card as expansions. It has no keyword, so no card params, no {@code $param} and
-     * no {@code K_PARAM}; {@code $tune} still resolves against {@code balance.json}.
+     * no {@code K_PARAM}; {@code $tune} still resolves against {@code balance.json}. An expansion with trigger
+     * {@code T_EVO} is an Evolution written on the card: it fires once and counts for Spira like any other.
      */
     private List<BoundExpansion> bindInline(String cardId, String abilityId, InlineEffect inline) {
         String where = "card " + cardId + " " + abilityId;
         List<BoundExpansion> out = new ArrayList<>();
-        for (ExpansionDef expansion : inline.expansions()) {
+        List<ExpansionDef> expansions = inline.expansions();
+        for (int j = 0; j < expansions.size(); j++) {
+            ExpansionDef expansion = expansions.get(j);
             if (expansion.triggerId() == null) {
                 throw new AbilityException(where + ": an expansion with no trigger is for a spell or an equipment");
             }
@@ -118,7 +150,12 @@ public final class AbilityBinder {
                         where + ": conditions on an ability written on the card are not implemented by the engine yet"
                                 + " (K_PARAM needs a keyword)");
             }
-            BoundExpansion bound = bindExpansion(where, abilityId, expansion, Map.of(), Map.of(), expansion.conditions());
+            BoundExpansion bound;
+            if ("T_EVO".equals(expansion.triggerId())) {
+                bound = unwrapEvolution(where, abilityId, j, expansion, Map.of(), Map.of());
+            } else {
+                bound = bindExpansion(where, abilityId, j, expansion, Map.of(), Map.of(), expansion.conditions());
+            }
             EffectRegistry.check(bound, where);
             out.add(bound);
         }
@@ -126,52 +163,64 @@ public final class AbilityBinder {
     }
 
     /**
-     * An Evolution on a card. Its expansions use the wrapper trigger T_EVO: the bound expansion has the real trigger
-     * ({@code trigger_params.trigger_id}) and is marked as an Evolution, which fires at most {@code max_triggers}
-     * (1) times per creature. Numbers resolve like a keyword's ({@code $tune.EVO_X.name}, the card's params first).
+     * An Evolution by id, with the card's params (or the params an E16 grants it with). Its expansions use the
+     * wrapper trigger T_EVO: the bound expansion has the real trigger ({@code trigger_params.trigger_id}) and is
+     * marked as an Evolution, which fires at most {@code max_triggers} (1) times per creature. Numbers resolve like a
+     * keyword's ({@code $tune.EVO_X.name}, the card's params first).
      */
-    private List<BoundExpansion> bindEvolution(String cardId, AbilityRef ref) {
-        String where = "card " + cardId + " " + ref.id();
-        EvolutionDef evolution = rules.evolutions().get(ref.id());
+    public List<BoundExpansion> bindEvolution(String where, String evolutionId, Map<String, Value> given) {
+        EvolutionDef evolution = rules.evolutions().get(evolutionId);
         if (evolution == null) {
             throw new AbilityException(where + ": unknown ability (not a live keyword or evolution)");
         }
         KeywordDef asKeyword = new KeywordDef(evolution.id(), evolution.name(), ResClass.T, evolution.balanceRef(),
                 Map.of(), evolution.description(), evolution.expandsTo());
-        Map<String, Value> params = cardParams(where, asKeyword, tierScaled(asKeyword), ref.params());
+        Map<String, Value> params = cardParams(where, asKeyword, allowedCardParams(asKeyword), given);
 
         List<BoundExpansion> out = new ArrayList<>();
-        for (ExpansionDef expansion : evolution.expandsTo()) {
-            if (!"T_EVO".equals(expansion.triggerId()) || !(expansion.triggerParams().get("trigger_id") instanceof Value.StrV inner)) {
+        List<ExpansionDef> expansions = evolution.expandsTo();
+        for (int j = 0; j < expansions.size(); j++) {
+            ExpansionDef expansion = expansions.get(j);
+            if (!"T_EVO".equals(expansion.triggerId())) {
                 throw new AbilityException(where + ": an Evolution must use T_EVO with a trigger_id");
             }
-            Map<String, Value> innerParams = expansion.triggerParams().get("trigger_params") instanceof Value.MapV m
-                    ? m.fields() : Map.of();
-            int maxTriggers = expansion.triggerParams().get("max_triggers") instanceof Value.IntV n
-                    ? Math.toIntExact(n.v()) : 1;
-            ExpansionDef unwrapped = new ExpansionDef(inner.v(), innerParams, expansion.effectId(),
-                    expansion.effectParams(), expansion.targetId(), expansion.targetParams(), expansion.duration(),
-                    expansion.conditions(), expansion.cls(), expansion.common());
-            BoundExpansion bound = bindExpansion(where, evolution.id(), unwrapped, params, ref.params(),
-                    inPlayConditions(unwrapped)).asEvolution(maxTriggers);
+            BoundExpansion bound = unwrapEvolution(where, evolution.id(), j, expansion, params, given);
             EffectRegistry.check(bound, where);
             out.add(bound);
         }
         return List.copyOf(out);
     }
 
-    private List<BoundExpansion> bindKeyword(String cardId, AbilityRef ref) {
-        String where = "card " + cardId + " " + ref.id();
-        KeywordDef keyword = rules.keywords().get(ref.id());
+    private BoundExpansion unwrapEvolution(String where, String abilityId, int index, ExpansionDef expansion,
+            Map<String, Value> params, Map<String, Value> cardParams) {
+        if (!(expansion.triggerParams().get("trigger_id") instanceof Value.StrV inner)) {
+            throw new AbilityException(where + ": an Evolution must use T_EVO with a trigger_id");
+        }
+        Map<String, Value> innerParams = expansion.triggerParams().get("trigger_params") instanceof Value.MapV m
+                ? m.fields() : Map.of();
+        int maxTriggers = expansion.triggerParams().get("max_triggers") instanceof Value.IntV n
+                ? Math.toIntExact(n.v()) : 1;
+        ExpansionDef unwrapped = new ExpansionDef(inner.v(), innerParams, expansion.effectId(),
+                expansion.effectParams(), expansion.targetId(), expansion.targetParams(), expansion.duration(),
+                expansion.conditions(), expansion.cls(), expansion.common());
+        return bindExpansion(where, abilityId, index, unwrapped, params, cardParams, inPlayConditions(unwrapped))
+                .asEvolution(maxTriggers);
+    }
+
+    /** A keyword by id, with the card's params (or the params an E14 grants it with). */
+    public List<BoundExpansion> bindKeyword(String where, String keywordId, Map<String, Value> given) {
+        KeywordDef keyword = rules.keywords().get(keywordId);
         if (keyword == null) {
             throw new AbilityException(where + ": unknown ability (not a live keyword)");
         }
-        Map<String, Value> params = cardParams(where, keyword, tierScaled(keyword), ref.params());
+        Map<String, Value> params = cardParams(where, keyword, allowedCardParams(keyword), given);
 
         List<BoundExpansion> out = new ArrayList<>();
-        for (ExpansionDef expansion : keyword.expandsTo()) {
+        List<ExpansionDef> expansions = keyword.expandsTo();
+        for (int j = 0; j < expansions.size(); j++) {
+            ExpansionDef expansion = expansions.get(j);
             if (cardConditionsHold(where, expansion, params)) {
-                BoundExpansion bound = bindExpansion(where, keyword.id(), expansion, params, ref.params(),
+                BoundExpansion bound = bindExpansion(where, keyword.id(), j, expansion, params, given,
                         inPlayConditions(expansion));
                 EffectRegistry.check(bound, where);
                 out.add(bound);
@@ -188,9 +237,11 @@ public final class AbilityBinder {
     public List<BoundExpansion> bindSynergy(SynergyDef tier) {
         String where = "synergy " + tier.id();
         List<BoundExpansion> out = new ArrayList<>();
-        for (ExpansionDef expansion : tier.expandsTo()) {
+        List<ExpansionDef> expansions = tier.expandsTo();
+        for (int j = 0; j < expansions.size(); j++) {
+            ExpansionDef expansion = expansions.get(j);
             if (EffectRegistry.isImplemented(expansion)) {
-                BoundExpansion bound = bindExpansion(where, tier.id(), expansion, Map.of(), Map.of(), expansion.conditions());
+                BoundExpansion bound = bindExpansion(where, tier.id(), j, expansion, Map.of(), Map.of(), expansion.conditions());
                 EffectRegistry.check(bound, where);
                 out.add(bound);
             }
@@ -199,19 +250,23 @@ public final class AbilityBinder {
     }
 
     /**
-     * The names in {@code balance.json} {@code keywords[balance_ref].tier_scaled}: pool creation writes their
-     * scaled value on the card, so a card may carry them even when the keyword does not declare them.
+     * The params a card may write for {@code keyword}: the ones it declares, the tier-scaled ones and the numbers of
+     * its {@code balance.json} entry, which {@code $tune} reads from the card first (data/AGENTS.md section 3).
      */
-    private Set<String> tierScaled(KeywordDef keyword) {
+    private Set<String> allowedCardParams(KeywordDef keyword) {
         Set<String> out = new LinkedHashSet<>();
         for (String section : new String[] {"keywords", "evolutions"}) {
             if (rules.balance().get(section) instanceof Value.MapV entries
-                    && entries.get(keyword.balanceRef()) instanceof Value.MapV entry
-                    && entry.get("tier_scaled") instanceof Value.ListV names) {
-                for (Value name : names.items()) {
-                    if (name instanceof Value.StrV s) {
-                        out.add(s.v());
+                    && entries.get(keyword.balanceRef()) instanceof Value.MapV entry) {
+                if (entry.get("tier_scaled") instanceof Value.ListV names) {
+                    for (Value name : names.items()) {
+                        if (name instanceof Value.StrV s) {
+                            out.add(s.v());
+                        }
                     }
+                }
+                if (entry.get("params") instanceof Value.MapV p) {
+                    out.addAll(p.fields().keySet());
                 }
             }
         }
@@ -220,10 +275,10 @@ public final class AbilityBinder {
 
     /** The card's params checked against the keyword's declaration, with defaults filled in. */
     private static Map<String, Value> cardParams(
-            String where, KeywordDef keyword, Set<String> tierScaled, Map<String, Value> given) {
+            String where, KeywordDef keyword, Set<String> tuned, Map<String, Value> given) {
         for (Map.Entry<String, Value> e : given.entrySet()) {
             String name = e.getKey();
-            if (!keyword.params().containsKey(name) && !tierScaled.contains(name)) {
+            if (!keyword.params().containsKey(name) && !tuned.contains(name)) {
                 throw new AbilityException(where + ": unknown param '" + name + "'");
             }
             if (!keyword.params().containsKey(name) && !(e.getValue() instanceof Value.IntV)) {
@@ -276,7 +331,7 @@ public final class AbilityBinder {
         return true;
     }
 
-    private BoundExpansion bindExpansion(String where, String abilityId, ExpansionDef expansion,
+    private BoundExpansion bindExpansion(String where, String abilityId, int index, ExpansionDef expansion,
             Map<String, Value> params, Map<String, Value> cardParams, List<ConditionDef> conditions) {
         Map<String, Value> effectParams = new LinkedHashMap<>();
         for (Map.Entry<String, Value> e : expansion.effectParams().entrySet()) {
@@ -286,6 +341,8 @@ public final class AbilityBinder {
 
         OptionalInt maxStacks = OptionalInt.empty();
         Optional<String> stackKey = Optional.empty();
+        int maxTriggers = 0;
+        boolean oncePerTurn = false;
         for (Map.Entry<String, Value> e : expansion.common().entrySet()) {
             Value value = resolve(where, e.getValue(), params, cardParams);
             switch (e.getKey()) {
@@ -301,14 +358,27 @@ public final class AbilityBinder {
                     }
                     stackKey = Optional.of(s.v());
                 }
+                case "max_triggers" -> {
+                    if (!(value instanceof Value.IntV n) || n.v() < 1) {
+                        throw new AbilityException(where + ": max_triggers must be a positive integer");
+                    }
+                    maxTriggers = Math.toIntExact(n.v());
+                }
+                case "once_per_turn" -> {
+                    if (!(value instanceof Value.BoolV b)) {
+                        throw new AbilityException(where + ": once_per_turn must be true or false");
+                    }
+                    oncePerTurn = b.v();
+                }
                 default -> throw new AbilityException(where + ": " + e.getKey() + " is not implemented by the engine yet");
             }
         }
         if (maxStacks.isPresent() && stackKey.isEmpty()) {
             stackKey = Optional.of(abilityId); // vocab.common_params.stack_key: defaults to the source's id
         }
-        return new BoundExpansion(abilityId, expansion.triggerId(), expansion.triggerParams(), expansion.effectId(), expansion.targetId(),
-                expansion.targetParams(), conditions, expansion.duration(), expansion.cls(), effectParams, maxStacks, stackKey, false, 1);
+        return new BoundExpansion(abilityId, expansion.triggerId(), expansion.triggerParams(), expansion.effectId(),
+                expansion.targetId(), expansion.targetParams(), conditions, expansion.duration(), expansion.cls(),
+                effectParams, maxStacks, stackKey, false, maxTriggers, oncePerTurn, index);
     }
 
     /** Resolves a param; an object becomes one param per field, named {@code parent.field} (E12 {@code lockout}). */
@@ -323,7 +393,7 @@ public final class AbilityBinder {
         }
     }
 
-    /** Resolves a reference to a plain integer, string or boolean. */
+    /** Resolves a reference to a plain integer, string or boolean; {@code -$...} negates the integer. */
     private Value resolve(String where, Value value, Map<String, Value> params, Map<String, Value> cardParams) {
         Value resolved = value;
         if (value instanceof Value.Ref ref) {
@@ -332,7 +402,13 @@ public final class AbilityBinder {
                 case TUNE -> tune(ref.path(), cardParams);
             };
             if (resolved == null) {
-                throw new AbilityException(where + ": cannot resolve $" + ref.kind().name().toLowerCase() + "." + ref.path());
+                throw new AbilityException(where + ": cannot resolve " + ref.text());
+            }
+            if (ref.negated()) {
+                if (!(resolved instanceof Value.IntV n)) {
+                    throw new AbilityException(where + ": " + ref.text() + " negates a value that is not an integer");
+                }
+                resolved = new Value.IntV(Math.negateExact(n.v()));
             }
         }
         if (!(resolved instanceof Value.IntV || resolved instanceof Value.StrV || resolved instanceof Value.BoolV)) {

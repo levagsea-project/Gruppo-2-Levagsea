@@ -47,6 +47,24 @@
       "required": ["A", "B"],
       "properties": { "A": { "type": "integer" }, "B": { "type": "integer" } }
     },
+    "player_ref": {
+      "description": "A player, as the target of an effect on life or deck.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side"],
+      "properties": { "side": { "$ref": "#/$defs/side" } }
+    },
+    "lane_ref": {
+      "description": "A lane of a player, as the target of an effect waiting on it (E64).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "lane"],
+      "properties": { "side": { "$ref": "#/$defs/side" }, "lane": { "$ref": "#/$defs/lane" } }
+    },
+    "effect_target": {
+      "description": "What an effect was aimed at: a creature, a lane or a player.",
+      "oneOf": [{ "$ref": "#/$defs/creature_ref" }, { "$ref": "#/$defs/lane_ref" }, { "$ref": "#/$defs/player_ref" }]
+    },
     "creature_ref": {
       "description": "A creature in play, by owner, lane and card.",
       "type": "object",
@@ -121,10 +139,11 @@
           "type": "array",
           "items": { "$ref": "#/$defs/declaration" }
         },
-        "opening": { "description": "Effects of Evaluate and Declare, in the order they happened: Evolutions that fired, redirects. Absent when there were none.", "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "opening": { "description": "Effects of Evaluate and Declare, in the order they happened: T2 effects, Evolutions that fired, T5, T8, T9 and T35 triggers, redirects. Absent when there were none.", "type": "array", "items": { "$ref": "#/$defs/event" } },
         "cycle_1": { "type": "array", "items": { "$ref": "#/$defs/event" } },
         "cycle_2": { "type": "array", "items": { "$ref": "#/$defs/event" } },
         "refill": { "type": "array", "items": { "$ref": "#/$defs/event" } },
+        "end_of_turn": { "description": "Effects of the End of turn (T2 Fine del turno, T26) when the match goes on. Absent when there were none.", "type": "array", "items": { "$ref": "#/$defs/event" } },
         "board": { "description": "State at the end of the turn, after Refill.", "$ref": "#/$defs/board" }
       }
     },
@@ -204,8 +223,9 @@
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
         "kind": {
-          "description": "atk_bonus: value more ATK (a suit synergy). damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante). spill_def_permille: spill treats the target's DEF before the blow as value / 1000 of itself.",
-          "enum": ["atk_bonus", "damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier", "spill_def_permille"]
+          "description": "atk_bonus: value more ATK (a suit synergy). damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante). spill_def_permille: spill treats the target's DEF before the blow as value / 1000 of itself. atk_malus: value less ATK (a static malus). atk_set: the ATK is set to value, the printed ATK (E4). damage_prevented: value damage was prevented (E23, E29). lethal: the blow destroys whatever the target's DEF (Letale).",
+          "enum": ["atk_bonus", "damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier", "spill_def_permille",
+                   "atk_malus", "atk_set", "damage_prevented", "lethal"]
         },
         "value": { "type": "integer", "minimum": 0 }
       }
@@ -215,7 +235,7 @@
       "additionalProperties": false,
       "required": ["stat", "before", "after"],
       "properties": {
-        "stat": { "enum": ["atk", "def"] },
+        "stat": { "description": "atk and def of a creature, life of a player.", "enum": ["atk", "def", "life"] },
         "before": { "type": "integer" },
         "after": { "type": "integer" }
       }
@@ -241,7 +261,11 @@
         { "$ref": "#/$defs/ev_equipment_pending" },
         { "$ref": "#/$defs/ev_equipment_applied" },
         { "$ref": "#/$defs/ev_equipment_lost" },
-        { "$ref": "#/$defs/ev_lane_left_empty" }
+        { "$ref": "#/$defs/ev_lane_left_empty" },
+        { "$ref": "#/$defs/ev_cards_milled" },
+        { "$ref": "#/$defs/ev_card_moved" },
+        { "$ref": "#/$defs/ev_creature_returned" },
+        { "$ref": "#/$defs/ev_refill_prevented" }
       ]
     },
     "ev_attack_resolved": {
@@ -279,7 +303,7 @@
         "type": { "const": "attack_skipped" },
         "cycle": { "enum": [1, 2] },
         "attacker": { "$ref": "#/$defs/creature_ref" },
-        "reason": { "enum": ["NO_TARGET", "TARGET_DESTROYED", "ATTACKER_DESTROYED"] }
+        "reason": { "description": "PREVENTED: a replacement effect stopped the attack (E25).", "enum": ["NO_TARGET", "TARGET_DESTROYED", "ATTACKER_DESTROYED", "PREVENTED"] }
       }
     },
     "ev_attack_redirected": {
@@ -306,7 +330,7 @@
       }
     },
     "ev_card_effect_resolved": {
-      "description": "An effect of a spell or an equipment changed a creature, logged after spell_resolved or equipment_applied.",
+      "description": "An effect of a spell or an equipment, or an effect waiting on a lane (E64), changed a creature or a player, logged after spell_resolved, equipment_applied or card_drawn.",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "side", "card_id", "ability_id", "effect_id", "target", "changes"],
@@ -316,12 +340,12 @@
         "card_id": { "$ref": "#/$defs/card_id" },
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
-        "target": { "$ref": "#/$defs/creature_ref" },
+        "target": { "$ref": "#/$defs/effect_target" },
         "changes": { "type": "array", "items": { "$ref": "#/$defs/stat_change" } }
       }
     },
     "ev_creature_saved": {
-      "description": "The creature would have been destroyed and was saved with full DEF (a suit synergy, Vestigio 5). Refill destroys it if it is still in its lane.",
+      "description": "The creature would have been destroyed and was saved by a replacement effect: E12 (Custode, Vestigio 5) brings DEF back to the base DEF and Refill destroys it if it is still in its lane; E11 sets DEF to a value.",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "creature", "ability_id"],
@@ -355,13 +379,13 @@
         "source": { "$ref": "#/$defs/creature_ref" },
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
-        "target": { "$ref": "#/$defs/creature_ref" },
+        "target": { "$ref": "#/$defs/effect_target" },
         "changes": { "type": "array", "items": { "$ref": "#/$defs/stat_change" } },
         "stacks": { "type": "integer", "minimum": 1 }
       }
     },
     "ev_effect_fizzled": {
-      "description": "The top of the stack did nothing: its target was destroyed (decision 2026-11-14-stack-resolves-when-quiet).",
+      "description": "The top of the stack did nothing: its target was destroyed, a redirect found no creature, or no legal target was left (decision 2026-11-14-stack-resolves-when-quiet).",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "source", "ability_id", "effect_id", "reason"],
@@ -370,7 +394,7 @@
         "source": { "$ref": "#/$defs/creature_ref" },
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
-        "reason": { "enum": ["TARGET_DESTROYED", "NO_NEW_TARGET"] }
+        "reason": { "description": "NO_TARGET: no legal target was left when it resolved.", "enum": ["TARGET_DESTROYED", "NO_NEW_TARGET", "NO_TARGET"] }
       }
     },
     "ev_creature_discarded": {
@@ -469,6 +493,55 @@
         "type": { "const": "lane_left_empty" },
         "side": { "$ref": "#/$defs/side" },
         "lane": { "$ref": "#/$defs/lane" }
+      }
+    },
+
+    "ev_cards_milled": {
+      "description": "An effect moved the top cards of a player's deck to the discard pile with no effect (E57), in deck order.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "ability_id", "card_ids"],
+      "properties": {
+        "type": { "const": "cards_milled" },
+        "side": { "$ref": "#/$defs/side" },
+        "ability_id": { "$ref": "#/$defs/ability_id" },
+        "card_ids": { "type": "array", "items": { "$ref": "#/$defs/card_id" } }
+      }
+    },
+    "ev_card_moved": {
+      "description": "An effect put a card of the deck on top or at the bottom (E49).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "card_id", "position"],
+      "properties": {
+        "type": { "const": "card_moved" },
+        "side": { "$ref": "#/$defs/side" },
+        "card_id": { "$ref": "#/$defs/card_id" },
+        "position": { "enum": ["top", "bottom"] }
+      }
+    },
+    "ev_creature_returned": {
+      "description": "An effect put a creature back into an empty lane from the discard pile (E36), with full DEF.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "lane", "card_id"],
+      "properties": {
+        "type": { "const": "creature_returned" },
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "$ref": "#/$defs/lane" },
+        "card_id": { "$ref": "#/$defs/card_id" }
+      }
+    },
+    "ev_refill_prevented": {
+      "description": "A replacement effect (E47) left a lane empty in Refill; card_id is the card whose effect it is.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "side", "lane", "card_id"],
+      "properties": {
+        "type": { "const": "refill_prevented" },
+        "side": { "$ref": "#/$defs/side" },
+        "lane": { "$ref": "#/$defs/lane" },
+        "card_id": { "$ref": "#/$defs/card_id" }
       }
     },
 

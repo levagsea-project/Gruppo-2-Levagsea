@@ -22,7 +22,15 @@ public record Modifier(CreatureRef source, String abilityId, String effectId, Ki
         /** Spill multiplier × {@code value} / 1000 (Traboccante). */
         SPILL_MULTIPLIER,
         /** Spill treats the target's DEF before the blow as {@code value} / 1000 of itself. */
-        SPILL_DEF_PERMILLE
+        SPILL_DEF_PERMILLE,
+        /** {@code value} less ATK (a static malus). */
+        ATK_MALUS,
+        /** The ATK is set to {@code value}, the printed ATK (E4). */
+        ATK_SET,
+        /** The damage of the blow is prevented (E23, E29); {@code value} is the damage it would have dealt. */
+        DAMAGE_PREVENTED,
+        /** The blow destroys the target whatever its DEF (Letale, E26). */
+        LETHAL
     }
 
     public Modifier {

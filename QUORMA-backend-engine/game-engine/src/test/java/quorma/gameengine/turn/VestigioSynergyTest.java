@@ -58,7 +58,7 @@ class VestigioSynergyTest {
         assertEquals(9000, Boards.creature(a, 4).currentDef());
         List<EffectResolved> heals = resolved(log);
         assertTrue(heals.stream().anyMatch(h -> h.changes().equals(List.of(new StatChange(StatChange.Stat.DEF, 3000, 4400)))));
-        assertTrue(heals.stream().noneMatch(h -> h.target().lane() == 3), "the destroyed creature is not healed");
+        assertTrue(heals.stream().noneMatch(h -> h.target() instanceof quorma.gameengine.log.CreatureRef c && c.lane() == 3), "the destroyed creature is not healed");
     }
 
     @Test

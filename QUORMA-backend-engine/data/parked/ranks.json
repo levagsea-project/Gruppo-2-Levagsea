@@ -1,52 +1,16 @@
 {
   "_note": "Parked role_affinity entries, per Tier, in their original order.",
   "role_affinity": {
-    "1": [
-      "K_MURO",
-      "K_SOSTEGNO",
-      "K_RIGENERANTE",
-      "K_FLESSIBILE",
-      "EVO_SOPRAVVISSUTO",
-      "EVO_TEMPRATO",
-      "EVO_MATURAZIONE",
-      "EVO_MIMETICO",
-      "EVO_SFONDAMENTO",
-      "EVO_INTRECCIO"
-    ],
-    "2": [
-      "K_PROVOCAZIONE",
-      "EVO_PREDATORE",
-      "EVO_SFONDAMENTO",
-      "EVO_SENTINELLA",
-      "EVO_FURIA",
-      "EVO_CAPITANO",
-      "K_SOSTEGNO",
-      "EVO_SOPRAVVISSUTO",
-      "EVO_TEMPRATO"
-    ],
+    "1": [],
+    "2": [],
     "3": [
-      "K_PRIMO_COLPO",
-      "K_CUSTODE",
       "K_VENDICATIVO",
-      "EVO_VENDETTA",
-      "EVO_EREDITA",
-      "EVO_INTRECCIO",
-      "EVO_CAPITANO",
-      "EVO_PREDATORE",
-      "EVO_SACCHEGGIO",
-      "EVO_TEMPRATO"
+      "EVO_SACCHEGGIO"
     ],
     "4": [
-      "K_LETALE",
       "K_DOPPIO_COLPO",
-      "EVO_CARNEFICE",
       "EVO_SACCHEGGIO",
-      "K_SOSTEGNO",
-      "K_VENDICATIVO",
-      "EVO_INTRECCIO",
-      "EVO_CAPITANO",
-      "EVO_EREDITA",
-      "EVO_SOPRAVVISSUTO"
+      "K_VENDICATIVO"
     ]
   }
 }

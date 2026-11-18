@@ -5,5 +5,7 @@ public enum FizzleReason {
     /** Its target was destroyed by the time it resolved ("le creature distrutte non sono influenzate"). */
     TARGET_DESTROYED,
     /** A redirect found no creature to redirect the attack to. */
-    NO_NEW_TARGET
+    NO_NEW_TARGET,
+    /** The effect found no legal target when it resolved (target_selection_rules 7). */
+    NO_TARGET
 }

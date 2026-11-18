@@ -7,5 +7,7 @@ public enum SkipReason {
     /** The target was already destroyed when the attacker was called. */
     TARGET_DESTROYED,
     /** The attacker was destroyed before it was called to attack. */
-    ATTACKER_DESTROYED
+    ATTACKER_DESTROYED,
+    /** A replacement effect stopped the attack (E25). */
+    PREVENTED
 }

@@ -2,11 +2,11 @@ package quorma.gameengine.effects;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.List;
 import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Value;
@@ -23,12 +23,16 @@ import quorma.gameengine.data.Value;
  * @param conditions  the conditions left to check while the creature is in play (everything but {@code K_PARAM}),
  *                    with literal params
  * @param effectParams resolved effect params, in file order: only {@link Value.IntV}, {@link Value.StrV} and
- *                    {@link Value.BoolV}
+ *                    {@link Value.BoolV}; an object param becomes one param per field, named {@code parent.field}
  * @param maxStacks   {@code max_stacks}, empty when the effect has no limit
  * @param stackKey    {@code stack_key}, empty when the expansion does not stack
  * @param evolution   true for an expansion of an Evolution: {@code triggerId} is then the real trigger inside
  *                    {@code T_EVO}, and the ability fires at most {@code maxTriggers} times per creature
- * @param maxTriggers how many times an Evolution may fire per creature (1), unused when not an evolution
+ * @param maxTriggers how many times the expansion may fire per card instance for the whole match ({@code max_triggers},
+ *                    1 for an Evolution); 0 when there is no limit
+ * @param oncePerTurn {@code once_per_turn}: at most one resolution per turn
+ * @param index       position of the expansion in its ability, from 0: with {@code abilityId} it names the
+ *                    expansion for its trigger counters
  */
 public record BoundExpansion(
         String abilityId,
@@ -44,7 +48,9 @@ public record BoundExpansion(
         OptionalInt maxStacks,
         Optional<String> stackKey,
         boolean evolution,
-        int maxTriggers) {
+        int maxTriggers,
+        boolean oncePerTurn,
+        int index) {
 
     public BoundExpansion {
         Objects.requireNonNull(abilityId, "abilityId");
@@ -66,7 +72,36 @@ public record BoundExpansion(
     /** The same expansion marked as an Evolution that fires at most {@code maxTriggers} times per creature. */
     public BoundExpansion asEvolution(int maxTriggers) {
         return new BoundExpansion(abilityId, triggerId, triggerParams, effectId, targetId, targetParams, conditions,
-                duration, cls, effectParams, maxStacks, stackKey, true, maxTriggers);
+                duration, cls, effectParams, maxStacks, stackKey, true, maxTriggers, oncePerTurn, index);
+    }
+
+    /** The same expansion with other conditions. */
+    public BoundExpansion withConditions(List<ConditionDef> newConditions) {
+        return new BoundExpansion(abilityId, triggerId, triggerParams, effectId, targetId, targetParams, newConditions,
+                duration, cls, effectParams, maxStacks, stackKey, evolution, maxTriggers, oncePerTurn, index);
+    }
+
+    /** The same expansion with another target (an equipment's S27 is the creature that carries it: S1). */
+    public BoundExpansion withTarget(String newTargetId) {
+        return new BoundExpansion(abilityId, triggerId, triggerParams, effectId, newTargetId, targetParams, conditions,
+                duration, cls, effectParams, maxStacks, stackKey, evolution, maxTriggers, oncePerTurn, index);
+    }
+
+    /** The same expansion as a static one (trigger T0, class C) with {@code newDuration}: an effect granted to a creature. */
+    public BoundExpansion asStatic(String newTargetId, String newDuration) {
+        return new BoundExpansion(abilityId, "T0", Map.of(), effectId, newTargetId, Map.of(), conditions, newDuration,
+                ResClass.C, effectParams, OptionalInt.empty(), Optional.empty(), false, 0, false, index);
+    }
+
+    /** The same expansion with no trigger, class I: applied at once (an equipment's lasting DEF change). */
+    public BoundExpansion asImmediate(String newTargetId, String newDuration) {
+        return new BoundExpansion(abilityId, null, Map.of(), effectId, newTargetId, Map.of(), conditions, newDuration,
+                ResClass.I, effectParams, maxStacks, stackKey, false, 0, false, index);
+    }
+
+    /** The key of this expansion's trigger counters ({@code max_triggers}, {@code once_per_turn}). */
+    public String counterKey() {
+        return evolution ? abilityId : abilityId + "#" + index;
     }
 
     /**
@@ -81,7 +116,7 @@ public record BoundExpansion(
         effectParams.forEach((name, value) -> scaled.put(name, value instanceof Value.IntV n
                 ? new Value.IntV(Math.floorDiv(n.v() * factorPermille, 1000L)) : value));
         return new BoundExpansion(abilityId, triggerId, triggerParams, effectId, targetId, targetParams, conditions,
-                duration, cls, scaled, maxStacks, stackKey, evolution, maxTriggers);
+                duration, cls, scaled, maxStacks, stackKey, evolution, maxTriggers, oncePerTurn, index);
     }
 
     /** An integer effect param. */
@@ -92,8 +127,45 @@ public record BoundExpansion(
         throw new IllegalStateException(abilityId + " " + effectId + ": param '" + name + "' is not an integer");
     }
 
+    /** An integer effect param, or {@code otherwise} when absent. */
+    public int intParam(String name, int otherwise) {
+        return effectParams.get(name) instanceof Value.IntV n ? Math.toIntExact(n.v()) : otherwise;
+    }
+
     /** A string effect param, empty if absent. */
     public Optional<String> stringParam(String name) {
         return effectParams.get(name) instanceof Value.StrV s ? Optional.of(s.v()) : Optional.empty();
+    }
+
+    /** A boolean effect param, or {@code otherwise} when absent. */
+    public boolean boolParam(String name, boolean otherwise) {
+        return effectParams.get(name) instanceof Value.BoolV b ? b.v() : otherwise;
+    }
+
+    /** A string trigger param, empty if absent. */
+    public Optional<String> triggerParam(String name) {
+        return triggerParams.get(name) instanceof Value.StrV s ? Optional.of(s.v()) : Optional.empty();
+    }
+
+    /**
+     * The effect params whose name starts with {@code prefix.} (for example {@code keyword_params.x} of E14), with
+     * the prefix taken off: the params an E14 gives the keyword it grants.
+     */
+    public Map<String, Value> nested(String prefix) {
+        Map<String, Value> out = new LinkedHashMap<>();
+        effectParams.forEach((name, value) -> {
+            if (name.startsWith(prefix + ".")) {
+                out.put(name.substring(prefix.length() + 1), value);
+            }
+        });
+        return out;
+    }
+
+    /** The {@code filters} of the target params, empty if none. */
+    public List<String> filters() {
+        if (targetParams.get("filters") instanceof Value.ListV l) {
+            return l.items().stream().filter(v -> v instanceof Value.StrV).map(v -> ((Value.StrV) v).v()).toList();
+        }
+        return List.of();
     }
 }
