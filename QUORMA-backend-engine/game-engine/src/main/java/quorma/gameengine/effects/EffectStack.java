@@ -60,7 +60,7 @@ public final class EffectStack {
         /** Like {@link #triggered(Side, Creature, BoundExpansion, int, TriggerContext)} with another trigger shown in the log. */
         public static Item triggered(Side side, Creature source, BoundExpansion expansion, String triggerId,
                 int scalePermille, TriggerContext context) {
-            Creature fixed = expansion.targetId().equals("S1") ? source : null;
+            Creature fixed = expansion.targetId().equals(TargetIds.SELF) ? source : null;
             return new Item(side, source, fixed, expansion, triggerId, scalePermille, context);
         }
 

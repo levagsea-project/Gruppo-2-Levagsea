@@ -13,6 +13,7 @@ import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
+import quorma.gameengine.effects.TargetIds;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
@@ -731,7 +732,7 @@ public final class TurnResolver {
             if (!"Rifornimento".equals(((Value.StrV) e.triggerParams().get("phase")).v())) {
                 continue;
             }
-            if (!e.targetId().equals("S1") && !e.targetId().equals("S12")) {
+            if (!e.targetId().equals(TargetIds.SELF) && !e.targetId().equals(TargetIds.SUIT_CREATURES)) {
                 if (source != null && b.holds(e, side, source, Board.Ctx.NONE)) {
                     push(g, b, stack, side, source, e, TriggerContext.NONE);
                 }

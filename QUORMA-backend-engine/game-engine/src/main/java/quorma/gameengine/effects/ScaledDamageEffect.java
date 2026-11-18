@@ -24,15 +24,15 @@ public final class ScaledDamageEffect implements Effect {
     @Override
     public Map<String, ParamRule> modes() {
         return Map.of("", ParamRule.ints(Map.of("permille", NON_NEGATIVE))
-                .strings(Map.of("source", Set.of("damage_taken", "damage_dealt", "own_atk"))));
+                .strings(Map.of("source", DamageSource.ids())));
     }
 
     @Override
     public Outcome apply(EffectContext ctx, Use use, Creature target) {
         BoundExpansion e = use.expansion();
-        int base = switch (e.stringParam("source").orElseThrow()) {
-            case "own_atk" -> use.source().currentAtk();
-            default -> use.context().amount();
+        int base = switch (DamageSource.of(e.stringParam("source").orElseThrow())) {
+            case OWN_ATK -> use.source().currentAtk();
+            case DAMAGE_TAKEN, DAMAGE_DEALT -> use.context().amount();
         };
         int amount = PerMille.floor(base, e.intParam("permille"));
         return new Outcome(ctx.damage(use.ownerSide(), use.source(), use.targetSide(), target, amount, use.after()),

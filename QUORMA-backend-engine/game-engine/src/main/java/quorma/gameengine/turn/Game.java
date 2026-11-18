@@ -19,6 +19,7 @@ import quorma.gameengine.effects.EffectStack;
 import quorma.gameengine.effects.Effects;
 import quorma.gameengine.effects.Followups;
 import quorma.gameengine.effects.Outcome;
+import quorma.gameengine.effects.TargetIds;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.CreatureRef;
@@ -370,7 +371,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
     private BoundExpansion laneEffect(BoundExpansion e64) {
         String effectId = e64.stringParam("effect_id").orElseThrow();
         String duration = e64.stringParam("duration").orElseThrow();
-        return new BoundExpansion(e64.abilityId(), null, Map.of(), effectId, "S27", Map.of(), List.of(), duration,
+        return new BoundExpansion(e64.abilityId(), null, Map.of(), effectId, TargetIds.REPLACEMENT, Map.of(), List.of(), duration,
                 ResClass.I, e64.nested("effect_params"), OptionalInt.empty(), Optional.empty(), false, 0, false,
                 e64.index());
     }
@@ -661,7 +662,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
             }
             for (BoundExpansion e : b.abilities(source, "T29")) {
                 if (b.holds(e, side, replacement, Board.Ctx.of(ctx))) {
-                    stack.push(new EffectStack.Item(side, source, e.targetId().equals("S27") ? replacement : source, e,
+                    stack.push(new EffectStack.Item(side, source, e.targetId().equals(TargetIds.REPLACEMENT) ? replacement : source, e,
                             "T29", scaleOf(b, side, source, e), ctx));
                 }
             }
@@ -684,14 +685,14 @@ final class Game implements EffectStack.Hooks, EffectContext {
         List<BoundExpansion> lasting = new ArrayList<>();
         for (BoundExpansion e : binder.bindLasting(card)) {
             if ("T0".equals(e.triggerId()) && e.effectId().equals("E2")) {
-                BoundExpansion now = e.asImmediate("S27", Lasting.PERMANENT);
+                BoundExpansion now = e.asImmediate(TargetIds.REPLACEMENT, Lasting.PERMANENT);
                 List<StatChange> changes = immediate(owner, now, receiver, log);
                 log.add(new MatchEvent.CardEffectResolved(owner, card.id(), e.abilityId(), e.effectId(),
                         CreatureRef.of(owner, receiver), changes));
                 continue;
             }
             boolean replacement = "T29".equals(e.triggerId());
-            lasting.add(replacement || !e.targetId().equals("S27") ? e : e.withTarget("S1"));
+            lasting.add(replacement || !e.targetId().equals(TargetIds.REPLACEMENT) ? e : e.withTarget(TargetIds.SELF));
         }
         applyImmediate(owner, card, receiver, log);
         receiver.equip(lasting);
@@ -712,7 +713,7 @@ final class Game implements EffectStack.Hooks, EffectContext {
                         : b.select(e.targetId(), e.targetParams(), owner).orElse(null);
                 if (target != null && !target.destroyed()) {
                     chosen.putIfAbsent(e.targetId(), target);
-                    target.grant(new Grant(e.abilityId(), List.of(e.withTarget("S1")), lasting, false));
+                    target.grant(new Grant(e.abilityId(), List.of(e.withTarget(TargetIds.SELF)), lasting, false));
                 }
             } else {
                 state.player(owner).addAura(new Aura(card.id(), e, lasting));
