@@ -1,43 +1,97 @@
+import { useState } from 'react'
 import type { Deck } from '../../types/deck'
 import { factions } from '../../data/factions'
-import Stat from '../ui/Stat'
+import { useDeckStats } from '../../hooks/useDeckStats'
+import { GENERIC } from '../../lib/api'
 import SuitList from './SuitList'
 import DeckActions from './DeckActions'
 
-type Props = { deck: Deck | null; onPlay: () => void; onDelete: (id: string) => void }
+type Props = { deck: Deck | null; onPlay: () => void; onDelete: (id: string) => Promise<void> }
 
-// Pannello a destra con i dettagli del mazzo scelto.
+// Stato del mazzo in una frase: obsoleto, di difesa, oppure pronto.
+function statusText(deck: Deck) {
+  if (deck.outdated) return 'Mazzo obsoleto per il pool di carte attuale: modificalo per usarlo di nuovo.'
+  if (deck.defense) return 'Mazzo di difesa della sua fazione, pronto per giocare.'
+  return 'Mazzo valido, pronto per giocare.'
+}
+
+// Pannello a destra con i dettagli del mazzo scelto (pannello q-tela del design system).
 export default function DeckDetails({ deck, onPlay, onDelete }: Props) {
+  const { stats, failed } = useDeckStats(deck?.id ?? null)
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState('')
+  const [shownFor, setShownFor] = useState(deck?.id)
+
+  // Cambiando mazzo, l'errore del mazzo precedente non vale più.
+  if (shownFor !== deck?.id) {
+    setShownFor(deck?.id)
+    setError('')
+  }
+
   if (!deck) {
     return (
-      <aside className="deck-details">
-        <p className="deck-empty">Nessun mazzo creato.<br />Premi "Nuovo mazzo" per iniziare.</p>
-      </aside>
+      <section className="q-tela deck-details" aria-label="Mazzo scelto">
+        <div className="q-tela__in">
+          <span className="decks-etichetta">Mazzo scelto</span>
+          <p className="deck-empty">Nessun mazzo creato. Premi "Nuovo mazzo" per iniziare.</p>
+        </div>
+      </section>
     )
   }
 
-  const valid = deck.cards === deck.maxCards
+  async function remove(d: Deck) {
+    if (!window.confirm(`Eliminare "${d.name}"? Non si può annullare.`)) return
+    setDeleting(true)
+    setError('')
+    try {
+      await onDelete(d.id)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : GENERIC)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  // "–" finché i conteggi non arrivano dal backend.
+  const count = (n: number | undefined) => (n === undefined ? '–' : n)
 
   return (
-    <aside className="deck-details">
-      <p className="details-tag">MAZZO SCELTO</p>
-      <h2 className="details-name">{deck.name.toUpperCase()}</h2>
-      <p className="details-faction">{factions[deck.faction].name.toUpperCase()}</p>
+    <section className="q-tela deck-details" aria-labelledby="mazzo-scelto">
+      <div className="q-tela__in" aria-live="polite">
+        <span className="decks-etichetta">{deck.defense ? 'Mazzo di difesa' : 'Mazzo scelto'}</span>
+        <span className="deck-details__testa">
+          <h2 id="mazzo-scelto" className="deck-details__nome">{deck.name}</h2>
+          <span className="deck-details__fazione">{factions[deck.faction].name}</span>
+        </span>
+        <span className="q-divisorio" />
 
-      <div className="details-stats">
-        <Stat value={deck.cards} label={`/ ${deck.maxCards} CARTE`} />
-        <Stat value={deck.creatures} label="CREATURE" />
-        <Stat value={deck.spells} label="MAGIE / EQUIP." />
+        <div className="deck-conte">
+          <span className="m-conta"><b>{deck.cards}</b><small>/ {deck.maxCards} carte</small></span>
+          <span className="m-conta"><b>{count(stats?.creatures)}</b><small>Creature</small></span>
+          <span className="m-conta"><b>{count(stats?.spells)}</b><small>Magie / Equip.</small></span>
+        </div>
+
+        <div className="deck-semi">
+          <span className="decks-etichetta">Creature per seme</span>
+          {stats ? (
+            <SuitList suits={stats.suits} />
+          ) : (
+            <p className="deck-empty">{failed ? 'Impossibile caricare le carte del mazzo.' : 'Caricamento…'}</p>
+          )}
+        </div>
+
+        <p className={`m-regola ${deck.outdated ? 'm-regola--off' : 'm-ok'}`}>{statusText(deck)}</p>
+        {error && <p className="m-regola m-regola--errore" role="alert">{error}</p>}
+
+        <DeckActions
+          onPlay={onPlay}
+          onDelete={() => remove(deck)}
+          canPlay={!deck.outdated}
+          // Il mazzo di difesa non si può eliminare (il backend risponde deck.defense_undeletable).
+          canDelete={!deck.defense && !deleting}
+          deleteHint={deck.defense ? 'Il mazzo di difesa non può essere eliminato' : undefined}
+        />
       </div>
-
-      <p className="details-tag">CREATURE PER SEME</p>
-      <SuitList suits={deck.suits} />
-
-      <p className="details-status">
-        {valid ? 'Mazzo valido, pronto per giocare.' : 'Mazzo incompleto.'}
-      </p>
-
-      <DeckActions onPlay={onPlay} onDelete={() => onDelete(deck.id)} />
-    </aside>
+    </section>
   )
 }

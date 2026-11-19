@@ -1,47 +1,94 @@
-.decks-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 206px; gap: 30px; margin-top: -2px; }
-.decks-body > section { padding-top: 24px; }
-.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 7.5px; letter-spacing: 1.5px; color: var(--cyan); }
-.section-header h2 { font-family: var(--serif); font-size: 10px; letter-spacing: 2px; color: var(--text); }
-.section-line { flex: 1; height: 1px; background: var(--border); }
+/* Pagina Mazzi desktop, dal design "Pagina-Mazzi" (canvas Desktop su claude.ai).
+   Tre fasce come nel design: pannello 290px sotto i 1280px (barra laterale a icone), 330px fino a 1599, 360px oltre.
+   Le colonne di carte non sono fisse: ne entrano quante ne stanno (min 196px l'una).
+   Su telefono vale styles/mobile.css. */
 
-/* griglia mazzi */
-.deck-grid { display: grid; grid-template-columns: repeat(3, 115px); gap: 24px 55px; }
-.deck-card { position: relative; width: 115px; height: 165px; padding: 0; display: flex; flex-direction: column; overflow: hidden; text-align: center; color: var(--text);
-  background: #0a1a20; border: 1px solid var(--border); border-radius: 50% 50% 3px 3px / 22px 22px 3px 3px; box-shadow: 4px -3px 0 -1px rgba(120, 170, 180, 0.15); }
-.deck-card.is-selected { border-color: var(--cyan); box-shadow: 0 0 14px var(--cyan-dim); }
-.deck-diamond { position: absolute; top: 2px; left: 50%; width: 5px; height: 5px; transform: translateX(-50%) rotate(45deg); background: var(--cyan); box-shadow: 0 0 6px var(--cyan); z-index: 1; }
-.deck-img { width: 100%; flex: 1; min-height: 0; object-fit: cover; object-position: 60% center; }
-.deck-info { display: flex; flex-direction: column; gap: 4px; padding: 9px 4px 8px; background: #0a1a20; }
-.deck-name { font-family: var(--serif); font-size: 9.5px; font-weight: 700; letter-spacing: 2px; }
-.deck-faction { font-size: 6px; letter-spacing: 1.5px; color: var(--cyan); }
-.deck-status { font-size: 7.5px; color: #c3cfd2; }
+/* ---------- Pagina ---------- */
+/* Se i mazzi non stanno nello schermo la pagina scorre (prima venivano tagliati) */
+/* Margini e posizione del titolo e delle valute: quelli comuni di .page (pages.css), uguali in tutte le schermate */
+.page.decks-page { gap: 24px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 
-/* carta "nuovo mazzo" */
-.new-deck-card { justify-content: center; align-items: center; gap: 6px; background: linear-gradient(180deg, rgba(120, 140, 150, 0.35), rgba(30, 50, 58, 0.5)); }
-.new-deck-plus { font-size: 24px; font-weight: 300; color: var(--cyan); line-height: 1; margin-bottom: 4px; }
-.new-deck-title { font-family: var(--serif); font-size: 10px; font-weight: 700; letter-spacing: 2px; line-height: 1.4; }
-.new-deck-sub { font-size: 7px; letter-spacing: 1.5px; color: var(--cyan); }
+.decks-body { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 34px; align-items: start; }
 
-/* pannello dettagli */
-.deck-details { display: flex; flex-direction: column; margin-top: 24px; padding: 16px 16px 14px; background: rgba(9, 26, 33, 0.9); border: 1px solid var(--cyan-dim); }
-.deck-empty { margin: auto 0; text-align: center; font-size: 9px; line-height: 1.7; color: var(--muted); }
-.details-tag { font-size: 6.5px; letter-spacing: 2px; color: var(--cyan); margin: 14px 0 8px; }
-.details-tag:first-child { margin-top: 0; }
-.details-name { font-family: var(--serif); font-size: 17px; letter-spacing: 1.5px; }
-.details-faction { margin: 6px 0 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); font-size: 7.5px; letter-spacing: 2px; color: var(--cyan); }
-.details-stats { display: grid; grid-template-columns: repeat(3, 1fr); }
-.details-stats .stat-value { font-size: 15px; }
-.suit-list { display: flex; flex-direction: column; gap: 9px; }
-.suit-list li { display: grid; grid-template-columns: 14px 42px 1fr 12px; align-items: center; gap: 4px; font-size: 8px; }
-.suit-icon { color: var(--muted); font-size: 9px; }
-.suit-bar { height: 4px; background: #0d242b; }
-.suit-bar span { display: block; height: 100%; background: linear-gradient(90deg, #1c6670, var(--cyan)); }
-.suit-value { text-align: right; }
-.details-status { margin-top: 12px; font-size: 7.5px; color: #c3cfd2; }
-.details-status::before { content: '■ '; color: var(--cyan); }
+/* ---------- Elenco dei mazzi ---------- */
+.decks-lista { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.decks-conta { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+.decks-avviso { margin: 0; font-size: 13px; line-height: 1.6; color: var(--steel-300); }
+.decks-avviso--errore { color: #E8B49A; }
+.decks-avviso button { margin-left: 8px; padding: 0; border: 0; background: none; color: var(--petrol-300); font: inherit; font-weight: 600;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
-.deck-actions { margin-top: auto; display: flex; flex-direction: column; gap: 7px; }
-.deck-actions .hex-btn { width: 100%; }
-.deck-play { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-.deck-play .hex-btn { flex: 1; }
-.deck-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 34px 28px; align-content: start; }
+
+/* Carta-mazzo (q-mazzo + q-carta del design system, come nella pagina Gioca) */
+.deck-pick .q-carta { --arte-h: 168px; }
+.deck-pick .q-carta__arte { background-size: cover; background-position: center 30%; }
+.deck-pick__stato { margin-top: 4px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--silver-100); }
+.deck-pick__stato--off { color: var(--ember-200); }
+
+/* "Nuovo mazzo": arco vuoto alto quanto una carta-mazzo (il padding compensa gli strati delle altre) */
+.deck-pick--nuovo { height: 100%; padding: 12px 12px 0 0; box-sizing: border-box; }
+.deck-pick--nuovo .q-tela { height: 100%; min-height: 268px; }
+.deck-pick--nuovo .q-tela__in { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  background: linear-gradient(180deg, rgba(13,23,29,.88), rgba(8,16,20,.94)); color: var(--petrol-300); } /* scuro: il filo d'argento sotto non deve trasparire */
+.deck-pick__nuovo { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #EEF4F5; text-align: center; }
+.deck-pick__carte { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+
+/* ---------- Pannello del mazzo scelto ---------- */
+.deck-details > .q-tela__in { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.decks-etichetta { font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--steel-300); }
+.deck-details__testa { display: flex; flex-direction: column; gap: 2px; }
+.deck-details__nome { margin: 0; overflow-wrap: anywhere; font-family: var(--font-display); font-size: 24px; line-height: 1.2; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: #EEF4F5; }
+.deck-details__fazione { font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol-300); }
+.deck-empty { margin: 0; font-size: 13px; line-height: 1.6; color: var(--steel-300); }
+
+.deck-conte { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.m-conta { display: flex; flex-direction: column; gap: 2px; }
+.m-conta b { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #EEF4F5; font-variant-numeric: tabular-nums; }
+.m-conta small { font-size: 10.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--steel-300); }
+
+.deck-semi { display: flex; flex-direction: column; gap: 8px; }
+.suit-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.suit-list li { display: grid; grid-template-columns: 18px 72px 1fr 22px; align-items: center; gap: 8px; font-size: 12px; }
+.suit-bar { height: 6px; background: rgba(213,225,229,.1); }
+.suit-bar span { display: block; height: 100%; background: linear-gradient(90deg, #2E7F86, #4AA6AD); box-shadow: 0 0 6px rgba(74,166,173,.6); }
+.suit-value { text-align: right; font-variant-numeric: tabular-nums; color: #EEF4F5; }
+/* Icona del seme: il PNG fa da maschera, il colore è quello del tema */
+.deck-seme { display: block; width: 16px; height: 16px; background: var(--petrol-300);
+  -webkit-mask: var(--seme) center / contain no-repeat; mask: var(--seme) center / contain no-repeat; }
+.deck-seme--vincolo { --seme: url('/images/ui/semi/vincolo.png'); }
+.deck-seme--frattura { --seme: url('/images/ui/semi/frattura.png'); }
+.deck-seme--spira { --seme: url('/images/ui/semi/spira.png'); }
+.deck-seme--vestigio { --seme: url('/images/ui/semi/vestigio.png'); }
+
+/* Stato del mazzo: quadratino + frase (petrolio = pronto, brace = obsoleto o errore) */
+.m-regola { display: flex; align-items: baseline; gap: 8px; margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--silver-100); }
+.m-regola::before { content: ""; flex: none; width: 7px; height: 7px; transform: translateY(-1px); background: var(--steel-300); }
+.m-regola.m-ok { color: var(--steel-300); }
+.m-regola.m-ok::before { background: var(--petrol-500); box-shadow: 0 0 6px rgba(74,166,173,.8); }
+.m-regola--off, .m-regola--errore { color: #E8B49A; }
+.m-regola--off::before, .m-regola--errore::before { background: var(--ember-500); }
+
+/* Pulsanti: sigillo GIOCA, Modifica (argento), Duplica ed Elimina (acciaio) */
+.deck-actions { margin-top: 6px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+.deck-actions .q-btn { display: flex; }
+.deck-actions__gioca { margin: 0 14px; }
+.deck-actions__gioca .q-btn__in { min-width: 0; height: 52px; padding: 0 20px; font-size: 16px; letter-spacing: .2em; }
+.deck-actions__riga { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.deck-actions__riga .q-btn__in { padding: 0 10px; }
+.deck-actions .q-btn[aria-disabled="true"] { cursor: default; }
+
+/* Schermi abbastanza alti: il pannello resta fermo mentre l'elenco scorre */
+@media (min-height: 760px) {
+  .deck-details { position: sticky; top: 0; }
+}
+
+/* ---------- Fasce di larghezza ---------- */
+@media (max-width: 1279px) {
+  .decks-body { grid-template-columns: minmax(0, 1fr) 290px; gap: 28px; }
+}
+@media (min-width: 1600px) {
+  .decks-body { grid-template-columns: minmax(0, 1fr) 360px; }
+}

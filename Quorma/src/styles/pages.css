@@ -7,9 +7,13 @@
     var(--sfondo, url('/hero-bg.jpg')) 60% 40% / cover no-repeat, #050b0f; }
 .page .currency-bar { right: 30px; }
 
-.page-title-line { display: block; width: 28px; height: 2px; background: var(--cyan); margin-bottom: 8px; }
-.page-title h1 { font-family: var(--serif); font-weight: 600; font-size: 28px; letter-spacing: 2px; line-height: 1; }
-.page-title p { margin-top: 8px; font-size: 8px; letter-spacing: 2.5px; color: var(--cyan); }
+/* Titolo di pagina (PageTitle), come la "targa" del design: Cinzel 40px (34px con la barra laterale a icone).
+   Su telefono le misure le dà styles/mobile.css */
+.page-title-line { display: block; width: 48px; height: 1px; margin-bottom: 10px; background: var(--petrol-500); box-shadow: 0 0 8px rgba(74,166,173,.8); }
+.page-title h1 { margin: 0; font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: #EEF4F5; }
+.page-title p { margin: 6px 0 0; font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol-300); }
+@media (max-width: 1279px) { .page-title h1 { font-size: 34px; line-height: 38px; } }
 
 /* Stat: numero + etichetta */
 .stat-value { font-family: var(--serif); font-size: 14px; font-weight: 700; }
@@ -33,3 +37,5 @@
 .decks-page { --sfondo: url('/images/sfondi/sfondo-mazzi.webp'); }
 .newdeck-page { --sfondo: url('/images/sfondi/sfondo-nuovo-mazzo.webp'); }
 .rules-page { --sfondo: url('/images/sfondi/sfondo-regole.webp'); }
+.hex-btn:disabled { opacity: .45; cursor: not-allowed; }
+.hex-btn:disabled:hover { background: var(--cyan-dim); }

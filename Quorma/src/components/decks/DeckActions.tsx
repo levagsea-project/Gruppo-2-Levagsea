@@ -1,18 +1,40 @@
-import HexButton from '../ui/HexButton'
+type Props = { onPlay: () => void; onDelete: () => void; canPlay: boolean; canDelete: boolean; deleteHint?: string }
 
-// I bottoni in fondo al pannello. GIOCA apre la pagina Gioca, ELIMINA cancella; gli altri non fanno ancora nulla.
-export default function DeckActions({ onPlay, onDelete }: { onPlay: () => void; onDelete: () => void }) {
+const Star = () => (
+  <svg className="q-stella" aria-hidden="true" viewBox="0 0 20 28">
+    <path d="M10 0l2.2 11.6L20 14l-7.8 2.4L10 28l-2.2-11.6L0 14l7.8-2.4z" fill="#8FD6DB" />
+  </svg>
+)
+
+// I pulsanti in fondo al pannello, come nel design: sigillo GIOCA (solo se il mazzo è usabile),
+// Modifica (argento), Duplica ed Elimina (acciaio). Modifica e Duplica non esistono ancora: "in arrivo".
+export default function DeckActions({ onPlay, onDelete, canPlay, canDelete, deleteHint }: Props) {
   return (
     <div className="deck-actions">
-      <div className="deck-play">
-        <span className="play-dot" />
-        <HexButton variant="primary" icon="✦" onClick={onPlay}>GIOCA</HexButton>
-        <span className="play-dot" />
-      </div>
-      <HexButton variant="light">MODIFICA</HexButton>
-      <div className="deck-actions-row">
-        <HexButton>DUPLICA</HexButton>
-        <HexButton onClick={onDelete}>ELIMINA</HexButton>
+      {canPlay && (
+        <button type="button" className="q-btn q-btn--sigillo deck-actions__gioca" onClick={onPlay}>
+          <span className="q-btn__in">
+            <Star />
+            Gioca
+          </span>
+          <span className="q-borchia q-borchia--w" aria-hidden="true" />
+          <span className="q-borchia q-borchia--e" aria-hidden="true" />
+        </button>
+      )}
+      <button type="button" className="q-btn q-btn--argento" aria-disabled="true" title="Modifica · in arrivo">
+        <span className="q-btn__in">
+          Modifica<span className="sr-only">, in arrivo</span>
+        </span>
+      </button>
+      <div className="deck-actions__riga">
+        <button type="button" className="q-btn q-btn--acciaio" aria-disabled="true" title="Duplica · in arrivo">
+          <span className="q-btn__in">
+            Duplica<span className="sr-only">, in arrivo</span>
+          </span>
+        </button>
+        <button type="button" className="q-btn q-btn--acciaio" onClick={onDelete} disabled={!canDelete} title={deleteHint}>
+          <span className="q-btn__in">Elimina</span>
+        </button>
       </div>
     </div>
   )
