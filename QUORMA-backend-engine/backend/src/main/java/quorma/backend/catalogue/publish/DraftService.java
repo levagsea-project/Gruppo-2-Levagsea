@@ -1,7 +1,10 @@
 package quorma.backend.catalogue.publish;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -106,6 +109,39 @@ public class DraftService {
         } else {
             items.save(new DraftItem(draftId, type, key, json));
         }
+    }
+
+    /** One item to put in a draft. */
+    public record ItemInput(DraftItemType type, JsonNode payload) {
+    }
+
+    /**
+     * Adds or replaces many items in one transaction (an import puts hundreds): all or none.
+     *
+     * @throws CatalogueException 400 {@code catalogue.item_invalid} if any item has no key
+     */
+    @Transactional
+    public void putItems(UUID draftId, List<ItemInput> inputs) {
+        requireOpen(draftId);
+        Map<String, DraftItem> existing = new HashMap<>();
+        for (DraftItem item : items.findByDraftId(draftId)) {
+            existing.put(item.getItemType() + "|" + item.getItemKey(), item);
+        }
+        List<DraftItem> toSave = new ArrayList<>();
+        for (ItemInput in : inputs) {
+            String key = itemKey(in.type(), in.payload());
+            String json = DraftPlanner.MAPPER.writeValueAsString(in.payload());
+            DraftItem current = existing.get(in.type() + "|" + key);
+            if (current != null) {
+                current.setPayload(json);
+                toSave.add(current);
+            } else {
+                DraftItem created = new DraftItem(draftId, in.type(), key, json);
+                existing.put(in.type() + "|" + key, created);
+                toSave.add(created);
+            }
+        }
+        items.saveAll(toSave);
     }
 
     /** Removes an item; false if the draft had none with that key. */

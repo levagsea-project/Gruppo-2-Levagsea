@@ -53,6 +53,16 @@ public final class ErrorCodes {
     public static final String CATALOGUE_DRAFT_STALE = "catalogue.draft_stale";
     public static final String CATALOGUE_DRAFT_INVALID = "catalogue.draft_invalid";
     public static final String CATALOGUE_ITEM_INVALID = "catalogue.item_invalid";
+    public static final String CATALOGUE_IMPORT_INVALID = "catalogue.import_invalid";
+    public static final String CATALOGUE_IMPORT_TOO_LARGE = "catalogue.import_too_large";
+    public static final String CATALOGUE_CARD_NOT_FOUND = "catalogue.card_not_found";
+    public static final String CATALOGUE_SET_NOT_FOUND = "catalogue.set_not_found";
+    public static final String CATALOGUE_SET_INVALID = "catalogue.set_invalid";
+    public static final String CATALOGUE_TEXT_INVALID = "catalogue.text_invalid";
+    public static final String CATALOGUE_TEXT_NAME_TAKEN = "catalogue.text_name_taken";
+    public static final String CATALOGUE_PACK_TYPE_NOT_FOUND = "catalogue.pack_type_not_found";
+    public static final String CATALOGUE_PACK_TYPE_INVALID = "catalogue.pack_type_invalid";
+    public static final String CATALOGUE_PACK_TYPE_CONFLICT = "catalogue.pack_type_conflict";
 
     public static final String ENGINE_INPUT_INVALID = "engine.input_invalid";
     public static final String ENGINE_UNAVAILABLE = "engine.unavailable";

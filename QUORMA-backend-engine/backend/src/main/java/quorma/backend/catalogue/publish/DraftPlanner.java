@@ -375,6 +375,13 @@ class DraftPlanner {
                 report.path("ruleset_version").asString(null));
     }
 
+    /** The cards of the active snapshot of a faction as the engine reads them, by code (empty if none yet). */
+    Map<String, ObjectNode> activeEngineCards(String faction) {
+        Map<UUID, Card> cardsById = new HashMap<>();
+        cards.findAll().forEach(c -> cardsById.put(c.getId(), c));
+        return activeCards(active.activeId(faction).orElse(null), cardsById);
+    }
+
     /** The cards of the active snapshot as the engine reads them (the snapshot hash is of exactly this shape). */
     private Map<String, ObjectNode> activeCards(UUID snapshotId, Map<UUID, Card> cardsById) {
         Map<String, ObjectNode> out = new TreeMap<>();
@@ -422,6 +429,9 @@ class DraftPlanner {
                     members.add(codeById.get(link.getCardId()));
                 }
                 members.addAll(draftMembers.getOrDefault(setCodes.get(type.getSetId()), Set.of()));
+                if (members.stream().noneMatch(candidate::containsKey)) {
+                    return; // none of this set's cards is of this faction: the type is not sold for it, nothing to fill
+                }
                 ObjectNode pool = pools.addObject();
                 pool.put("name", type.getCode());
                 ArrayNode ids = pool.putArray("card_ids");

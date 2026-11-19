@@ -46,6 +46,16 @@
   "catalogue.draft_stale": "The catalogue has changed since: rebase the draft before publishing it",
   "catalogue.draft_invalid": "The draft is not valid: check the listed problems",
   "catalogue.item_invalid": "Invalid draft item",
+  "catalogue.import_invalid": "The file to import is not in the right format",
+  "catalogue.import_too_large": "The file to import is too large",
+  "catalogue.card_not_found": "Card not found",
+  "catalogue.set_not_found": "Set not found",
+  "catalogue.set_invalid": "Invalid set data",
+  "catalogue.text_invalid": "Invalid text",
+  "catalogue.text_name_taken": "Another card already uses this name in the same language",
+  "catalogue.pack_type_not_found": "Pack type not found",
+  "catalogue.pack_type_invalid": "Invalid pack type data",
+  "catalogue.pack_type_conflict": "The pack type was already sold: its set cannot change and it cannot be deleted",
 
   "error.not_implemented": "Not available yet",
 

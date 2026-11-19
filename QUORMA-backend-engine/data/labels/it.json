@@ -46,6 +46,16 @@
   "catalogue.draft_stale": "Nel frattempo il catalogo è cambiato: ricalcola la bozza prima di pubblicarla",
   "catalogue.draft_invalid": "La bozza non è valida: controlla i problemi elencati",
   "catalogue.item_invalid": "Elemento della bozza non valido",
+  "catalogue.import_invalid": "Il file da importare non ha il formato giusto",
+  "catalogue.import_too_large": "Il file da importare è troppo grande",
+  "catalogue.card_not_found": "Carta non trovata",
+  "catalogue.set_not_found": "Set non trovato",
+  "catalogue.set_invalid": "Dati del set non validi",
+  "catalogue.text_invalid": "Testo non valido",
+  "catalogue.text_name_taken": "Un'altra carta usa già questo nome nella stessa lingua",
+  "catalogue.pack_type_not_found": "Tipo di pacchetto non trovato",
+  "catalogue.pack_type_invalid": "Dati del tipo di pacchetto non validi",
+  "catalogue.pack_type_conflict": "Il tipo di pacchetto è già stato venduto: non si può cambiarne il set né eliminarlo",
 
   "error.not_implemented": "Funzione non ancora disponibile",
 

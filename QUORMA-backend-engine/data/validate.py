@@ -422,6 +422,20 @@ for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targ
 # like a keyword or evolution of the same shape; ids, params, slots and rank eligibility are checked here.
 if (root / "cards.json").exists():
     cards_doc = load("cards.json")
+    # set_definitions: the sets the file creates when they do not exist yet (code, optional status and dates)
+    defined_sets = set()
+    for sd in cards_doc.get("set_definitions", []):
+        sw = f"cards.json set_definitions {sd.get('code', '?')}"
+        if set(sd) - {"code", "status", "release_date", "close_date"}:
+            err(sw, f"unknown fields {sorted(set(sd) - {'code', 'status', 'release_date', 'close_date'})}")
+        if not isinstance(sd.get("code"), str) or not re.fullmatch(r"[A-Z0-9_]{1,32}", sd["code"]):
+            err(sw, "code must be A-Z, 0-9, _ (1 to 32 characters)")
+        elif sd["code"] in defined_sets:
+            err(sw, "duplicate code")
+        else:
+            defined_sets.add(sd["code"])
+        if sd.get("status", "BOZZA") not in ("BOZZA", "IN_VENDITA", "CHIUSA"):
+            err(sw, "status must be BOZZA, IN_VENDITA or CHIUSA")
     consts = vocab["constants"]
     rank_code = {1: "A", 11: "J", 12: "Q", 13: "K"}
     suit_codes = {x.upper(): x for x in consts["suits"]}
@@ -439,6 +453,9 @@ if (root / "cards.json").exists():
         if not isinstance(card_sets, list) or not card_sets or len(set(card_sets)) != len(card_sets) or not all(
                 isinstance(e_, str) and re.fullmatch(r"[A-Z0-9_]+", e_) for e_ in card_sets):
             err(where, "sets must be a non-empty list of distinct codes (A-Z, 0-9, _)")
+        elif "set_definitions" in cards_doc:
+            for undefined in sorted(set(card_sets) - defined_sets):
+                err(where, f"set {undefined} is not in set_definitions")
         kind = card.get("kind")
         card_kind = {"CREATURE": None, "SPELL": "spell", "EQUIPMENT": "equipment"}.get(kind, "?")
         if card_kind == "?":

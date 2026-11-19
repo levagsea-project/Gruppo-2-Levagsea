@@ -55,6 +55,16 @@ packs:
       slots: {TIER_2: 2, TIER_3: 2, TIER_4: 1}
       support-slots: 3
 
+catalogue:
+  seed:
+    # At startup, add the bundled base set (data/cards.json, copied into the jar by Maven) where it is missing.
+    # Add-only: a card that exists is never touched. The engine service may still be starting: retry a few times.
+    enabled: ${CATALOGUE_SEED_ENABLED:true}
+    retries: 10
+    retry-delay: 3s
+  # The most a batch import body may weigh (the base set is about 350 KB).
+  max-import-bytes: 5MB
+
 auth:
   # Registration bonus for new users
   registration-bonus: ${AUTH_REGISTRATION_BONUS:0}

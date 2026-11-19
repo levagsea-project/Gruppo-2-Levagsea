@@ -8,10 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
- * Base of the tests that need the database. Skipped when Docker is not running. Every test starts from an empty
- * database: TRUNCATE does not fire the "immutable" row triggers, so it can clear the append-only tables.
+ * Base of the tests that need the database. Skipped when Docker is not running. The startup seed is off (a test calls
+ * the seeder itself when it needs the base set). Every test starts from an empty database: TRUNCATE does not fire the "immutable" row triggers, so it can clear the append-only tables.
  */
-@SpringBootTest
+@SpringBootTest(properties = "catalogue.seed.enabled=false")
 @Import(IntegrationTestConfig.class)
 @Testcontainers(disabledWithoutDocker = true)
 public abstract class IntegrationTest {

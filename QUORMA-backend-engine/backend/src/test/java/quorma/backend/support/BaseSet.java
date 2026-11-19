@@ -58,6 +58,17 @@ public final class BaseSet {
         return t;
     }
 
+    /** The whole base set as a batch ({@code data/cards.json} with its sets, plus the Italian texts), a fresh copy. */
+    public static ObjectNode batch() {
+        try {
+            ObjectNode root = (ObjectNode) MAPPER.readTree(Files.readString(Path.of("..", "data", "cards.json"), StandardCharsets.UTF_8));
+            root.putObject("texts").set("it", LABELS.deepCopy());
+            return root;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /** Puts the whole base set into the draft: the set BASE and its text, every card and its Italian text. */
     public static void fill(DraftService drafts, UUID draftId) {
         ObjectNode set = MAPPER.createObjectNode();
