@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Matches", description = "The history of my series (a series is one start: a room, a challenge or matchmaking, "
         + "with up to three games) and the results I have not read yet. Players only. Only the two players of a series "
         + "can see it: for anyone else it is a 404. The log of a game is not stored: the turn-by-turn result of a game is "
-        + "rebuilt by `GET /matches/{matchId}/replay`, which also verifies it against the stored hash. Errors carry a `code`.")
+        + "rebuilt by `GET /matches/{seriesId}/games/{n}/replay`, which also verifies it against the stored hash. Errors carry a `code`.")
 public class MatchController {
 
     private final MatchService matches;
