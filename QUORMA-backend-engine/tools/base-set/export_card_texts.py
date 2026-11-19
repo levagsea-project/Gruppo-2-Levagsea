@@ -7,7 +7,7 @@ Reads every card note of the vault (Cards/*.md and Cards/Magie ed Equipaggiament
 docs/cards/card-effects.json and the ids against data/cards.json. Writes:
 
   card.<id>.name, card.<id>.flavour      one pair per card of data/cards.json
-  expansion.BASE.name, expansion.BASE.description
+  set.BASE.name, set.BASE.description
 
 Card text is mutable and outside the snapshot hash. Italian is the fallback locale: every key is required here, other
 locales (cards.<locale>.json) may be partial. Wiki links [[a|b]] and [[a]] are flattened to plain text.
@@ -20,10 +20,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 VAULT = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT.parent / "QUORMA-vault"
 
-EXPANSION_TEXTS = {
-    "expansion.BASE.name": "Set base",
-    "expansion.BASE.description": "Le 150 carte con cui comincia QUORMA: 104 creature, 26 magie e 20 equipaggiamenti, "
-                                  "divise tra Resistenza Umana e Potenze Artificiali.",
+SET_TEXTS = {
+    "set.BASE.name": "Set base",
+    "set.BASE.description": "Le 150 carte con cui comincia QUORMA: 104 creature, 26 magie e 20 equipaggiamenti, "
+                            "divise tra Resistenza Umana e Potenze Artificiali.",
 }
 
 
@@ -81,6 +81,6 @@ out = {}
 for cid in wanted:
     out[f"card.{cid}.name"] = notes[cid][1]
     out[f"card.{cid}.flavour"] = notes[cid][2]
-out.update(EXPANSION_TEXTS)
+out.update(SET_TEXTS)
 (ROOT / "data/labels/cards.it.json").write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 print(f"{len(wanted)} cards -> data/labels/cards.it.json")

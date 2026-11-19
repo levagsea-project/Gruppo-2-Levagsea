@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardRepository;
+import quorma.backend.catalogue.CardTextService;
 import quorma.backend.catalogue.Faction;
 import quorma.backend.catalogue.PoolSnapshot;
 import quorma.backend.catalogue.PoolSnapshotRepository;
@@ -38,10 +39,11 @@ public class DeckService {
     private final PoolSnapshotRepository snapshots;
     private final DeckValidator validator;
     private final DeckEligibility eligibility;
+    private final CardTextService cardTexts;
 
     public DeckService(DeckRepository decks, DeckCardRepository deckCards, CardInstanceRepository instances,
                        CardRepository cards, CardDefinitionRepository definitions, PoolSnapshotRepository snapshots,
-                       DeckValidator validator, DeckEligibility eligibility) {
+                       DeckValidator validator, DeckEligibility eligibility, CardTextService cardTexts) {
         this.decks = decks;
         this.deckCards = deckCards;
         this.instances = instances;
@@ -50,6 +52,7 @@ public class DeckService {
         this.snapshots = snapshots;
         this.validator = validator;
         this.eligibility = eligibility;
+        this.cardTexts = cardTexts;
     }
 
     @Transactional(readOnly = true)
@@ -243,6 +246,9 @@ public class DeckService {
                     .forEach(d -> defMap.put(d.getCardId(), d));
         }
 
+        // names: card text, outside the snapshot (Italian until the card API takes a language)
+        Map<UUID, String> names = cardTexts.names(cardIds, CardTextService.FALLBACK_LOCALE);
+
         List<DeckCardResponse> result = new ArrayList<>();
         for (UUID id : unique) {
             CardInstance inst = instMap.get(id);
@@ -265,7 +271,7 @@ public class DeckService {
                 continue;
             }
             result.add(new DeckCardResponse(inst.getId(), card.getId(), card.getCardCode(), card.getKind().name(),
-                    def.getName(), card.getSubfaction() == null ? null : card.getSubfaction().name(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
+                    names.get(card.getId()), card.getSubfaction() == null ? null : card.getSubfaction().name(), card.getSuit(), card.getRank(), def.getAtk(), def.getDef(),
                     def.getAbilities(), card.getDeckSlot()));
         }
         return result;

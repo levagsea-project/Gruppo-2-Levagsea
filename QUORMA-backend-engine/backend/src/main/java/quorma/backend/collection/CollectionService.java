@@ -14,6 +14,7 @@ import quorma.backend.catalogue.Card;
 import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardRepository;
+import quorma.backend.catalogue.CardTextService;
 import quorma.backend.catalogue.Faction;
 import quorma.backend.catalogue.PoolSnapshotRepository;
 
@@ -25,13 +26,16 @@ public class CollectionService {
     private final CardRepository cards;
     private final CardDefinitionRepository definitions;
     private final PoolSnapshotRepository snapshots;
+    private final CardTextService cardTexts;
 
     public CollectionService(CardInstanceRepository instances, CardRepository cards,
-                             CardDefinitionRepository definitions, PoolSnapshotRepository snapshots) {
+                             CardDefinitionRepository definitions, PoolSnapshotRepository snapshots,
+                             CardTextService cardTexts) {
         this.instances = instances;
         this.cards = cards;
         this.definitions = definitions;
         this.snapshots = snapshots;
+        this.cardTexts = cardTexts;
     }
 
     /** Every instance owned by the user, newest first, with card data from the latest snapshot of each faction. */
@@ -45,7 +49,7 @@ public class CollectionService {
      * Turns instances into views. Loads their cards in one query, then the definitions of those cards in the latest
      * snapshot of each faction in one query per faction (no query per instance). Also used by
      * {@code PackService} for the cards of a new pack. A card missing from the latest snapshot (possible when a
-     * newer pool drops it) still appears, with null name, stats and abilities.
+     * newer pool drops it) still appears, with its name but null stats and abilities.
      */
     @Transactional(readOnly = true)
     public List<CollectionCardResponse> toViews(List<CardInstance> owned) {
@@ -83,6 +87,9 @@ public class CollectionService {
                     }
                 }));
 
+        // Names are card text, outside the snapshot: a card has one even when its faction's active snapshot lacks it.
+        Map<UUID, String> names = cardTexts.names(cardIds, CardTextService.FALLBACK_LOCALE);
+
         List<CollectionCardResponse> views = new ArrayList<>(owned.size());
         for (CardInstance instance : owned) {
             Card card = cardById.get(instance.getCardId());
@@ -91,20 +98,20 @@ public class CollectionService {
                 throw new IllegalStateException("card " + instance.getCardId() + " of instance " + instance.getId()
                         + " not found");
             }
-            views.add(toView(instance, card, definitionByCardId.get(card.getId())));
+            views.add(toView(instance, card, names.get(card.getId()), definitionByCardId.get(card.getId())));
         }
         return new Resolved(List.copyOf(snapshotIds), views);
     }
 
-    /** {@code definition} is null when the card is not in the latest snapshot of its faction. */
-    private static CollectionCardResponse toView(CardInstance instance, Card card, CardDefinition definition) {
+    /** {@code definition} is null when the card is not in the latest snapshot of its faction; {@code name} is card text and always present. */
+    private static CollectionCardResponse toView(CardInstance instance, Card card, String name, CardDefinition definition) {
         return new CollectionCardResponse(
                 instance.getId(),
                 card.getId(),
                 card.getCardCode(),
                 card.getFaction(),
                 card.getKind().name(),
-                definition == null ? null : definition.getName(),
+                name,
                 card.getSubfaction() == null ? null : card.getSubfaction().name(),
                 card.getSuit(),
                 card.getRank(),

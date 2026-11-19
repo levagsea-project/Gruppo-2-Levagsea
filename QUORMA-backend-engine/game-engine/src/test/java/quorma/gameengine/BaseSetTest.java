@@ -207,7 +207,7 @@ class BaseSetTest {
         ArrayNode cards = player.putArray("deck");
         for (JsonNode card : deck) {
             ObjectNode engineCard = (ObjectNode) card.deepCopy();
-            engineCard.remove("expansions"); // catalogue data, not known to the engine schema
+            engineCard.remove("sets"); // catalogue data, not known to the engine schema
             cards.add(engineCard);
         }
     }

@@ -299,6 +299,6 @@
   "card.BASE-RES-MAG-13.flavour": "«Gli abbiamo dato un nome per dieci notti. All'undicesima ce lo siamo ripreso. Non so che cosa sia rimasto davanti a noi. Chi ha parlato per primo non parla più.» — Taccuino di veglia",
   "card.BASE-RES-EQU-10.name": "Cucitura di fortuna",
   "card.BASE-RES-EQU-10.flavour": "«Ho cucito col filo della coperta di mio padre. Tiene. Ma la coperta non è più una coperta, e nel baule niente è più dove l'avevo messo.» — Taccuino di rammendo",
-  "expansion.BASE.name": "Set base",
-  "expansion.BASE.description": "Le 150 carte con cui comincia QUORMA: 104 creature, 26 magie e 20 equipaggiamenti, divise tra Resistenza Umana e Potenze Artificiali."
+  "set.BASE.name": "Set base",
+  "set.BASE.description": "Le 150 carte con cui comincia QUORMA: 104 creature, 26 magie e 20 equipaggiamenti, divise tra Resistenza Umana e Potenze Artificiali."
 }

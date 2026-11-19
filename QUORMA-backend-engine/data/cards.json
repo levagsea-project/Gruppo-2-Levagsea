@@ -3,7 +3,7 @@
   "cards": [
     {
       "id": "BASE-RES-A-FRA-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -20,7 +20,7 @@
     },
     {
       "id": "BASE-RES-9-VES-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -46,7 +46,7 @@
     },
     {
       "id": "BASE-AI-6-SPI-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -67,7 +67,7 @@
     },
     {
       "id": "BASE-AI-6-VES-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -101,7 +101,7 @@
     },
     {
       "id": "BASE-RES-4-FRA-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -121,7 +121,7 @@
     },
     {
       "id": "BASE-RES-2-VIN-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -141,7 +141,7 @@
     },
     {
       "id": "BASE-RES-7-SPI-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -167,7 +167,7 @@
     },
     {
       "id": "BASE-AI-8-VES-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -187,7 +187,7 @@
     },
     {
       "id": "BASE-AI-7-VIN-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -207,7 +207,7 @@
     },
     {
       "id": "BASE-AI-9-FRA-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -230,7 +230,7 @@
     },
     {
       "id": "BASE-AI-4-FRA-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -247,7 +247,7 @@
     },
     {
       "id": "BASE-RES-5-SPI-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -273,7 +273,7 @@
     },
     {
       "id": "BASE-AI-5-FRA-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -328,7 +328,7 @@
     },
     {
       "id": "BASE-RES-3-FRA-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -372,7 +372,7 @@
     },
     {
       "id": "BASE-RES-J-VIN-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -392,7 +392,7 @@
     },
     {
       "id": "BASE-RES-4-VIN-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -409,7 +409,7 @@
     },
     {
       "id": "BASE-RES-3-VIN-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -430,7 +430,7 @@
     },
     {
       "id": "BASE-RES-4-SPI-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -483,7 +483,7 @@
     },
     {
       "id": "BASE-AI-J-SPI-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -515,7 +515,7 @@
     },
     {
       "id": "BASE-AI-9-VES-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -535,7 +535,7 @@
     },
     {
       "id": "BASE-AI-7-SPI-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -552,7 +552,7 @@
     },
     {
       "id": "BASE-AI-2-VIN-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -580,7 +580,7 @@
     },
     {
       "id": "BASE-AI-4-SPI-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -600,7 +600,7 @@
     },
     {
       "id": "BASE-AI-10-VIN-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -626,7 +626,7 @@
     },
     {
       "id": "BASE-RES-J-SPI-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -649,7 +649,7 @@
     },
     {
       "id": "BASE-RES-6-SPI-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -675,7 +675,7 @@
     },
     {
       "id": "BASE-RES-2-FRA-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -696,7 +696,7 @@
     },
     {
       "id": "BASE-AI-J-VES-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -716,7 +716,7 @@
     },
     {
       "id": "BASE-RES-5-FRA-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -744,7 +744,7 @@
     },
     {
       "id": "BASE-RES-5-VIN-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -770,7 +770,7 @@
     },
     {
       "id": "BASE-RES-6-FRA-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -790,7 +790,7 @@
     },
     {
       "id": "BASE-RES-5-VES-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -817,7 +817,7 @@
     },
     {
       "id": "BASE-AI-6-FRA-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -844,7 +844,7 @@
     },
     {
       "id": "BASE-AI-2-SPI-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -888,7 +888,7 @@
     },
     {
       "id": "BASE-AI-4-VIN-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -905,7 +905,7 @@
     },
     {
       "id": "BASE-AI-3-VES-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -931,7 +931,7 @@
     },
     {
       "id": "BASE-AI-9-SPI-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -957,7 +957,7 @@
     },
     {
       "id": "BASE-AI-7-VES-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -981,7 +981,7 @@
     },
     {
       "id": "BASE-AI-10-FRA-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1004,7 +1004,7 @@
     },
     {
       "id": "BASE-RES-7-VES-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1030,7 +1030,7 @@
     },
     {
       "id": "BASE-RES-4-VES-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1053,7 +1053,7 @@
     },
     {
       "id": "BASE-RES-3-SPI-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1070,7 +1070,7 @@
     },
     {
       "id": "BASE-AI-2-FRA-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1091,7 +1091,7 @@
     },
     {
       "id": "BASE-RES-2-SPI-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1108,7 +1108,7 @@
     },
     {
       "id": "BASE-AI-K-VES-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1128,7 +1128,7 @@
     },
     {
       "id": "BASE-AI-3-SPI-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1162,7 +1162,7 @@
     },
     {
       "id": "BASE-RES-3-VES-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1193,7 +1193,7 @@
     },
     {
       "id": "BASE-RES-6-VIN-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1213,7 +1213,7 @@
     },
     {
       "id": "BASE-RES-6-VES-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1239,7 +1239,7 @@
     },
     {
       "id": "BASE-AI-Q-VIN-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1267,7 +1267,7 @@
     },
     {
       "id": "BASE-RES-8-VIN-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1290,7 +1290,7 @@
     },
     {
       "id": "BASE-RES-9-VIN-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1317,7 +1317,7 @@
     },
     {
       "id": "BASE-AI-3-VIN-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1338,7 +1338,7 @@
     },
     {
       "id": "BASE-AI-4-VES-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1358,7 +1358,7 @@
     },
     {
       "id": "BASE-AI-8-SPI-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1385,7 +1385,7 @@
     },
     {
       "id": "BASE-AI-7-FRA-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1412,7 +1412,7 @@
     },
     {
       "id": "BASE-AI-5-SPI-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1432,7 +1432,7 @@
     },
     {
       "id": "BASE-RES-10-SPI-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1452,7 +1452,7 @@
     },
     {
       "id": "BASE-RES-9-FRA-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1487,7 +1487,7 @@
     },
     {
       "id": "BASE-RES-8-VES-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1507,7 +1507,7 @@
     },
     {
       "id": "BASE-RES-8-FRA-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1527,7 +1527,7 @@
     },
     {
       "id": "BASE-RES-9-SPI-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1551,7 +1551,7 @@
     },
     {
       "id": "BASE-RES-7-VIN-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1577,7 +1577,7 @@
     },
     {
       "id": "BASE-RES-7-FRA-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1598,7 +1598,7 @@
     },
     {
       "id": "BASE-RES-10-VES-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1625,7 +1625,7 @@
     },
     {
       "id": "BASE-RES-10-FRA-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1653,7 +1653,7 @@
     },
     {
       "id": "BASE-RES-8-SPI-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1700,7 +1700,7 @@
     },
     {
       "id": "BASE-RES-Q-SPI-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1742,7 +1742,7 @@
     },
     {
       "id": "BASE-AI-A-FRA-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1767,7 +1767,7 @@
     },
     {
       "id": "BASE-RES-Q-VES-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1784,7 +1784,7 @@
     },
     {
       "id": "BASE-RES-J-VES-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1836,7 +1836,7 @@
     },
     {
       "id": "BASE-RES-Q-VIN-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1881,7 +1881,7 @@
     },
     {
       "id": "BASE-AI-6-VIN-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1908,7 +1908,7 @@
     },
     {
       "id": "BASE-AI-K-SPI-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1943,7 +1943,7 @@
     },
     {
       "id": "BASE-AI-Q-VES-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -1970,7 +1970,7 @@
     },
     {
       "id": "BASE-AI-A-VIN-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2005,7 +2005,7 @@
     },
     {
       "id": "BASE-AI-5-VIN-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2031,7 +2031,7 @@
     },
     {
       "id": "BASE-AI-8-VIN-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2054,7 +2054,7 @@
     },
     {
       "id": "BASE-AI-9-VIN-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2080,7 +2080,7 @@
     },
     {
       "id": "BASE-AI-J-VIN-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2103,7 +2103,7 @@
     },
     {
       "id": "BASE-AI-K-VIN-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2120,7 +2120,7 @@
     },
     {
       "id": "BASE-AI-3-FRA-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2143,7 +2143,7 @@
     },
     {
       "id": "BASE-AI-8-FRA-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2170,7 +2170,7 @@
     },
     {
       "id": "BASE-AI-J-FRA-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2194,7 +2194,7 @@
     },
     {
       "id": "BASE-AI-Q-FRA-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2221,7 +2221,7 @@
     },
     {
       "id": "BASE-AI-K-FRA-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2258,7 +2258,7 @@
     },
     {
       "id": "BASE-AI-A-SPI-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2282,7 +2282,7 @@
     },
     {
       "id": "BASE-AI-10-SPI-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2305,7 +2305,7 @@
     },
     {
       "id": "BASE-AI-Q-SPI-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2355,7 +2355,7 @@
     },
     {
       "id": "BASE-AI-A-VES-MER",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2395,7 +2395,7 @@
     },
     {
       "id": "BASE-AI-2-VES-EFF",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2412,7 +2412,7 @@
     },
     {
       "id": "BASE-AI-5-VES-SEK",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2433,7 +2433,7 @@
     },
     {
       "id": "BASE-AI-10-VES-YLM",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2459,7 +2459,7 @@
     },
     {
       "id": "BASE-RES-A-VIN-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2483,7 +2483,7 @@
     },
     {
       "id": "BASE-RES-10-VIN-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2509,7 +2509,7 @@
     },
     {
       "id": "BASE-RES-K-VIN-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2536,7 +2536,7 @@
     },
     {
       "id": "BASE-RES-J-FRA-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2560,7 +2560,7 @@
     },
     {
       "id": "BASE-RES-Q-FRA-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2595,7 +2595,7 @@
     },
     {
       "id": "BASE-RES-K-FRA-SEG",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2618,7 +2618,7 @@
     },
     {
       "id": "BASE-RES-A-SPI-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2644,7 +2644,7 @@
     },
     {
       "id": "BASE-RES-K-SPI-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2670,7 +2670,7 @@
     },
     {
       "id": "BASE-RES-A-VES-POR",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2696,7 +2696,7 @@
     },
     {
       "id": "BASE-RES-2-VES-SPE",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2713,7 +2713,7 @@
     },
     {
       "id": "BASE-RES-K-VES-ADA",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "CREATURE",
@@ -2739,7 +2739,7 @@
     },
     {
       "id": "BASE-RES-EQU-05",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -2770,7 +2770,7 @@
     },
     {
       "id": "BASE-RES-EQU-06",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -2805,7 +2805,7 @@
     },
     {
       "id": "BASE-RES-EQU-01",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -2856,7 +2856,7 @@
     },
     {
       "id": "BASE-RES-MAG-03",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -2888,7 +2888,7 @@
     },
     {
       "id": "BASE-RES-MAG-02",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -2917,7 +2917,7 @@
     },
     {
       "id": "BASE-RES-EQU-02",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -2952,7 +2952,7 @@
     },
     {
       "id": "BASE-RES-MAG-06",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3003,7 +3003,7 @@
     },
     {
       "id": "BASE-AI-EQU-03",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3037,7 +3037,7 @@
     },
     {
       "id": "BASE-RES-EQU-04",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3074,7 +3074,7 @@
     },
     {
       "id": "BASE-AI-EQU-01",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3105,7 +3105,7 @@
     },
     {
       "id": "BASE-RES-MAG-07",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3137,7 +3137,7 @@
     },
     {
       "id": "BASE-RES-MAG-05",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3184,7 +3184,7 @@
     },
     {
       "id": "BASE-AI-MAG-04",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3228,7 +3228,7 @@
     },
     {
       "id": "BASE-RES-EQU-03",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3259,7 +3259,7 @@
     },
     {
       "id": "BASE-AI-MAG-03",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3297,7 +3297,7 @@
     },
     {
       "id": "BASE-AI-MAG-01",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3331,7 +3331,7 @@
     },
     {
       "id": "BASE-AI-MAG-02",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3362,7 +3362,7 @@
     },
     {
       "id": "BASE-RES-MAG-04",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3401,7 +3401,7 @@
     },
     {
       "id": "BASE-AI-EQU-02",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3437,7 +3437,7 @@
     },
     {
       "id": "BASE-RES-MAG-01",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3476,7 +3476,7 @@
     },
     {
       "id": "BASE-RES-MAG-08",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3511,7 +3511,7 @@
     },
     {
       "id": "BASE-RES-MAG-09",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3551,7 +3551,7 @@
     },
     {
       "id": "BASE-RES-MAG-10",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3601,7 +3601,7 @@
     },
     {
       "id": "BASE-RES-MAG-11",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3637,7 +3637,7 @@
     },
     {
       "id": "BASE-RES-MAG-12",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3669,7 +3669,7 @@
     },
     {
       "id": "BASE-RES-EQU-07",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3707,7 +3707,7 @@
     },
     {
       "id": "BASE-RES-EQU-08",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3745,7 +3745,7 @@
     },
     {
       "id": "BASE-RES-EQU-09",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3783,7 +3783,7 @@
     },
     {
       "id": "BASE-AI-EQU-04",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -3829,7 +3829,7 @@
     },
     {
       "id": "BASE-AI-MAG-05",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3863,7 +3863,7 @@
     },
     {
       "id": "BASE-AI-MAG-06",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3898,7 +3898,7 @@
     },
     {
       "id": "BASE-AI-MAG-07",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3951,7 +3951,7 @@
     },
     {
       "id": "BASE-AI-MAG-08",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -3988,7 +3988,7 @@
     },
     {
       "id": "BASE-AI-MAG-09",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -4023,7 +4023,7 @@
     },
     {
       "id": "BASE-AI-MAG-10",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -4058,7 +4058,7 @@
     },
     {
       "id": "BASE-AI-MAG-11",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -4114,7 +4114,7 @@
     },
     {
       "id": "BASE-AI-MAG-12",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -4171,7 +4171,7 @@
     },
     {
       "id": "BASE-AI-MAG-13",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -4206,7 +4206,7 @@
     },
     {
       "id": "BASE-AI-EQU-05",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -4244,7 +4244,7 @@
     },
     {
       "id": "BASE-AI-EQU-06",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -4275,7 +4275,7 @@
     },
     {
       "id": "BASE-AI-EQU-07",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -4312,7 +4312,7 @@
     },
     {
       "id": "BASE-AI-EQU-08",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -4348,7 +4348,7 @@
     },
     {
       "id": "BASE-AI-EQU-09",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -4386,7 +4386,7 @@
     },
     {
       "id": "BASE-AI-EQU-10",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",
@@ -4417,7 +4417,7 @@
     },
     {
       "id": "BASE-RES-MAG-13",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "SPELL",
@@ -4452,7 +4452,7 @@
     },
     {
       "id": "BASE-RES-EQU-10",
-      "expansions": [
+      "sets": [
         "BASE"
       ],
       "kind": "EQUIPMENT",

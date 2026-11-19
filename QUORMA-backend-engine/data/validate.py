@@ -418,7 +418,7 @@ for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targ
             if i[1:].isdigit() and i.startswith(prefix)]
     print(f"INFO  next free {prefix} id: {prefix}{max(nums) + 1 if nums else 0} (live and parked counted)")
 
-# Cards (cards.json): the base set as the engine reads it, plus "expansions" (names are card text, not here). Every ability is checked
+# Cards (cards.json): the base set as the engine reads it, plus "sets" (names are card text, not here). Every ability is checked
 # like a keyword or evolution of the same shape; ids, params, slots and rank eligibility are checked here.
 if (root / "cards.json").exists():
     cards_doc = load("cards.json")
@@ -435,17 +435,17 @@ if (root / "cards.json").exists():
         if cid in seen_ids:
             err(where, "duplicate id")
         seen_ids.add(cid)
-        exps = card.get("expansions")
-        if not isinstance(exps, list) or not exps or len(set(exps)) != len(exps) or not all(
-                isinstance(e_, str) and re.fullmatch(r"[A-Z0-9_]+", e_) for e_ in exps):
-            err(where, "expansions must be a non-empty list of distinct codes (A-Z, 0-9, _)")
+        card_sets = card.get("sets")
+        if not isinstance(card_sets, list) or not card_sets or len(set(card_sets)) != len(card_sets) or not all(
+                isinstance(e_, str) and re.fullmatch(r"[A-Z0-9_]+", e_) for e_ in card_sets):
+            err(where, "sets must be a non-empty list of distinct codes (A-Z, 0-9, _)")
         kind = card.get("kind")
         card_kind = {"CREATURE": None, "SPELL": "spell", "EQUIPMENT": "equipment"}.get(kind, "?")
         if card_kind == "?":
             err(where, f"unknown kind '{kind}'")
             continue
         if kind == "CREATURE":
-            extra = set(card) - {"id", "expansions", "kind", "rank", "suit", "subfaction", "atk", "def", "abilities"}
+            extra = set(card) - {"id", "sets", "kind", "rank", "suit", "subfaction", "atk", "def", "abilities"}
             if extra:
                 err(where, f"unknown fields {sorted(extra)}")
             if card.get("rank") not in range(1, 14):
@@ -463,7 +463,7 @@ if (root / "cards.json").exists():
                 err(where, f"id should start with {prefix} for a {faction} subfaction")
             rank_name = rank_code.get(card.get("rank"), str(card.get("rank")))
         else:
-            extra = set(card) - {"id", "expansions", "kind", "faction", "abilities"}
+            extra = set(card) - {"id", "sets", "kind", "faction", "abilities"}
             if extra:
                 err(where, f"unknown fields {sorted(extra)}")
             faction = faction_codes.get(card.get("faction"))
@@ -561,17 +561,17 @@ if labels_dir.is_dir():
                 if f"game.{group}.{slug(n)}" not in base:
                     err(f"labels/{base_name}.json", f"no label 'game.{group}.{slug(n)}' for vocab value '{n}'")
 
-# Card text (labels/cards.<locale>.json, check 13): card names, flavour and expansion texts. Mutable, outside the snapshot hash.
+# Card text (labels/cards.<locale>.json, check 13): card names, flavour and set texts. Mutable, outside the snapshot hash.
 # Italian is the fallback locale, so it must be complete: a name and a flavour for every card of cards.json and a name and
-# a description for every expansion those cards name. Any other locale may be partial, but must not have unknown keys,
+# a description for every set those cards name. Any other locale may be partial, but must not have unknown keys,
 # must keep the same {placeholders}, and its names must be unique. Italian names are unique too (a deck list must tell
 # two cards apart).
 if labels_dir.is_dir() and (root / "cards.json").exists():
     placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
     card_ids = [c_.get("id") for c_ in cards_doc.get("cards", [])]
-    exp_codes = sorted({e_ for c_ in cards_doc.get("cards", []) for e_ in (c_.get("expansions") or []) if isinstance(e_, str)})
+    set_codes = sorted({e_ for c_ in cards_doc.get("cards", []) for e_ in (c_.get("sets") or []) if isinstance(e_, str)})
     allowed = {f"card.{i_}.{f_}" for i_ in card_ids for f_ in ("name", "flavour")}
-    allowed |= {f"expansion.{e_}.{f_}" for e_ in exp_codes for f_ in ("name", "description")}
+    allowed |= {f"set.{e_}.{f_}" for e_ in set_codes for f_ in ("name", "description")}
     card_texts = {}
     for p_ in sorted(labels_dir.glob("cards.*.json")):
         loc = p_.name[len("cards."):-len(".json")]
@@ -587,7 +587,7 @@ if labels_dir.is_dir() and (root / "cards.json").exists():
                 err(where, f"'{k}' must be a non-empty string")
                 continue
             if k not in allowed:
-                err(where, f"unknown key '{k}' (no such card or expansion in cards.json)")
+                err(where, f"unknown key '{k}' (no such card or set in cards.json)")
             if k.endswith(".name"):
                 names.setdefault(v.strip().casefold(), []).append(k)
             if base_ct is not None and loc != "it" and k in base_ct and isinstance(base_ct[k], str)                     and placeholders(base_ct[k]) != placeholders(v):
