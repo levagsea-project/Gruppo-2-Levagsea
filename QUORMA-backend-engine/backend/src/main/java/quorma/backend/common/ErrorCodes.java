@@ -47,6 +47,23 @@ public final class ErrorCodes {
     public static final String DECK_CARD_WRONG_FACTION = "deck.card_wrong_faction";
     public static final String DECK_CARD_NO_DEFINITION = "deck.card_no_definition";
 
+    public static final String CHALLENGE_NOT_FOUND = "challenge.not_found";
+    public static final String CHALLENGE_NOT_PENDING = "challenge.not_pending";
+    public static final String CHALLENGE_EXPIRED = "challenge.expired";
+    public static final String CHALLENGE_SELF = "challenge.self";
+    public static final String CHALLENGE_OPPONENT_NOT_FOUND = "challenge.opponent_not_found";
+    public static final String CHALLENGE_ALREADY_PENDING = "challenge.already_pending";
+    public static final String CHALLENGE_DECKS_INVALID = "challenge.decks_invalid";
+
+    public static final String ROOM_NOT_FOUND = "room.not_found";
+    public static final String ROOM_NOT_OPEN = "room.not_open";
+    public static final String ROOM_EXPIRED = "room.expired";
+    public static final String ROOM_OWN_ROOM = "room.own_room";
+    public static final String ROOM_ALREADY_OPEN = "room.already_open";
+
+    public static final String MATCHMAKING_NO_OPPONENT = "matchmaking.no_opponent";
+    public static final String MATCH_NOT_FOUND = "match.not_found";
+
     public static final String ENGINE_INPUT_INVALID = "engine.input_invalid";
     public static final String ENGINE_UNAVAILABLE = "engine.unavailable";
 
