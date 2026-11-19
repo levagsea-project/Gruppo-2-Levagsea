@@ -15,6 +15,31 @@ export type Deck = {
   outdated: boolean // non più valido per il pool di carte attuale: non si può usare finché non lo modifichi
 }
 
+// ---------- Carte ----------
+export type CardKind = 'CREATURE' | 'SPELL' | 'EQUIPMENT'
+export type SuitId = 'VINCOLO' | 'FRATTURA' | 'SPIRA' | 'VESTIGIO'
+
+// Una carta del gioco (dati della carta, non della singola copia posseduta).
+export type GameCard = {
+  cardId: string
+  code: string
+  faction: FactionId
+  kind: CardKind
+  name: string
+  subfaction: string | null // es. SEKTAC (solo creature)
+  suit: SuitId | null // solo creature
+  rank: number | null // 1 = Asso … 11 Jack, 12 Queen, 13 King (solo creature)
+  atk: number | null
+  def: number | null
+  slot: string // posto nel mazzo: una creatura per seme e rango, una copia per magia o equipaggiamento
+}
+
+// Una copia posseduta di una carta (GET /collection): nel mazzo si mette la copia, non la carta.
+export type OwnedCard = GameCard & { instanceId: string }
+
+// Un mazzo con le sue carte (GET /decks/{id}).
+export type DeckDetail = Deck & { snapshotId: string; cardList: OwnedCard[] }
+
 // Conteggi del mazzo scelto, calcolati dalle sue carte (GET /decks/{id}).
 export type DeckStats = {
   creatures: number

@@ -11,7 +11,7 @@ const TABS: Tab[] = [
   { label: 'Home', icon: 'home', page: 'home', section: ['home'] },
   { label: 'Gioca', icon: 'gioca', page: 'gioca', section: ['gioca'] },
   { label: 'Collezione', icon: 'collezione', section: [] },
-  { label: 'Mazzi', icon: 'mazzi', page: 'mazzi', section: ['mazzi', 'nuovo-mazzo'] },
+  { label: 'Mazzi', icon: 'mazzi', page: 'mazzi', section: ['mazzi', 'nuovo-mazzo', 'editor-mazzo', 'mazzo-salvato'] },
   { label: 'Altro', icon: 'altro', page: 'altro', section: ['altro', 'regole'] },
 ]
 

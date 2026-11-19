@@ -9,8 +9,8 @@ type Props = {
 
 // Lista di tutte le voci del menu.
 export default function NavMenu({ current, onNavigate }: Props) {
-  // "Nuovo mazzo" fa parte della sezione Mazzi, quindi Mazzi resta acceso.
-  const section = current === 'nuovo-mazzo' ? 'mazzi' : current
+  // Nuovo mazzo, editor e mazzo salvato fanno parte della sezione Mazzi, quindi Mazzi resta acceso.
+  const section = current === 'nuovo-mazzo' || current === 'editor-mazzo' || current === 'mazzo-salvato' ? 'mazzi' : current
 
   return (
     <nav aria-label="Navigazione principale">

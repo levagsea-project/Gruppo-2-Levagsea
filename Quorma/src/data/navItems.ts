@@ -3,7 +3,7 @@ import type { NavIconName } from '../components/layout/NavIcon'
 
 // Tutte le pagine che esistono nell'app. Aggiungi qui il nome di una nuova pagina.
 export type Page =
-  | 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'regole'
+  | 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'editor-mazzo' | 'mazzo-salvato' | 'regole'
   | 'chi-siamo' | 'faq' | 'glossario' | 'contatti' | 'privacy' | 'cookie' | 'termini' // pagine "Informazioni"
   | 'altro' // 'altro' esiste solo su telefono
 

@@ -92,3 +92,7 @@
 @media (min-width: 1600px) {
   .decks-body { grid-template-columns: minmax(0, 1fr) 360px; }
 }
+
+/* "Usa come mazzo di difesa" sotto lo stato del mazzo */
+.deck-difesa { align-self: flex-start; font-size: 13px; text-align: left; }
+.deck-difesa:disabled { opacity: .5; cursor: default; }

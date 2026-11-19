@@ -1,10 +1,11 @@
-// Mazzi dal backend: GET /decks, GET /decks/{id}, DELETE /decks/{id}, GET /decks/play-status.
-// Qui le risposte del backend diventano i tipi del frontend (types/deck.ts).
-import type { Deck, DeckStats, FactionId, PlayStatus } from '../types/deck'
-import { translate } from './api'
+// Mazzi dal backend: GET /decks, GET /decks/{id}, POST /decks, PUT /decks/{id}, DELETE /decks/{id},
+// POST /decks/{id}/defense, GET /decks/play-status. Qui le risposte diventano i tipi del frontend (types/deck.ts).
+import type { Deck, DeckDetail, DeckStats, FactionId, OwnedCard, PlayStatus } from '../types/deck'
+import { ApiError, translate, type FieldError } from './api'
 import { authedRequest } from './auth'
+import { DECK_SIZE, SUITS, SUIT_NAMES, rankLabel, toBackendFaction, toFaction, toOwnedCard, type CardResponse } from './cards'
 
-export const DECK_SIZE = 32 // il backend accetta solo mazzi di esattamente 32 carte
+export { DECK_SIZE }
 
 // ---------- Forma delle risposte del backend ----------
 type DeckSummary = {
@@ -18,13 +19,7 @@ type DeckSummary = {
   updatedAt: string
 }
 
-type DeckCardResponse = {
-  cardInstanceId: string
-  kind: 'CREATURE' | 'SPELL' | 'EQUIPMENT'
-  suit: string | null // VINCOLO, FRATTURA, SPIRA, VESTIGIO (solo per le creature)
-}
-
-type DeckResponse = Omit<DeckSummary, 'cardCount'> & { cards: DeckCardResponse[] }
+type DeckResponse = Omit<DeckSummary, 'cardCount'> & { cards: CardResponse[] }
 
 type PlayStatusResponse = {
   canPlay: boolean
@@ -34,15 +29,6 @@ type PlayStatusResponse = {
 }
 
 // ---------- Conversioni ----------
-const FACTIONS: Record<string, FactionId> = {
-  RESISTENZA_UMANA: 'umani',
-  POTENZE_ARTIFICIALI: 'artificiali',
-}
-const toFaction = (f: string): FactionId => FACTIONS[f] ?? 'umani'
-
-// I quattro semi nell'ordine del regolamento: compaiono anche se il mazzo non ne ha.
-const SUITS = ['VINCOLO', 'FRATTURA', 'SPIRA', 'VESTIGIO']
-
 function toDeck(d: DeckSummary): Deck {
   return {
     id: d.id,
@@ -55,24 +41,90 @@ function toDeck(d: DeckSummary): Deck {
   }
 }
 
-function toStats(d: DeckResponse): DeckStats {
-  const creatures = d.cards.filter((c) => c.kind === 'CREATURE')
+function toDetail(d: DeckResponse): DeckDetail {
+  const faction = toFaction(d.faction)
+  return {
+    id: d.id,
+    name: d.name,
+    faction,
+    cards: d.cards.length,
+    maxCards: DECK_SIZE,
+    defense: d.defense,
+    outdated: d.outdated,
+    snapshotId: d.snapshotId,
+    cardList: d.cards.map((c) => toOwnedCard(c, faction)),
+  }
+}
+
+/** Conteggi di un elenco di carte: creature, magie/equipaggiamenti e creature per seme. */
+export function statsOf(cards: Pick<OwnedCard, 'kind' | 'suit'>[]): DeckStats {
+  const creatures = cards.filter((c) => c.kind === 'CREATURE')
   return {
     creatures: creatures.length,
-    spells: d.cards.length - creatures.length,
-    suits: SUITS.map((s) => ({
-      name: translate(`game.suit.${s.toLowerCase()}`),
-      value: creatures.filter((c) => c.suit === s).length,
-    })),
+    spells: cards.length - creatures.length,
+    suits: SUITS.map((s) => ({ name: SUIT_NAMES[s], value: creatures.filter((c) => c.suit === s).length })),
   }
+}
+
+// ---------- Errori di un mazzo non valido (400 deck.invalid con l'elenco delle regole violate) ----------
+function errorText(e: FieldError): string {
+  const params = { ...e.params }
+  // "C:VINCOLO/3" → "3 di Vincolo"
+  if (e.code === 'deck.duplicate_slot' && typeof params.slot === 'string') {
+    const m = /^C:(\w+)\/(\d+)$/.exec(params.slot)
+    if (m) params.slot = `${rankLabel(Number(m[2]))} di ${SUIT_NAMES[m[1] as keyof typeof SUIT_NAMES] ?? m[1]}`
+  }
+  return translate(e.code, params)
+}
+
+/** Le frasi da mostrare per un errore di salvataggio: una per regola violata, oppure il messaggio generale. */
+export function deckErrorMessages(err: unknown): string[] {
+  if (!(err instanceof ApiError)) return [translate(null)]
+  if (err.errors.length) return [...new Set(err.errors.map(errorText))]
+  return [err.message]
 }
 
 // ---------- Chiamate ----------
 export const listDecks = async () => (await authedRequest<DeckSummary[]>('GET', '/decks')).map(toDeck)
 
-export const getDeckStats = async (id: string) => toStats(await authedRequest<DeckResponse>('GET', `/decks/${id}`))
+export const getDeck = async (id: string) => toDetail(await authedRequest<DeckResponse>('GET', `/decks/${id}`))
+
+export const getDeckStats = async (id: string) => statsOf((await getDeck(id)).cardList)
 
 export const deleteDeck = (id: string) => authedRequest<null>('DELETE', `/decks/${id}`)
+
+export const setDefenseDeck = async (id: string) => toDetail(await authedRequest<DeckResponse>('POST', `/decks/${id}/defense`))
+
+type SaveInput = {
+  id?: string // assente = mazzo nuovo
+  name: string
+  faction: FactionId
+  snapshotIds: string[] // pool candidati, il primo è quello più probabile (vedi Collection in cards.ts)
+  instanceIds: string[]
+}
+
+const isSnapshotError = (err: unknown) => err instanceof ApiError && err.errors.some((e) => e.code === 'deck.snapshot_invalid')
+
+/**
+ * Crea (POST) o aggiorna (PUT) un mazzo. Il backend vuole l'id del pool di carte della fazione: se rifiuta il
+ * primo candidato perché è di un'altra fazione (deck.snapshot_invalid), riprova con il successivo.
+ */
+export async function saveDeck({ id, name, faction, snapshotIds, instanceIds }: SaveInput): Promise<DeckDetail> {
+  let lastError: unknown = new ApiError(400, 'deck.snapshot_invalid', translate('deck.snapshot_invalid'))
+  for (const snapshotId of snapshotIds) {
+    try {
+      const body = { name: name.trim(), snapshotId, cardInstanceIds: instanceIds }
+      const r = id
+        ? await authedRequest<DeckResponse>('PUT', `/decks/${id}`, body)
+        : await authedRequest<DeckResponse>('POST', '/decks', { ...body, faction: toBackendFaction(faction) })
+      return toDetail(r)
+    } catch (err) {
+      lastError = err
+      if (!isSnapshotError(err)) break
+    }
+  }
+  throw lastError
+}
 
 export async function getPlayStatus(): Promise<PlayStatus> {
   const s = await authedRequest<PlayStatusResponse>('GET', '/decks/play-status')

@@ -33,12 +33,14 @@ export class ApiError extends Error {
   status: number
   code: string | null
   fieldErrors: Record<string, FieldError>
+  errors: FieldError[] // regole violate, una per voce (es. mazzo non valido: "deck.size", "deck.creature_count"...)
 
-  constructor(status: number, code: string | null, message: string, fieldErrors: Record<string, FieldError> = {}) {
+  constructor(status: number, code: string | null, message: string, fieldErrors: Record<string, FieldError> = {}, errors: FieldError[] = []) {
     super(message)
     this.status = status
     this.code = code
     this.fieldErrors = fieldErrors
+    this.errors = errors
   }
 }
 
@@ -67,9 +69,10 @@ export async function request<T>(method: string, path: string, { body, token }: 
 
   const code: string | null = typeof data?.code === 'string' ? data.code : null
   const fieldErrors: Record<string, FieldError> = data?.fieldErrors ?? {}
+  const errors: FieldError[] = Array.isArray(data?.errors) ? data.errors : []
   let message: string
   if (code && LABELS[code]) message = translate(code)
   else if (res.status >= 500 || !data) message = UNREACHABLE
   else message = GENERIC
-  throw new ApiError(res.status, code, message, fieldErrors)
+  throw new ApiError(res.status, code, message, fieldErrors, errors)
 }

@@ -9,6 +9,10 @@ import MorePage from './components/mobile/MorePage'
 import HomePage from './components/home/HomePage'
 import DecksPage from './components/decks/DecksPage'
 import NewDeckPage from './components/newdeck/NewDeckPage'
+import DeckEditorPage from './components/editor/DeckEditorPage'
+import DeckSavedPage from './components/editor/DeckSavedPage'
+import { setDefenseDeck } from './lib/decks'
+import type { DeckDetail, FactionId } from './types/deck'
 import RulesPage from './components/rules/RulesPage'
 import PlayPage from './components/play/PlayPage'
 import AboutPage from './components/info/AboutPage'
@@ -32,6 +36,9 @@ export default function App() {
   // Stanno qui così non si perdono cambiando pagina. Entrambi letti dal backend.
   const { decks, state: decksState, error: decksError, reload: reloadDecks, selected, setSelectedId, deleteDeck } = useDecks()
   const { playStatus, playStatusFailed, reloadPlayStatus } = usePlayStatus()
+  // Mazzo in lavorazione nell'editor (deckId null = nuovo) e mazzo mostrato in "Mazzo salvato".
+  const [editing, setEditing] = useState<{ faction: FactionId; deckId: string | null }>({ faction: 'artificiali', deckId: null })
+  const [saved, setSaved] = useState<{ id: string; deck: DeckDetail | null } | null>(null)
 
   const open = (next: Page) => {
     setPage(next)
@@ -39,6 +46,32 @@ export default function App() {
     // Il backend chiede di rileggere "posso giocare?" quando si apre la home: lo facciamo anche per Gioca.
     if (next === 'home' || next === 'gioca') reloadPlayStatus()
   }
+
+  const openEditor = (faction: FactionId, deckId: string | null) => {
+    setEditing({ faction, deckId })
+    open('editor-mazzo')
+  }
+
+  // Dopo il salvataggio: la lista dei mazzi e "posso giocare?" cambiano, il mazzo salvato diventa quello scelto.
+  const onSaved = (deck: DeckDetail) => {
+    reloadDecks()
+    reloadPlayStatus()
+    setSelectedId(deck.id)
+    setSaved({ id: deck.id, deck })
+    open('mazzo-salvato')
+  }
+
+  const makeDefense = async (id: string) => {
+    await setDefenseDeck(id)
+    reloadDecks()
+    reloadPlayStatus()
+  }
+
+  // Nome proposto per un mazzo nuovo: "Mazzo 03" se ne hai già due (il primo nome libero).
+  const names = new Set(decks.map((d) => d.name.toLowerCase()))
+  let n = decks.length + 1
+  while (names.has(`mazzo ${String(n).padStart(2, '0')}`)) n++
+  const defaultName = `Mazzo ${String(n).padStart(2, '0')}`
 
   // Dopo un'eliminazione cambiano i mazzi obsoleti: si rilegge anche "posso giocare?".
   const removeDeck = async (id: string) => {
@@ -72,13 +105,41 @@ export default function App() {
           onRetry={() => void reloadDecks()}
           selected={selected}
           onSelect={setSelectedId}
+          onEdit={(d) => openEditor(d.faction, d.id)}
           onDelete={removeDeck}
+          onSetDefense={makeDefense}
           onNewDeck={() => open('nuovo-mazzo')}
           onPlay={() => open('gioca')}
         />
       )}
 
-      {page === 'nuovo-mazzo' && <NewDeckPage onCancel={() => open('mazzi')} />}
+      {page === 'nuovo-mazzo' && <NewDeckPage onCancel={() => open('mazzi')} onCreate={(f) => openEditor(f, null)} />}
+
+      {page === 'editor-mazzo' && (
+        <DeckEditorPage
+          key={editing.deckId ?? `nuovo-${editing.faction}`}
+          faction={editing.faction}
+          deckId={editing.deckId}
+          defaultName={defaultName}
+          onCancel={() => open(editing.deckId ? 'mazzi' : 'nuovo-mazzo')}
+          onSaved={onSaved}
+        />
+      )}
+
+      {page === 'mazzo-salvato' && saved && (
+        <DeckSavedPage
+          key={saved.id}
+          deckId={saved.id}
+          saved={saved.deck}
+          onPlay={() => open('gioca')}
+          onEdit={(d) => openEditor(d.faction, d.id)}
+          onBack={() => open('mazzi')}
+          onDefenseChanged={() => {
+            reloadDecks()
+            reloadPlayStatus()
+          }}
+        />
+      )}
 
       {page === 'gioca' && <PlayPage decks={decks} playStatus={playStatus} onNavigate={open} />}
 

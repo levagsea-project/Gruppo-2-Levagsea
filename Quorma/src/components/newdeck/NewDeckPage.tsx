@@ -6,8 +6,8 @@ import PageTitle from '../layout/PageTitle'
 import HexButton from '../ui/HexButton'
 import FactionCard from './FactionCard'
 
-// Pagina "Nuovo mazzo": scegli la fazione. ANNULLA torna indietro.
-export default function NewDeckPage({ onCancel }: { onCancel: () => void }) {
+// Pagina "Nuovo mazzo": scegli la fazione. ANNULLA torna indietro, CREA MAZZO apre l'editor con quella fazione.
+export default function NewDeckPage({ onCancel, onCreate }: { onCancel: () => void; onCreate: (faction: FactionId) => void }) {
   const [chosen, setChosen] = useState<FactionId>('artificiali') // fazione scelta
 
   return (
@@ -33,8 +33,7 @@ export default function NewDeckPage({ onCancel }: { onCancel: () => void }) {
 
       <div className="newdeck-buttons">
         <HexButton onClick={onCancel}>ANNULLA</HexButton>
-        {/* Nessun onClick: per ora CREA MAZZO non fa nulla */}
-        <HexButton variant="light">CREA MAZZO</HexButton>
+        <HexButton variant="light" onClick={() => onCreate(chosen)}>CREA MAZZO</HexButton>
       </div>
     </main>
   )

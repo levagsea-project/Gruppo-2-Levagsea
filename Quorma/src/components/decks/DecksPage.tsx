@@ -12,7 +12,9 @@ type Props = {
   onRetry: () => void
   selected: Deck | null
   onSelect: (id: string) => void
+  onEdit: (deck: Deck) => void
   onDelete: (id: string) => Promise<void>
+  onSetDefense: (id: string) => Promise<void>
   onNewDeck: () => void
   onPlay: () => void
 }
@@ -20,7 +22,7 @@ type Props = {
 // Pagina Mazzi, dal design "Pagina-Mazzi": titolo + griglia a sinistra, dettagli a destra.
 // Larghezze (styles/decks.css): pannello 290px sotto i 1280, 330px fino a 1599, 360px oltre; le colonne di carte
 // si adattano allo spazio. La pagina scorre se i mazzi non ci stanno, il pannello resta fermo.
-export default function DecksPage({ decks, state, error, onRetry, selected, onSelect, onDelete, onNewDeck, onPlay }: Props) {
+export default function DecksPage({ decks, state, error, onRetry, selected, onSelect, onEdit, onDelete, onSetDefense, onNewDeck, onPlay }: Props) {
   const outdated = decks.filter((d) => d.outdated).length
 
   return (
@@ -60,7 +62,7 @@ export default function DecksPage({ decks, state, error, onRetry, selected, onSe
           />
         </section>
 
-        <DeckDetails deck={selected} onPlay={onPlay} onDelete={onDelete} />
+        <DeckDetails deck={selected} onPlay={onPlay} onEdit={onEdit} onDelete={onDelete} onSetDefense={onSetDefense} />
       </div>
     </main>
   )
