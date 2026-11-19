@@ -15,6 +15,17 @@ import quorma.gameengine.data.Value;
  */
 public interface EffectDefinition {
 
+    /**
+     * The parts of an expansion an effect may have rules about.
+     *
+     * @param origin   where the expansion is written
+     * @param cls      the resolution class
+     * @param targetId the target ID
+     * @param mode     the {@code mode} param, {@code ""} if the card has none
+     * @param params   the effect params as written on the card
+     */
+    record Shape(Origin origin, ResClass cls, String targetId, String mode, Map<String, Value> params) {}
+
     /** The vocabulary ID this class implements, such as {@code "E8"}. Never renumbered. */
     String id();
 
@@ -31,11 +42,9 @@ public interface EffectDefinition {
      * Checks beyond what {@link #modes()} says, for the effect's own rules. Returns the problem, empty if none. The
      * default has none.
      *
-     * @param cls    the resolution class of the card's expansion
-     * @param mode   the {@code mode} param, {@code ""} if the card has none
-     * @param params the effect params as written on the card
+     * @param shape the expansion as the card writes it
      */
-    default Optional<String> validate(ResClass cls, String mode, Map<String, Value> params) {
+    default Optional<String> validate(Shape shape) {
         return Optional.empty();
     }
 }

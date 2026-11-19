@@ -115,7 +115,7 @@ public final class AbilityBinder {
                     throw new AbilityException(where + ": " + thing + " has no Evolution (T_EVO is for creatures)");
                 }
                 BoundExpansion bound = bindExpansion(where, id, j, expansion, Map.of(), Map.of(), expansion.conditions());
-                EffectRegistry.check(bound, where);
+                EffectRegistry.check(rules.vocab(), bound, where, spell ? Origin.SPELL : Origin.EQUIPMENT);
                 out.add(bound);
             }
         }
@@ -156,7 +156,7 @@ public final class AbilityBinder {
             } else {
                 bound = bindExpansion(where, abilityId, j, expansion, Map.of(), Map.of(), expansion.conditions());
             }
-            EffectRegistry.check(bound, where);
+            EffectRegistry.check(rules.vocab(), bound, where, Origin.CREATURE);
             out.add(bound);
         }
         return out;
@@ -185,7 +185,7 @@ public final class AbilityBinder {
                 throw new AbilityException(where + ": an Evolution must use T_EVO with a trigger_id");
             }
             BoundExpansion bound = unwrapEvolution(where, evolution.id(), j, expansion, params, given);
-            EffectRegistry.check(bound, where);
+            EffectRegistry.check(rules.vocab(), bound, where, Origin.CREATURE);
             out.add(bound);
         }
         return List.copyOf(out);
@@ -222,7 +222,7 @@ public final class AbilityBinder {
             if (cardConditionsHold(where, expansion, params)) {
                 BoundExpansion bound = bindExpansion(where, keyword.id(), j, expansion, params, given,
                         inPlayConditions(expansion));
-                EffectRegistry.check(bound, where);
+                EffectRegistry.check(rules.vocab(), bound, where, Origin.CREATURE);
                 out.add(bound);
             }
         }
@@ -242,7 +242,7 @@ public final class AbilityBinder {
             ExpansionDef expansion = expansions.get(j);
             if (EffectRegistry.isImplemented(expansion)) {
                 BoundExpansion bound = bindExpansion(where, tier.id(), j, expansion, Map.of(), Map.of(), expansion.conditions());
-                EffectRegistry.check(bound, where);
+                EffectRegistry.check(rules.vocab(), bound, where, Origin.CREATURE);
                 out.add(bound);
             }
         }

@@ -4,6 +4,7 @@ import static quorma.gameengine.effects.ParamRule.ANY;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.StatChange;
@@ -33,6 +34,17 @@ public final class DefEffect implements Effect {
                 "pct_base_def", ParamRule.ints(Map.of("permille", ANY))
                         .optStrings(Map.of("scale_by", Set.of("adjacent_allies"))),
                 "flat", ParamRule.ints(Map.of("amount", ANY)).optStrings(Map.of("scale_by", Set.of("adjacent_allies"))));
+    }
+
+    @Override
+    public Optional<String> validate(Shape shape) {
+        if (shape.cls() == ResClass.C
+                && (shape.origin() != Origin.EQUIPMENT || !shape.targetId().equals(TargetIds.REPLACEMENT))) {
+            return Optional.of("effect E2 is continuous (class C) only on an equipment, aimed at " + TargetIds.REPLACEMENT
+                    + ", got " + shape.origin().name().toLowerCase(java.util.Locale.ROOT) + " aimed at "
+                    + shape.targetId() + " (the engine has no static DEF layer)");
+        }
+        return Optional.empty();
     }
 
     @Override

@@ -355,7 +355,7 @@
         "T",
         "I"
       ],
-      "description": "Aggiunge params.amount alla DEF attuale del bersaglio. Non è una cura: non aumenta la DEF massima.",
+      "description": "Aggiunge params.amount alla DEF attuale del bersaglio. Non è una cura: non aumenta la DEF massima. Come effetto continuo (classe C) vale solo su un equipaggiamento (target S27, vedi IC015): si applica una volta sola quando l'equipaggiamento viene assegnato.",
       "params": {
         "mode": {
           "type": "enum",
@@ -1611,6 +1611,10 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "C",
+        "T"
+      ],
       "requires_context": null
     },
     "S9": {
@@ -1619,6 +1623,10 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "C",
+        "T"
+      ],
       "requires_context": null
     },
     "S10": {
@@ -1626,6 +1634,10 @@
       "description": "Tutte le creature controllate dall'avversario.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "C",
+        "T"
       ],
       "requires_context": null
     },
@@ -1646,6 +1658,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "T"
+      ],
       "requires_context": null
     },
     "S27": {
@@ -1653,6 +1668,10 @@
       "description": "La creatura piazzata come sostituto durante la fase di Rifornimento.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "C",
+        "T"
       ],
       "requires_context": "replacement"
     },
@@ -1662,6 +1681,10 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "C",
+        "T"
+      ],
       "requires_context": null
     },
     "S11": {
@@ -1669,6 +1692,10 @@
       "description": "Tutte le creature in gioco, di entrambi i giocatori. Per l'ordine di risoluzione: corsia crescente, poi Potenze Artificiali prima di Resistenza Umana.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "C",
+        "T"
       ],
       "requires_context": null
     },
@@ -1678,6 +1705,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "C"
+      ],
       "requires_context": null
     },
     "S2": {
@@ -1685,6 +1715,9 @@
       "description": "La creatura che ha causato il trigger.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "T"
       ],
       "requires_context": "triggerer"
     },
@@ -1694,6 +1727,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "C"
+      ],
       "requires_context": null
     },
     "S26": {
@@ -1701,6 +1737,9 @@
       "description": "La creatura che ha inflitto danno.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "T"
       ],
       "requires_context": "damager"
     },
@@ -1735,6 +1774,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "T"
+      ],
       "requires_context": null
     },
     "S35": {
@@ -1742,6 +1784,9 @@
       "description": "Tra le creature selezionate, quella con ATK più alto. Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi rango più alto, poi ordine dei semi.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "T"
       ],
       "requires_context": null
     },
@@ -1751,6 +1796,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "T"
+      ],
       "requires_context": null
     },
     "S38": {
@@ -1759,6 +1807,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "T"
+      ],
       "requires_context": null
     },
     "S39": {
@@ -1766,6 +1817,9 @@
       "description": "Tra le creature selezionate, quella con rango più alto (A > K > Q > J > 10 > ... > 2). Se parità: corsia più bassa, poi Potenze Artificiali prima di Resistenza Umana, poi ordine dei semi.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "T"
       ],
       "requires_context": null
     },
@@ -1783,6 +1837,9 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "T"
+      ],
       "requires_context": null
     },
     "S43": {
@@ -1790,6 +1847,9 @@
       "description": "La creatura che la sorgente ha dichiarato come bersaglio (può non essere nella corsia opposta se questa era vuota). Preferire a S6 per gli effetti di combattimento.",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "T"
       ],
       "requires_context": "declared_target"
     },
@@ -1799,6 +1859,10 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "C",
+        "T"
+      ],
       "requires_context": null
     },
     "S7": {
@@ -1807,12 +1871,18 @@
       "kind": [
         "creature"
       ],
+      "reach_classes": [
+        "T"
+      ],
       "requires_context": null
     },
     "S44": {
       "name": "Creature avversarie adiacenti al bersaglio",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "T"
       ],
       "requires_context": null,
       "description": "Le creature avversarie in corsie adiacenti (differenza di 1) a quella della creatura danneggiata o dichiarata come bersaglio. Si ferma alla prima corsia vuota. Con params.of, le creature avversarie adiacenti al bersaglio dell'espansione indicata. Senza params.of serve il contesto damaged_creature (trigger T38).",
@@ -1828,6 +1898,9 @@
       "name": "Creature avversarie nella corsia della sorgente e in quelle adiacenti",
       "kind": [
         "creature"
+      ],
+      "reach_classes": [
+        "C"
       ],
       "requires_context": null,
       "description": "Le creature avversarie nella corsia opposta alla sorgente e nelle due corsie adiacenti."

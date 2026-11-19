@@ -73,6 +73,9 @@ def rule_matches(rule, x):
     if "allowed_classes" in rule:
         # whitelist rule: matches (= invalid) when the other fields match and the class is not allowed
         return x.get("class") not in rule["allowed_classes"]
+    if "allowed_targets" in rule:
+        # whitelist rule: matches (= invalid) when the other fields match and the target is not allowed
+        return x.get("target_id") not in rule["allowed_targets"]
     return True
 
 
@@ -126,10 +129,16 @@ def check_expansion(where, x, origin, card_kind=None):
         err(where, f"target {s} needs context '{ctx}' not provided by " + (f"a {card_kind}" if t is None else t))
     # 5 duration
     mode = E[e]["duration_mode"]
+    if cls == "I":
+        mode = "any"  # the engine ignores the duration of an immediate effect: it applies for good
     if mode == "instant_only" and d != "D_Istantanea":
         err(where, f"effect {e} is instant_only, got {d}")
     if mode == "sustained_only" and d == "D_Istantanea":
         err(where, f"effect {e} is sustained_only, got {d}")
+    # 11 reach: a creature target must be found in the class of the expansion (a continuous effect reaches it, a
+    # triggered effect chooses it when it resolves); the other classes are checked elsewhere
+    if cls in ("C", "T") and "creature" in S[s]["kind"] and cls not in S[s].get("reach_classes", []):
+        err(where, f"target {s} is not found by a class {cls} effect (reach_classes {S[s].get('reach_classes', [])})")
     # 6 class I only
     if card_kind is None and set(E[e]["class"]) == {"I"}:
         err(where, f"class-I-only effect {e} in a creature ability")

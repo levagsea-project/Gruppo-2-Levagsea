@@ -114,16 +114,17 @@ Repeatable growth is **not** an evolution. Use a normal trigger plus `max_stacks
 2. **Class**: the expansion `class` is allowed by `invalid-combinations.class_rules.trigger_allowed_effect_classes[trigger]` and is listed in `vocab.effects[effect].class`. For `T_EVO`, the inner trigger must itself be class `T`.
 3. **Target kind**: some value of `effects[effect].target_kind` appears in `targets[target].kind` (`card` is also satisfied by `creature`).
 4. **Trigger context**: if `targets[target].requires_context` is set, it must appear in `triggers[trigger].provides` (for `T_EVO`, use the inner trigger's `provides`).
-5. **Duration**: `effects[effect].duration_mode` is `instant_only` (only `D_Istantanea`), `sustained_only` (anything except `D_Istantanea`) or `any`.
+5. **Duration**: `effects[effect].duration_mode` is `instant_only` (only `D_Istantanea`), `sustained_only` (anything except `D_Istantanea`) or `any`. Not checked for class `I`: the engine ignores the duration of an immediate effect, which applies for good (the base set writes `D_Istantanea` on an equipment's E2 and E3).
 6. **Class `I` only effects** never appear in creature abilities.
 7. **`combination_rules`**: a rule matches when all its non-null fields match (`null` means any, a list means any of). Rules with `allowed_triggers` or `allowed_classes` are whitelists: the effect is legal only with those triggers or classes. `with_param` limits a rule to expansions that write that effect param (IC014: E1 `scale_by` only in class C). A match means the expansion is invalid.
 8. **Keyword grants**: an `E14` must name an existing keyword, include its required params, and not include unknown ones.
 9. **References**: every `$tune.*` resolves in `balance.json`, every `balance_ref` exists, every description placeholder can be filled.
 10. **No keyword uses `T_EVO`.**
+11. **Reach**: a creature target must be found in the class of the expansion, `targets[target].reach_classes`: `C` if a continuous effect reaches it, `T` if a triggered effect chooses it when it resolves. The engine checks the same at bind time, for the abilities cards write inline, and a test keeps `reach_classes` in step with the `Target` classes.
 
 An id that exists only in `parked/` fails check 1 with a message saying where to restore it from. The validator also checks that no id is both live and parked, and prints the next free id of each kind.
 
-The structure files are meant to pass all ten checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; with only four live keywords Vincolo misses the suit target and Vestigio Tier 3 the role target, see `2026-11-14-vincolo-no-themed-ability`), and prints theme-coverage warnings (section 10); warnings never fail the run.
+The structure files are meant to pass all the checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; with only four live keywords Vincolo misses the suit target and Vestigio Tier 3 the role target, see `2026-11-14-vincolo-no-themed-ability`), and prints theme-coverage warnings (section 10); warnings never fail the run.
 
 ## 8. How to add things
 
@@ -141,7 +142,7 @@ The structure files are meant to pass all ten checks with zero errors. Run the v
 **New vocab piece**
 - New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID printed by `make validate` (`next free E id`, currently `E65`); it counts parked IDs too. Never renumber or reuse IDs.
 - New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (next free `T` id from `make validate`, currently `T40`).
-- New target: give it `kind` and `requires_context` (use `null` if none).
+- New target: give it `kind` and `requires_context` (use `null` if none), and for a creature target `reach_classes` (`C`, `T` or both, see check 11).
 - Replacement effects (`R`) must have a trigger that can express the moment ("sta per…"). If none exists, add one.
 
 **New illegal combination:** add to `invalid-combinations.json` → `combination_rules` only if it cannot be derived from the metadata (loops, cascades, timing).

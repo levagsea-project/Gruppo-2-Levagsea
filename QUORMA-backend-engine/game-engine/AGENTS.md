@@ -30,7 +30,7 @@ The engine implements the vocabulary in `data/vocab.json`; it does not hard-code
 - Resolve `$param.x` from the card instance, and `$tune.<KEY>.<name>` from the card instance `params` first, then `data/balance.json` (`data/AGENTS.md` §3). Skip keys starting with `_` in `synergies.json`.
 - `per_creature` synergies: one copy per creature of that suit, source = that creature. `per_player`: one copy, source = the player. Evaluate binds the active `per_creature` tiers onto the creatures (`SynergyTiers`); the effects are run by the code of their shape (`Board` for static ones), never by synergy-specific code.
 - An Evolution fires once per card instance per game (`max_triggers` 1).
-- Run the same ten checks as `data/validate.py` when loading a pool, or load only data that passed `make validate`.
+- `EffectRegistry` runs, for every expansion a card writes, the checks `data/validate.py` runs on the data files (effect, target, trigger and duration fit together, a creature target is found in the expansion's class) and refuses what the engine would crash on or ignore. Load only data that passed `make validate`.
 - Behaviour such as Custode's delayed destruction is data (`E12.then`, `lockout`, condition `C24`). Do not special-case it in code.
 
 ## MVP scope

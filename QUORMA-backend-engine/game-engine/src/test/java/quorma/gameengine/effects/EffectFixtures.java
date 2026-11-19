@@ -41,11 +41,17 @@ final class EffectFixtures {
     /** Like {@link #expansion(String, Map)} with another target and its params. */
     static BoundExpansion expansion(String effectId, Map<String, Value> params, String targetId,
             Map<String, Value> targetParams) {
-        ExpansionDef def = new ExpansionDef("T19", Map.of(), effectId, params, targetId, targetParams, "D_Permanente",
-                List.of(), ResClass.T);
+        ExpansionDef def = new ExpansionDef("T19", Map.of(), effectId, params, targetId, targetParams,
+                durationOf(effectId), List.of(), ResClass.T);
         CreatureCard card = new CreatureCard("S", 5, Suit.VINCOLO, Subfaction.ADATTATI, 1000, 3000,
                 List.of(new InlineEffect(List.of(def))));
         return new Creature(card, 1, BINDER.bind(card)).abilities("T19").get(0);
+    }
+
+    /** The duration the vocabulary asks for: D_Istantanea for an effect that happens at once, else D_Permanente. */
+    static String durationOf(String effectId) {
+        return "instant_only".equals(RulesetLoader.fromClasspath().vocab().effects().get(effectId).raw().get("duration_mode")
+                instanceof Value.StrV m ? m.v() : "") ? "D_Istantanea" : "D_Permanente";
     }
 
     /** A static (trigger T0, class C) effect aimed at its own creature, as a keyword or a synergy writes it. */

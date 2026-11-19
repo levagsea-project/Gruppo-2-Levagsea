@@ -44,12 +44,13 @@ public final class AtkEffect implements Effect {
     }
 
     @Override
-    public Optional<String> validate(ResClass cls, String mode, Map<String, Value> params) {
-        if (mode.equals("pct_base_atk") && !params.containsKey("permille") && !params.containsKey("pct")) {
+    public Optional<String> validate(Shape shape) {
+        Map<String, Value> params = shape.params();
+        if (shape.mode().equals("pct_base_atk") && !params.containsKey("permille") && !params.containsKey("pct")) {
             return Optional.of("effect E1 mode pct_base_atk needs param 'permille' (or 'pct')");
         }
-        if (cls != ResClass.C && params.containsKey("scale_by")) {
-            return Optional.of("effect E1 takes param 'scale_by' only in a continuous (class C) effect, got class " + cls);
+        if (shape.cls() != ResClass.C && params.containsKey("scale_by")) {
+            return Optional.of("effect E1 takes param 'scale_by' only in a continuous (class C) effect, got class " + shape.cls());
         }
         return Optional.empty();
     }

@@ -1,5 +1,7 @@
 package quorma.gameengine.effects;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,8 @@ import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.data.ExpansionDef;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Value;
+import quorma.gameengine.data.Vocab;
+import quorma.gameengine.data.VocabEntry;
 
 /**
  * What the engine can resolve. A card whose abilities use anything else is refused when it is bound
@@ -90,7 +94,7 @@ public final class EffectRegistry {
      * engine implements, such as {@code synergies.json}; a tier expansion that is not implemented changes nothing.
      */
     public static boolean isImplemented(ExpansionDef x) {
-        return problem(x.triggerId(), x.triggerParams(), x.effectId(), x.effectParams(), x.targetId(),
+        return problem(Origin.CREATURE, x.triggerId(), x.triggerParams(), x.effectId(), x.effectParams(), x.targetId(),
                 x.targetParams(), x.duration(), x.cls(), x.conditions(), false).isEmpty();
     }
 
@@ -100,14 +104,86 @@ public final class EffectRegistry {
      * @param where card and ability, for the error message
      * @throws AbilityException naming the first problem
      */
-    public static void check(BoundExpansion e, String where) {
-        problem(e.triggerId(), e.triggerParams(), e.effectId(), e.effectParams(), e.targetId(), e.targetParams(),
-                e.duration(), e.cls(), e.conditions(), true).ifPresent(p -> {
-                    throw new AbilityException(where + ": " + p);
-                });
+    public static void check(Vocab vocab, BoundExpansion e, String where, Origin origin) {
+        Optional<String> problem = problem(origin, e.triggerId(), e.triggerParams(), e.effectId(), e.effectParams(), e.targetId(),
+                e.targetParams(), e.duration(), e.cls(), e.conditions(), true);
+        if (problem.isEmpty()) {
+            problem = vocabProblem(vocab, e, origin);
+        }
+        problem.ifPresent(p -> {
+            throw new AbilityException(where + ": " + p);
+        });
     }
 
-    private static Optional<String> problem(String trigger, Map<String, Value> triggerParams, String effect,
+    /**
+     * What {@code vocab.json} says about how an effect, a target and a trigger fit together, which
+     * {@code data/validate.py} checks for the data files: the effect aims at the kind of thing the target is, it lasts or
+     * is instant as it says, a triggered effect only uses the context its trigger provides, and a creature target is
+     * found in the class of the expansion. A spell or an equipment ({@code origin}) has no trigger on an immediate
+     * effect, so its targets take their context from the card and that is not checked; the engine ignores the
+     * duration of an immediate effect (it applies for good), so that is not checked either; and a continuous
+     * effect of a spell may aim at a selection (S33 to S40), which {@code Game.castSpell} resolves when the spell is
+     * cast.
+     */
+    private static Optional<String> vocabProblem(Vocab vocab, BoundExpansion e, Origin origin) {
+        VocabEntry effect = vocab.effects().get(e.effectId());
+        VocabEntry target = vocab.targets().get(e.targetId());
+        if (effect == null || target == null) {
+            return Optional.empty();
+        }
+        Set<String> targetKinds = strings(target.raw().get("kind"));
+        Set<String> effectKinds = strings(effect.raw().get("target_kind"));
+        boolean creature = targetKinds.contains("creature");
+        Set<String> fits = new HashSet<>(targetKinds);
+        if (creature) {
+            fits.add("card");
+        }
+        if (Collections.disjoint(effectKinds, fits)) {
+            return Optional.of("target " + e.targetId() + " aims at " + new TreeSet<>(targetKinds) + ", but effect "
+                    + e.effectId() + " needs " + new TreeSet<>(effectKinds));
+        }
+        String durationMode = effect.raw().get("duration_mode") instanceof Value.StrV m ? m.v() : "any";
+        boolean instant = e.duration().equals("D_Istantanea");
+        boolean immediate = e.cls() == ResClass.I;
+        if (durationMode.equals("instant_only") && !instant && !immediate) {
+            return Optional.of("effect " + e.effectId() + " happens at once: its duration must be D_Istantanea, got "
+                    + e.duration());
+        }
+        if (durationMode.equals("sustained_only") && instant && !immediate) {
+            return Optional.of("effect " + e.effectId() + " lasts: its duration cannot be D_Istantanea");
+        }
+        if (e.cls() == ResClass.T && target.raw().get("requires_context") instanceof Value.StrV ctx) {
+            VocabEntry trigger = vocab.triggers().get(e.triggerId());
+            if (trigger != null && !strings(trigger.raw().get("provides")).contains(ctx.v())) {
+                return Optional.of("target " + e.targetId() + " needs the context '" + ctx.v() + "', which trigger "
+                        + e.triggerId() + " does not provide");
+            }
+        }
+        boolean chosenBySpell = origin == Origin.SPELL && e.cls() == ResClass.C && Targets.find(e.targetId()).orElseThrow() instanceof RankedTarget;
+        if (creature && (e.cls() == ResClass.C || e.cls() == ResClass.T) && !chosenBySpell
+                && !strings(target.raw().get("reach_classes")).contains(e.cls().name())) {
+            return Optional.of("target " + e.targetId() + " is not found by a class " + e.cls() + " effect (it works in "
+                    + new TreeSet<>(strings(target.raw().get("reach_classes"))) + ")");
+        }
+        return Optional.empty();
+    }
+
+    /** The strings of a vocab field that is a text or a list of texts, empty if it is neither. */
+    private static Set<String> strings(Value v) {
+        Set<String> out = new HashSet<>();
+        if (v instanceof Value.StrV s) {
+            out.add(s.v());
+        } else if (v instanceof Value.ListV l) {
+            for (Value item : l.items()) {
+                if (item instanceof Value.StrV s) {
+                    out.add(s.v());
+                }
+            }
+        }
+        return out;
+    }
+
+    private static Optional<String> problem(Origin origin, String trigger, Map<String, Value> triggerParams, String effect,
             Map<String, Value> effectParams, String target, Map<String, Value> targetParams, String duration,
             ResClass cls, List<ConditionDef> conditions, boolean strict) {
         Map<String, ParamRule> modes = PARAMS.get(effect);
@@ -151,7 +227,7 @@ public final class EffectRegistry {
         if (rule == null) {
             return Optional.of(notImplemented("effect " + effect + " with mode " + (mode.isEmpty() ? "(none)" : mode)));
         }
-        Optional<String> own = EffectDefinitions.find(effect).flatMap(x -> x.validate(cls, mode, effectParams));
+        Optional<String> own = EffectDefinitions.find(effect).flatMap(x -> x.validate(new EffectDefinition.Shape(origin, cls, target, mode, effectParams)));
         if (own.isPresent()) {
             return own;
         }
