@@ -198,7 +198,7 @@ public class DraftService {
         if (payload != null && payload.isObject()) {
             switch (type) {
                 case CARD -> key = string(payload, "id");
-                case SET -> key = string(payload, "code");
+                case SET, PACK_TYPE -> key = string(payload, "code");
                 case TEXT -> {
                     String kind = string(payload, "kind");
                     String code = string(payload, "code");

@@ -187,9 +187,7 @@ class CardApiTest extends ApiTest {
 
     @Test
     void anOpenedPackShowsItsCardsInTheLanguageAskedFor() throws Exception {
-        // the pack types are still read from application.yml (the shop moves to the table in a later step), and the
-        // pack_types row only says which set the pack draws from
-        admin.putPackType("standard", BaseSet.MAPPER.readTree("{\"set\": \"BASE\", \"price\": 200, \"slots\": {\"TIER_1\": 2, \"TIER_2\": 2}, \"support_slots\": 2}"));
+        // the pack types of the base set came with it (standard, advanced and elite, from data/sets/BASE.json)
         String body = "{\"packType\": \"standard\", \"faction\": \"" + RES + "\"}";
         Reply r = call("POST", "/packs/open", token, body, Map.of("Idempotency-Key", UUID.randomUUID().toString(), "Accept-Language", "en"));
         assertEquals(201, r.status(), r.body().toString());

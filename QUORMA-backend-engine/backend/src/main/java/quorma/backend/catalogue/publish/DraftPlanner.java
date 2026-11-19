@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +140,8 @@ class DraftPlanner {
 
     record Plan(
             CatalogueDraft draft, List<Problem> problems, List<Problem> warnings, List<NewSet> newSets,
-            List<NewCard> newCards, List<TextWrite> textWrites, List<LinkAdd> links, List<FactionPlan> factions) {
+            List<NewCard> newCards, List<TextWrite> textWrites, List<LinkAdd> links, List<PackTypeSpec> newPackTypes,
+            List<FactionPlan> factions) {
 
         boolean ok() {
             return problems.isEmpty();
@@ -153,7 +155,7 @@ class DraftPlanner {
                         f.touched() ? f.contentHash() : null, f.existing() != null));
             }
             return new DraftReport(draft.getId(), ok(), problems, warnings, previews, newCards.size(),
-                    textWrites.size(), newSets.size(), links.size());
+                    textWrites.size(), newSets.size(), links.size(), newPackTypes.size());
         }
     }
 
@@ -172,6 +174,7 @@ class DraftPlanner {
         Map<String, CardItem> cardItems = new TreeMap<>();
         Set<String> cardItemKeys = new LinkedHashSet<>();
         Map<String, NewSet> setItems = new TreeMap<>();
+        Map<String, PackTypeSpec> packItems = new TreeMap<>();
         List<TextItem> textItems = new ArrayList<>();
         List<DraftItem> all = new ArrayList<>(items.findByDraftId(draft.getId()));
         all.sort((a, b) -> (a.getItemType().name() + a.getItemKey()).compareTo(b.getItemType().name() + b.getItemKey()));
@@ -195,6 +198,14 @@ class DraftPlanner {
                     NewSet set = parseSet(item, payload, problems);
                     if (set != null) {
                         setItems.put(set.code(), set);
+                    }
+                }
+                case PACK_TYPE -> {
+                    try {
+                        PackTypeSpec spec = PackTypeSpec.parse(item.getItemKey(), payload);
+                        packItems.put(spec.code(), spec);
+                    } catch (CatalogueException e) {
+                        problems.add(new Problem(ITEM_INVALID, null, item.getItemKey(), e.reason()));
                     }
                 }
                 case TEXT -> {
@@ -224,6 +235,20 @@ class DraftPlanner {
             if (!existingSets.containsKey(s.code())) {
                 newSets.add(s);
             }
+        }
+
+        // 3b. pack types: only the ones that do not exist yet are created; an existing pack type is left alone
+        List<PackTypeSpec> newPackTypes = new ArrayList<>();
+        for (PackTypeSpec spec : packItems.values()) {
+            if (packTypes.existsById(spec.code())) {
+                continue;
+            }
+            if (!existingSets.containsKey(spec.setCode()) && !setItems.containsKey(spec.setCode())) {
+                problems.add(new Problem(SET_UNKNOWN, null, spec.code(), "pack type " + spec.code() + " is of the set "
+                        + spec.setCode() + ", which does not exist and is not in the draft"));
+                continue;
+            }
+            newPackTypes.add(spec);
         }
 
         // 4. cards: identity, Italian text, sets
@@ -323,15 +348,15 @@ class DraftPlanner {
             basedOn.put(b.getFaction(), b.getSnapshotId());
         }
         for (Faction faction : Faction.values()) {
-            factions.add(planFaction(faction.name(), cardItems, cardsById, existingSets, draftMembers, basedOn.get(faction.name()),
-                    problems));
+            factions.add(planFaction(faction.name(), cardItems, cardsById, existingSets, draftMembers, newPackTypes,
+                    basedOn.get(faction.name()), problems));
         }
-        return new Plan(draft, problems, warnings, newSets, newCards, textWrites, linkAdds, factions);
+        return new Plan(draft, problems, warnings, newSets, newCards, textWrites, linkAdds, newPackTypes, factions);
     }
 
     private FactionPlan planFaction(String faction, Map<String, CardItem> cardItems, Map<UUID, Card> cardsById,
                                     Map<String, CardSet> existingSets, Map<String, Set<String>> draftMembers,
-                                    UUID basedOn, List<Problem> problems) {
+                                    List<PackTypeSpec> newPackTypes, UUID basedOn, List<Problem> problems) {
         UUID activeNow = active.activeId(faction).orElse(null);
         Map<String, ObjectNode> activeCards = activeCards(activeNow, cardsById);
         Map<String, ObjectNode> candidate = new TreeMap<>(activeCards);
@@ -361,7 +386,7 @@ class DraftPlanner {
         String hash = CanonicalJson.sha256(content);
         PoolSnapshot existing = snapshots.findByContentHash(hash).orElse(null);
 
-        JsonNode report = checker.check(engineRequest(faction, candidate, draftMembers, existingSets));
+        JsonNode report = checker.check(engineRequest(faction, candidate, draftMembers, existingSets, newPackTypes));
         for (JsonNode e : report.path("card_errors")) {
             problems.add(new Problem(e.path("code").asString(), faction, e.path("card_id").asString(null),
                     e.path("message").asString()));
@@ -408,50 +433,65 @@ class DraftPlanner {
         return out;
     }
 
-    /** The engine request: the whole candidate, and one pack pool per pack type (its set's cards of this faction). */
+    /** One pack pool to check: a pack type (stored or in the draft) and the set it draws from. */
+    private record PoolSpec(String code, String setCode, Map<String, Integer> slots, int support) {
+    }
+
+    /**
+     * The engine request: the whole candidate, and one pack pool per pack type (the ones in the draft too): the cards of
+     * its set that are in this faction's candidate.
+     */
     private ObjectNode engineRequest(String faction, Map<String, ObjectNode> candidate,
-                                     Map<String, Set<String>> draftMembers, Map<String, CardSet> existingSets) {
+                                     Map<String, Set<String>> draftMembers, Map<String, CardSet> existingSets,
+                                     List<PackTypeSpec> newPackTypes) {
         ObjectNode request = MAPPER.createObjectNode();
         request.put("schema_version", 1);
         request.put("faction", faction);
         ArrayNode cardArray = request.putArray("cards");
         candidate.values().forEach(cardArray::add);
-        List<StoredPackType> types = packTypes.findAll();
-        if (!types.isEmpty()) {
-            Map<UUID, String> setCodes = new HashMap<>();
-            existingSets.values().forEach(s -> setCodes.put(s.getId(), s.getCode()));
-            Map<UUID, String> codeById = new HashMap<>();
-            cards.findAll().forEach(c -> codeById.put(c.getId(), c.getCardCode()));
-            ArrayNode pools = request.putArray("pools");
-            types.stream().sorted((a, b) -> a.getCode().compareTo(b.getCode())).forEach(type -> {
-                Set<String> members = new LinkedHashSet<>();
-                for (CardSetCard link : links.findBySetId(type.getSetId())) {
+
+        Map<UUID, String> setCodes = new HashMap<>();
+        existingSets.values().forEach(s -> setCodes.put(s.getId(), s.getCode()));
+        List<PoolSpec> specs = new ArrayList<>();
+        for (StoredPackType t : packTypes.findAll()) {
+            Map<String, Integer> slots = new LinkedHashMap<>();
+            slots.put("TIER_1", (int) t.getSlotsTier1());
+            slots.put("TIER_2", (int) t.getSlotsTier2());
+            slots.put("TIER_3", (int) t.getSlotsTier3());
+            slots.put("TIER_4", (int) t.getSlotsTier4());
+            specs.add(new PoolSpec(t.getCode(), setCodes.get(t.getSetId()), slots, t.getSupportSlots()));
+        }
+        newPackTypes.forEach(p -> specs.add(new PoolSpec(p.code(), p.setCode(), p.slots(), p.support())));
+        if (specs.isEmpty()) {
+            return request;
+        }
+        Map<UUID, String> codeById = new HashMap<>();
+        cards.findAll().forEach(c -> codeById.put(c.getId(), c.getCardCode()));
+        ArrayNode pools = request.putArray("pools");
+        specs.stream().sorted((x, y) -> x.code().compareTo(y.code())).forEach(spec -> {
+            Set<String> members = new LinkedHashSet<>();
+            CardSet set = existingSets.get(spec.setCode());
+            if (set != null) {
+                for (CardSetCard link : links.findBySetId(set.getId())) {
                     members.add(codeById.get(link.getCardId()));
                 }
-                members.addAll(draftMembers.getOrDefault(setCodes.get(type.getSetId()), Set.of()));
-                if (members.stream().noneMatch(candidate::containsKey)) {
-                    return; // none of this set's cards is of this faction: the type is not sold for it, nothing to fill
+            }
+            members.addAll(draftMembers.getOrDefault(spec.setCode(), Set.of()));
+            if (members.stream().noneMatch(candidate::containsKey)) {
+                return; // none of this set's cards is of this faction: the type is not sold for it, nothing to fill
+            }
+            ObjectNode pool = pools.addObject();
+            pool.put("name", spec.code());
+            ArrayNode ids = pool.putArray("card_ids");
+            members.stream().filter(candidate::containsKey).sorted().forEach(ids::add);
+            ObjectNode slots = pool.putObject("tier_slots");
+            spec.slots().forEach((tier, n) -> {
+                if (n > 0) {
+                    slots.put(tier, n);
                 }
-                ObjectNode pool = pools.addObject();
-                pool.put("name", type.getCode());
-                ArrayNode ids = pool.putArray("card_ids");
-                members.stream().filter(candidate::containsKey).sorted().forEach(ids::add);
-                ObjectNode slots = pool.putObject("tier_slots");
-                if (type.getSlotsTier1() > 0) {
-                    slots.put("TIER_1", (int) type.getSlotsTier1());
-                }
-                if (type.getSlotsTier2() > 0) {
-                    slots.put("TIER_2", (int) type.getSlotsTier2());
-                }
-                if (type.getSlotsTier3() > 0) {
-                    slots.put("TIER_3", (int) type.getSlotsTier3());
-                }
-                if (type.getSlotsTier4() > 0) {
-                    slots.put("TIER_4", (int) type.getSlotsTier4());
-                }
-                pool.put("support_slots", (int) type.getSupportSlots());
             });
-        }
+            pool.put("support_slots", spec.support());
+        });
         return request;
     }
 

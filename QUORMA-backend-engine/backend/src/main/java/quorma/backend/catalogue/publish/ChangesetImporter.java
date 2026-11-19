@@ -106,7 +106,7 @@ public class ChangesetImporter {
             List<CataloguePublisher.FactionResult> unchanged = report.factions().stream()
                     .map(f -> new CataloguePublisher.FactionResult(f.faction(), f.basedOn(), CataloguePublisher.Outcome.UNCHANGED))
                     .toList();
-            return new ImportResponse(mode, false, report, new PublishResult(null, unchanged, 0, 0, 0, 0), cardCount,
+            return new ImportResponse(mode, false, report, new PublishResult(null, unchanged, 0, 0, 0, 0, 0), cardCount,
                     textCount, setCount);
         }
 
@@ -124,7 +124,7 @@ public class ChangesetImporter {
 
     private static boolean changesNothing(DraftReport r) {
         return r.factions().stream().noneMatch(DraftReport.FactionPreview::touched) && r.cardsToCreate() == 0
-                && r.textsToWrite() == 0 && r.setsToCreate() == 0 && r.linksToAdd() == 0;
+                && r.textsToWrite() == 0 && r.setsToCreate() == 0 && r.linksToAdd() == 0 && r.packTypesToCreate() == 0;
     }
 
     private void discardQuietly(UUID draft) {
@@ -175,6 +175,10 @@ public class ChangesetImporter {
         }
         for (ObjectNode card : chosen) {
             out.add(new ItemInput(DraftItemType.CARD, card));
+        }
+        // pack types: all of them; the plan creates the ones that do not exist and leaves the others alone
+        for (ObjectNode packType : cs.packTypes()) {
+            out.add(new ItemInput(DraftItemType.PACK_TYPE, packType));
         }
 
         // texts: one item per language and card or set, from the flat label keys

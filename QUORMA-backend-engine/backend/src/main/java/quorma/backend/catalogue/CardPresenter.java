@@ -46,6 +46,31 @@ public class CardPresenter {
         this.setTexts = setTexts;
     }
 
+    /** Each set as {@link SetRef}: its code and its name in the best language it has (the code if it has no text), by set id. */
+    @Transactional(readOnly = true)
+    public Map<UUID, SetRef> setRefs(Collection<UUID> setIds, PreferredLocales locales) {
+        Map<UUID, SetRef> refs = new HashMap<>();
+        if (setIds.isEmpty()) {
+            return refs;
+        }
+        List<String> candidates = locales.candidates();
+        Map<UUID, CardSetText> best = new HashMap<>();
+        for (CardSetText row : setTexts.findBySetIdIn(setIds)) {
+            if (!candidates.contains(row.getLocale())) {
+                continue;
+            }
+            CardSetText current = best.get(row.getSetId());
+            if (current == null || candidates.indexOf(row.getLocale()) < candidates.indexOf(current.getLocale())) {
+                best.put(row.getSetId(), row);
+            }
+        }
+        for (CardSet set : sets.findAllById(setIds)) {
+            CardSetText text = best.get(set.getId());
+            refs.put(set.getId(), new SetRef(set.getCode(), text == null ? set.getCode() : text.getName()));
+        }
+        return refs;
+    }
+
     /** The face of each card, by card id. */
     @Transactional(readOnly = true)
     public Map<UUID, CardFace> faces(Collection<UUID> cardIds, PreferredLocales locales) {
@@ -61,29 +86,12 @@ public class CardPresenter {
             setIdsOfCard.computeIfAbsent(link.getCardId(), k -> new ArrayList<>()).add(link.getSetId());
             setIds.add(link.getSetId());
         }
-        Map<UUID, CardSet> setById = new HashMap<>();
-        Map<UUID, String> setNames = new HashMap<>();
-        if (!setIds.isEmpty()) {
-            sets.findAllById(setIds).forEach(s -> setById.put(s.getId(), s));
-            List<String> candidates = locales.candidates();
-            Map<UUID, CardSetText> best = new HashMap<>();
-            for (CardSetText row : setTexts.findBySetIdIn(setIds)) {
-                if (!candidates.contains(row.getLocale())) {
-                    continue;
-                }
-                CardSetText current = best.get(row.getSetId());
-                if (current == null || candidates.indexOf(row.getLocale()) < candidates.indexOf(current.getLocale())) {
-                    best.put(row.getSetId(), row);
-                }
-            }
-            best.forEach((id, row) -> setNames.put(id, row.getName()));
-        }
+        Map<UUID, SetRef> setRefs = setRefs(setIds, locales);
 
         for (UUID cardId : cardIds) {
             CardText text = texts.get(cardId);
             List<SetRef> refs = setIdsOfCard.getOrDefault(cardId, List.of()).stream()
-                    .map(setById::get)
-                    .map(s -> new SetRef(s.getCode(), setNames.getOrDefault(s.getId(), s.getCode())))
+                    .map(setRefs::get)
                     .sorted(Comparator.comparing(SetRef::code))
                     .toList();
             faces.put(cardId, new CardFace(text == null ? null : text.getName(), text == null ? null : text.getFlavour(),

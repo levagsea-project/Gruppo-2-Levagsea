@@ -6,6 +6,43 @@
       "status": "IN_VENDITA"
     }
   ],
+  "pack_types": [
+    {
+      "code": "standard",
+      "set": "BASE",
+      "price": 200,
+      "slots": {
+        "TIER_1": 2,
+        "TIER_2": 2
+      },
+      "support_slots": 2,
+      "featured": false
+    },
+    {
+      "code": "advanced",
+      "set": "BASE",
+      "price": 450,
+      "slots": {
+        "TIER_1": 2,
+        "TIER_2": 2,
+        "TIER_3": 1
+      },
+      "support_slots": 2,
+      "featured": true
+    },
+    {
+      "code": "elite",
+      "set": "BASE",
+      "price": 1000,
+      "slots": {
+        "TIER_2": 2,
+        "TIER_3": 2,
+        "TIER_4": 1
+      },
+      "support_slots": 3,
+      "featured": false
+    }
+  ],
   "cards": [
     {
       "id": "BASE-RES-A-FRA-SPE",

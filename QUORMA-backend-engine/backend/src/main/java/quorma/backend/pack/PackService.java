@@ -2,15 +2,28 @@ package quorma.backend.pack;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import quorma.backend.catalogue.ActiveSnapshotService;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardKind;
+import quorma.backend.catalogue.CardPresenter;
+import quorma.backend.catalogue.CardSet;
+import quorma.backend.catalogue.CardSetCard;
+import quorma.backend.catalogue.CardSetCardRepository;
+import quorma.backend.catalogue.CardSetRepository;
+import quorma.backend.catalogue.CardSetStatus;
 import quorma.backend.catalogue.PreferredLocales;
 import quorma.backend.catalogue.CardRepository;
 import quorma.backend.collection.CardInstance;
@@ -34,6 +47,8 @@ import quorma.backend.user.UserRepository;
 @Service
 public class PackService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PackService.class);
+
     /** {@code credit_transactions.reference_type} of a pack purchase; its reference_id is the pack id. */
     private static final String LEDGER_REFERENCE_TYPE = "PACK";
 
@@ -47,14 +62,16 @@ public class PackService {
     private final PackOpeningRepository openings;
     private final CollectionService collection;
     private final PackDrawer drawer;
-    private final PackProperties props;
     private final StoredPackTypeRepository storedTypes;
+    private final CardSetRepository sets;
+    private final CardSetCardRepository links;
+    private final CardPresenter presenter;
 
     public PackService(UserRepository users, CreditTransactionRepository ledger, ActiveSnapshotService activeSnapshots,
                        CardDefinitionRepository definitions, CardRepository cards, CardInstanceRepository instances,
                        CardOwnershipHistoryRepository history, PackOpeningRepository openings,
-                       CollectionService collection, PackDrawer drawer, PackProperties props,
-                       StoredPackTypeRepository storedTypes) {
+                       CollectionService collection, PackDrawer drawer, StoredPackTypeRepository storedTypes,
+                       CardSetRepository sets, CardSetCardRepository links, CardPresenter presenter) {
         this.users = users;
         this.ledger = ledger;
         this.activeSnapshots = activeSnapshots;
@@ -65,15 +82,28 @@ public class PackService {
         this.openings = openings;
         this.collection = collection;
         this.drawer = drawer;
-        this.props = props;
         this.storedTypes = storedTypes;
+        this.sets = sets;
+        this.links = links;
+        this.presenter = presenter;
     }
 
-    /** The pack types on sale. */
-    public List<PackTypeResponse> list() {
-        return props.types().entrySet().stream()
-                .map(e -> new PackTypeResponse(e.getKey(), e.getValue().price(), e.getValue().size(),
-                        e.getValue().slots(), e.getValue().supportSlots(), e.getValue().featured()))
+    /** The pack types on sale: the ones whose set is {@code IN_VENDITA}, cheapest first, each with the set it draws from. */
+    @Transactional(readOnly = true)
+    public List<PackTypeResponse> list(PreferredLocales locales) {
+        List<StoredPackType> types = storedTypes.findAll();
+        Map<UUID, CardSet> setById = new HashMap<>();
+        sets.findAllById(types.stream().map(StoredPackType::getSetId).collect(Collectors.toSet()))
+                .forEach(s -> setById.put(s.getId(), s));
+        Map<UUID, CardPresenter.SetRef> refs = presenter.setRefs(setById.keySet(), locales);
+        return types.stream()
+                .filter(t -> setById.get(t.getSetId()).getStatus() == CardSetStatus.IN_VENDITA)
+                .sorted(Comparator.comparingLong(StoredPackType::getPrice).thenComparing(StoredPackType::getCode))
+                .map(t -> {
+                    PackType type = t.toPackType();
+                    return new PackTypeResponse(t.getCode(), type.price(), type.size(), type.slots(), type.supportSlots(),
+                            type.featured(), refs.get(t.getSetId()));
+                })
                 .toList();
     }
 
@@ -82,15 +112,10 @@ public class PackService {
      */
     @Transactional
     public PackOpenResponse open(UUID userId, UUID idempotencyKey, PackOpenRequest req, PreferredLocales locales) {
-        // 1. Pack type.
-        PackType type = props.types().get(req.packType());
-        if (type == null) {
-            throw new PackException(HttpStatus.BAD_REQUEST, ErrorCodes.PACK_UNKNOWN_TYPE);
-        }
-        // Interim (schema step): the set comes from the stored pack type of the same code. The shop will read
-        // price and slots from pack_types too (packs and starter decks step); until then a type with no row is unknown.
+        // 1. Pack type: a row of pack_types, which has exactly one set.
         StoredPackType stored = storedTypes.findById(req.packType())
                 .orElseThrow(() -> new PackException(HttpStatus.BAD_REQUEST, ErrorCodes.PACK_UNKNOWN_TYPE));
+        PackType type = stored.toPackType();
         String faction = req.faction();
 
         // 2. Lock the user row before reading the balance: a concurrent purchase of the same user waits here until
@@ -109,16 +134,26 @@ public class PackService {
             return response(opening, instances.findByOriginRef(opening.getId()), locales);
         }
 
+        // 3b. Only a set that is on sale sells packs. After the replay above, so a retry of a purchase made before the set
+        // closed still gets its pack.
+        CardSet set = sets.findById(stored.getSetId()).orElseThrow();
+        if (set.getStatus() != CardSetStatus.IN_VENDITA) {
+            throw new PackException(HttpStatus.CONFLICT, ErrorCodes.PACK_NOT_ON_SALE);
+        }
+
         // 4. Balance.
         if (user.getCredits() < type.price()) {
             throw new PackException(HttpStatus.PAYMENT_REQUIRED, ErrorCodes.PACK_INSUFFICIENT_CREDITS);
         }
 
-        // 5. Pool: the active snapshot of the faction.
+        // 5. Pool: the cards of the pack's set that are in the active snapshot of the faction (the set's link to a card is
+        // what puts it in a pack; a card in no set is in the game but in no pack).
         UUID snapshotId = activeSnapshots.activeId(faction)
                 .orElseThrow(() -> new PackException(HttpStatus.NOT_FOUND, ErrorCodes.PACK_NO_POOL));
+        Set<UUID> inSet = links.findBySetId(set.getId()).stream().map(CardSetCard::getCardId).collect(Collectors.toSet());
         List<UUID> poolCardIds = definitions.findBySnapshotId(snapshotId).stream()
                 .map(c -> c.getCardId())
+                .filter(inSet::contains)
                 .toList();
         List<PoolCard> pool = cards.findAllById(poolCardIds).stream()
                 .map(card -> new PoolCard(card.getId(), card.getKind(),
@@ -126,7 +161,15 @@ public class PackService {
                 .toList();
 
         // 6. Draw. Nothing has been written yet: a failure here leaves no trace, not even the key.
-        List<UUID> drawn = drawer.draw(pool, type);
+        List<UUID> drawn;
+        try {
+            drawn = drawer.draw(pool, type);
+        } catch (IllegalStateException e) {
+            // The pool of the set cannot fill a slot of the pack (a card was taken out of the set since it was published).
+            // The engine checks this at every publish; here it is a clean refusal, not a failure.
+            LOG.warn("pack {} of set {} cannot be filled for {}: {}", req.packType(), set.getCode(), faction, e.getMessage());
+            throw new PackException(HttpStatus.NOT_FOUND, ErrorCodes.PACK_NO_POOL);
+        }
 
         // 7. Credits. The opening's id, generated by the server, is the pack id.
         long creditsAfter = user.getCredits() - type.price();

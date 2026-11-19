@@ -317,6 +317,95 @@ class CatalogueImportTest extends IntegrationTest {
 
     // ---- helpers ----
 
+    // ---- pack types in a batch ----
+
+    @Test
+    void aSetFileBringsItsPackTypesWithItAndAnImportNeverChangesThem() {
+        ImportResponse first = importer.run(batch(BaseSet.batch()), Mode.ADD_ONLY, false, "batch", admin1, null);
+        assertEquals(3, first.result().packTypesCreated());
+        assertEquals(3, count("pack_types"));
+        assertEquals(450, jdbc.queryForObject("select price from pack_types where code = 'advanced'", Integer.class));
+        assertTrue(jdbc.queryForObject("select featured from pack_types where code = 'advanced'", Boolean.class));
+        assertEquals(1, jdbc.queryForObject("select slots_tier_4 from pack_types where code = 'elite'", Integer.class));
+
+        // the file now says another price: the pack type exists, so the import leaves it alone (the admin API changes prices)
+        ObjectNode other = BaseSet.batch();
+        ((ObjectNode) other.get("pack_types").get(0)).put("price", 999);
+        ImportResponse again = importer.run(batch(other), Mode.UPSERT, false, "batch", admin1, null);
+        assertEquals(0, again.result().packTypesCreated());
+        assertEquals(200, jdbc.queryForObject("select price from pack_types where code = 'standard'", Integer.class));
+    }
+
+    @Test
+    void theExportCarriesThePackTypes() {
+        importer.run(batch(BaseSet.batch()), Mode.ADD_ONLY, false, "batch", admin1, null);
+        ObjectNode exported = exporter.export();
+        assertEquals(3, exported.get("pack_types").size());
+        JsonNode standard = exported.get("pack_types").get(2);
+        assertEquals("standard", standard.get("code").asString());
+        assertEquals("BASE", standard.get("set").asString());
+        assertEquals(200, standard.get("price").asInt());
+        assertEquals(2, standard.get("slots").get("TIER_2").asInt());
+        assertFalse(standard.get("slots").has("TIER_4"), "a Tier with no slot is left out");
+        assertEquals(2, standard.get("support_slots").asInt());
+        assertFalse(standard.get("featured").asBoolean());
+    }
+
+    /** A new set X1 with one creature of rank 5 and the given pack types. */
+    private ObjectNode setX1(String... packTypes) {
+        ObjectNode card = BaseSet.card(firstCreatureOfRank(5));
+        card.put("id", "X1-RES-NEW");
+        card.putArray("sets").add("X1");
+        ObjectNode batch = BaseSet.MAPPER.createObjectNode();
+        batch.putArray("set_definitions").addObject().put("code", "X1");
+        batch.putArray("cards").add(card);
+        var packs = batch.putArray("pack_types");
+        for (String json : packTypes) {
+            packs.add(BaseSet.MAPPER.readTree(json));
+        }
+        ObjectNode it = batch.putObject("texts").putObject("it");
+        it.put("card.X1-RES-NEW.name", "Nuova di X1");
+        it.put("set.X1.name", "Primo ampliamento");
+        return batch;
+    }
+
+    @Test
+    void aPackTypeThatItsSetCannotFillIsAProblemTheEngineFindsBeforePublishing() {
+        ObjectNode batch = setX1(
+                "{\"code\": \"fine\", \"set\": \"X1\", \"price\": 100, \"slots\": {\"TIER_1\": 2}}",
+                "{\"code\": \"aces\", \"set\": \"X1\", \"price\": 100, \"slots\": {\"TIER_4\": 1}}",
+                "{\"code\": \"spells\", \"set\": \"X1\", \"price\": 100, \"support_slots\": 1}");
+
+        ImportResponse r = importer.run(batch(batch), Mode.ADD_ONLY, true, "batch", admin1, null);
+
+        assertFalse(r.report().ok());
+        assertEquals(3, r.report().packTypesToCreate());
+        var problems = r.report().problems();
+        assertTrue(problems.stream().anyMatch(p -> p.code().equals("pack.no_creature_for_tier") && p.subject().equals("aces:TIER_4")), problems.toString());
+        assertTrue(problems.stream().anyMatch(p -> p.code().equals("pack.no_support_card") && p.subject().equals("spells")), problems.toString());
+        assertTrue(problems.stream().noneMatch(p -> p.subject() != null && p.subject().startsWith("fine")), "the fillable one is fine");
+        assertEquals(0, count("pack_types"));
+    }
+
+    @Test
+    void aPackTypeItsSetCanFillIsPublishedWithTheSet() {
+        ObjectNode batch = setX1("{\"code\": \"fine\", \"set\": \"X1\", \"price\": 100, \"slots\": {\"TIER_1\": 2}}");
+        ImportResponse r = importer.run(batch(batch), Mode.ADD_ONLY, false, "batch", admin1, null);
+        assertEquals(1, r.result().packTypesCreated());
+        assertEquals("X1", jdbc.queryForObject("select s.code from pack_types t join card_sets s on s.id = t.set_id where t.code = 'fine'", String.class));
+    }
+
+    @Test
+    void aBadPackTypeOrOneOfAnUnknownSetIsAProblem() {
+        ObjectNode batch = setX1(
+                "{\"code\": \"nowhere\", \"set\": \"NOPE\", \"price\": 100, \"slots\": {\"TIER_1\": 1}}",
+                "{\"code\": \"free\", \"set\": \"X1\", \"price\": 0, \"slots\": {\"TIER_1\": 1}}");
+        ImportResponse r = importer.run(batch(batch), Mode.ADD_ONLY, true, "batch", admin1, null);
+        assertFalse(r.report().ok());
+        assertTrue(r.report().problems().stream().anyMatch(p -> p.code().equals("draft.set_unknown") && p.subject().equals("nowhere")));
+        assertTrue(r.report().problems().stream().anyMatch(p -> p.code().equals("draft.item_invalid") && p.subject().equals("free")));
+    }
+
     private static String firstCreatureOfRank(int rank) {
         return BaseSet.cards().stream()
                 .filter(c -> c.get("kind").asString().equals("CREATURE") && c.get("rank").asInt() == rank

@@ -33,6 +33,7 @@
   "pack.unknown_type": "Tipo di pacchetto sconosciuto",
   "pack.insufficient_credits": "Crediti insufficienti",
   "pack.no_pool": "Nessuna carta disponibile per questa fazione",
+  "pack.not_on_sale": "Questo pacchetto non è in vendita",
   "pack.idempotency_key_invalid": "Richiesta non valida: riprova",
   "pack.idempotency_key_reused": "Questa richiesta è già stata usata per un altro acquisto",
   "pack.type.standard": "Pacchetto Standard",

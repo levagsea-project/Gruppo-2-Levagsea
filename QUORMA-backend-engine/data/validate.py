@@ -424,7 +424,7 @@ for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targ
 # the database from zero); after that the database is the only truth. Every ability is checked like a keyword or
 # evolution of the same shape; ids, params, slots and rank eligibility are checked here.
 set_files = sorted((root / "sets").glob("*.json")) if (root / "sets").is_dir() else []
-all_card_defs, all_names, referenced_sets, all_defined_sets = {}, {}, set(), set()
+all_card_defs, all_names, referenced_sets, all_defined_sets, all_pack_codes = {}, {}, set(), set(), {}
 for set_path in set_files:
     file_label = f"sets/{set_path.name}"
     cards_doc = json.loads(set_path.read_text(encoding="utf-8"))
@@ -445,6 +445,49 @@ for set_path in set_files:
     if defined_sets != {set_path.stem}:
         err(file_label, f"a set file defines exactly its own set: set_definitions must be the one code {set_path.stem} (the file name)")
     all_defined_sets |= defined_sets
+    # pack_types: the packs of this set (created with it when they do not exist yet): code, the file's own set, price, slots
+    # per Tier, support slots. Every Tier with slots needs a creature of that Tier in the file, and support slots need a
+    # spell or an equipment (a pack draws with repetition, so one card is enough): the same check the engine makes.
+    tier_of_rank = lambda r_: 4 if r_ == 1 else 3 if r_ >= 11 else 2 if r_ >= 7 else 1
+    file_tiers = {tier_of_rank(c_["rank"]) for c_ in cards_doc.get("cards", []) if c_.get("kind") == "CREATURE" and isinstance(c_.get("rank"), int)}
+    file_has_support = any(c_.get("kind") in ("SPELL", "EQUIPMENT") for c_ in cards_doc.get("cards", []))
+    for pt in cards_doc.get("pack_types", []):
+        pw = f"{file_label} pack_types {pt.get('code', '?')}"
+        if set(pt) - {"code", "set", "price", "slots", "support_slots", "featured"}:
+            err(pw, f"unknown fields {sorted(set(pt) - {'code', 'set', 'price', 'slots', 'support_slots', 'featured'})}")
+        if not isinstance(pt.get("code"), str) or not re.fullmatch(r"[a-z0-9_]{1,32}", pt["code"]):
+            err(pw, "code must be a-z, 0-9, _ (1 to 32 characters)")
+        elif pt["code"] in all_pack_codes:
+            err(pw, f"duplicate code (also in {all_pack_codes[pt['code']]})")
+        else:
+            all_pack_codes[pt["code"]] = file_label
+        if pt.get("set") != set_path.stem:
+            err(pw, f"a pack type of {file_label} belongs to the set {set_path.stem}")
+        if not isinstance(pt.get("price"), int) or isinstance(pt.get("price"), bool) or pt["price"] <= 0:
+            err(pw, "price must be a whole number above 0")
+        slots_ = pt.get("slots", {})
+        total_ = 0
+        if not isinstance(slots_, dict):
+            err(pw, "slots must be an object of TIER_1..TIER_4")
+            slots_ = {}
+        for tier_name, n_ in slots_.items():
+            if tier_name not in ("TIER_1", "TIER_2", "TIER_3", "TIER_4") or not isinstance(n_, int) or isinstance(n_, bool) or not 0 <= n_ <= 1000:
+                err(pw, f"slots.{tier_name} must be TIER_1..TIER_4 with a whole number from 0 to 1000")
+                continue
+            total_ += n_
+            if n_ > 0 and int(tier_name[-1]) not in file_tiers:
+                err(pw, f"{n_} {tier_name} slots and no creature of that Tier in the file: the pack cannot be filled")
+        sup_ = pt.get("support_slots", 0)
+        if not isinstance(sup_, int) or isinstance(sup_, bool) or not 0 <= sup_ <= 1000:
+            err(pw, "support_slots must be a whole number from 0 to 1000")
+        else:
+            total_ += sup_
+            if sup_ > 0 and not file_has_support:
+                err(pw, "support slots and no spell or equipment in the file: the pack cannot be filled")
+        if total_ < 1:
+            err(pw, "a pack holds at least one card")
+        if "featured" in pt and not isinstance(pt["featured"], bool):
+            err(pw, "featured must be true or false")
     consts = vocab["constants"]
     rank_code = {1: "A", 11: "J", 12: "Q", 13: "K"}
     suit_codes = {x.upper(): x for x in consts["suits"]}

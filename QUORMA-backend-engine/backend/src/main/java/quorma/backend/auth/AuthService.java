@@ -1,12 +1,16 @@
 package quorma.backend.auth;
 
+import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import quorma.backend.common.ErrorCodes;
 import quorma.backend.deck.DeckMigrator;
+import quorma.backend.deck.StarterDeckService;
 import quorma.backend.user.CreditTransaction;
 import quorma.backend.user.CreditTransactionRepository;
 import quorma.backend.user.CreditTransactionType;
@@ -26,15 +30,18 @@ public class AuthService {
     private final JwtService jwt;
     private final AuthProperties props;
     private final DeckMigrator deckMigrator;
+    private final StarterDeckService starterDecks;
 
     public AuthService(UserRepository users, CreditTransactionRepository ledger, PasswordEncoder encoder,
-                       JwtService jwt, AuthProperties props, DeckMigrator deckMigrator) {
+                       JwtService jwt, AuthProperties props, DeckMigrator deckMigrator,
+                       StarterDeckService starterDecks) {
         this.users = users;
         this.ledger = ledger;
         this.encoder = encoder;
         this.jwt = jwt;
         this.props = props;
         this.deckMigrator = deckMigrator;
+        this.starterDecks = starterDecks;
         this.dummyHash = encoder.encode("this-user-does-not-exist");
     }
 
@@ -57,6 +64,15 @@ public class AuthService {
         if (bonus > 0) {
             ledger.save(new CreditTransaction(user.getId(), bonus, bonus, CreditTransactionType.REGISTRATION_BONUS, null, null));
         }
+        // The starter decks (one per faction, set as the defense decks) once the registration is committed, in their own
+        // transaction: a catalogue that is not ready must never stop a player from registering.
+        UUID userId = user.getId();
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                starterDecks.provisionQuietly(userId);
+            }
+        });
         return respond(user);
     }
 
@@ -70,6 +86,10 @@ public class AuthService {
         // The player's decks move to the active snapshot, or are flagged outdated. A failure is logged and never
         // blocks the login; each deck is migrated in its own transaction.
         deckMigrator.migrateOwnerQuietly(user.getId());
+        if (user.getRole() == Role.PLAYER) {
+            // covers a player who registered before the catalogue had a starter set: a faction with no deck gets its starter deck
+            starterDecks.provisionQuietly(user.getId());
+        }
         return respond(user);
     }
 

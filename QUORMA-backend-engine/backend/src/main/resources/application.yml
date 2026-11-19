@@ -36,25 +36,6 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     
-packs:
-  # Placeholders until balanced. slots = exact number of creatures per Tier; support-slots = extra cards that are a
-  # spell or an equipment (no Tier). The size of a pack is the sum. featured = the one the shop highlights.
-  # TIER_1 comune (ranks 2-6), TIER_2 non comune (7-10), TIER_3 rara (J/Q/K), TIER_4 epica (Ace).
-  types:
-    standard:
-      price: 200
-      slots: {TIER_1: 2, TIER_2: 2}
-      support-slots: 2
-    advanced:
-      price: 450
-      slots: {TIER_1: 2, TIER_2: 2, TIER_3: 1}
-      support-slots: 2
-      featured: true
-    elite:
-      price: 1000
-      slots: {TIER_2: 2, TIER_3: 2, TIER_4: 1}
-      support-slots: 3
-
 catalogue:
   bootstrap:
     # Off unless a folder is given. For an initial deployment, or to rebuild the database from zero: at startup, add what
@@ -64,6 +45,9 @@ catalogue:
     path: ${CATALOGUE_BOOTSTRAP_PATH:}
     retries: 10
     retry-delay: 3s
+  starter:
+    # The set the starter decks of a new player are drawn from (one deck per faction, set as the defense deck).
+    set: BASE
   # The most a batch import body may weigh (the base set is about 350 KB).
   max-import-bytes: 5MB
 

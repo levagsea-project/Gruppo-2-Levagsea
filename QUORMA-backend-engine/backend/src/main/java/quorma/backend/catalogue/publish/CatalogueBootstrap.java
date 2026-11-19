@@ -124,13 +124,14 @@ public class CatalogueBootstrap implements ApplicationRunner {
         ImportResponse response = importer.run(changeset, Mode.ADD_ONLY, false, "seed", systemUser.id(), "bootstrap");
         PublishResult r = response.result();
         boolean nothing = r.cardsCreated() == 0 && r.textsWritten() == 0 && r.setsCreated() == 0 && r.linksAdded() == 0
+                && r.packTypesCreated() == 0
                 && r.factions().stream().allMatch(f -> f.outcome() == Outcome.UNCHANGED);
         if (nothing) {
             LOG.info("catalogue bootstrap: the database already has everything the set files add");
             return BootstrapOutcome.NOTHING_TO_ADD;
         }
-        LOG.info("catalogue bootstrap: {} cards, {} texts, {} sets, {} links added; snapshots {}", r.cardsCreated(),
-                r.textsWritten(), r.setsCreated(), r.linksAdded(), r.factions());
+        LOG.info("catalogue bootstrap: {} cards, {} texts, {} sets, {} pack types, {} links added; snapshots {}", r.cardsCreated(),
+                r.textsWritten(), r.setsCreated(), r.packTypesCreated(), r.linksAdded(), r.factions());
         return BootstrapOutcome.LOADED;
     }
 

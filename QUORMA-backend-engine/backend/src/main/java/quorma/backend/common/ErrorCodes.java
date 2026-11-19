@@ -28,6 +28,7 @@ public final class ErrorCodes {
     public static final String PACK_UNKNOWN_TYPE = "pack.unknown_type";
     public static final String PACK_INSUFFICIENT_CREDITS = "pack.insufficient_credits";
     public static final String PACK_NO_POOL = "pack.no_pool";
+    public static final String PACK_NOT_ON_SALE = "pack.not_on_sale";
     public static final String PACK_IDEMPOTENCY_KEY_INVALID = "pack.idempotency_key_invalid";
     public static final String PACK_IDEMPOTENCY_KEY_REUSED = "pack.idempotency_key_reused";
 

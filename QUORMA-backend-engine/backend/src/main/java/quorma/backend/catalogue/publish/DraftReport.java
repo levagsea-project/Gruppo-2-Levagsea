@@ -19,10 +19,11 @@ import java.util.UUID;
  * @param textsToWrite  texts that are missing and will be written (existing texts are never replaced)
  * @param setsToCreate  sets that do not exist yet
  * @param linksToAdd    card-to-set links that will be added
+ * @param packTypesToCreate pack types that do not exist yet
  */
 public record DraftReport(
         UUID draftId, boolean ok, List<Problem> problems, List<Problem> warnings, List<FactionPreview> factions,
-        int cardsToCreate, int textsToWrite, int setsToCreate, int linksToAdd) {
+        int cardsToCreate, int textsToWrite, int setsToCreate, int linksToAdd, int packTypesToCreate) {
 
     public DraftReport {
         problems = List.copyOf(problems);

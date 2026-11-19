@@ -11,11 +11,12 @@ import org.springframework.util.unit.DataSize;
  * {@code catalogue.*}: the optional bootstrap from a folder of set files and the size of a batch import.
  *
  * @param bootstrap      the optional bootstrap
+ * @param starter        where the starter decks of a new player come from
  * @param maxImportBytes the most a batch import body may weigh (the base set is about 350 KB)
  */
 @ConfigurationProperties(prefix = "catalogue")
 public record CatalogueProperties(
-        @DefaultValue Bootstrap bootstrap, @DefaultValue("5MB") DataSize maxImportBytes) {
+        @DefaultValue Bootstrap bootstrap, @DefaultValue Starter starter, @DefaultValue("5MB") DataSize maxImportBytes) {
 
     /**
      * @param path       a folder of set files ({@code data/sets/*.json}) to load at startup; empty means off
@@ -25,6 +26,12 @@ public record CatalogueProperties(
      */
     public record Bootstrap(@DefaultValue("") String path, @DefaultValue("10") int retries,
                        @DefaultValue("3s") Duration retryDelay) {
+    }
+
+    /**
+     * @param set the code of the set the starter decks are drawn from (the cards of it that are in the active snapshot)
+     */
+    public record Starter(@DefaultValue("BASE") String set) {
     }
 
     @Configuration

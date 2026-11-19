@@ -33,6 +33,7 @@
   "pack.unknown_type": "Unknown pack type",
   "pack.insufficient_credits": "Not enough credits",
   "pack.no_pool": "No cards available for this faction yet",
+  "pack.not_on_sale": "This pack is not on sale",
   "pack.idempotency_key_invalid": "Invalid request: please try again",
   "pack.idempotency_key_reused": "This request was already used for a different purchase",
   "pack.type.standard": "Standard Pack",

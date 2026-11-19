@@ -193,8 +193,8 @@ CREATE TABLE active_snapshots
 -- or the bootstrap from set files (source 'seed'), then validated, previewed and published.
 --   draft_bases : the snapshot each faction had active when the draft was opened (null = none yet). Publishing fails if
 --                 the active one has moved since: the draft is recomputed.
---   draft_items : what the draft changes. item_type CARD (engine fields + sets), TEXT (card or set text) or
---                 SET (a new set with its texts); item_key identifies the item inside the draft, so adding
+--   draft_items : what the draft changes. item_type CARD (engine fields + sets), TEXT (card or set text),
+--                 SET (a new set with its texts) or PACK_TYPE (a pack sold for a set); item_key identifies the item inside the draft, so adding
 --                 it twice replaces it. payload is JSON that the backend stores and passes on.
 -- ---------------------------------------------------------------------------------------------------------------------
 CREATE TABLE catalogue_drafts
@@ -223,7 +223,7 @@ CREATE TABLE draft_items
 (
     id         uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
     draft_id   uuid         NOT NULL REFERENCES catalogue_drafts (id) ON DELETE CASCADE,
-    item_type  varchar(12)  NOT NULL CHECK (item_type IN ('CARD', 'TEXT', 'SET')),
+    item_type  varchar(12)  NOT NULL CHECK (item_type IN ('CARD', 'TEXT', 'SET', 'PACK_TYPE')),
     item_key   varchar(160) NOT NULL,
     payload    jsonb        NOT NULL CHECK (jsonb_typeof(payload) = 'object'),
     created_at timestamptz  NOT NULL DEFAULT now(),

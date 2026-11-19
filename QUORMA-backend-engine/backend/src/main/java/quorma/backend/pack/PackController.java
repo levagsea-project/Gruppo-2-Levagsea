@@ -32,10 +32,10 @@ public class PackController {
     }
 
     @GetMapping
-    @Operation(summary = "List the pack types on sale", description = "Price and cards per Tier of each type."
+    @Operation(summary = "List the pack types on sale", description = "Only the types whose set is on sale. Price, cards per Tier and the set each draws from."
         + "The frontend shows names from its labels: `pack.type.<code>` for a type, `game.tier.<tier>` for a rarity.")
-    public List<PackTypeResponse> list() {
-        return packs.list();
+    public List<PackTypeResponse> list(@Parameter(description = "Language of the set name: the first language in the list that the set has, Italian as the fallback.") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return packs.list(PreferredLocales.parse(acceptLanguage));
     }
 
     @PostMapping("/open")
@@ -46,7 +46,8 @@ public class PackController {
     @ApiResponse(responseCode = "201", description = "Pack opened")
     @ApiResponse(responseCode = "400", description = "Body `code`: pack.unknown_type, pack.idempotency_key_invalid (missing or not a UUID), or validation.failed with `fieldErrors`")
     @ApiResponse(responseCode = "402", description = "Not enough credits. Body `code`: pack.insufficient_credits")
-    @ApiResponse(responseCode = "404", description = "No card pool for that faction yet. Body `code`: pack.no_pool")
+    @ApiResponse(responseCode = "404", description = "No card pool for that faction in the pack's set (or it cannot fill the pack). Body `code`: pack.no_pool")
+    @ApiResponse(responseCode = "409", description = "The pack's set is not on sale. Body `code`: pack.not_on_sale")
     @ApiResponse(responseCode = "422", description = "Idempotency-Key already used for a different pack type or faction. Body `code`: pack.idempotency_key_reused")
     public PackOpenResponse open(@AuthenticationPrincipal Jwt jwt,
                                  @Parameter(description = "A UUID made by the client, new for every purchase and "

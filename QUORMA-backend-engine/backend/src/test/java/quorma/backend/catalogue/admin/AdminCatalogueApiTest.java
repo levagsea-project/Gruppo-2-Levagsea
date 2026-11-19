@@ -268,7 +268,7 @@ class AdminCatalogueApiTest extends IntegrationTest {
                 "{\"set\": \"BASE\", \"price\": 250, \"slots\": {\"TIER_1\": 3}, \"support_slots\": 1, \"featured\": true}");
         assertEquals(250, updated.body().get("price").asInt());
         assertTrue(updated.body().get("featured").asBoolean());
-        assertEquals(1, asAdmin("GET", "/admin/catalogue/pack-types", null).body().size());
+        assertEquals(3, asAdmin("GET", "/admin/catalogue/pack-types", null).body().size(), "standard, advanced and elite came with the set");
 
         assertEquals("catalogue.pack_type_invalid", asAdmin("PUT", "/admin/catalogue/pack-types/free", "{\"set\": \"BASE\", \"price\": 0, \"support_slots\": 1}").code());
         assertEquals("catalogue.pack_type_invalid", asAdmin("PUT", "/admin/catalogue/pack-types/empty", "{\"set\": \"BASE\", \"price\": 5}").code());

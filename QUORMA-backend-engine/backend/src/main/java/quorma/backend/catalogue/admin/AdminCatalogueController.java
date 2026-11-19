@@ -136,6 +136,17 @@ public class AdminCatalogueController {
         drafts.putItem(id, DraftItemType.SET, set);
     }
 
+    @PutMapping("/drafts/{id}/pack-types/{code}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Put a new pack type in the draft", description = "Body `{set, price, slots: {TIER_1..TIER_4: n}, support_slots, featured}`. "
+            + "Created when the draft is published, and the engine checks that the pool of its set can fill it; an existing pack type is "
+            + "never changed this way (use PUT /pack-types/{code}).")
+    public void putPackTypeInDraft(@PathVariable UUID id, @PathVariable String code, @RequestBody JsonNode body) {
+        ObjectNode packType = body != null && body.isObject() ? ((ObjectNode) body).deepCopy() : MAPPER.createObjectNode();
+        packType.put("code", code);
+        drafts.putItem(id, DraftItemType.PACK_TYPE, packType);
+    }
+
     @PutMapping("/drafts/{id}/texts/{kind}/{code}/{locale}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Put a text in the draft", description = "`kind` is CARD or SET. Body `{name, flavour}` or `{name, description}`. "
@@ -152,7 +163,7 @@ public class AdminCatalogueController {
 
     @DeleteMapping("/drafts/{id}/items/{type}/{key}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Remove an item from the draft", description = "`type` is CARD, SET or TEXT; the key is the card id, the set code or "
+    @Operation(summary = "Remove an item from the draft", description = "`type` is CARD, SET, TEXT or PACK_TYPE; the key is the card id, the set code or "
             + "`kind:code:locale`. 404 `catalogue.item_invalid` if the draft has no such item.")
     public void removeItem(@PathVariable UUID id, @PathVariable DraftItemType type, @PathVariable String key) {
         if (!drafts.removeItem(id, type, key)) {

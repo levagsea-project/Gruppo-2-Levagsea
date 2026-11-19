@@ -18,6 +18,8 @@ import tools.jackson.databind.node.ObjectNode;
  *
  * <pre>
  * { "set_definitions": [ {"code": "BASE", "status": "IN_VENDITA"} ],       sets created if they do not exist yet
+ *   "pack_types": [ {"code": "standard", "set": "BASE", "price": 200,   packs sold for the set, created if missing
+ *                    "slots": {"TIER_1": 2}, "support_slots": 2} ],
  *   "cards": [ {"id": "...", "sets": ["BASE"], "kind": "CREATURE", ...} ],  engine cards plus their sets
  *   "texts": { "it": { "card.&lt;id&gt;.name": "...", "card.&lt;id&gt;.flavour": "...",
  *                      "set.&lt;CODE&gt;.name": "...", "set.&lt;CODE&gt;.description": "..." } } }
@@ -28,9 +30,11 @@ import tools.jackson.databind.node.ObjectNode;
  *
  * @param cards the cards as written, in file order
  * @param sets  the sets the batch defines
+ * @param packTypes the pack types the batch defines (created if missing; an existing pack type is never changed by a batch)
  * @param texts locale to label key to text
  */
-public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<String, Map<String, String>> texts) {
+public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, List<ObjectNode> packTypes,
+                        Map<String, Map<String, String>> texts) {
 
     /** Most cards one batch may carry (the engine's own limit). */
     public static final int MAX_CARDS = 5000;
@@ -50,8 +54,8 @@ public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<St
             throw invalid("the batch must be a JSON object");
         }
         for (String key : root.propertyNames()) {
-            if (!key.startsWith("_") && !Set.of("cards", "set_definitions", "texts").contains(key)) {
-                throw invalid("unknown key '" + key + "' (a batch has cards, set_definitions and texts)");
+            if (!key.startsWith("_") && !Set.of("cards", "set_definitions", "pack_types", "texts").contains(key)) {
+                throw invalid("unknown key '" + key + "' (a batch has cards, set_definitions, pack_types and texts)");
             }
         }
         if (!root.has("cards") || !root.get("cards").isArray()) {
@@ -84,6 +88,18 @@ public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<St
                 sets.add(new SetDefinition(s.get("code").asString(), text(s, "status"), text(s, "release_date"), text(s, "close_date")));
             }
         }
+        List<ObjectNode> packTypes = new ArrayList<>();
+        if (root.has("pack_types")) {
+            if (!root.get("pack_types").isArray()) {
+                throw invalid("pack_types must be an array");
+            }
+            for (JsonNode p : root.get("pack_types")) {
+                if (!p.isObject() || !p.has("code") || !p.get("code").isString()) {
+                    throw invalid("every pack type is an object with a code");
+                }
+                packTypes.add((ObjectNode) p);
+            }
+        }
         Map<String, Map<String, String>> texts = new TreeMap<>();
         if (root.has("texts")) {
             if (!root.get("texts").isObject()) {
@@ -105,7 +121,7 @@ public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<St
                 texts.put(locale, entries);
             }
         }
-        return new Changeset(cards, sets, texts);
+        return new Changeset(cards, sets, packTypes, texts);
     }
 
     /**
@@ -117,6 +133,7 @@ public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<St
     public static Changeset merge(List<Changeset> parts) {
         Map<String, ObjectNode> cards = new LinkedHashMap<>();
         Map<String, SetDefinition> sets = new LinkedHashMap<>();
+        Map<String, ObjectNode> packTypes = new LinkedHashMap<>();
         Map<String, Map<String, String>> texts = new TreeMap<>();
         for (Changeset part : parts) {
             for (ObjectNode card : part.cards()) {
@@ -134,12 +151,13 @@ public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<St
                 }
             }
             part.sets().forEach(s -> sets.putIfAbsent(s.code(), s));
+            part.packTypes().forEach(p -> packTypes.putIfAbsent(p.get("code").asString(), p.deepCopy()));
             part.texts().forEach((locale, table) -> {
                 Map<String, String> into = texts.computeIfAbsent(locale, k -> new LinkedHashMap<>());
                 table.forEach(into::putIfAbsent);
             });
         }
-        return new Changeset(new ArrayList<>(cards.values()), new ArrayList<>(sets.values()), texts);
+        return new Changeset(new ArrayList<>(cards.values()), new ArrayList<>(sets.values()), new ArrayList<>(packTypes.values()), texts);
     }
 
     /** What the text key means: kind CARD or SET, the code, and the field (name, flavour or description). */

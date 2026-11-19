@@ -20,13 +20,14 @@ import quorma.backend.catalogue.CardSetTextRepository;
 import quorma.backend.catalogue.CardText;
 import quorma.backend.catalogue.CardTextRepository;
 import quorma.backend.catalogue.Faction;
+import quorma.backend.pack.StoredPackTypeRepository;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
  * The active catalogue in the format of {@link Changeset}: export it, edit it outside, import it again (upsert). The
  * cards are the definitions of the active snapshot of each faction, with the sets each card belongs to; the texts are
- * every language there is; the sets carry their status and dates.
+ * every language there is; the sets carry their status and dates, and the pack types come with them.
  */
 @Service
 public class CatalogueExporter {
@@ -37,15 +38,17 @@ public class CatalogueExporter {
     private final CardSetCardRepository links;
     private final CardTextRepository cardTexts;
     private final CardSetTextRepository setTexts;
+    private final StoredPackTypeRepository packTypes;
 
     CatalogueExporter(DraftPlanner planner, CardRepository cards, CardSetRepository sets, CardSetCardRepository links,
-                      CardTextRepository cardTexts, CardSetTextRepository setTexts) {
+                      CardTextRepository cardTexts, CardSetTextRepository setTexts, StoredPackTypeRepository packTypes) {
         this.planner = planner;
         this.cards = cards;
         this.sets = sets;
         this.links = links;
         this.cardTexts = cardTexts;
         this.setTexts = setTexts;
+        this.packTypes = packTypes;
     }
 
     @Transactional(readOnly = true)
@@ -76,6 +79,29 @@ public class CatalogueExporter {
             if (s.getCloseDate() != null) {
                 n.put("close_date", s.getCloseDate().toString());
             }
+        });
+
+        ArrayNode packArray = root.putArray("pack_types");
+        packTypes.findAll().stream().sorted((a, b) -> a.getCode().compareTo(b.getCode())).forEach(t -> {
+            ObjectNode n = packArray.addObject();
+            n.put("code", t.getCode());
+            n.put("set", setById.get(t.getSetId()).getCode());
+            n.put("price", t.getPrice());
+            ObjectNode slots = n.putObject("slots");
+            if (t.getSlotsTier1() > 0) {
+                slots.put("TIER_1", (int) t.getSlotsTier1());
+            }
+            if (t.getSlotsTier2() > 0) {
+                slots.put("TIER_2", (int) t.getSlotsTier2());
+            }
+            if (t.getSlotsTier3() > 0) {
+                slots.put("TIER_3", (int) t.getSlotsTier3());
+            }
+            if (t.getSlotsTier4() > 0) {
+                slots.put("TIER_4", (int) t.getSlotsTier4());
+            }
+            n.put("support_slots", (int) t.getSupportSlots());
+            n.put("featured", t.isFeatured());
         });
 
         Map<String, ObjectNode> active = new TreeMap<>();

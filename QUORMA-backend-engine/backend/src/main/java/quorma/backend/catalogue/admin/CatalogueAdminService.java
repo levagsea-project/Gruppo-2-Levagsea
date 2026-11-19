@@ -23,6 +23,7 @@ import quorma.backend.catalogue.CardSetTextRepository;
 import quorma.backend.catalogue.CardText;
 import quorma.backend.catalogue.CardTextRepository;
 import quorma.backend.catalogue.publish.CatalogueException;
+import quorma.backend.catalogue.publish.PackTypeSpec;
 import quorma.backend.common.ErrorCodes;
 import quorma.backend.pack.StoredPackType;
 import quorma.backend.pack.StoredPackTypeRepository;
@@ -38,8 +39,6 @@ import tools.jackson.databind.JsonNode;
 public class CatalogueAdminService {
 
     private static final Pattern LOCALE = Pattern.compile("^[a-z]{2}(-[A-Z]{2})?$");
-    private static final Pattern PACK_CODE = Pattern.compile("^[a-z0-9_]{1,32}$");
-    private static final List<String> TIERS = List.of("TIER_1", "TIER_2", "TIER_3", "TIER_4");
 
     public record SetView(String code, String status, String releaseDate, String closeDate, int cards,
                           Map<String, String> names) {
@@ -203,55 +202,29 @@ public class CatalogueAdminService {
      */
     @Transactional
     public PackTypeView putPackType(String code, JsonNode body) {
-        if (!PACK_CODE.matcher(code).matches()) {
-            throw invalid("code is a-z, 0-9, _ (1 to 32 characters)");
-        }
-        String setCode = string(body, "set");
-        CardSet set = setCode == null ? null : sets.findByCode(setCode).orElse(null);
-        if (set == null) {
-            throw new CatalogueException(HttpStatus.NOT_FOUND, ErrorCodes.CATALOGUE_SET_NOT_FOUND);
-        }
-        JsonNode priceNode = body.get("price");
-        if (priceNode == null || !priceNode.isIntegralNumber() || priceNode.asLong() <= 0) {
-            throw invalid("price is a whole number above 0");
-        }
-        Map<String, Integer> slots = new LinkedHashMap<>();
-        JsonNode slotNode = body.get("slots");
-        for (String tier : TIERS) {
-            JsonNode n = slotNode == null ? null : slotNode.get(tier);
-            int v = n == null ? 0 : n.isIntegralNumber() ? n.asInt() : -1;
-            if (v < 0 || v > 1000) {
-                throw invalid("slots." + tier + " is a whole number from 0 to 1000");
-            }
-            slots.put(tier, v);
-        }
-        JsonNode support = body.get("support_slots");
-        int supportSlots = support == null ? 0 : support.isIntegralNumber() ? support.asInt() : -1;
-        if (supportSlots < 0 || supportSlots > 1000) {
-            throw invalid("support_slots is a whole number from 0 to 1000");
-        }
-        if (slots.values().stream().mapToInt(i -> i).sum() + supportSlots < 1) {
-            throw invalid("a pack holds at least one card");
-        }
-        boolean featured = body.has("featured") && body.get("featured").asBoolean(false);
+        PackTypeSpec spec = PackTypeSpec.parse(code, body);
+        CardSet set = sets.findByCode(spec.setCode())
+                .orElseThrow(() -> new CatalogueException(HttpStatus.NOT_FOUND, ErrorCodes.CATALOGUE_SET_NOT_FOUND));
+        short t1 = (short) (int) spec.slots().get("TIER_1");
+        short t2 = (short) (int) spec.slots().get("TIER_2");
+        short t3 = (short) (int) spec.slots().get("TIER_3");
+        short t4 = (short) (int) spec.slots().get("TIER_4");
 
         StoredPackType type = packTypes.findById(code).orElse(null);
         if (type == null) {
-            type = new StoredPackType(code, set.getId(), priceNode.asLong(), (short) (int) slots.get("TIER_1"),
-                    (short) (int) slots.get("TIER_2"), (short) (int) slots.get("TIER_3"), (short) (int) slots.get("TIER_4"),
-                    (short) supportSlots, featured);
+            type = new StoredPackType(code, set.getId(), spec.price(), t1, t2, t3, t4, (short) spec.support(), spec.featured());
         } else {
             if (!type.getSetId().equals(set.getId())) {
                 throw new CatalogueException(HttpStatus.CONFLICT, ErrorCodes.CATALOGUE_PACK_TYPE_CONFLICT,
                         "the set of a pack type cannot change: create a new type");
             }
-            type.setPrice(priceNode.asLong());
-            type.setSlotsTier1((short) (int) slots.get("TIER_1"));
-            type.setSlotsTier2((short) (int) slots.get("TIER_2"));
-            type.setSlotsTier3((short) (int) slots.get("TIER_3"));
-            type.setSlotsTier4((short) (int) slots.get("TIER_4"));
-            type.setSupportSlots((short) supportSlots);
-            type.setFeatured(featured);
+            type.setPrice(spec.price());
+            type.setSlotsTier1(t1);
+            type.setSlotsTier2(t2);
+            type.setSlotsTier3(t3);
+            type.setSlotsTier4(t4);
+            type.setSupportSlots((short) spec.support());
+            type.setFeatured(spec.featured());
         }
         return view(packTypes.save(type), set.getCode());
     }
@@ -289,10 +262,6 @@ public class CatalogueAdminService {
         slots.put("TIER_3", (int) t.getSlotsTier3());
         slots.put("TIER_4", (int) t.getSlotsTier4());
         return new PackTypeView(t.getCode(), setCode, t.getPrice(), slots, t.getSupportSlots(), t.isFeatured());
-    }
-
-    private static CatalogueException invalid(String reason) {
-        return new CatalogueException(HttpStatus.BAD_REQUEST, ErrorCodes.CATALOGUE_PACK_TYPE_INVALID, reason);
     }
 
     private static String string(JsonNode node, String field) {

@@ -46,6 +46,8 @@ import quorma.backend.catalogue.publish.DraftPlanner.NewSet;
 import quorma.backend.catalogue.publish.DraftPlanner.Plan;
 import quorma.backend.catalogue.publish.DraftPlanner.TextWrite;
 import quorma.backend.common.ErrorCodes;
+import quorma.backend.pack.StoredPackType;
+import quorma.backend.pack.StoredPackTypeRepository;
 import tools.jackson.databind.JsonNode;
 
 /**
@@ -56,7 +58,7 @@ import tools.jackson.databind.JsonNode;
  * longer the active snapshot of a faction, then plans the draft again against the database as it is now (the engine
  * checks the whole candidate pool of each touched faction), and only then writes: new sets, new cards, the texts that
  * are missing, one snapshot per touched faction with all its definitions (or an older snapshot with the same content
- * hash, brought back), the active snapshot, the card-to-set links and one audit row per snapshot. Decks are not
+ * hash, brought back), the active snapshot, the card-to-set links, the new pack types and one audit row per snapshot. Decks are not
  * touched: they move to the active snapshot when their owner logs in ({@code DeckMigrator}).
  */
 @Service
@@ -76,7 +78,7 @@ public class CataloguePublisher {
 
     public record PublishResult(
             UUID draftId, List<FactionResult> factions, int cardsCreated, int textsWritten, int setsCreated,
-            int linksAdded) {
+            int linksAdded, int packTypesCreated) {
     }
 
     @PersistenceContext
@@ -95,13 +97,14 @@ public class CataloguePublisher {
     private final CardSetTextRepository setTexts;
     private final CardSetCardRepository links;
     private final SnapshotPublicationRepository publications;
+    private final StoredPackTypeRepository packTypes;
 
     public CataloguePublisher(CatalogueDraftRepository drafts, DraftBaseRepository bases, DraftPlanner planner,
                               ActiveSnapshotService activeService, ActiveSnapshotRepository activeSnapshots,
                               PoolSnapshotRepository snapshots, CardDefinitionRepository definitions,
                               CardRepository cards, CardTextRepository cardTexts, CardSetRepository sets,
                               CardSetTextRepository setTexts, CardSetCardRepository links,
-                              SnapshotPublicationRepository publications) {
+                              SnapshotPublicationRepository publications, StoredPackTypeRepository packTypes) {
         this.drafts = drafts;
         this.bases = bases;
         this.planner = planner;
@@ -115,6 +118,7 @@ public class CataloguePublisher {
         this.setTexts = setTexts;
         this.links = links;
         this.publications = publications;
+        this.packTypes = packTypes;
     }
 
     /**
@@ -196,12 +200,19 @@ public class CataloguePublisher {
             }
         }
 
+        for (PackTypeSpec p : plan.newPackTypes()) {
+            packTypes.save(new StoredPackType(p.code(), setByCode.get(p.setCode()).getId(), p.price(),
+                    (short) (int) p.slots().get("TIER_1"), (short) (int) p.slots().get("TIER_2"),
+                    (short) (int) p.slots().get("TIER_3"), (short) (int) p.slots().get("TIER_4"), (short) p.support(),
+                    p.featured()));
+        }
+
         draft.setStatus(DraftStatus.PUBLISHED);
         draft.setClosedAt(Instant.now());
         drafts.save(draft);
         em.flush();
         return new PublishResult(draftId, results, plan.newCards().size(), plan.textWrites().size(), plan.newSets().size(),
-                linksAdded);
+                linksAdded, plan.newPackTypes().size());
     }
 
     /** A new snapshot with the whole candidate pool, definitions inserted in this transaction (the sealing trigger). */

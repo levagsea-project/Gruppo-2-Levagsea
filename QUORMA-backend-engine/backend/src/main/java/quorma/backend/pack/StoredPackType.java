@@ -17,8 +17,8 @@ import org.hibernate.generator.EventType;
 /**
  * A pack type as stored in the database (V8 {@code pack_types}): one set, a price, the slots per Tier and the
  * support slots. Mutable, like the set. The set of a type never changes once packs were sold (a foreign
- * key from {@code pack_openings} enforces it): create a new type instead. Until the shop reads this table the
- * {@link PackType} record from {@code application.yml} still describes the pack.
+ * key from {@code pack_openings} enforces it): create a new type instead. The shop reads this table: a type is sold
+ * while its set is {@code IN_VENDITA}.
  */
 @Entity
 @Table(name = "pack_types")
@@ -62,6 +62,24 @@ public class StoredPackType {
 
     @UpdateTimestamp
     private Instant updatedAt;
+
+    /** The pack as the drawer reads it: creatures per Tier (a Tier with no slot is left out) and support slots. */
+    public PackType toPackType() {
+        java.util.Map<Tier, Integer> slots = new java.util.EnumMap<>(Tier.class);
+        if (slotsTier1 > 0) {
+            slots.put(Tier.TIER_1, (int) slotsTier1);
+        }
+        if (slotsTier2 > 0) {
+            slots.put(Tier.TIER_2, (int) slotsTier2);
+        }
+        if (slotsTier3 > 0) {
+            slots.put(Tier.TIER_3, (int) slotsTier3);
+        }
+        if (slotsTier4 > 0) {
+            slots.put(Tier.TIER_4, (int) slotsTier4);
+        }
+        return new PackType(price, slots, supportSlots, featured);
+    }
 
     public StoredPackType(String code, UUID setId, long price, short slotsTier1, short slotsTier2,
                           short slotsTier3, short slotsTier4, short supportSlots, boolean featured) {
