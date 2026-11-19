@@ -1,5 +1,6 @@
 package quorma.backend.match;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -18,4 +19,10 @@ public interface MatchSeriesRepository extends JpaRepository<MatchSeries, UUID> 
             countQuery = "select count(s) from MatchSeries s where (s.playerAId = :userId or s.playerBId = :userId)"
                     + " and s.status = quorma.backend.match.SeriesStatus.FINISHED")
     Page<MatchSeries> findFinishedOfPlayer(@Param("userId") UUID userId, Pageable pageable);
+
+    /** The finished series with a result the player has not read yet (at least one unread notification), newest first. */
+    @Query("select distinct s from MatchSeries s, Match m, MatchNotification n where m.seriesId = s.id"
+            + " and n.id.matchId = m.id and n.id.userId = :userId and n.seenAt is null"
+            + " and s.status = quorma.backend.match.SeriesStatus.FINISHED order by s.finishedAt desc")
+    List<MatchSeries> findUnreadOfPlayer(@Param("userId") UUID userId);
 }

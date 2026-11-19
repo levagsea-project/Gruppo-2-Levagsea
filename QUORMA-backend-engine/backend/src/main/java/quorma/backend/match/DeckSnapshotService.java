@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import quorma.backend.catalogue.Card;
 import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
@@ -34,6 +33,9 @@ import tools.jackson.databind.node.ObjectNode;
  * Turns decks into the snapshots a series keeps: for each deck the engine's {@code player.deck} array with the
  * full card definitions of the deck's pool snapshot. The snapshot is what makes a replay possible later, so it is
  * built once, here, and stored as JSON.
+ *
+ * <p>No {@code @Transactional} on purpose: it runs inside the caller's transaction, and a failure here that the caller
+ * handles (matchmaking skips a player) must not mark that transaction rollback-only.
  */
 @Service
 public class DeckSnapshotService {
@@ -59,7 +61,6 @@ public class DeckSnapshotService {
      * The decks a player puts up: exactly one per faction, each of their own, not outdated.
      * 400 {@code challenge.decks_invalid} for a wrong list, 404 {@code deck.not_found} for a deck that is not theirs.
      */
-    @Transactional(readOnly = true)
     public Map<Faction, LockedDeck> lockChoices(UUID ownerId, List<DeckChoice> choices) {
         if (choices == null || choices.size() != Faction.values().length) {
             throw new ChallengeException(HttpStatus.BAD_REQUEST, ErrorCodes.CHALLENGE_DECKS_INVALID);
@@ -83,7 +84,6 @@ public class DeckSnapshotService {
     }
 
     /** The defense decks of a player, one per faction (matchmaking: the defender does not choose). */
-    @Transactional(readOnly = true)
     public Map<Faction, LockedDeck> lockDefense(UUID defenderId) {
         Map<Faction, LockedDeck> locked = new EnumMap<>(Faction.class);
         for (Deck deck : decks.findByOwnerIdAndDefenseTrue(defenderId)) {
@@ -97,7 +97,6 @@ public class DeckSnapshotService {
     }
 
     /** Builds the snapshot of one deck from its cards and the definitions of the deck's pool snapshot. */
-    @Transactional(readOnly = true)
     public LockedDeck lock(Deck deck) {
         List<DeckCard> rows = deckCards.findByDeckId(deck.getId());
         List<UUID> cardIds = rows.stream().map(DeckCard::getCardId).distinct().toList();
