@@ -31,7 +31,7 @@ import tools.jackson.databind.JsonNode;
  * CataloguePublishTest and CatalogueImportTest.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"catalogue.seed.enabled=false", "catalogue.max-import-bytes=600KB"})
+        properties = "catalogue.max-import-bytes=600KB")
 @Import(IntegrationTestConfig.class)
 @Testcontainers(disabledWithoutDocker = true)
 class AdminCatalogueApiTest extends IntegrationTest {
@@ -191,9 +191,11 @@ class AdminCatalogueApiTest extends IntegrationTest {
         assertEquals(150, export.body().get("cards").size());
         assertEquals("BASE", export.body().get("set_definitions").get(0).get("code").asString());
 
-        Reply drift = asAdmin("GET", "/admin/catalogue/drift", null);
+        Reply drift = asAdmin("POST", "/admin/catalogue/drift", BaseSet.MAPPER.writeValueAsString(BaseSet.batch()));
         assertEquals(200, drift.status());
         assertTrue(drift.body().get("inSync").asBoolean(), drift.body().toString());
+        assertEquals(403, call("POST", "/admin/catalogue/drift", player, "{\"cards\": []}").status());
+        assertEquals("catalogue.import_invalid", asAdmin("POST", "/admin/catalogue/drift", "{}").code());
     }
 
     // ---- texts, sets, pack types ----

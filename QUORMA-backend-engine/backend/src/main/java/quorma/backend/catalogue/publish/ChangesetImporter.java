@@ -26,7 +26,7 @@ import quorma.backend.common.ErrorCodes;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * Turns a {@link Changeset} into a draft and publishes it: the batch import, and the startup seed (which is an
+ * Turns a {@link Changeset} into a draft and publishes it: the batch import, and the bootstrap from set files (an
  * add-only import by the system user). Nothing here writes a snapshot itself: it only fills the draft and calls
  * {@link CataloguePublisher}.
  *
@@ -74,7 +74,7 @@ public class ChangesetImporter {
     }
 
     /**
-     * @param source {@code seed} or {@code batch}
+     * @param source {@code batch} for an admin's import, {@code seed} for the bootstrap from set files
      * @throws CatalogueException 409 {@code catalogue.draft_open_exists} if a draft is open; 422
      *                            {@code catalogue.draft_invalid} with the report if the draft has a problem (a real
      *                            run only: a dry run returns the report)

@@ -24,9 +24,9 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * Compares a batch (in practice the file bundled with the backend) with what the database holds, and says what differs.
- * The database is the source of truth: a startup never changes a card that exists, so when an admin edited a card or
- * the bundled file changed after the card was created, the two differ until an explicit upsert import. Read-only.
+ * Compares a batch (a set file, for instance) with what the database holds, and says what differs. The database is the
+ * source of truth and a bootstrap never changes a card that exists, so when an admin edited a card, or the file changed
+ * after the card was created, the two differ until an explicit upsert import. Read-only.
  */
 @Service
 public class CatalogueDrift {

@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Exports the Italian card text of the base set to data/labels/cards.it.json.
+"""Exports the Italian card text of the base set into the "texts" of data/sets/BASE.json.
 
 Usage (from the repo root): python3 tools/base-set/export_card_texts.py [<vault folder, default ../QUORMA-vault>]
 Reads every card note of the vault (Cards/*.md and Cards/Magie ed Equipaggiamenti/*.md): the frontmatter "id" and
 "titolo" give the key and the name, the "Testo di colore" callout gives the flavour. Cross-checks the names against
-docs/cards/card-effects.json and the ids against data/cards.json. Writes:
+docs/cards/card-effects.json and the ids against the cards of data/sets/BASE.json (run export_cards.py first). Writes
+texts.it of that file (the other languages of the file are left as they are):
 
-  card.<id>.name, card.<id>.flavour      one pair per card of data/cards.json
+  card.<id>.name, card.<id>.flavour      one pair per card of the file
   set.BASE.name, set.BASE.description
 
 Card text is mutable and outside the snapshot hash. Italian is the fallback locale: every key is required here, other
-locales (cards.<locale>.json) may be partial. Wiki links [[a|b]] and [[a]] are flattened to plain text.
+languages (the other texts.<locale> tables of the file) may be partial. Wiki links [[a|b]] and [[a]] are flattened to plain text.
 """
 import json
 import re
@@ -44,7 +45,9 @@ def frontmatter(t, key):
     return m.group(1) if m else ""
 
 
-cards = json.loads((ROOT / "data/cards.json").read_text(encoding="utf-8"))["cards"]
+SET_FILE = ROOT / "data/sets/BASE.json"
+set_doc = json.loads(SET_FILE.read_text(encoding="utf-8"))
+cards = set_doc["cards"]
 effects = {c["id"]: c["title"] for c in
            json.loads((ROOT / "docs/cards/card-effects.json").read_text(encoding="utf-8"))["cards"]}
 wanted = [c["id"] for c in cards]
@@ -73,7 +76,7 @@ for cid in wanted:
     if effects.get(cid) != title:
         problems.append(f"{cid}: name differs, card-effects.json '{effects.get(cid)}' vs vault '{title}'")
 for cid in sorted(set(notes) - set(wanted)):
-    problems.append(f"{cid} ({notes[cid][0]}): in the vault but not in data/cards.json")
+    problems.append(f"{cid} ({notes[cid][0]}): in the vault but not in data/sets/BASE.json")
 if problems:
     sys.exit("\n".join(problems))
 
@@ -82,5 +85,6 @@ for cid in wanted:
     out[f"card.{cid}.name"] = notes[cid][1]
     out[f"card.{cid}.flavour"] = notes[cid][2]
 out.update(SET_TEXTS)
-(ROOT / "data/labels/cards.it.json").write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
-print(f"{len(wanted)} cards -> data/labels/cards.it.json")
+set_doc.setdefault("texts", {})["it"] = out
+SET_FILE.write_text(json.dumps(set_doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+print(f"{len(wanted)} cards -> texts.it of data/sets/BASE.json")

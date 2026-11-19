@@ -35,7 +35,7 @@ import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * The whole base set ({@code docs/cards/card-effects.json}, exported to {@code data/cards.json}
+ * The whole base set ({@code docs/cards/card-effects.json}, exported to {@code data/sets/BASE.json}
  * by {@code tools/base-set/export_cards.py}): every card binds, and matches between decks drawn from the set play to
  * the end with a log that fits its schema, the same bytes for the same input. Prints which effects and triggers the
  * matches used.
@@ -55,7 +55,7 @@ class BaseSetTest {
 
     @BeforeAll
     static void load() throws IOException {
-        JsonNode root = MAPPER.readTree(Files.readString(Path.of("..", "data", "cards.json"),
+        JsonNode root = MAPPER.readTree(Files.readString(Path.of("..", "data", "sets", "BASE.json"),
                 StandardCharsets.UTF_8));
         for (JsonNode card : root.get("cards")) {
             boolean res = card.get("id").asString().startsWith("BASE-RES-");

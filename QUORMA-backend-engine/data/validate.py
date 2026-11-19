@@ -418,14 +418,20 @@ for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targ
             if i[1:].isdigit() and i.startswith(prefix)]
     print(f"INFO  next free {prefix} id: {prefix}{max(nums) + 1 if nums else 0} (live and parked counted)")
 
-# Cards (cards.json): the base set as the engine reads it, plus "sets" (names are card text, not here). Every ability is checked
-# like a keyword or evolution of the same shape; ids, params, slots and rank eligibility are checked here.
-if (root / "cards.json").exists():
-    cards_doc = load("cards.json")
+# Set files (sets/<CODE>.json, checks 12 and 13): one self-contained batch per set, in the format the catalogue imports:
+# the set it defines, its cards as the engine reads them plus "sets", and the card text of every language. The files are
+# not bundled into anything: an admin imports them, or a deployment bootstraps from them (initial release, or rebuilding
+# the database from zero); after that the database is the only truth. Every ability is checked like a keyword or
+# evolution of the same shape; ids, params, slots and rank eligibility are checked here.
+set_files = sorted((root / "sets").glob("*.json")) if (root / "sets").is_dir() else []
+all_card_defs, all_names, referenced_sets, all_defined_sets = {}, {}, set(), set()
+for set_path in set_files:
+    file_label = f"sets/{set_path.name}"
+    cards_doc = json.loads(set_path.read_text(encoding="utf-8"))
     # set_definitions: the sets the file creates when they do not exist yet (code, optional status and dates)
     defined_sets = set()
     for sd in cards_doc.get("set_definitions", []):
-        sw = f"cards.json set_definitions {sd.get('code', '?')}"
+        sw = f"{file_label} set_definitions {sd.get('code', '?')}"
         if set(sd) - {"code", "status", "release_date", "close_date"}:
             err(sw, f"unknown fields {sorted(set(sd) - {'code', 'status', 'release_date', 'close_date'})}")
         if not isinstance(sd.get("code"), str) or not re.fullmatch(r"[A-Z0-9_]{1,32}", sd["code"]):
@@ -436,6 +442,9 @@ if (root / "cards.json").exists():
             defined_sets.add(sd["code"])
         if sd.get("status", "BOZZA") not in ("BOZZA", "IN_VENDITA", "CHIUSA"):
             err(sw, "status must be BOZZA, IN_VENDITA or CHIUSA")
+    if defined_sets != {set_path.stem}:
+        err(file_label, f"a set file defines exactly its own set: set_definitions must be the one code {set_path.stem} (the file name)")
+    all_defined_sets |= defined_sets
     consts = vocab["constants"]
     rank_code = {1: "A", 11: "J", 12: "Q", 13: "K"}
     suit_codes = {x.upper(): x for x in consts["suits"]}
@@ -445,17 +454,23 @@ if (root / "cards.json").exists():
     seen_ids, counts = set(), {}
     for card in cards_doc.get("cards", []):
         cid = card.get("id", "?")
-        where = f"cards.json {cid}"
+        where = f"{file_label} {cid}"
         if cid in seen_ids:
             err(where, "duplicate id")
         seen_ids.add(cid)
+        # a card may be written in two set files (a reprint) only with the same definition
+        canon = json.dumps({k_: v_ for k_, v_ in card.items() if k_ != "sets"}, sort_keys=True)
+        first = all_card_defs.setdefault(cid, (file_label, canon))
+        if first[1] != canon:
+            err(where, f"also in {first[0]} with a different definition")
         card_sets = card.get("sets")
         if not isinstance(card_sets, list) or not card_sets or len(set(card_sets)) != len(card_sets) or not all(
                 isinstance(e_, str) and re.fullmatch(r"[A-Z0-9_]+", e_) for e_ in card_sets):
             err(where, "sets must be a non-empty list of distinct codes (A-Z, 0-9, _)")
-        elif "set_definitions" in cards_doc:
-            for undefined in sorted(set(card_sets) - defined_sets):
-                err(where, f"set {undefined} is not in set_definitions")
+        else:
+            referenced_sets.update(card_sets)
+            if set_path.stem not in card_sets:
+                err(where, f"a card of {file_label} is in the set {set_path.stem}")
         kind = card.get("kind")
         card_kind = {"CREATURE": None, "SPELL": "spell", "EQUIPMENT": "equipment"}.get(kind, "?")
         if card_kind == "?":
@@ -475,9 +490,10 @@ if (root / "cards.json").exists():
                 if not isinstance(card.get(f_), int) or isinstance(card.get(f_), bool) or card[f_] < (1 if f_ == "def" else 0):
                     err(where, f"{f_} must be an integer ({'>= 1' if f_ == 'def' else '>= 0'})")
             faction = sub_faction.get(card.get("subfaction"))
-            prefix = {"Resistenza Umana": "BASE-RES-", "Potenze Artificiali": "BASE-AI-"}.get(faction)
-            if prefix and not cid.startswith(prefix):
-                err(where, f"id should start with {prefix} for a {faction} subfaction")
+            # <SET>-RES-... or <SET>-AI-...: the code of the set the card was first printed in, then its faction
+            marker = {"Resistenza Umana": "RES", "Potenze Artificiali": "AI"}.get(faction)
+            if marker and not re.match(rf"^[A-Z0-9_]+-{marker}-", cid):
+                err(where, f"id should look like <SET>-{marker}-... for a {faction} subfaction")
             rank_name = rank_code.get(card.get("rank"), str(card.get("rank")))
         else:
             extra = set(card) - {"id", "sets", "kind", "faction", "abilities"}
@@ -540,12 +556,52 @@ if (root / "cards.json").exists():
     for (f_, k_), n_ in sorted(counts.items(), key=str):
         print(f"INFO  cards {f_} {k_}: {n_}")
 
-# Labels (labels/<locale>.json, not the cards.<locale>.json files, see check 13): same keys and same {placeholders} in every locale, and every vocab constant has a label.
+    # Card text of this file (check 13): names, flavour and set text, by language. Mutable, outside the snapshot hash.
+    # Italian is the fallback language, so texts.it must be complete: a name and a flavour for every card of the file, and
+    # a name and a description for its set. Any other language may be partial, but must not have unknown keys and must keep
+    # the same {placeholders}. A name is unique in its language across all the files (a deck list must tell two cards apart).
+    placeholders = lambda t_: set(re.findall(r"\{(\w+)\}", t_))
+    texts_doc = cards_doc.get("texts", {})
+    if not isinstance(texts_doc, dict):
+        err(file_label, "texts must be an object of languages")
+        texts_doc = {}
+    own_ids = [c_.get("id") for c_ in cards_doc.get("cards", [])]
+    allowed = {f"card.{i_}.{f_}" for i_ in own_ids for f_ in ("name", "flavour")}
+    allowed |= {f"set.{set_path.stem}.{f_}" for f_ in ("name", "description")}
+    base_ct = texts_doc.get("it")
+    if base_ct is None:
+        err(file_label, "texts.it is missing: Italian is the fallback language and must exist")
+    for loc, table in texts_doc.items():
+        where = f"{file_label} texts.{loc}"
+        if not re.fullmatch(r"[a-z]{2}(-[A-Z]{2})?", loc) or not isinstance(table, dict):
+            err(where, "a language is a tag such as it or pt-BR, and its texts an object")
+            continue
+        for k, v in table.items():
+            if not isinstance(v, str) or not v.strip():
+                err(where, f"'{k}' must be a non-empty string")
+                continue
+            if k not in allowed:
+                err(where, f"unknown key '{k}' (no such card in this file, or not its set)")
+            if k.endswith(".name"):
+                prev = all_names.setdefault((loc, v.strip().casefold()), (file_label, k))
+                if prev[1] != k:
+                    err(where, f"name '{v.strip()}' is also used by {prev[0]} {prev[1]}")
+            if base_ct is not None and loc != "it" and isinstance(base_ct.get(k), str) and placeholders(base_ct[k]) != placeholders(v):
+                err(where, f"'{k}' placeholders {sorted(placeholders(v))} differ from texts.it {sorted(placeholders(base_ct[k]))}")
+    if isinstance(base_ct, dict):
+        for k in sorted(allowed - base_ct.keys()):
+            err(f"{file_label} texts.it", f"missing key '{k}'")
+
+# every set a card names is defined by some set file (or it would only exist if an admin created it first)
+for undefined in sorted(referenced_sets - all_defined_sets):
+    err("sets/", f"a card is in the set {undefined}, which no file in sets/ defines")
+
+# Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
 # Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.
 labels_dir = root / "labels"
 if labels_dir.is_dir():
     placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
-    locales = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(labels_dir.glob("*.json")) if not p.name.startswith("cards.")}
+    locales = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(labels_dir.glob("*.json"))}
     base_name = "it" if "it" in locales else next(iter(locales), None)
     for loc, table in locales.items():
         for k, v in table.items():
@@ -577,44 +633,6 @@ if labels_dir.is_dir():
             for n in names:
                 if f"game.{group}.{slug(n)}" not in base:
                     err(f"labels/{base_name}.json", f"no label 'game.{group}.{slug(n)}' for vocab value '{n}'")
-
-# Card text (labels/cards.<locale>.json, check 13): card names, flavour and set texts. Mutable, outside the snapshot hash.
-# Italian is the fallback locale, so it must be complete: a name and a flavour for every card of cards.json and a name and
-# a description for every set those cards name. Any other locale may be partial, but must not have unknown keys,
-# must keep the same {placeholders}, and its names must be unique. Italian names are unique too (a deck list must tell
-# two cards apart).
-if labels_dir.is_dir() and (root / "cards.json").exists():
-    placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
-    card_ids = [c_.get("id") for c_ in cards_doc.get("cards", [])]
-    set_codes = sorted({e_ for c_ in cards_doc.get("cards", []) for e_ in (c_.get("sets") or []) if isinstance(e_, str)})
-    allowed = {f"card.{i_}.{f_}" for i_ in card_ids for f_ in ("name", "flavour")}
-    allowed |= {f"set.{e_}.{f_}" for e_ in set_codes for f_ in ("name", "description")}
-    card_texts = {}
-    for p_ in sorted(labels_dir.glob("cards.*.json")):
-        loc = p_.name[len("cards."):-len(".json")]
-        card_texts[loc] = json.loads(p_.read_text(encoding="utf-8"))
-    base_ct = card_texts.get("it")
-    if base_ct is None:
-        err("labels/cards.it.json", "missing: Italian is the fallback locale and must exist")
-    for loc, table in card_texts.items():
-        where = f"labels/cards.{loc}.json"
-        names = {}
-        for k, v in table.items():
-            if not isinstance(v, str) or not v.strip():
-                err(where, f"'{k}' must be a non-empty string")
-                continue
-            if k not in allowed:
-                err(where, f"unknown key '{k}' (no such card or set in cards.json)")
-            if k.endswith(".name"):
-                names.setdefault(v.strip().casefold(), []).append(k)
-            if base_ct is not None and loc != "it" and k in base_ct and isinstance(base_ct[k], str)                     and placeholders(base_ct[k]) != placeholders(v):
-                err(where, f"'{k}' placeholders {sorted(placeholders(v))} differ from cards.it.json {sorted(placeholders(base_ct[k]))}")
-        for v_, keys in sorted(names.items()):
-            if len(keys) > 1:
-                err(where, f"name '{v_}' used by {', '.join(sorted(keys))}")
-    if base_ct is not None:
-        for k in sorted(allowed - base_ct.keys()):
-            err("labels/cards.it.json", f"missing key '{k}'")
 
 for w in warnings:
     print("WARN ", w)

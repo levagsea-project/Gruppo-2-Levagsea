@@ -105,27 +105,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <!-- The base set, written once in data/ and copied here on every build: never two copies in git. The startup
-                 seed and the drift report read it from the classpath (catalogue/cards.json, catalogue/labels/cards.<locale>.json). -->
-            <resource>
-                <directory>../data</directory>
-                <includes>
-                    <include>cards.json</include>
-                </includes>
-                <targetPath>catalogue</targetPath>
-            </resource>
-            <resource>
-                <directory>../data/labels</directory>
-                <includes>
-                    <include>cards.*.json</include>
-                </includes>
-                <targetPath>catalogue/labels</targetPath>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -190,7 +190,7 @@ CREATE TABLE active_snapshots
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Publishing pipeline. One open draft at a time (the partial unique index). A draft is filled by the API, a batch file
--- or the startup seed, then validated, previewed and published.
+-- or the bootstrap from set files (source 'seed'), then validated, previewed and published.
 --   draft_bases : the snapshot each faction had active when the draft was opened (null = none yet). Publishing fails if
 --                 the active one has moved since: the draft is recomputed.
 --   draft_items : what the draft changes. item_type CARD (engine fields + sets), TEXT (card or set text) or

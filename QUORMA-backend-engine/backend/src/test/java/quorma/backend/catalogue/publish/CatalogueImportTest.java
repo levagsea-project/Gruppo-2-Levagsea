@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import quorma.backend.catalogue.admin.CatalogueAdminService;
 import quorma.backend.catalogue.publish.CatalogueDrift.DriftReport;
-import quorma.backend.catalogue.publish.CatalogueSeeder.SeedOutcome;
+import quorma.backend.catalogue.publish.CatalogueBootstrap.BootstrapOutcome;
 import quorma.backend.catalogue.publish.CataloguePublisher.Outcome;
 import quorma.backend.catalogue.publish.ChangesetImporter.ImportResponse;
 import quorma.backend.catalogue.publish.ChangesetImporter.Mode;
@@ -26,21 +29,19 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
-/** The entrances to the pipeline: the startup seed, the batch import, the export and the drift report. */
+/** The entrances to the pipeline: the bootstrap from set files, the batch import, the export and the drift report. */
 class CatalogueImportTest extends IntegrationTest {
 
     private static final String RES = "RESISTENZA_UMANA";
 
     @Autowired
-    CatalogueSeeder seeder;
+    CatalogueBootstrap bootstrap;
     @Autowired
     ChangesetImporter importer;
     @Autowired
     CatalogueExporter exporter;
     @Autowired
     CatalogueDrift drift;
-    @Autowired
-    BundledCatalogue bundled;
     @Autowired
     CatalogueAdminService admin;
     @Autowired
@@ -57,6 +58,15 @@ class CatalogueImportTest extends IntegrationTest {
         return Changeset.parse(root);
     }
 
+    /** Loads the set files of the repository, as a deployment bootstrap would. */
+    private BootstrapOutcome seed() {
+        return bootstrap.bootstrap(BaseSet.SETS_DIR);
+    }
+
+    private Changeset baseSetFile() {
+        return Changeset.parse(BaseSet.batch());
+    }
+
     private UUID activeOf(String faction) {
         return jdbc.queryForObject("select snapshot_id from active_snapshots where faction = ?", UUID.class, faction);
     }
@@ -66,21 +76,21 @@ class CatalogueImportTest extends IntegrationTest {
                 + "where c.card_code = ? and d.snapshot_id = ?", Integer.class, code, activeOf(RES));
     }
 
-    // ---- the bundled file ----
+    // ---- the set file ----
 
     @Test
-    void theBundledBaseSetIsOnTheClasspathAndIsTheSameAsTheDataFolder() {
-        Changeset c = bundled.load();
+    void theBaseSetFileIsAValidBatchWithItsSetAndTexts() {
+        Changeset c = baseSetFile();
         assertEquals(150, c.cards().size());
         assertEquals("IN_VENDITA", c.sets().get(0).status());
         assertEquals(302, c.texts().get("it").size(), "150 names, 150 flavours, the set name and description");
     }
 
-    // ---- the startup seed ----
+    // ---- the bootstrap from a folder of set files ----
 
     @Test
-    void theSeedAddsTheBaseSetOnceAndFromTheSystemUser() {
-        assertEquals(SeedOutcome.SEEDED, seeder.seed());
+    void theBootstrapAddsTheBaseSetOnceAndFromTheSystemUser() {
+        assertEquals(BootstrapOutcome.LOADED, seed());
 
         assertEquals(150, count("cards"));
         assertEquals(2, count("pool_snapshots"));
@@ -92,29 +102,77 @@ class CatalogueImportTest extends IntegrationTest {
                 + "where u.username = 'sistema'", Integer.class));
 
         UUID res = activeOf(RES);
-        assertEquals(SeedOutcome.NOTHING_TO_ADD, seeder.seed(), "a second start adds nothing");
+        assertEquals(BootstrapOutcome.NOTHING_TO_ADD, seed(), "a second start adds nothing");
         assertEquals(res, activeOf(RES));
         assertEquals(1, count("catalogue_drafts"), "and leaves no draft behind");
     }
 
     @Test
-    void aStartupNeverTouchesACardThatExistsEvenIfTheFileChanged() {
-        seeder.seed();
+    void aBootstrapNeverTouchesACardThatExistsEvenIfTheFileChanged() {
+        seed();
         String code = "BASE-RES-7-SPI-SPE";
         int original = atkOf(code);
 
-        // an admin edits the card (upsert), then the backend restarts with the file as it was
+        // an admin edits the card (upsert), then the database is bootstrapped again with the file as it was
         ObjectNode edited = BaseSet.batch();
         ((ObjectNode) card(edited, code)).put("atk", original + 5);
         importer.run(batch(edited), Mode.UPSERT, false, "batch", admin1, "edit");
         assertEquals(original + 5, atkOf(code));
 
-        assertEquals(SeedOutcome.NOTHING_TO_ADD, seeder.seed());
-        assertEquals(original + 5, atkOf(code), "the admin's edit survives the restart");
+        assertEquals(BootstrapOutcome.NOTHING_TO_ADD, seed());
+        assertEquals(original + 5, atkOf(code), "the edit of the admin survives");
 
-        DriftReport report = drift.compare(bundled.load());
+        DriftReport report = drift.compare(baseSetFile());
         assertEquals(java.util.List.of(code), report.changedCards());
         assertFalse(report.inSync());
+    }
+
+    @Test
+    void theBootstrapIsOffUnlessAFolderIsGiven() {
+        bootstrap.run(null);
+        assertEquals(0, count("cards"));
+        assertEquals(0, count("catalogue_drafts"));
+    }
+
+    @Test
+    void aFolderOfSeveralSetFilesIsLoadedAsOneBatchWithReprints() throws IOException {
+        Path dir = Files.createTempDirectory("sets");
+        Files.writeString(dir.resolve("BASE.json"), BaseSet.MAPPER.writeValueAsString(BaseSet.batch()));
+        // X1: one new creature, and a reprint of a base card (same definition, now in both sets)
+        ObjectNode reprint = BaseSet.card("BASE-RES-7-SPI-SPE");
+        reprint.putArray("sets").add("BASE").add("X1");
+        ObjectNode fresh = BaseSet.card(firstCreatureOfRank(5));
+        fresh.put("id", "X1-RES-NEW");
+        fresh.putArray("sets").add("X1");
+        ObjectNode x1 = BaseSet.MAPPER.createObjectNode();
+        x1.putArray("set_definitions").addObject().put("code", "X1");
+        x1.putArray("cards").add(reprint).add(fresh);
+        ObjectNode it = x1.putObject("texts").putObject("it");
+        it.put("card.X1-RES-NEW.name", "Nuova di X1");
+        it.put("set.X1.name", "Primo ampliamento");
+        Files.writeString(dir.resolve("X1.json"), BaseSet.MAPPER.writeValueAsString(x1));
+
+        assertEquals(BootstrapOutcome.LOADED, bootstrap.bootstrap(dir));
+
+        assertEquals(151, count("cards"));
+        assertEquals("BOZZA", jdbc.queryForObject("select status from card_sets where code = 'X1'", String.class));
+        assertEquals("IN_VENDITA", jdbc.queryForObject("select status from card_sets where code = 'BASE'", String.class));
+        assertEquals(2, jdbc.queryForObject("select count(*) from card_set_cards l join cards c on c.id = l.card_id "
+                + "where c.card_code = 'BASE-RES-7-SPI-SPE'", Integer.class), "the reprint is in both sets");
+        assertEquals(1, jdbc.queryForObject("select count(*) from card_set_cards l join card_sets s on s.id = l.set_id "
+                + "join cards c on c.id = l.card_id where s.code = 'X1' and c.card_code = 'X1-RES-NEW'", Integer.class));
+        assertEquals(2, count("pool_snapshots"), "one batch: one snapshot per faction, not one per file");
+        assertEquals(1, count("catalogue_drafts"));
+    }
+
+    @Test
+    void aBadFolderIsLoggedAndNeverThrows() throws IOException {
+        assertEquals(BootstrapOutcome.FAILED, bootstrap.bootstrap(Path.of("no", "such", "folder")));
+        assertEquals(BootstrapOutcome.FAILED, bootstrap.bootstrap(Files.createTempDirectory("empty")));
+        Path broken = Files.createTempDirectory("broken");
+        Files.writeString(broken.resolve("X.json"), "{\"cards\": 5}");
+        assertEquals(BootstrapOutcome.FAILED, bootstrap.bootstrap(broken));
+        assertEquals(0, count("cards"));
     }
 
     // ---- the import ----
@@ -158,7 +216,7 @@ class CatalogueImportTest extends IntegrationTest {
 
     @Test
     void addOnlyIgnoresAChangedCardAndUpsertAppliesIt() {
-        seeder.seed();
+        seed();
         UUID before = activeOf(RES);
         ObjectNode changed = BaseSet.batch();
         ObjectNode card = (ObjectNode) card(changed, "BASE-RES-7-SPI-SPE");
@@ -178,7 +236,7 @@ class CatalogueImportTest extends IntegrationTest {
 
     @Test
     void aNewLanguageFileFillsInWithoutReplacingAnything() {
-        seeder.seed();
+        seed();
         jdbc.update("update card_texts set name = 'Rinominata' where locale = 'it' and card_id = (select id from cards where card_code = 'BASE-RES-7-SPI-SPE')");
 
         ObjectNode texts = BaseSet.batch();
@@ -198,7 +256,7 @@ class CatalogueImportTest extends IntegrationTest {
 
     @Test
     void textForACardThatDoesNotExistIsAProblem() {
-        seeder.seed();
+        seed();
         ObjectNode texts = BaseSet.batch();
         texts.set("cards", MAPPER_ARRAY());
         ((ObjectNode) texts.get("texts")).putObject("en").put("card.NO-SUCH-CARD.name", "Ghost");
@@ -211,7 +269,7 @@ class CatalogueImportTest extends IntegrationTest {
 
     @Test
     void exportThenImportAgainChangesNothing() {
-        seeder.seed();
+        seed();
         ObjectNode exported = exporter.export();
 
         assertEquals(150, exported.get("cards").size());
@@ -229,7 +287,7 @@ class CatalogueImportTest extends IntegrationTest {
 
     @Test
     void anExportCarriesTheEditsOfAnAdmin() {
-        seeder.seed();
+        seed();
         admin.putText("CARD", "BASE-RES-7-SPI-SPE", "it", BaseSet.MAPPER.readTree("{\"name\": \"Nome nuovo\", \"flavour\": \"Testo nuovo\"}"));
         ObjectNode exported = exporter.export();
         assertEquals("Nome nuovo", exported.get("texts").get("it").get("card.BASE-RES-7-SPI-SPE.name").asString());
@@ -240,24 +298,31 @@ class CatalogueImportTest extends IntegrationTest {
 
     @Test
     void driftSaysWhatDiffers() {
-        DriftReport empty = drift.compare(bundled.load());
+        DriftReport empty = drift.compare(baseSetFile());
         assertFalse(empty.inSync());
         assertEquals(150, empty.missingCards().size());
 
-        seeder.seed();
-        DriftReport synced = drift.compare(bundled.load());
+        seed();
+        DriftReport synced = drift.compare(baseSetFile());
         assertTrue(synced.inSync(), synced.toString());
         assertEquals(0, synced.extraCards().size());
         assertEquals(0, synced.differingTexts().size());
 
         admin.putText("CARD", "BASE-RES-7-SPI-SPE", "it", BaseSet.MAPPER.readTree("{\"name\": \"Nome nuovo\"}"));
-        DriftReport edited = drift.compare(bundled.load());
+        DriftReport edited = drift.compare(baseSetFile());
         assertTrue(edited.inSync(), "an edited text is informational, not a missing piece");
         assertTrue(edited.differingTexts().contains("it:card.BASE-RES-7-SPI-SPE.name"));
         assertEquals(java.util.List.of("it:card.BASE-RES-7-SPI-SPE.name"), edited.differingTexts(), "the flavour was left out, so it is kept");
     }
 
     // ---- helpers ----
+
+    private static String firstCreatureOfRank(int rank) {
+        return BaseSet.cards().stream()
+                .filter(c -> c.get("kind").asString().equals("CREATURE") && c.get("rank").asInt() == rank
+                        && c.get("id").asString().startsWith("BASE-RES-"))
+                .findFirst().orElseThrow().get("id").asString();
+    }
 
     private static JsonNode card(ObjectNode batch, String code) {
         for (JsonNode c : batch.get("cards")) {

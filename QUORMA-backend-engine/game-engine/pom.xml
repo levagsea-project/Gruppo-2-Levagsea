@@ -63,9 +63,8 @@
                 </includes>
                 <excludes>
                     <exclude>parked/**</exclude>
-                    <!-- the card file belongs to the catalogue (the backend bundles it), not to the rules the engine runs -->
-                    <exclude>cards.json</exclude>
                 </excludes>
+                <!-- only the top-level rule files: the set files in data/sets/ are catalogue content, not rules the engine runs -->
                 <targetPath>ruleset</targetPath>
                 <filtering>false</filtering>
             </resource>

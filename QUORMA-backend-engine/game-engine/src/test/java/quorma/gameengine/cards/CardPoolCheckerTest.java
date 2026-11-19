@@ -36,7 +36,7 @@ class CardPoolCheckerTest {
 
     @BeforeAll
     static void load() throws IOException {
-        JsonNode root = MAPPER.readTree(Files.readString(Path.of("..", "data", "cards.json"), StandardCharsets.UTF_8));
+        JsonNode root = MAPPER.readTree(Files.readString(Path.of("..", "data", "sets", "BASE.json"), StandardCharsets.UTF_8));
         for (JsonNode card : root.get("cards")) {
             ObjectNode engineCard = (ObjectNode) card.deepCopy();
             engineCard.remove("sets"); // catalogue data, not known to the engine

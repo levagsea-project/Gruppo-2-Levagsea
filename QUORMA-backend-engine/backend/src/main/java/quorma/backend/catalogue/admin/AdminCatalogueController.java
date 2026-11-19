@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import quorma.backend.catalogue.CatalogueDraft;
 import quorma.backend.catalogue.DraftItem;
 import quorma.backend.catalogue.DraftItemType;
-import quorma.backend.catalogue.publish.BundledCatalogue;
 import quorma.backend.catalogue.publish.CatalogueDrift;
 import quorma.backend.catalogue.publish.CatalogueDrift.DriftReport;
 import quorma.backend.catalogue.publish.CatalogueException;
@@ -61,19 +60,17 @@ public class AdminCatalogueController {
     private final ChangesetImporter importer;
     private final CatalogueExporter exporter;
     private final CatalogueDrift drift;
-    private final BundledCatalogue bundled;
     private final CatalogueAdminService admin;
     private final CatalogueProperties props;
 
     public AdminCatalogueController(DraftService drafts, CataloguePublisher publisher, ChangesetImporter importer,
-                                    CatalogueExporter exporter, CatalogueDrift drift, BundledCatalogue bundled,
-                                    CatalogueAdminService admin, CatalogueProperties props) {
+                                    CatalogueExporter exporter, CatalogueDrift drift, CatalogueAdminService admin,
+                                    CatalogueProperties props) {
         this.drafts = drafts;
         this.publisher = publisher;
         this.importer = importer;
         this.exporter = exporter;
         this.drift = drift;
-        this.bundled = bundled;
         this.admin = admin;
         this.props = props;
     }
@@ -122,7 +119,7 @@ public class AdminCatalogueController {
 
     @PutMapping("/drafts/{id}/cards/{code}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Put a card in the draft", description = "The body is a card as `data/cards.json` writes it (engine fields plus "
+    @Operation(summary = "Put a card in the draft", description = "The body is a card as a set file writes it (engine fields plus "
             + "`sets`); its `id` must be the code. A card that exists keeps its identity; a changed definition becomes a new snapshot.")
     public void putCard(@PathVariable UUID id, @PathVariable String code, @RequestBody JsonNode card) {
         requireKey(card, "id", code);
@@ -191,8 +188,8 @@ public class AdminCatalogueController {
     // ---- batch import, export, drift ----
 
     @PostMapping("/import")
-    @Operation(summary = "Import a batch of cards", description = "The body is a batch in the format of `data/cards.json` (cards, set_definitions, "
-            + "texts; see the export). `mode` is `add-only` (cards that exist are never touched; texts and sets are still filled in) or "
+    @Operation(summary = "Import a batch of cards", description = "The body is a batch in the format of a set file `data/sets/<CODE>.json` (cards, "
+            + "set_definitions, texts; see the export). `mode` is `add-only` (cards that exist are never touched; texts and sets are still filled in) or "
             + "`upsert` (changed cards become a new snapshot). `dryRun` defaults to true: it checks everything and keeps nothing; send "
             + "`dryRun=false` to import. All or nothing. 413 `catalogue.import_too_large`, 400 `catalogue.import_invalid`, 422 "
             + "`catalogue.draft_invalid` with the report.")
@@ -200,21 +197,13 @@ public class AdminCatalogueController {
                                       @Parameter(description = "add-only or upsert") @RequestParam(defaultValue = "add-only") String mode,
                                       @RequestParam(defaultValue = "true") boolean dryRun,
                                       @RequestBody String body) {
-        if (body.getBytes(StandardCharsets.UTF_8).length > props.maxImportBytes().toBytes()) {
-            throw new CatalogueException(HttpStatus.PAYLOAD_TOO_LARGE, ErrorCodes.CATALOGUE_IMPORT_TOO_LARGE);
-        }
         Mode m = switch (mode) {
             case "add-only" -> Mode.ADD_ONLY;
             case "upsert" -> Mode.UPSERT;
             default -> throw new CatalogueException(HttpStatus.BAD_REQUEST, ErrorCodes.CATALOGUE_IMPORT_INVALID, "mode is add-only or upsert");
         };
-        JsonNode root;
-        try {
-            root = MAPPER.readTree(body);
-        } catch (RuntimeException e) {
-            throw new CatalogueException(HttpStatus.BAD_REQUEST, ErrorCodes.CATALOGUE_IMPORT_INVALID, "the body is not JSON");
-        }
-        return importer.run(Changeset.parse(root), m, dryRun, "batch", UUID.fromString(jwt.getSubject()), null);
+        Changeset batch = parseBatch(body);
+        return importer.run(batch, m, dryRun, "batch", UUID.fromString(jwt.getSubject()), null);
     }
 
     @GetMapping("/export")
@@ -224,11 +213,13 @@ public class AdminCatalogueController {
         return exporter.export();
     }
 
-    @GetMapping("/drift")
-    @Operation(summary = "Compare the file bundled with the backend to the database", description = "A startup never changes a card that exists, "
-            + "so the two differ when an admin edited a card or the bundled file changed after the card was created.")
-    public DriftReport drift() {
-        return drift.compare(bundled.load());
+    @PostMapping("/drift")
+    @Operation(summary = "Compare a batch to the database", description = "The body is a batch in the same format as the import (for example a set "
+            + "file from `data/sets/`). Says which cards are missing, which differ from the active definition, which exist only in the "
+            + "database, and which links and texts are missing or read differently. Changes nothing. The database is the truth: this "
+            + "is how to see how far a file has fallen behind it.")
+    public DriftReport drift(@RequestBody String body) {
+        return drift.compare(parseBatch(body));
     }
 
     // ---- texts, sets, pack types: not part of a snapshot, edited directly ----
@@ -290,6 +281,20 @@ public class AdminCatalogueController {
     }
 
     // ---- helpers ----
+
+    /** The body of an import or a drift check as a batch: within the size limit, JSON, and in the batch format. */
+    private Changeset parseBatch(String body) {
+        if (body.getBytes(StandardCharsets.UTF_8).length > props.maxImportBytes().toBytes()) {
+            throw new CatalogueException(HttpStatus.PAYLOAD_TOO_LARGE, ErrorCodes.CATALOGUE_IMPORT_TOO_LARGE);
+        }
+        try {
+            return Changeset.parse(MAPPER.readTree(body));
+        } catch (CatalogueException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new CatalogueException(HttpStatus.BAD_REQUEST, ErrorCodes.CATALOGUE_IMPORT_INVALID, "the body is not JSON");
+        }
+    }
 
     private static void requireKey(JsonNode body, String field, String expected) {
         if (body == null || !body.isObject() || !body.has(field) || !expected.equals(body.get(field).asString(null))) {

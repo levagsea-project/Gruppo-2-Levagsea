@@ -13,8 +13,8 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * A batch of catalogue changes, in the format of {@code data/cards.json}: the base set file, a file an admin edits and
- * re-imports, and the export of the active catalogue all look like this.
+ * A batch of catalogue changes, in the format of the set files ({@code data/sets/<CODE>.json}): a set file, a file an
+ * admin edits and re-imports, and the export of the active catalogue all look like this.
  *
  * <pre>
  * { "set_definitions": [ {"code": "BASE", "status": "IN_VENDITA"} ],       sets created if they do not exist yet
@@ -24,8 +24,7 @@ import tools.jackson.databind.node.ObjectNode;
  * </pre>
  *
  * Keys that start with an underscore ({@code _readme}) are ignored. {@code texts} is optional and may be partial for
- * every locale but Italian, which every new card and set needs. The {@code cards.<locale>.json} label files are the
- * {@code texts} of one locale.
+ * every locale but Italian, which every new card and set needs.
  *
  * @param cards the cards as written, in file order
  * @param sets  the sets the batch defines
@@ -109,13 +108,38 @@ public record Changeset(List<ObjectNode> cards, List<SetDefinition> sets, Map<St
         return new Changeset(cards, sets, texts);
     }
 
-    /** One label file ({@code cards.<locale>.json}: a flat object of keys to texts) as the texts of {@code locale}. */
-    public static Map<String, String> labelTable(JsonNode table) {
-        Map<String, String> out = new LinkedHashMap<>();
-        for (String key : table.propertyNames()) {
-            out.put(key, table.get(key).asString());
+    /**
+     * Several set files as one batch: the cards of all of them (a card in two files, a reprint, appears once with the
+     * sets of both), every set definition, and the texts of every language. The first file wins where two files say
+     * the same thing, which the validator guarantees is the same thing. One batch means one draft and one publish: the
+     * load is atomic and does not depend on the order of the files.
+     */
+    public static Changeset merge(List<Changeset> parts) {
+        Map<String, ObjectNode> cards = new LinkedHashMap<>();
+        Map<String, SetDefinition> sets = new LinkedHashMap<>();
+        Map<String, Map<String, String>> texts = new TreeMap<>();
+        for (Changeset part : parts) {
+            for (ObjectNode card : part.cards()) {
+                ObjectNode first = cards.get(card.get("id").asString());
+                if (first == null) {
+                    cards.put(card.get("id").asString(), card.deepCopy());
+                } else if (card.has("sets") && card.get("sets").isArray()) {
+                    var known = new java.util.HashSet<String>();
+                    first.withArray("sets").forEach(s -> known.add(s.asString()));
+                    card.get("sets").forEach(s -> {
+                        if (known.add(s.asString())) {
+                            first.withArray("sets").add(s.asString());
+                        }
+                    });
+                }
+            }
+            part.sets().forEach(s -> sets.putIfAbsent(s.code(), s));
+            part.texts().forEach((locale, table) -> {
+                Map<String, String> into = texts.computeIfAbsent(locale, k -> new LinkedHashMap<>());
+                table.forEach(into::putIfAbsent);
+            });
         }
-        return out;
+        return new Changeset(new ArrayList<>(cards.values()), new ArrayList<>(sets.values()), texts);
     }
 
     /** What the text key means: kind CARD or SET, the code, and the field (name, flavour or description). */

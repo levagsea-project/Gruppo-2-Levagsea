@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import quorma.backend.catalogue.DraftItemType;
@@ -14,37 +13,47 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * The 150 cards of the base set as a draft would hold them: the cards of {@code data/cards.json} (engine fields and
- * {@code sets}), their Italian texts from {@code data/labels/cards.it.json}, and the set BASE with its text.
+ * The base set as the tests use it: the set file {@code data/sets/BASE.json}, which holds the set definition, the 150
+ * cards (engine fields and {@code sets}) and their Italian texts. The backend does not bundle it: tests read it from the
+ * repository, as an admin would import it.
  */
 public final class BaseSet {
 
     public static final JsonMapper MAPPER = JsonMapper.builder().build();
 
-    private static final List<JsonNode> CARDS = new ArrayList<>();
-    private static final JsonNode LABELS;
+    /** The folder of set files, as a bootstrap is pointed at it. */
+    public static final Path SETS_DIR = Path.of("..", "data", "sets");
+
+    private static final ObjectNode FILE;
 
     static {
         try {
-            for (JsonNode c : MAPPER.readTree(Files.readString(Path.of("..", "data", "cards.json"), StandardCharsets.UTF_8)).get("cards")) {
-                CARDS.add(c);
-            }
-            LABELS = MAPPER.readTree(Files.readString(Path.of("..", "data", "labels", "cards.it.json"), StandardCharsets.UTF_8));
+            FILE = (ObjectNode) MAPPER.readTree(Files.readString(SETS_DIR.resolve("BASE.json"), StandardCharsets.UTF_8));
         } catch (IOException e) {
-            throw new IllegalStateException("cannot read the base set from ../data", e);
+            throw new IllegalStateException("cannot read data/sets/BASE.json", e);
         }
     }
 
     private BaseSet() {
     }
 
+    /** The whole base set as a batch (cards, set definition, Italian texts), a fresh copy. */
+    public static ObjectNode batch() {
+        return FILE.deepCopy();
+    }
+
     /** A copy of every card of the base set. */
     public static List<ObjectNode> cards() {
-        return CARDS.stream().map(c -> ((ObjectNode) c).deepCopy()).toList();
+        return java.util.stream.StreamSupport.stream(FILE.get("cards").spliterator(), false)
+                .map(c -> ((ObjectNode) c).deepCopy()).toList();
     }
 
     public static ObjectNode card(String id) {
         return cards().stream().filter(c -> c.get("id").asString().equals(id)).findFirst().orElseThrow();
+    }
+
+    private static JsonNode italian() {
+        return FILE.get("texts").get("it");
     }
 
     /** The Italian text item of a card, as the draft holds it. */
@@ -53,20 +62,9 @@ public final class BaseSet {
         t.put("kind", "CARD");
         t.put("code", code);
         t.put("locale", "it");
-        t.put("name", LABELS.get("card." + code + ".name").asString());
-        t.put("flavour", LABELS.get("card." + code + ".flavour").asString());
+        t.put("name", italian().get("card." + code + ".name").asString());
+        t.put("flavour", italian().get("card." + code + ".flavour").asString());
         return t;
-    }
-
-    /** The whole base set as a batch ({@code data/cards.json} with its sets, plus the Italian texts), a fresh copy. */
-    public static ObjectNode batch() {
-        try {
-            ObjectNode root = (ObjectNode) MAPPER.readTree(Files.readString(Path.of("..", "data", "cards.json"), StandardCharsets.UTF_8));
-            root.putObject("texts").set("it", LABELS.deepCopy());
-            return root;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     /** Puts the whole base set into the draft: the set BASE and its text, every card and its Italian text. */
@@ -78,8 +76,8 @@ public final class BaseSet {
         setText.put("kind", "SET");
         setText.put("code", "BASE");
         setText.put("locale", "it");
-        setText.put("name", LABELS.get("set.BASE.name").asString());
-        setText.put("description", LABELS.get("set.BASE.description").asString());
+        setText.put("name", italian().get("set.BASE.name").asString());
+        setText.put("description", italian().get("set.BASE.description").asString());
         drafts.putItem(draftId, DraftItemType.TEXT, setText);
         for (ObjectNode card : cards()) {
             drafts.putItem(draftId, DraftItemType.CARD, card);

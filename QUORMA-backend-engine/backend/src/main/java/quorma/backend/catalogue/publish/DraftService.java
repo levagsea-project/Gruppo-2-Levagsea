@@ -26,7 +26,7 @@ import quorma.backend.common.ErrorCodes;
 import tools.jackson.databind.JsonNode;
 
 /**
- * The draft side of the publishing pipeline: open the one draft, fill it (the API, a batch file and the startup seed
+ * The draft side of the publishing pipeline: open the one draft, fill it (the API, a batch file and the bootstrap from set files
  * all do this), preview what it would do, rebase it onto the current active snapshots, or discard it. Publishing is
  * {@link CataloguePublisher}. Nothing here writes a snapshot.
  *
@@ -57,7 +57,7 @@ public class DraftService {
     /**
      * Opens the draft, recording the snapshot each faction has active now (the draft's {@code based_on}).
      *
-     * @param source {@code seed}, {@code api} or {@code batch}
+     * @param source {@code seed} (the bootstrap from set files), {@code api} or {@code batch}
      * @throws CatalogueException 409 {@code catalogue.draft_open_exists} if a draft is already open
      */
     @Transactional

@@ -118,7 +118,7 @@ public class CataloguePublisher {
     }
 
     /**
-     * @param actor the user who publishes (a system user for the startup seed)
+     * @param actor the user who publishes (a system user for the bootstrap from set files)
      * @throws CatalogueException 404 {@code catalogue.draft_not_found}, 409 {@code catalogue.draft_closed}, 409
      *                            {@code catalogue.draft_stale} (the active snapshot moved since the draft was opened:
      *                            rebase it), 422 {@code catalogue.draft_invalid} with the report of every problem

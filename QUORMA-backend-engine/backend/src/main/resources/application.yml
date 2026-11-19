@@ -56,10 +56,12 @@ packs:
       support-slots: 3
 
 catalogue:
-  seed:
-    # At startup, add the bundled base set (data/cards.json, copied into the jar by Maven) where it is missing.
-    # Add-only: a card that exists is never touched. The engine service may still be starting: retry a few times.
-    enabled: ${CATALOGUE_SEED_ENABLED:true}
+  bootstrap:
+    # Off unless a folder is given. For an initial deployment, or to rebuild the database from zero: at startup, add what
+    # the set files in this folder (data/sets/*.json) have and the database lacks, add-only (a card that exists is never
+    # touched). Nothing is bundled into the jar, and once loaded the database is the only truth: later sets are added by
+    # an admin (API) or by importing a file. The engine service may still be starting: retry a few times.
+    path: ${CATALOGUE_BOOTSTRAP_PATH:}
     retries: 10
     retry-delay: 3s
   # The most a batch import body may weigh (the base set is about 350 KB).

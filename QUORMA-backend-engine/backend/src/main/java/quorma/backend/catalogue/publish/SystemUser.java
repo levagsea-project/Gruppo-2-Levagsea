@@ -8,7 +8,7 @@ import quorma.backend.user.User;
 import quorma.backend.user.UserRepository;
 
 /**
- * The account that publishes what nobody published: the startup seed. An admin with no usable password (the stored
+ * The account that publishes what nobody published: the bootstrap from set files. An admin with no usable password (the stored
  * value is not a BCrypt hash, so no password matches it) and no credits: it cannot log in, it only appears in the audit
  * trail of a snapshot.
  */

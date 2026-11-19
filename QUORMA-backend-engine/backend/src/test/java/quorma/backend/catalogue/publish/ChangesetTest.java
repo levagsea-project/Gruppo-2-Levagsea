@@ -3,6 +3,7 @@ package quorma.backend.catalogue.publish;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import quorma.backend.common.ErrorCodes;
 import tools.jackson.databind.JsonNode;
@@ -70,6 +71,25 @@ class ChangesetTest {
         assertEquals(new Changeset.TextKey("SET", "BASE", "description"), Changeset.TextKey.of("set.BASE.description"));
         assertThrows(CatalogueException.class, () -> Changeset.TextKey.of("card.A.description"));
         assertThrows(CatalogueException.class, () -> Changeset.TextKey.of("set.BASE.flavour"));
+    }
+
+    @Test
+    void severalSetFilesMergeIntoOneBatchWithTheSetsOfAReprintAdded() {
+        Changeset base = Changeset.parse(json("{\"set_definitions\": [{\"code\": \"BASE\"}], \"cards\": [{\"id\": \"A\", \"sets\": [\"BASE\"]}], "
+                + "\"texts\": {\"it\": {\"card.A.name\": \"Uno\"}}}"));
+        Changeset x1 = Changeset.parse(json("{\"set_definitions\": [{\"code\": \"X1\"}], \"cards\": [{\"id\": \"A\", \"sets\": [\"BASE\", \"X1\"]}, "
+                + "{\"id\": \"B\", \"sets\": [\"X1\"]}], \"texts\": {\"it\": {\"card.A.name\": \"Ignorato\", \"card.B.name\": \"Due\"}, "
+                + "\"en\": {\"card.B.name\": \"Two\"}}}"));
+
+        Changeset merged = Changeset.merge(List.of(base, x1));
+
+        assertEquals(2, merged.cards().size(), "the reprint appears once");
+        assertEquals(List.of("BASE", "X1"), java.util.stream.StreamSupport.stream(merged.cards().get(0).get("sets").spliterator(), false)
+                .map(JsonNode::asString).toList());
+        assertEquals(List.of("BASE", "X1"), merged.sets().stream().map(Changeset.SetDefinition::code).toList());
+        assertEquals("Uno", merged.texts().get("it").get("card.A.name"), "the first file wins");
+        assertEquals("Due", merged.texts().get("it").get("card.B.name"));
+        assertEquals("Two", merged.texts().get("en").get("card.B.name"));
     }
 
     @Test
