@@ -146,9 +146,11 @@ final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContex
         PlayerEffect playerEffect = PlayerEffects.find(e.effectId()).orElse(null);
         if (playerEffect != null) {
             Side player = e.targetId().equals(TargetIds.OPPONENT_PLAYER) ? item.side().other() : item.side();
-            playerEffect.apply(this, new PlayerEffect.Use(e, item.side(), player, item.source(), log))
+            List<MatchEvent> detail = new ArrayList<>();
+            playerEffect.apply(this, new PlayerEffect.Use(e, item.side(), player, item.source(), detail))
                     .ifPresent(r -> log.add(new EffectResolved(source, e.abilityId(), e.effectId(), r.target(),
                             r.changes(), OptionalInt.empty())));
+            log.addAll(detail);
             return;
         }
         List<Creature> targets;
@@ -439,9 +441,11 @@ final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContex
             PlayerEffect playerEffect = PlayerEffects.find(e.effectId()).orElse(null);
             if (playerEffect != null) {
                 Side player = e.targetId().equals(TargetIds.OPPONENT_PLAYER) ? owner.other() : owner;
-                playerEffect.apply(this, new PlayerEffect.Use(e, owner, player, null, log))
+                List<MatchEvent> detail = new ArrayList<>();
+                playerEffect.apply(this, new PlayerEffect.Use(e, owner, player, null, detail))
                         .ifPresent(r -> log.add(new MatchEvent.CardEffectResolved(owner, card.id(), e.abilityId(),
                                 e.effectId(), r.target(), r.changes())));
+                log.addAll(detail);
                 continue;
             }
             List<Creature> targets = Targets.find(e.targetId()).orElseThrow(

@@ -1,11 +1,13 @@
 package quorma.gameengine.effects;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.log.MatchEvent;
+import quorma.gameengine.log.TargetRef;
 import quorma.gameengine.model.Card;
 import quorma.gameengine.model.CreatureCard;
 import quorma.gameengine.model.PlayerState;
@@ -52,8 +54,9 @@ public final class ReorderDeckEffect implements PlayerEffect {
                 }
             }
         }
+        Optional<Resolution> resolved = Optional.of(new Resolution(new TargetRef.PlayerRef(owner), List.of()));
         if (best < 0) {
-            return Optional.empty();
+            return resolved;
         }
         Card card = p.deck().remove(best);
         String position = e.stringParam("position").orElse("top");
@@ -63,6 +66,6 @@ public final class ReorderDeckEffect implements PlayerEffect {
             p.deck().add(card);
         }
         use.log().add(new MatchEvent.CardMoved(owner, card.id(), position));
-        return Optional.empty();
+        return resolved;
     }
 }

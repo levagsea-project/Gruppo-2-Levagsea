@@ -2,11 +2,13 @@ package quorma.gameengine.effects;
 
 import static quorma.gameengine.effects.ParamRule.range;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import quorma.gameengine.data.ResClass;
+import quorma.gameengine.log.TargetRef;
 import quorma.gameengine.model.CreatureCard;
 import quorma.gameengine.model.PlayerState;
 import quorma.gameengine.model.Side;
@@ -43,23 +45,24 @@ public final class ReturnCreatureEffect implements PlayerEffect {
         PlayerState p = ctx.player(owner);
         OptionalInt lane = e.effectParams().containsKey("lane") ? (p.creatureAt(e.intParam("lane")).isEmpty()
                 ? OptionalInt.of(e.intParam("lane")) : OptionalInt.empty()) : p.lowestEmptyLane();
+        Optional<Resolution> resolved = Optional.of(new Resolution(new TargetRef.PlayerRef(owner), List.of()));
         if (lane.isEmpty()) {
-            return Optional.empty();
+            return resolved;
         }
         if (e.stringParam("source").orElse("deck").equals("discard")) {
             for (int i = p.discard().size() - 1; i >= 0; i--) {
                 if (p.discard().get(i) instanceof CreatureCard creatureCard) {
                     p.discard().remove(i);
                     ctx.place(owner, ctx.newCreature(creatureCard, lane.getAsInt()), false, use.log());
-                    return Optional.empty();
+                    return resolved;
                 }
             }
-            return Optional.empty();
+            return resolved;
         }
         if (!p.deck().isEmpty() && p.deck().get(0) instanceof CreatureCard creatureCard) {
             p.deck().remove(0);
             ctx.place(owner, ctx.newCreature(creatureCard, lane.getAsInt()), true, use.log());
         }
-        return Optional.empty();
+        return resolved;
     }
 }

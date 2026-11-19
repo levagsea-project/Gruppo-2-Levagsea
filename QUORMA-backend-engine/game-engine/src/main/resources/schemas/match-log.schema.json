@@ -330,7 +330,7 @@
       }
     },
     "ev_card_effect_resolved": {
-      "description": "An effect of a spell or an equipment, or an effect waiting on a lane (E64), changed a creature or a player, logged after spell_resolved, equipment_applied or card_drawn.",
+      "description": "An effect of a spell or an equipment, or an effect waiting on a lane (E64), was resolved, logged after spell_resolved, equipment_applied or card_drawn. It changed a creature or a player (changes), or it acted on a deck or a discard pile with no stat change (E35, E36, E49, E57: target is the player, changes is empty) and the events that detail it (cards_milled, card_moved, creature_returned, card_drawn) follow it.",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "side", "card_id", "ability_id", "effect_id", "target", "changes"],

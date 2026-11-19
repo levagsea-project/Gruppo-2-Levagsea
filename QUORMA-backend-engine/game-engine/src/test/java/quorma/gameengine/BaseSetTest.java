@@ -150,7 +150,9 @@ class BaseSetTest {
         Set<String> used = usedEffects();
         Set<String> missing = new TreeSet<>(used);
         missing.removeAll(effects.keySet());
-        System.out.println("  effects of the set never seen in these matches: " + missing);
+        System.out.println("  effects of the set with no log event carrying their effect_id (passive ones: static, hand and"
+                + " replacement effects, whose use shows in creature_saved, attack_skipped, refill_prevented or in the numbers"
+                + " themselves; not a list of effects that never ran): " + missing);
     }
 
     /** Every effect id the set's cards use, from the cards as the engine reads them. */

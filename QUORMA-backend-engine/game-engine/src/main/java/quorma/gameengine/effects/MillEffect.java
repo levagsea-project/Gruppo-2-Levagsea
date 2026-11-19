@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.MatchEvent;
+import quorma.gameengine.log.TargetRef;
 import quorma.gameengine.model.Card;
 import quorma.gameengine.model.PlayerState;
 
@@ -43,6 +44,6 @@ public final class MillEffect implements PlayerEffect {
             ids.add(c.id());
         }
         use.log().add(new MatchEvent.CardsMilled(use.playerSide(), e.abilityId(), ids));
-        return Optional.empty();
+        return Optional.of(new Resolution(new TargetRef.PlayerRef(use.playerSide()), List.of()));
     }
 }

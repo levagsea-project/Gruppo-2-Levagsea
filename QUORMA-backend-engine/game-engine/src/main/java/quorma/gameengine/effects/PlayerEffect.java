@@ -18,8 +18,9 @@ public interface PlayerEffect extends EffectDefinition {
     /**
      * Applies the effect.
      *
-     * @return what to log as the effect's own line (the caller picks the event for a triggered effect or a card's),
-     *         empty when the effect logs by itself (a mill or a draw) or has nothing to say
+     * @return what to log as the effect's own line: the caller picks the event (an effect on the stack, or a card's)
+     *         and logs it before the events the effect appended to {@code use.log()}, so a reader sees the cause
+     *         first. Every effect that was cast leaves one, even when nothing came of it
      */
     Optional<Resolution> apply(PlayerEffectContext ctx, Use use);
 

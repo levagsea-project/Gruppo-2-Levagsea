@@ -72,6 +72,19 @@ class PlayerEffectsInMatchTest {
         resolver.refill(state, log);
     }
 
+    /** The line an effect of a spell leaves in the log: who cast it, the card, the ability, the effect and the player it acted on. */
+    private static CardEffectResolved line(Side owner, Side target, String card, String effect) {
+        return new CardEffectResolved(owner, card, "INLINE_1", effect, new TargetRef.PlayerRef(target), List.of());
+    }
+
+    /** {@code cause} is in the log, and before {@code consequence}. */
+    private void assertBefore(MatchEvent cause, MatchEvent consequence) {
+        int c = log.indexOf(cause);
+        int d = log.indexOf(consequence);
+        assertTrue(c >= 0, "the log has " + cause);
+        assertTrue(d > c, "the log has " + consequence + " after " + cause);
+    }
+
     private static List<String> ids(List<Card> cards) {
         return Boards.ids(cards);
     }
@@ -89,7 +102,7 @@ class PlayerEffectsInMatchTest {
 
         assertEquals(List.of("4S", "5S"), ids(b.discard()));
         assertEquals(List.of("6S"), ids(b.deck()));
-        assertTrue(log.contains(new CardsMilled(Side.B, "INLINE_1", List.of("4S", "5S"))));
+        assertBefore(line(Side.A, Side.B, "MILL", "E57"), new CardsMilled(Side.B, "INLINE_1", List.of("4S", "5S")));
     }
 
     @Test
@@ -98,7 +111,7 @@ class PlayerEffectsInMatchTest {
 
         assertEquals(List.of("MILL", "3V"), ids(a.discard()));
         assertEquals(List.of(), ids(a.deck()));
-        assertTrue(log.contains(new CardsMilled(Side.A, "INLINE_1", List.of("3V"))));
+        assertBefore(line(Side.A, Side.A, "MILL", "E57"), new CardsMilled(Side.A, "INLINE_1", List.of("3V")));
         assertEquals(List.of("9V"), lanes(a), "the milled card was the one refill would have drawn");
     }
 
@@ -109,7 +122,7 @@ class PlayerEffectsInMatchTest {
         refill("4V(1000/1000) 5V(1000/1000)", "", spell("DRAW", immediate("E35", Map.of(), "S31", Map.of())));
 
         assertEquals(List.of("4V", "9V", "5V"), lanes(a));
-        assertTrue(log.contains(new CardDrawn(Side.A, 1, "4V")));
+        assertBefore(line(Side.A, Side.A, "DRAW", "E35"), new CardDrawn(Side.A, 1, "4V"));
         assertTrue(log.contains(new CardDrawn(Side.A, 3, "5V")));
     }
 
@@ -135,6 +148,7 @@ class PlayerEffectsInMatchTest {
 
         assertEquals(List.of("9V", "8V", "7V", "6V", "4V"), lanes(a));
         assertEquals(List.of("5V"), ids(a.deck()));
+        assertTrue(log.contains(line(Side.A, Side.A, "DRAW", "E35")), "the effect was cast, even if it drew into the only lane left");
     }
 
     // ---- E49 reorder
@@ -144,12 +158,12 @@ class PlayerEffectsInMatchTest {
         Map<String, Value> three = Map.of("count", n(3));
         refill("3V(1000/1000) KV(1000/1000) AV(1000/1000) 9V(1000/1000)", "",
                 spell("REORDER", immediate("E49", Map.of("position", s("top")), "S47", three)));
-        assertTrue(log.contains(new CardMoved(Side.A, "AV", "top")));
+        assertBefore(line(Side.A, Side.A, "REORDER", "E49"), new CardMoved(Side.A, "AV", "top"));
         assertEquals(List.of("AV", "9V", "3V", "KV", "9V"), lanes(a), "the Ace is the highest rank");
 
         refill("3V(1000/1000) KV(1000/1000) AV(1000/1000) 9V(1000/1000)", "",
                 spell("REORDER", immediate("E49", Map.of("position", s("bottom")), "S47", three)));
-        assertTrue(log.contains(new CardMoved(Side.A, "AV", "bottom")));
+        assertBefore(line(Side.A, Side.A, "REORDER", "E49"), new CardMoved(Side.A, "AV", "bottom"));
         assertEquals(List.of("3V", "9V", "KV", "9V", "AV"), lanes(a));
     }
 
@@ -160,6 +174,7 @@ class PlayerEffectsInMatchTest {
                 spell("OTHER", immediate("E57", Map.of("count", n(0)), "S31", Map.of())));
 
         assertTrue(log.stream().noneMatch(e -> e instanceof CardMoved));
+        assertTrue(log.contains(line(Side.A, Side.A, "REORDER", "E49")), "the effect was cast, though no creature was in the top card");
         assertEquals(List.of("3V", "9V"), lanes(a));
     }
 
@@ -172,7 +187,7 @@ class PlayerEffectsInMatchTest {
 
         assertEquals(List.of("9V", "3V"), lanes(a));
         assertEquals(4, a.creatures().get(1).lane());
-        assertTrue(log.contains(new CardDrawn(Side.A, 4, "3V")));
+        assertBefore(line(Side.A, Side.A, "BACK", "E36"), new CardDrawn(Side.A, 4, "3V"));
     }
 
     @Test
@@ -182,6 +197,7 @@ class PlayerEffectsInMatchTest {
 
         assertEquals(List.of("3V", "9V"), lanes(a), "refill then draws the creature for lane 1 as usual");
         assertTrue(log.contains(new CardDrawn(Side.A, 1, "3V")));
+        assertTrue(log.contains(line(Side.A, Side.A, "BACK", "E36")), "the effect was cast, though its lane was taken");
     }
 
     // ---- E8, E9 life
