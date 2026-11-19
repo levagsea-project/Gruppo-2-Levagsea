@@ -38,6 +38,7 @@ class OpenApiContractTest extends ApiTest {
             "GET /decks/{id}",
             "GET /matches",
             "GET /matches/{seriesId}",
+            "GET /matches/{seriesId}/games/{n}/replay",
             "GET /packs",
             "GET /rooms",
             "GET /rooms/mine",

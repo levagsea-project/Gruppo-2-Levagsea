@@ -67,6 +67,7 @@ public final class ErrorCodes {
 
     public static final String REPLAY_ENGINE_VERSION_MISMATCH = "replay.engine_version_mismatch";
     public static final String REPLAY_RULESET_MISMATCH = "replay.ruleset_mismatch";
+    public static final String REPLAY_RESULT_MISMATCH = "replay.result_mismatch";
 
     public static final String CHALLENGE_NOT_FOUND = "challenge.not_found";
     public static final String CHALLENGE_NOT_PENDING = "challenge.not_pending";

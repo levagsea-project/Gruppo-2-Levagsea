@@ -43,6 +43,7 @@
   "engine.unavailable": "Il motore di gioco non è disponibile, riprova più tardi",
   "replay.engine_version_mismatch": "Questa partita è stata giocata con un'altra versione del motore: non si può rigiocare con quella in esecuzione",
   "replay.ruleset_mismatch": "Questa partita è stata giocata con un altro regolamento: non si può rigiocare con quello in esecuzione",
+  "replay.result_mismatch": "La partita rigiocata non dà lo stesso risultato di quella salvata",
   "catalogue.draft_not_found": "Bozza non trovata",
   "catalogue.draft_open_exists": "C'è già una bozza aperta: pubblicala o scartala prima",
   "catalogue.draft_closed": "La bozza è già chiusa",

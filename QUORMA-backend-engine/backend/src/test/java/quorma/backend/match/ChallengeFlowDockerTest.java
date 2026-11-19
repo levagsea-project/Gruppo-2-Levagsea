@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
@@ -708,10 +710,121 @@ class ChallengeFlowDockerTest {
         assertEquals(ids.size(), ids.stream().distinct().count(), "operationIds must be unique: " + ids);
         for (String expected : List.of("createChallenge", "listChallenges", "getChallenge", "acceptChallenge", "declineChallenge",
                 "cancelChallenge", "openRoom", "listRooms", "getMyRoom", "joinRoom", "cancelRoom", "playMatchmaking",
-                "listMatchSeries", "getMatchSeries", "markMatchSeriesSeen")) {
+                "listMatchSeries", "getMatchSeries", "markMatchSeriesSeen", "replayMatchGame")) {
             assertTrue(ids.contains(expected), expected + " is missing from " + ids);
         }
         java.nio.file.Files.writeString(java.nio.file.Path.of(System.getProperty("java.io.tmpdir"), "quorma-openapi.json"), response.body());
+    }
+
+    // -- replay ---------------------------------------------------------------------------------------------
+
+    /** The engine the fake reports: the build and the rule pack that {@link #log} writes in its header. */
+    private void engineSaysItIsTheOneThatPlayed() {
+        when(engine.info()).thenReturn(new quorma.backend.engine.EngineInfo("1.0.0-test", RULESET, "c".repeat(64)));
+    }
+
+    /** A series played on the fake engine: its id and the two players. */
+    private record Played(UUID series, UUID luca, UUID mattia) {
+    }
+
+    private Played playASeries() {
+        UUID luca = newUser("luca");
+        UUID mattia = newUser("mattia");
+        Map<Faction, UUID> lucaDecks = withDecks(luca);
+        Map<Faction, UUID> mattiaDecks = withDecks(mattia);
+        engineAlways("A_WIN", "LIFE_ZERO", 9);
+        UUID id = challenges.create(luca, new CreateChallengeRequest(username(mattia), "RESISTENZA_UMANA", choices(lucaDecks))).id();
+        return new Played(challenges.accept(mattia, id, choices(mattiaDecks)).id(), luca, mattia);
+    }
+
+    @Test
+    void aReplayPlaysTheStoredRecipeAgainAndIsVerifiedAgainstTheHash() throws Exception {
+        Played played = playASeries();
+        engineSaysItIsTheOneThatPlayed();
+        when(engine.simulate(any(JsonNode.class))).thenReturn(log("A_WIN", "LIFE_ZERO", 9));
+
+        HttpResponse<String> response = http("GET", "/matches/" + played.series() + "/games/2/replay", token(played.mattia()), null);
+
+        assertEquals(200, response.statusCode(), response.body());
+        JsonNode body = MAPPER.readTree(response.body());
+        assertTrue(body.path("verified").asBoolean());
+        assertEquals(2, body.path("gameNumber").asInt());
+        assertEquals("d".repeat(64), body.path("resultHash").asString());
+        assertEquals("d".repeat(64), body.path("log").path("result_hash").asString());
+        // game 2 swaps the factions, and the response says so
+        assertEquals("POTENZE_ARTIFICIALI", body.path("factionA").asString());
+        assertEquals("RESISTENZA_UMANA", body.path("factionB").asString());
+
+        // what the engine was asked to play is exactly the stored recipe, and names the engine and rule pack it expects
+        org.mockito.ArgumentCaptor<JsonNode> sent = org.mockito.ArgumentCaptor.forClass(JsonNode.class);
+        verify(engine).simulate(sent.capture());
+        Map<String, Object> row = jdbc.queryForMap("select * from matches where series_id = ? and game_number = 2", played.series());
+        JsonNode input = sent.getValue();
+        assertEquals((Long) row.get("seed"), input.path("seed").asLong());
+        assertEquals("1.0.0-test", input.path("engine_version").asString());
+        assertEquals("c".repeat(64), input.path("ruleset_hash").asString());
+        assertEquals(RULESET, input.path("ruleset_version").asString());
+        assertEquals("POTENZE_ARTIFICIALI", input.path("players").path("A").path("faction").asString());
+        assertEquals(row.get("pool_snapshot_a_id").toString(), input.path("players").path("A").path("pool_snapshot_id").asString());
+        assertEquals(MAPPER.readTree(row.get("deck_a").toString()), input.path("players").path("A").path("deck"));
+        assertEquals(MAPPER.readTree(row.get("deck_b").toString()), input.path("players").path("B").path("deck"));
+    }
+
+    @Test
+    void aReplayOnAnotherEngineIsRefusedBeforeAnyMatchIsRun() throws Exception {
+        Played played = playASeries();
+        when(engine.info()).thenReturn(new quorma.backend.engine.EngineInfo("2.0.0", RULESET, "c".repeat(64)));
+
+        HttpResponse<String> version = http("GET", "/matches/" + played.series() + "/games/1/replay", token(played.luca()), null);
+        assertEquals(409, version.statusCode(), version.body());
+        JsonNode body = MAPPER.readTree(version.body());
+        assertEquals(ErrorCodes.REPLAY_ENGINE_VERSION_MISMATCH, body.path("code").asString());
+        assertEquals("1.0.0-test", body.path("stored").path("engineVersion").asString());
+        assertEquals("2.0.0", body.path("running").path("engineVersion").asString());
+
+        when(engine.info()).thenReturn(new quorma.backend.engine.EngineInfo("1.0.0-test", RULESET, "e".repeat(64)));
+        HttpResponse<String> rules = http("GET", "/matches/" + played.series() + "/games/1/replay", token(played.luca()), null);
+        assertEquals(409, rules.statusCode());
+        assertEquals(ErrorCodes.REPLAY_RULESET_MISMATCH, MAPPER.readTree(rules.body()).path("code").asString());
+
+        verify(engine, never()).simulate(any(JsonNode.class));
+    }
+
+    @Test
+    void aReplayThatGivesAnotherResultIsAnErrorAndNeverAResponse() throws Exception {
+        Played played = playASeries();
+        engineSaysItIsTheOneThatPlayed();
+        MatchLog other = log("A_WIN", "LIFE_ZERO", 9);
+        ((ObjectNode) other.document()).put("result_hash", "f".repeat(64));
+        when(engine.simulate(any(JsonNode.class))).thenReturn(other);
+
+        HttpResponse<String> response = http("GET", "/matches/" + played.series() + "/games/1/replay", token(played.luca()), null);
+
+        assertEquals(500, response.statusCode());
+        assertEquals(ErrorCodes.REPLAY_RESULT_MISMATCH, MAPPER.readTree(response.body()).path("code").asString());
+        assertFalse(MAPPER.readTree(response.body()).has("log"), "no log is sent when it does not match");
+    }
+
+    @Test
+    void onlyThePlayersOfTheSeriesCanReplayAndOnlyGamesThatWerePlayed() throws Exception {
+        Played played = playASeries();
+        engineSaysItIsTheOneThatPlayed();
+        when(engine.simulate(any(JsonNode.class))).thenReturn(log("A_WIN", "LIFE_ZERO", 9));
+        UUID stranger = newUser("stranger");
+        UUID admin = newUser("admin");
+        jdbc.update("update users set role = 'ADMIN' where id = ?", admin);
+        String path = "/matches/" + played.series() + "/games/1/replay";
+
+        assertEquals(401, http("GET", path, null, null).statusCode());
+        assertEquals(403, http("GET", path, token(admin), null).statusCode());
+        HttpResponse<String> hidden = http("GET", path, token(stranger), null);
+        assertEquals(404, hidden.statusCode());
+        assertEquals(ErrorCodes.MATCH_NOT_FOUND, MAPPER.readTree(hidden.body()).path("code").asString());
+        assertEquals(404, http("GET", "/matches/" + played.series() + "/games/3/replay", token(played.luca()), null).statusCode(),
+                "the series ended 2-0: there was no game 3");
+        assertEquals(404, http("GET", "/matches/" + UUID.randomUUID() + "/games/1/replay", token(played.luca()), null).statusCode());
+        assertEquals(200, http("GET", path, token(played.luca()), null).statusCode());
+        verify(engine, org.mockito.Mockito.times(1)).simulate(any(JsonNode.class));
     }
 
     private String username(UUID user) {

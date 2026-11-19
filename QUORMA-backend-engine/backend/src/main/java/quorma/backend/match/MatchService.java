@@ -60,7 +60,8 @@ public class MatchService {
         return render(userId, List.of(s)).get(0);
     }
 
-    private MatchSeries mine(UUID userId, UUID seriesId) {
+    /** The series if it is finished and I played it; otherwise 404 (it does not exist for anyone else). */
+    MatchSeries mine(UUID userId, UUID seriesId) {
         return series.findById(seriesId)
                 .filter(s -> s.getStatus() == SeriesStatus.FINISHED)
                 .filter(s -> s.getPlayerAId().equals(userId) || s.getPlayerBId().equals(userId))

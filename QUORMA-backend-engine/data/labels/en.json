@@ -43,6 +43,7 @@
   "engine.unavailable": "The game engine is not available, please try again later",
   "replay.engine_version_mismatch": "This match was played by another engine version: it cannot be replayed on the one that is running",
   "replay.ruleset_mismatch": "This match was played with another rule pack: it cannot be replayed on the one that is running",
+  "replay.result_mismatch": "The replayed match does not give the same result as the stored one",
   "catalogue.draft_not_found": "Draft not found",
   "catalogue.draft_open_exists": "A draft is already open: publish or discard it first",
   "catalogue.draft_closed": "The draft is already closed",

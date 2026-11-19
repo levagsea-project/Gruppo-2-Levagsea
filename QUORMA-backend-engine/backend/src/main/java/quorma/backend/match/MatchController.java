@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MatchController {
 
     private final MatchService matches;
+    private final ReplayService replays;
 
-    public MatchController(MatchService matches) {
+    public MatchController(MatchService matches, ReplayService replays) {
         this.matches = matches;
+        this.replays = replays;
     }
 
     @GetMapping
@@ -56,6 +58,22 @@ public class MatchController {
     @ApiResponse(responseCode = "404", description = "Not found, or I did not play it. Body `code`: match.not_found", content = @Content)
     public SeriesResponse seen(@AuthenticationPrincipal Jwt jwt, @PathVariable("seriesId") UUID seriesId) {
         return matches.markSeen(userId(jwt), seriesId);
+    }
+
+    @GetMapping("/{seriesId}/games/{n}/replay")
+    @Operation(operationId = "replayMatchGame", summary = "Replay one game", description = "Plays game `n` (1 to 3) of one of my "
+            + "series again from its stored recipe and returns the match log, turn by turn. The log is never stored: the engine "
+            + "rebuilds it, and the response is sent only if its SHA-256 equals the one stored when the game was played "
+            + "(`verified` is always true). The replay runs only on the engine build and the rule pack that played the game.")
+    @ApiResponse(responseCode = "200", description = "The log of the game, verified against the stored hash")
+    @ApiResponse(responseCode = "404", description = "No such game, or I did not play it. Body `code`: match.not_found", content = @Content)
+    @ApiResponse(responseCode = "409", description = "The running engine is not the one that played the game. Body `code`: "
+            + "replay.engine_version_mismatch or replay.ruleset_mismatch, with `stored` and `running` (engineVersion, rulesetVersion, rulesetHash)", content = @Content)
+    @ApiResponse(responseCode = "500", description = "The replay gave another result than the stored one. Body `code`: replay.result_mismatch", content = @Content)
+    @ApiResponse(responseCode = "503", description = "The engine is not available. Body `code`: engine.unavailable", content = @Content)
+    public ReplayResponse replay(@AuthenticationPrincipal Jwt jwt, @PathVariable("seriesId") UUID seriesId,
+                                 @PathVariable("n") int n) {
+        return replays.replay(userId(jwt), seriesId, n);
     }
 
     private static UUID userId(Jwt jwt) {
