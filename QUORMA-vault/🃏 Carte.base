@@ -1,0 +1,209 @@
+filters:
+  and:
+    - file.hasTag("tipo/carta")
+    - not:
+        - file.inFolder("Cards/toProcess")
+        - file.inFolder("Strumenti")
+properties:
+  note.id:
+    displayName: ID
+views:
+  - type: table
+    name: Per fazione
+    groupBy:
+      property: fazione
+      direction: ASC
+    order:
+      - file.name
+      - definizione
+      - id
+      - rango
+      - seme
+      - sottofazione
+      - stato
+      - autore
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: Per seme
+    groupBy:
+      property: seme
+      direction: ASC
+    order:
+      - file.name
+      - fazione
+      - rango
+      - sottofazione
+      - stato
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: Per sottofazione
+    groupBy:
+      property: sottofazione
+      direction: ASC
+    order:
+      - file.name
+      - fazione
+      - rango
+      - seme
+      - stato
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: aracno"
+    filters:
+      and:
+        - trama.contains("aracno")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: undici"
+    filters:
+      and:
+        - trama.contains("undici")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: tecnico"
+    filters:
+      and:
+        - trama.contains("tecnico")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: ritorno"
+    filters:
+      and:
+        - trama.contains("ritorno")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: primo-ingegnere"
+    filters:
+      and:
+        - trama.contains("primo-ingegnere")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: pioggia"
+    filters:
+      and:
+        - trama.contains("pioggia")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: comunita-controllate"
+    filters:
+      and:
+        - trama.contains("comunita-controllate")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: pellegrinaggio"
+    filters:
+      and:
+        - trama.contains("pellegrinaggio")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: spartizione"
+    filters:
+      and:
+        - trama.contains("spartizione")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: "Trama: eresie"
+    filters:
+      and:
+        - trama.contains("eresie")
+    order:
+      - file.name
+      - definizione
+      - fazione
+      - rango
+      - seme
+    sort:
+      - property: id
+        direction: ASC
+  - type: table
+    name: Per gradino
+    filters:
+      and:
+        - file.hasProperty("gradino")
+    order:
+      - file.name
+      - gradino
+      - rango
+      - fazione
+      - definizione
+    sort:
+      - property: gradino
+        direction: ASC

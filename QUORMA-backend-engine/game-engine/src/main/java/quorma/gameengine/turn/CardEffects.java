@@ -6,8 +6,9 @@ import quorma.gameengine.model.Side;
 import quorma.gameengine.model.SpellCard;
 
 /**
- * What a spell or an equipment does when it is triggered in Refill. The engine logs the event and calls this
- * hook; the hook changes the game.
+ * A hook for what happens when a spell or an equipment is triggered in Refill, called after the engine has logged the
+ * event. The engine itself applies the effects written on the card ({@code TurnResolver}); a hook adds to that, for
+ * tests that record the calls.
  */
 public interface CardEffects {
 
@@ -17,16 +18,16 @@ public interface CardEffects {
     /** An equipment waiting for a creature was applied to {@code receiver}, a creature of {@code owner}. */
     void onEquipment(EquipmentCard card, Side owner, Creature receiver);
 
-    /** Does nothing. The default until card data exists. */
+    /** Adds nothing to what the engine applies. */
     CardEffects NONE = new CardEffects() {
         @Override
         public void onSpell(SpellCard card, Side owner) {
-            // TODO(spells-equipment)
+            // the effects on the card are applied by the engine
         }
 
         @Override
         public void onEquipment(EquipmentCard card, Side owner, Creature receiver) {
-            // TODO(spells-equipment)
+            // the effects on the card are applied by the engine
         }
     };
 }

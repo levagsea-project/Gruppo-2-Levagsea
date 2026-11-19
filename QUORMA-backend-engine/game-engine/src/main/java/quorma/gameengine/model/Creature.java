@@ -1,6 +1,12 @@
 package quorma.gameengine.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import quorma.gameengine.effects.BoundExpansion;
 
 /**
  * A creature card in a lane, with its current state. Damage is permanent across turns (ruleset 3.2.6).
@@ -12,15 +18,32 @@ public final class Creature {
 
     private final CreatureCard card;
     private final int lane;
+    private final List<BoundExpansion> abilities;
+    private List<BoundExpansion> synergyAbilities = List.of();
     private int currentDef;
+    private int atkBonus;
+    private int untilKillAtk;
+    private boolean condemned;
+    private final Map<String, Integer> evolutionTriggers = new LinkedHashMap<>();
+    private final Map<String, Integer> stacks = new LinkedHashMap<>();
     private boolean destroyed;
 
+    /** A creature whose abilities are not bound (none run). For tests and cards with no abilities. */
     public Creature(CreatureCard card, int lane) {
+        this(card, lane, List.of());
+    }
+
+    /**
+     * @param abilities the card's abilities, bound by {@code AbilityBinder} when the creature enters play, in
+     *                  card order
+     */
+    public Creature(CreatureCard card, int lane, List<BoundExpansion> abilities) {
         this.card = Objects.requireNonNull(card, "card");
         if (lane < 1 || lane > PlayerState.LANES) {
             throw new IllegalArgumentException("lane must be 1.." + PlayerState.LANES + ", got " + lane);
         }
         this.lane = lane;
+        this.abilities = List.copyOf(abilities);
         this.currentDef = card.def();
     }
 
@@ -32,6 +55,42 @@ public final class Creature {
         return lane;
     }
 
+    /** The bound expansions of the card's own abilities, in card order. */
+    public List<BoundExpansion> cardAbilities() {
+        return abilities;
+    }
+
+    /**
+     * Every bound expansion the creature has: the card's abilities in card order, then the suit synergy tiers it
+     * has this turn (ruleset 7.10).
+     */
+    public List<BoundExpansion> abilities() {
+        if (synergyAbilities.isEmpty()) {
+            return abilities;
+        }
+        List<BoundExpansion> all = new ArrayList<>(abilities);
+        all.addAll(synergyAbilities);
+        return List.copyOf(all);
+    }
+
+    /** The expansions of {@link #abilities()} with trigger {@code triggerId}, in that order. */
+    public List<BoundExpansion> abilities(String triggerId) {
+        return abilities().stream().filter(a -> a.triggerId().equals(triggerId)).toList();
+    }
+
+    /**
+     * Replaces the synergy abilities, which Evaluate sets for the turn: a copy of each expansion of the active
+     * tiers of this creature's suit, the creature being the source. Empty clears them.
+     */
+    public void setSynergyAbilities(List<BoundExpansion> expansions) {
+        this.synergyAbilities = List.copyOf(expansions);
+    }
+
+    /** True if the creature counts as any suit for the hand (Camaleonte, effect E55). Never for suit synergies. */
+    public boolean wildSuit() {
+        return abilities.stream().anyMatch(a -> a.effectId().equals("E55"));
+    }
+
     public int currentDef() {
         return currentDef;
     }
@@ -41,9 +100,45 @@ public final class Creature {
         return destroyed;
     }
 
-    /** Current ATK before the subfaction modifier. For now the printed ATK; modifiers come with effects. */
+    /**
+     * Current ATK before the subfaction modifier: printed ATK plus the bonuses gained so far, never below 0
+     * (ruleset 9.1).
+     */
     public int currentAtk() {
-        return card.atk();
+        return Math.max(0, Math.addExact(Math.addExact(card.atk(), atkBonus), untilKillAtk));
+    }
+
+    /** Adds {@code amount} (may be negative) to the ATK bonus. The amount is already floored by the effect. */
+    public void addAtk(int amount) {
+        atkBonus = Math.addExact(atkBonus, amount);
+    }
+
+    /**
+     * Adds {@code amount} to the ATK until this creature destroys a creature (duration {@code D_FinoAUccisione}):
+     * {@link #endUntilKill()} takes it away.
+     */
+    public void addUntilKillAtk(int amount) {
+        untilKillAtk = Math.addExact(untilKillAtk, amount);
+    }
+
+    /** Ends the effects that last until this creature destroys a creature. */
+    public void endUntilKill() {
+        untilKillAtk = 0;
+    }
+
+    /** How many times an effect with stack key {@code key} has been applied, 0 if never. */
+    public int stacks(String key) {
+        return stacks.getOrDefault(key, 0);
+    }
+
+    /** Records one more application of the effect with stack key {@code key} and returns the new count. */
+    public int addStack(String key) {
+        return stacks.merge(Objects.requireNonNull(key, "key"), 1, Integer::sum);
+    }
+
+    /** Stack counts per key, in the order each key was first applied. A read-only view. */
+    public Map<String, Integer> stacks() {
+        return Collections.unmodifiableMap(stacks);
     }
 
     /** Lowers DEF by {@code amount} (0 or more). Flags the creature destroyed when DEF reaches 0 or less. */
@@ -57,6 +152,49 @@ public final class Creature {
         }
     }
 
+    /** Raises DEF by {@code amount} without a cap: not a heal, the base DEF stays what it was (effect E2). */
+    public void addDef(int amount) {
+        currentDef = Math.addExact(currentDef, amount);
+    }
+
+    /** False for an Evolution that already fired {@code maxTriggers} times on this creature; true for anything else. */
+    public boolean canTrigger(BoundExpansion expansion) {
+        return !expansion.evolution() || evolutionTriggers.getOrDefault(expansion.abilityId(), 0) < expansion.maxTriggers();
+    }
+
+    /** Records that an Evolution fired on this creature; other expansions are not counted. */
+    public void markTriggered(BoundExpansion expansion) {
+        if (expansion.evolution()) {
+            evolutionTriggers.merge(expansion.abilityId(), 1, Integer::sum);
+        }
+    }
+
+    /** How many of this creature's Evolutions have fired (Spira 3 counts them). */
+    public int evolutionsTriggered() {
+        return evolutionTriggers.size();
+    }
+
+    /** Raises DEF by {@code amount}, never above the base DEF. A destroyed creature is not healed. */
+    public void heal(int amount) {
+        if (!destroyed) {
+            currentDef = Math.min(card.def(), Math.addExact(currentDef, amount));
+        }
+    }
+
+    /**
+     * Saves the creature from destruction (effect E12 with {@code then = destroy_at_next_refill}): DEF goes back to
+     * the base DEF, and Refill destroys it if it is still in its lane.
+     */
+    public void saveWithFullDef() {
+        currentDef = card.def();
+        condemned = true;
+    }
+
+    /** True if the creature was saved and Refill will destroy it. */
+    public boolean condemned() {
+        return condemned;
+    }
+
     /** Flags the creature destroyed without changing its DEF (for effects). */
     public void markDestroyed() {
         destroyed = true;
@@ -64,6 +202,7 @@ public final class Creature {
 
     @Override
     public String toString() {
-        return "Creature[lane=" + lane + ", " + card.id() + ", def=" + currentDef + (destroyed ? ", destroyed" : "") + "]";
+        return "Creature[lane=" + lane + ", " + card.id() + ", atk=" + currentAtk() + ", def=" + currentDef
+                + (destroyed ? ", destroyed" : "") + "]";
     }
 }

@@ -10,6 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.nio.charset.StandardCharsets;
+import quorma.backend.common.ErrorCodes;
 
 /** The string must be at most {@link #value()} bytes in UTF-8 (BCrypt only reads the first 72 bytes). */
 @Documented
@@ -20,7 +21,7 @@ public @interface MaxUtf8Bytes {
 
     int value();
 
-    String message() default "must be at most {value} bytes in UTF-8";
+    String message() default ErrorCodes.MAX_UTF8_BYTES;
 
     Class<?>[] groups() default {};
 

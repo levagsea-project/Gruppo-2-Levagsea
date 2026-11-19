@@ -15,6 +15,7 @@ CREATE TABLE decks
     version     bigint      NOT NULL DEFAULT 0,
     -- Fights when its owner is attacked by matchmaking while offline: at most one per owner and faction.
     is_defense  boolean     NOT NULL DEFAULT false,
+    outdated    boolean     NOT NULL DEFAULT false,
     FOREIGN KEY (snapshot_id, faction) REFERENCES pool_snapshots (id, faction),
     UNIQUE (owner_id, name),
     UNIQUE (id, owner_id, faction, snapshot_id)
