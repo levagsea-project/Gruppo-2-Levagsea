@@ -45,10 +45,13 @@ What an effect does to a creature lives in one class per vocabulary ID in `effec
 
 `GameEngine.matchLog(inputJson)` plays one match and returns the canonical MatchLog JSON. `GameEngine.simulate` returns the same match as Java objects (`Simulation`). Input and log follow the JSON Schemas in `src/main/resources/schemas/` (`2026-11-14-match-log-schema`); bad input is a `MatchInputException` whose message starts with the JSON path. Steps: input checks, shuffle, setup (`2026-11-14-match-setup`), turns, log (`2026-11-14-match-log-writer`).
 
+`GameEngine.cardCheck(requestJson)` checks a candidate card pool of one faction (`cards/CardPoolChecker`, report `CardCheckReport`, codes `CardCheckCodes`): the engine is the single authority on what a card may be. Per card (all problems reported, not only the first): the card schema, the faction, no ability twice, at most `balance.globals.card_ability_slots` keywords and evolutions, the creature's rank within the `allowed_ranks` of each ability it carries (this is what bounds `max_built_in`, which is always 4 per allowed rank because a deck has one creature per rank and suit: there is no separate cap check), and that every ability binds. Per pool: not empty, no id twice, and each pack pool fillable (every Tier with slots has a creature, support slots have a spell or an equipment). Balance is not checked. `data/validate.py` stays the CI check of the data files and must agree with it (a parity test is planned). The rank-to-Tier mapping (ruleset 3.2.2) is in `CardPoolChecker.tierOf`; the backend's `Tier.ofRank` and `validate.py`'s `tier_of` repeat it.
+
 ## Tests
 
 - JUnit for effects, edge cases (draws, turn 50, empty lanes, simultaneous deaths) and repeatability.
 - **Golden files**: `src/test/resources/golden/<scenario>/input.json` + `expected-log.json`; the output must be byte-identical (`GoldenTest` runs every folder and checks both files against the schemas). Compute expected values by hand and from the ruleset, never from the engine's own output. Scenarios: `all-four-keywords` (the schema example), `mutual-kill-flat-scudo`, `setup-inline-cycle2-insaziabile`. Keep boards under three creatures of a suit unless the scenario is about synergies (`2026-11-17-synergies-engine`).
+- **Card pool check**: `CardPoolCheckerTest` runs the whole base set through it (with the three shop pack pools) and one case per code, plus broken requests.
 - **Base set**: `BaseSetTest` binds every card of `data/cards.json` (generated from `docs/cards/card-effects.json` by `tools/base-set/export_cards.py`; rerun it when that file changes) and plays 300 matches between random decks of the set (schema, determinism); `BaseSetEffectsTest` checks the new abilities on boards worked out by hand.
 - A golden file changes only when a rule changes deliberately. Say why in the commit and in `docs/DECISIONS.md`.
 
@@ -57,7 +60,8 @@ What an effect does to a creature lives in one class per vocabulary ID in `effec
 ```
 game-engine/src/main/java/quorma/gameengine/
   GameEngine, Simulation, MatchLogWriter, EngineVersion   entry point and the MatchLog
-  input/     match input JSON reader
+  input/     match input JSON reader (`MatchInputReader.readCard` reads one card for the pool check)
+  cards/     the card pool check: CardPoolChecker, CardCheckReport, CardCheckCodes
   data/      rule pack loader, Ruleset, rule pack hash
   effects/   ability binder, effect registry, stack, one Effect / PlayerEffect / Condition / Target class per vocabulary ID
              (`Effects`, `PlayerEffects`, `Conditions`, `Targets` look them up), `EffectContext`, `ConditionContext` and `TargetView` (what

@@ -90,6 +90,16 @@ public final class MatchInputReader {
         return new MatchInput((int) schemaVersion, seed, rulesetVersion, rulesetHash, out);
     }
 
+    /**
+     * Reads one card the way a deck lists it ({@code players.*.deck[]}), for callers that check cards without a match
+     * (the card pool check). {@code path} starts the message of every problem.
+     *
+     * @throws MatchInputException if the value is not a card the schema accepts
+     */
+    public static Card readCard(Value value, String path) {
+        return card(object(value, path), path);
+    }
+
     private static MatchInput.Player player(Value.MapV m, String path) {
         keys(m, path, PLAYER_KEYS, Set.of("faction", "deck"));
         Faction faction = code(Faction.class, m, "faction", path);

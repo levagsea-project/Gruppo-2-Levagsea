@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import quorma.gameengine.cards.CardCheckReport;
+import quorma.gameengine.cards.CardPoolChecker;
 import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.data.RulesetLoader;
 import quorma.gameengine.effects.AbilityBinder;
@@ -64,6 +66,20 @@ public final class GameEngine {
     /** Reads the input JSON, plays it and returns the canonical MatchLog JSON. */
     public String matchLog(String inputJson) {
         return simulate(inputJson).toMatchLog();
+    }
+
+    /**
+     * Checks a candidate card pool of one faction against this engine's rules and returns the canonical report JSON
+     * (see {@link CardPoolChecker}). A problem of a card is in the report; a broken request is a
+     * {@link MatchInputException}.
+     */
+    public String cardCheck(String requestJson) {
+        return checkCards(requestJson).toJson();
+    }
+
+    /** The same check as {@link #cardCheck}, as Java objects. */
+    public CardCheckReport checkCards(String requestJson) {
+        return new CardPoolChecker(rules, rulesetHash, EngineVersion.VERSION).check(requestJson);
     }
 
     /** Reads the input JSON and plays it. */
