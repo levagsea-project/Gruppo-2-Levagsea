@@ -548,8 +548,12 @@ for set_path in set_files:
             rank_name = None
         counts[(faction, kind)] = counts.get((faction, kind), 0) + 1
         abilities = card.get("abilities")
-        if not isinstance(abilities, list) or not abilities:
-            err(where, "abilities must be a non-empty list")
+        if not isinstance(abilities, list):
+            err(where, "abilities must be a list")
+            continue
+        if not abilities and kind != "CREATURE":
+            # only a creature may be vanilla (decision 2026-11-19-vanilla-creatures)
+            err(where, "a spell or an equipment needs at least one ability")
             continue
         n_kw = n_evo = 0
         used = set()

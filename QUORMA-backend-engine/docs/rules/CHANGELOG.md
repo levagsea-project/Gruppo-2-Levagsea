@@ -52,6 +52,7 @@ Anything may change until 1.0 is released. Changes before this log started are i
 | 2026-11-14 | engine | New JSON Schemas for the match input and the MatchLog in `game-engine/src/main/resources/schemas/`, with an example log | `2026-11-14-match-log-schema` |
 | 2026-11-14 | data | `labels/*.json`: hand-type keys renamed to the engine code (`game.hand_type.high_card`, was `carta_alta`), new `game.hand_type.none`; texts unchanged. Match input uses codes for faction and subfaction (`RESISTENZA_UMANA`, `ADATTATI`) | `2026-11-14-hand-type-label-keys` |
 | 2026-11-17 | cards | `docs/cards/card-effects.json`: base set fixed after the simulator smoke test. Trigger scopes (T8, T15, T18), one Conta come substitution per hand, E23 with no conditions for the whole combat, E36 `source: discard`, new E64 / S47 / C27 / C28 and filter `damaged_this_turn`, S20 recomputed at Evaluate; Aracno, Revoca, Delibera, Il nome che si toglie, Riordino, Assegnazione d'ufficio, Anima di registro, Cucitura, Lacuna, Calce, «Nono», Cordone and Campi vuoti changed. `data/parked/balance.json`: `EVO_EREDITA` amount 300. No ruleset text and no live data changed | `2026-11-17-set-base-card-fixes` |
+| 2026-11-19 | data | A creature may have no ability (a vanilla creature); a spell or an equipment still needs at least one. `validate.py` check 12 and `CardPoolChecker` (new code `card.no_ability`) now agree | `2026-11-19-vanilla-creatures` |
 
 ## Released versions
 

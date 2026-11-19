@@ -69,9 +69,11 @@
     { "name": "a card of an unknown kind", "expect": "reject",
       "card": { "kind": "TRAP", "faction": "RESISTENZA_UMANA", "abilities": [ { "expansions": [] } ] } },
 
-    { "name": "a creature with no ability at all",
-      "expect": { "engine": "ok", "validate": "reject",
-                  "why": "The engine accepts a creature whose abilities list is empty, while validate.py check 12 rejects it ('abilities must be a non-empty list'). Whether a card may have no ability is undecided: see KNOWN-ISSUES 2026-11-19-vanilla-card-parity." },
-      "card": { "kind": "CREATURE", "rank": 5, "suit": "VINCOLO", "subfaction": "ADATTATI", "atk": 3000, "def": 5000, "abilities": [] } }
+    { "name": "a vanilla creature with no ability at all", "expect": "ok",
+      "card": { "kind": "CREATURE", "rank": 5, "suit": "VINCOLO", "subfaction": "ADATTATI", "atk": 3000, "def": 5000, "abilities": [] } },
+    { "name": "a spell with no ability", "expect": "reject",
+      "card": { "kind": "SPELL", "faction": "RESISTENZA_UMANA", "abilities": [] } },
+    { "name": "an equipment with no ability", "expect": "reject",
+      "card": { "kind": "EQUIPMENT", "faction": "POTENZE_ARTIFICIALI", "abilities": [] } }
   ]
 }

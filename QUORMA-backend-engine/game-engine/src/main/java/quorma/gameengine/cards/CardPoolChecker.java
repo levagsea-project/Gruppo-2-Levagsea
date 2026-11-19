@@ -3,6 +3,7 @@ package quorma.gameengine.cards;
 import static quorma.gameengine.cards.CardCheckCodes.CARD_BIND_FAILED;
 import static quorma.gameengine.cards.CardCheckCodes.CARD_DUPLICATE_ABILITY;
 import static quorma.gameengine.cards.CardCheckCodes.CARD_INVALID;
+import static quorma.gameengine.cards.CardCheckCodes.CARD_NO_ABILITY;
 import static quorma.gameengine.cards.CardCheckCodes.CARD_RANK_NOT_ALLOWED;
 import static quorma.gameengine.cards.CardCheckCodes.CARD_TOO_MANY_EVOLUTIONS;
 import static quorma.gameengine.cards.CardCheckCodes.CARD_TOO_MANY_KEYWORDS;
@@ -155,6 +156,9 @@ public final class CardPoolChecker {
         }
         if (card instanceof CreatureCard creature) {
             checkAbilityRefs(creature, path, errors);
+        } else if (card.abilities().isEmpty()) {
+            errors.add(new CardError(card.id(), CARD_NO_ABILITY, path,
+                    path + ".abilities: a spell or an equipment needs at least one ability (only a creature may have none)"));
         }
         try {
             if (card instanceof CreatureCard creature) {

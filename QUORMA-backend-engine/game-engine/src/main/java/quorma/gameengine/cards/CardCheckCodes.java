@@ -17,6 +17,8 @@ public final class CardCheckCodes {
     public static final String CARD_TOO_MANY_EVOLUTIONS = "card.too_many_evolutions";
     /** A keyword or evolution on a rank that is not in its {@code allowed_ranks}. */
     public static final String CARD_RANK_NOT_ALLOWED = "card.rank_not_allowed";
+    /** A spell or an equipment with no ability (only a creature may have none: a vanilla creature). */
+    public static final String CARD_NO_ABILITY = "card.no_ability";
     /** The engine cannot bind an ability: unknown id, missing or unknown param, an effect that does not fit its target. */
     public static final String CARD_BIND_FAILED = "card.bind_failed";
 

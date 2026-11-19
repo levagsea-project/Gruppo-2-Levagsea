@@ -183,6 +183,15 @@ class CardPoolCheckerTest {
         assertEquals(List.of(CardCheckCodes.CARD_BIND_FAILED), cardCodes(check(res(List.of(spell)))));
     }
 
+    @Test
+    void onlyACreatureMayHaveNoAbility() {
+        assertEquals(List.of(), cardCodes(check(res(List.of(creature("A", 5, ""))))), "a vanilla creature is allowed");
+        String spell = "{\"id\":\"S\",\"kind\":\"SPELL\",\"faction\":\"RESISTENZA_UMANA\",\"abilities\":[]}";
+        String gear = "{\"id\":\"G\",\"kind\":\"EQUIPMENT\",\"faction\":\"RESISTENZA_UMANA\",\"abilities\":[]}";
+        assertEquals(List.of(CardCheckCodes.CARD_NO_ABILITY, CardCheckCodes.CARD_NO_ABILITY),
+                cardCodes(check(res(List.of(spell, gear)))));
+    }
+
     // ---- the pool ----
 
     @Test
@@ -196,7 +205,9 @@ class CardPoolCheckerTest {
 
     @Test
     void aPackPoolMustBeFillable() {
-        String spell = "{\"id\":\"S\",\"kind\":\"SPELL\",\"faction\":\"RESISTENZA_UMANA\",\"abilities\":[]}";
+        String spell = "{\"id\":\"S\",\"kind\":\"SPELL\",\"faction\":\"RESISTENZA_UMANA\",\"abilities\":[{\"expansions\":"
+                + "[{\"effect_id\":\"E6\",\"effect_params\":{\"mode\":\"flat\",\"amount\":1400},\"target_id\":\"S9\","
+                + "\"duration\":\"D_Istantanea\",\"class\":\"I\"}]}]}";
         List<String> cards = List.of(creature("C5", 5, ""), creature("C9", 9, ""));
         String noAce = pool("elite", List.of("C5", "C9"), "{\"TIER_2\":2,\"TIER_4\":1}", 0);
         CardCheckReport r = check(request("RESISTENZA_UMANA", cards, noAce));
