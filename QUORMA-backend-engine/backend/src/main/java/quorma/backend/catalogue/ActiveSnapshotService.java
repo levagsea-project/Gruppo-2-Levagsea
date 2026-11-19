@@ -21,7 +21,7 @@ public class ActiveSnapshotService {
     /** The id of the active snapshot of {@code faction}, if one was ever published. */
     @Transactional(readOnly = true)
     public Optional<UUID> activeId(String faction) {
-        return active.findById(faction).map(ActiveSnapshot::getSnapshotId);
+        return active.findById(faction).map(row -> row.getSnapshotId());
     }
 
     /** True if {@code snapshotId} is the active snapshot of {@code faction}. */

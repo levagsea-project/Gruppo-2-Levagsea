@@ -18,7 +18,6 @@ import quorma.gameengine.effects.Condition;
 import quorma.gameengine.effects.ConditionContext;
 import quorma.gameengine.effects.Conditions;
 import quorma.gameengine.effects.EffectDefinitions;
-import quorma.gameengine.effects.EffectRegistry;
 import quorma.gameengine.effects.HealFactorEffect;
 import quorma.gameengine.effects.IsolatedEffect;
 import quorma.gameengine.effects.LethalDamageEffect;

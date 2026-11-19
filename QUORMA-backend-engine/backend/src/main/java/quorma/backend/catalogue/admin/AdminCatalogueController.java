@@ -296,7 +296,7 @@ public class AdminCatalogueController {
     /** The body of an import or a drift check as a batch: within the size limit, JSON, and in the batch format. */
     private Changeset parseBatch(String body) {
         if (body.getBytes(StandardCharsets.UTF_8).length > props.maxImportBytes().toBytes()) {
-            throw new CatalogueException(HttpStatus.PAYLOAD_TOO_LARGE, ErrorCodes.CATALOGUE_IMPORT_TOO_LARGE);
+            throw new CatalogueException(HttpStatus.CONTENT_TOO_LARGE, ErrorCodes.CATALOGUE_IMPORT_TOO_LARGE);
         }
         try {
             return Changeset.parse(MAPPER.readTree(body));
