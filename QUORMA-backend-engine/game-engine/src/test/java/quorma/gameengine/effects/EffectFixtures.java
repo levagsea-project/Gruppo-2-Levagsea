@@ -48,6 +48,15 @@ final class EffectFixtures {
         return new Creature(card, 1, BINDER.bind(card)).abilities("T19").get(0);
     }
 
+    /** A static (trigger T0, class C) effect aimed at its own creature, as a keyword or a synergy writes it. */
+    static BoundExpansion staticExpansion(String effectId, Map<String, Value> params) {
+        ExpansionDef def = new ExpansionDef("T0", Map.of(), effectId, params, "S1", Map.of(), "D_Permanente",
+                List.of(), ResClass.C);
+        CreatureCard card = new CreatureCard("S", 5, Suit.VINCOLO, Subfaction.ADATTATI, 1000, 3000,
+                List.of(new InlineEffect(List.of(def))));
+        return new Creature(card, 1, BINDER.bind(card)).abilities("T0").get(0);
+    }
+
     /** A resolution started by {@code source}, owned by side A, aimed at a creature of side B, permanent. */
     static Effect.Use use(String effectId, Map<String, Value> params, Creature source) {
         return use(effectId, params, source, TriggerContext.NONE);

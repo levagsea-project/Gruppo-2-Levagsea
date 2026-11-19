@@ -116,7 +116,7 @@ Repeatable growth is **not** an evolution. Use a normal trigger plus `max_stacks
 4. **Trigger context**: if `targets[target].requires_context` is set, it must appear in `triggers[trigger].provides` (for `T_EVO`, use the inner trigger's `provides`).
 5. **Duration**: `effects[effect].duration_mode` is `instant_only` (only `D_Istantanea`), `sustained_only` (anything except `D_Istantanea`) or `any`.
 6. **Class `I` only effects** never appear in creature abilities.
-7. **`combination_rules`**: a rule matches when all its non-null fields match (`null` means any, a list means any of). Rules with `allowed_triggers` are whitelists: the effect is legal only with those triggers. A match means the expansion is invalid.
+7. **`combination_rules`**: a rule matches when all its non-null fields match (`null` means any, a list means any of). Rules with `allowed_triggers` or `allowed_classes` are whitelists: the effect is legal only with those triggers or classes. `with_param` limits a rule to expansions that write that effect param (IC014: E1 `scale_by` only in class C). A match means the expansion is invalid.
 8. **Keyword grants**: an `E14` must name an existing keyword, include its required params, and not include unknown ones.
 9. **References**: every `$tune.*` resolves in `balance.json`, every `balance_ref` exists, every description placeholder can be filled.
 10. **No keyword uses `T_EVO`.**

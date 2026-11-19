@@ -151,7 +151,7 @@ public final class EffectRegistry {
         if (rule == null) {
             return Optional.of(notImplemented("effect " + effect + " with mode " + (mode.isEmpty() ? "(none)" : mode)));
         }
-        Optional<String> own = EffectDefinitions.find(effect).flatMap(x -> x.validate(mode, effectParams));
+        Optional<String> own = EffectDefinitions.find(effect).flatMap(x -> x.validate(cls, mode, effectParams));
         if (own.isPresent()) {
             return own;
         }

@@ -65,9 +65,14 @@ def rule_matches(rule, x):
         want = rule.get(field)
         if want is not None and x.get(field) not in as_list(want):
             return False
+    if "with_param" in rule and rule["with_param"] not in x.get("effect_params", {}):
+        return False
     if "allowed_triggers" in rule:
         # whitelist rule: matches (= invalid) when effect matches and trigger not allowed
         return x.get("trigger_id") not in rule["allowed_triggers"] and x["effect_id"] in as_list(rule["effect_id"])
+    if "allowed_classes" in rule:
+        # whitelist rule: matches (= invalid) when the other fields match and the class is not allowed
+        return x.get("class") not in rule["allowed_classes"]
     return True
 
 

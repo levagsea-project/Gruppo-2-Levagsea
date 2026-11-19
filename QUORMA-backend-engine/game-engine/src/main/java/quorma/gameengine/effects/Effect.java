@@ -12,6 +12,14 @@ import quorma.gameengine.model.Side;
 public interface Effect extends EffectDefinition {
 
     /**
+     * True if a static (T0) copy of this effect on an equipment is applied once, at once, and stays, instead of
+     * staying in force: the effects that change a current stat, which has no static layer (E2). The default is false.
+     */
+    default boolean appliedOnceWhenStatic() {
+        return false;
+    }
+
+    /**
      * Applies the effect to {@code target}, a living creature.
      *
      * @param ctx    what the turn offers to an effect

@@ -24,8 +24,8 @@ public final class Effects {
             new RemoveKeywordEffect(),
             new KeywordGrantEffect(),
             new EvolutionGrantEffect(),
-            new SelfGrantEffect(),
-            new StackedGrantEffect(),
+            new SuppressEvolutionEffect(),
+            new DamageReductionEffect(),
             new ScaledDamageEffect(),
             new CancelBonusesEffect());
 

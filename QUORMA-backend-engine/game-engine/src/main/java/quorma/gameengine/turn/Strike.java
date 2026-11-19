@@ -5,6 +5,7 @@ import java.util.List;
 import quorma.gameengine.data.RulesetException;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AtkToBaseEffect;
+import quorma.gameengine.effects.DamageReductionEffect;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.IgnoreMitigationEffect;
 import quorma.gameengine.effects.LethalDamageEffect;
@@ -83,15 +84,16 @@ record Strike(
             BoundExpansion e = a.e();
             Creature from = a.sourceOr(target);
             CreatureRef fromRef = CreatureRef.of(b.sideOf(from), from);
-            if (e.stringParam("mode").orElseThrow().equals("flat")) {
-                flat = Math.addExact(flat, e.intParam("amount"));
-                minDamage = Math.max(minDamage, e.intParam("min_damage"));
+            DamageReductionEffect.Reduction reduction = DamageReductionEffect.reduction(e);
+            if (reduction.flat()) {
+                flat = Math.addExact(flat, reduction.value());
+                minDamage = Math.max(minDamage, reduction.minDamage());
                 reductions.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
-                        Modifier.Kind.DAMAGE_REDUCTION_FLAT, e.intParam("amount")));
+                        Modifier.Kind.DAMAGE_REDUCTION_FLAT, reduction.value()));
             } else {
-                pcts.add(e.intParam("pct"));
+                pcts.add(reduction.value());
                 reductions.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
-                        Modifier.Kind.DAMAGE_REDUCTION_PCT, e.intParam("pct")));
+                        Modifier.Kind.DAMAGE_REDUCTION_PCT, reduction.value()));
             }
         }
 

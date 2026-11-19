@@ -306,7 +306,7 @@
         "T",
         "I"
       ],
-      "description": "Aggiunge all'ATK attuale del bersaglio un valore flat (params.amount) oppure una quota dell'ATK base (params.permille), eventualmente moltiplicato da params.scale_by, per la durata indicata. L'ATK non può scendere sotto 0. Per effetti ripetibili usare max_stacks.",
+      "description": "Aggiunge all'ATK attuale del bersaglio un valore flat (params.amount) oppure una quota dell'ATK base (params.permille), eventualmente moltiplicato da params.scale_by (solo in un effetto continuo, classe C), per la durata indicata. L'ATK non può scendere sotto 0. Per effetti ripetibili usare max_stacks.",
       "params": {
         "mode": {
           "type": "enum",
@@ -335,7 +335,7 @@
             "own_empty_lanes"
           ],
           "optional": true,
-          "description": "Moltiplica il valore per il conteggio indicato (valutato in tempo reale). own_evolutions_triggered conta solo le Evoluzioni innescate su creature del controllore, mai quelle dell'avversario. own_empty_lanes: corsie vuote del controllore (0-5). non_attackers: creature del controllore che non attaccano (0-4)."
+          "description": "Solo in un effetto continuo (classe C, vedi IC014). Moltiplica il valore per il conteggio indicato (valutato in tempo reale). own_evolutions_triggered conta solo le Evoluzioni innescate su creature del controllore, mai quelle dell'avversario. own_empty_lanes: corsie vuote del controllore (0-5). non_attackers: creature del controllore che non attaccano (0-4)."
         },
         "pct": {
           "type": "int",

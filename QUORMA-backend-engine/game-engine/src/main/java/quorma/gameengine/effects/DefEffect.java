@@ -36,6 +36,11 @@ public final class DefEffect implements Effect {
     }
 
     @Override
+    public boolean appliedOnceWhenStatic() {
+        return true;
+    }
+
+    @Override
     public Outcome apply(EffectContext ctx, Use use, Creature target) {
         BoundExpansion e = use.expansion();
         return Stacking.apply(e, target, () -> {

@@ -9,7 +9,6 @@ import java.util.OptionalInt;
 import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
-import quorma.gameengine.effects.DefEffect;
 import quorma.gameengine.effects.Effect;
 import quorma.gameengine.effects.EffectContext;
 import quorma.gameengine.effects.EffectStack;
@@ -390,7 +389,7 @@ final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContex
     void equip(Side owner, EquipmentCard card, Creature receiver, List<MatchEvent> log) {
         List<BoundExpansion> lasting = new ArrayList<>();
         for (BoundExpansion e : binder.bindLasting(card)) {
-            if ("T0".equals(e.triggerId()) && e.effectId().equals(DefEffect.ID)) {
+            if ("T0".equals(e.triggerId()) && Effects.find(e.effectId()).map(Effect::appliedOnceWhenStatic).orElse(false)) {
                 BoundExpansion now = e.asImmediate(TargetIds.REPLACEMENT, Lasting.PERMANENT);
                 List<StatChange> changes = immediate(owner, now, receiver, log);
                 log.add(new MatchEvent.CardEffectResolved(owner, card.id(), e.abilityId(), e.effectId(),

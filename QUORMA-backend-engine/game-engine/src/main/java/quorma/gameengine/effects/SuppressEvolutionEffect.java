@@ -8,8 +8,12 @@ import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Grant;
 import quorma.gameengine.model.Lasting;
 
-/** E18: grants the creature a static copy of the effect (aimed at itself), once. See E28 for the stacking one. */
-public final class SelfGrantEffect implements Effect {
+/**
+ * E18: the creature's Evolution cannot fire. It only means something as a static effect, which the turn reads through
+ * {@code Board.evolutionsSuppressed}; resolving it (a trigger, a spell) grants the creature a static copy for the
+ * duration.
+ */
+public final class SuppressEvolutionEffect implements Effect {
 
     public static final String ID = "E18";
 

@@ -31,10 +31,11 @@ public interface EffectDefinition {
      * Checks beyond what {@link #modes()} says, for the effect's own rules. Returns the problem, empty if none. The
      * default has none.
      *
+     * @param cls    the resolution class of the card's expansion
      * @param mode   the {@code mode} param, {@code ""} if the card has none
      * @param params the effect params as written on the card
      */
-    default Optional<String> validate(String mode, Map<String, Value> params) {
+    default Optional<String> validate(ResClass cls, String mode, Map<String, Value> params) {
         return Optional.empty();
     }
 }

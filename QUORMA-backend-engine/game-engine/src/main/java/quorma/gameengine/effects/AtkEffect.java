@@ -10,9 +10,14 @@ import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.log.StatChange;
 import quorma.gameengine.model.Creature;
+import quorma.gameengine.model.Side;
 import quorma.gameengine.model.Lasting;
 
-/** E1: ATK + {@code amount} or a share of the base ATK, for as long as the duration says. */
+/**
+ * E1: ATK + {@code amount} or a share of the base ATK, for as long as the duration says. A static copy (trigger T0)
+ * adds the same amount to the creature it reaches, times {@code scale_by} when it has it: the turn's {@code Board}
+ * asks {@link #scale} and {@link #amount}, so the arithmetic is in one place.
+ */
 public final class AtkEffect implements Effect {
 
     public static final String ID = "E1";
@@ -39,11 +44,39 @@ public final class AtkEffect implements Effect {
     }
 
     @Override
-    public Optional<String> validate(String mode, Map<String, Value> params) {
+    public Optional<String> validate(ResClass cls, String mode, Map<String, Value> params) {
         if (mode.equals("pct_base_atk") && !params.containsKey("permille") && !params.containsKey("pct")) {
             return Optional.of("effect E1 mode pct_base_atk needs param 'permille' (or 'pct')");
         }
+        if (cls != ResClass.C && params.containsKey("scale_by")) {
+            return Optional.of("effect E1 takes param 'scale_by' only in a continuous (class C) effect, got class " + cls);
+        }
         return Optional.empty();
+    }
+
+    /** The ATK the effect adds: {@code amount}, or a share of {@code baseAtk}, times {@code scale}. */
+    public static int amount(BoundExpansion e, int baseAtk, int scale) {
+        return Math.multiplyExact(PerMille.baseAmount(e, baseAtk), scale);
+    }
+
+    /**
+     * The multiplier of {@code scale_by}, counted now for the player {@code side}; 1 without it. Only a static (class
+     * C) effect may write {@code scale_by}: {@link #validate} refuses it in a triggered or immediate one (IC014).
+     */
+    public static int scale(TargetView view, Side side, BoundExpansion e) {
+        String by = e.stringParam("scale_by").orElse(null);
+        if (by == null) {
+            return 1;
+        }
+        List<Creature> creatures = view.creatures(side);
+        return switch (by) {
+            case "own_evolutions_triggered" -> creatures.stream().filter(c -> !c.destroyed())
+                    .mapToInt(Creature::evolutionsTriggered).sum();
+            case "non_attackers" -> (int) creatures.stream().filter(c -> !c.destroyed() && !view.attacker(side, c)).count();
+            case "creatures_in_play" -> (int) creatures.stream().filter(c -> !c.destroyed()).count();
+            case "own_empty_lanes" -> 5 - creatures.size();
+            default -> throw new IllegalStateException("scale_by " + by);
+        };
     }
 
     @Override
@@ -52,7 +85,7 @@ public final class AtkEffect implements Effect {
         Lasting lasting = use.lasting();
         return Stacking.apply(e, target, () -> {
             int before = target.currentAtk();
-            int amount = PerMille.baseAmount(e, target.card().atk());
+            int amount = amount(e, target.card().atk(), 1); // a triggered or immediate E1 has no scale_by
             boolean sourceGone = lasting.duration().equals(Lasting.WHILE_SOURCE) && lasting.source() == null;
             target.addAtk(amount, sourceGone ? Lasting.permanent() : lasting);
             return List.of(new StatChange(StatChange.Stat.ATK, before, target.currentAtk()));

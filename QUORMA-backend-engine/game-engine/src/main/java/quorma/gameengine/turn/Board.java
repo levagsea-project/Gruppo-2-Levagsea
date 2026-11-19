@@ -9,26 +9,25 @@ import java.util.Optional;
 import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
+import quorma.gameengine.effects.AbilityLayer;
+import quorma.gameengine.effects.AbilityLayerEffect;
 import quorma.gameengine.effects.AdjacencyLinkEffect;
 import quorma.gameengine.effects.AtkEffect;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.Condition;
 import quorma.gameengine.effects.ConditionContext;
 import quorma.gameengine.effects.Conditions;
+import quorma.gameengine.effects.EffectDefinitions;
 import quorma.gameengine.effects.EffectRegistry;
-import quorma.gameengine.effects.EvolutionGrantEffect;
 import quorma.gameengine.effects.HealFactorEffect;
 import quorma.gameengine.effects.IsolatedEffect;
-import quorma.gameengine.effects.KeywordGrantEffect;
 import quorma.gameengine.effects.LethalDamageEffect;
 import quorma.gameengine.effects.NoAtkReductionEffect;
 import quorma.gameengine.effects.NoBonusEffect;
-import quorma.gameengine.effects.PerMille;
 import quorma.gameengine.effects.RankStepEffect;
 import quorma.gameengine.effects.RankedTarget;
-import quorma.gameengine.effects.RemoveKeywordEffect;
-import quorma.gameengine.effects.SelfGrantEffect;
-import quorma.gameengine.effects.StackedGrantEffect;
+import quorma.gameengine.effects.SuppressEvolutionEffect;
+import quorma.gameengine.effects.DamageReductionEffect;
 import quorma.gameengine.effects.TargetIds;
 import quorma.gameengine.effects.TargetView;
 import quorma.gameengine.effects.Targets;
@@ -146,26 +145,36 @@ final class Board implements TargetView {
         computingLayers = true;
         List<BoundExpansion> out = new ArrayList<>(own);
         List<String> removed = new ArrayList<>();
+        AbilityLayer layer = new AbilityLayer() {
+            @Override
+            public AbilityBinder binder() {
+                return binder;
+            }
+
+            @Override
+            public boolean has(String abilityId) {
+                return out.stream().anyMatch(x -> x.abilityId().equals(abilityId));
+            }
+
+            @Override
+            public void add(List<BoundExpansion> expansions) {
+                out.addAll(expansions);
+            }
+
+            @Override
+            public void remove(String keywordId) {
+                removed.add(keywordId);
+            }
+        };
         try {
             Side side = sideOf(c);
             for (Active a : layer1Statics()) {
-                String effect = a.e().effectId();
-                if (!(effect.equals(KeywordGrantEffect.ID) || effect.equals(RemoveKeywordEffect.ID) || effect.equals(EvolutionGrantEffect.ID)) || !reaches(a, side, c)
-                        || !holds(a, c, Ctx.NONE)) {
+                AbilityLayerEffect effect = EffectDefinitions.find(a.e().effectId())
+                        .filter(AbilityLayerEffect.class::isInstance).map(AbilityLayerEffect.class::cast).orElse(null);
+                if (effect == null || !reaches(a, side, c) || !holds(a, c, Ctx.NONE)) {
                     continue;
                 }
-                String where = "static " + a.e().abilityId() + " " + effect;
-                switch (effect) {
-                    case KeywordGrantEffect.ID -> out.addAll(binder.bindKeyword(where, a.e().stringParam("keyword").orElseThrow(),
-                            a.e().nested("keyword_params")));
-                    case EvolutionGrantEffect.ID -> {
-                        String evo = a.e().stringParam("evolution_id").orElseThrow();
-                        if (out.stream().noneMatch(x -> x.abilityId().equals(evo))) {
-                            out.addAll(binder.bindEvolution(where, evo, a.e().nested("evolution_params")));
-                        }
-                    }
-                    default -> removed.add(a.e().stringParam("keyword").orElseThrow());
-                }
+                effect.layer(layer, a.e());
             }
         } finally {
             computingLayers = false;
@@ -420,7 +429,7 @@ final class Board implements TargetView {
 
     /** E18: its Evolutions cannot fire. */
     boolean evolutionsSuppressed(Creature c) {
-        return any(SelfGrantEffect.ID, c);
+        return any(SuppressEvolutionEffect.ID, c);
     }
 
     /** E26: any combat damage it deals destroys. */
@@ -465,7 +474,7 @@ final class Board implements TargetView {
             if (!a.e().effectId().equals(AtkEffect.ID) || !reaches(a, side, receiver) || !holds(a, receiver, ctx)) {
                 continue;
             }
-            int amount = Math.multiplyExact(PerMille.baseAmount(a.e(), receiver.card().atk()), scale(a, side));
+            int amount = AtkEffect.amount(a.e(), receiver.card().atk(), AtkEffect.scale(this, side, a.e()));
             if (amount == 0 || (amount > 0 && noBonus) || (amount < 0 && noReduce)) {
                 continue;
             }
@@ -476,30 +485,12 @@ final class Board implements TargetView {
         return out;
     }
 
-    /** The multiplier of {@code scale_by}, counted now; 1 without it. */
-    private int scale(Active a, Side side) {
-        Optional<String> by = a.e().stringParam("scale_by");
-        if (by.isEmpty()) {
-            return 1;
-        }
-        var player = state.player(side);
-        return switch (by.get()) {
-            case "own_evolutions_triggered" -> player.creatures().stream().filter(c -> !c.destroyed())
-                    .mapToInt(Creature::evolutionsTriggered).sum();
-            case "non_attackers" -> (int) player.creatures().stream()
-                    .filter(c -> !c.destroyed() && !attacker(side, c)).count();
-            case "creatures_in_play" -> (int) player.creatures().stream().filter(c -> !c.destroyed()).count();
-            case "own_empty_lanes" -> 5 - player.creatures().size();
-            default -> throw new IllegalStateException("scale_by " + by.get());
-        };
-    }
-
     /**
      * The damage reductions (static E28) that reach {@code target}: in the order of {@link #statics()}, so a
      * creature's own reductions come in card order.
      */
     List<Active> reductions(Creature target) {
-        return reaching(StackedGrantEffect.ID, target, Ctx.NONE);
+        return reaching(DamageReductionEffect.ID, target, Ctx.NONE);
     }
 
     /** The share (per mille) of a heal {@code c} receives: E51 replacements multiplied, 1000 with none. */

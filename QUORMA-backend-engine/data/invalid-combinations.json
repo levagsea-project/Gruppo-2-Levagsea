@@ -106,7 +106,7 @@
     "effect_class_I": "Gli effetti di sola classe I non compaiono in espansioni di creatura/keyword/sinergia.",
     "keyword_grant": "Un'espansione con E14 deve indicare una keyword esistente in keyword.json e keyword_params conformi ai suoi params (campi richiesti presenti, nessun campo sconosciuto)."
   },
-  "match_semantics": "Nei combination_rules un campo null significa 'qualsiasi'; una lista significa 'uno qualsiasi di'. Un'espansione è invalida se corrisponde a TUTTI i campi non nulli della regola.",
+  "match_semantics": "Nei combination_rules un campo null significa 'qualsiasi'; una lista significa 'uno qualsiasi di'. Un'espansione è invalida se corrisponde a TUTTI i campi non nulli della regola. Una regola con allowed_triggers o allowed_classes e' una lista bianca: l'espansione e' invalida se l'effetto corrisponde ma il trigger o la classe non sono tra quelli ammessi. with_param limita la regola alle espansioni che scrivono quel parametro dell'effetto.",
   "combination_rules": [
     {
       "rule_id": "IC001",
@@ -208,6 +208,17 @@
       "effect_id": "E10",
       "target_id": null,
       "reason": "Distruggere una creatura in risposta a una distruzione crea reazioni a catena senza fine."
+    },
+    {
+      "rule_id": "IC014",
+      "trigger_id": null,
+      "effect_id": "E1",
+      "target_id": null,
+      "with_param": "scale_by",
+      "allowed_classes": [
+        "C"
+      ],
+      "reason": "E1 con scale_by e' valido solo come effetto continuo (classe C): il conteggio e' valutato in tempo reale. In classe T o I il moltiplicatore non verrebbe applicato. Usare un effetto continuo (trigger T0)."
     }
   ]
 }

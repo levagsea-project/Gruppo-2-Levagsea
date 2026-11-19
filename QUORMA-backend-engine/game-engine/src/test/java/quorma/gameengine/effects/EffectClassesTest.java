@@ -14,7 +14,7 @@ import quorma.gameengine.model.Creature;
 
 /**
  * One focused test per effect class that moved out of {@code Game}, without the stack or the turn: the effect, a
- * {@link FakeContext} and a creature. Numbers worked out by hand. E28 (stacking grant) and the
+ * {@link FakeContext} and a creature. Numbers worked out by hand. E28 (damage reduction) and the
  * positive case of E16 need bound abilities of the real vocabulary and are covered by {@code BaseSetTest} and
  * {@code BaseSetEffectsTest}.
  */
@@ -213,7 +213,7 @@ class EffectClassesTest {
     void e18GrantsAStaticCopyOfItself() {
         Creature t = EffectFixtures.creature(1000, 3000);
         Effect.Use use = EffectFixtures.use("E18", Map.of(), t);
-        assertEquals(Outcome.NONE, apply(new SelfGrantEffect(), new FakeContext(), use, t));
+        assertEquals(Outcome.NONE, apply(new SuppressEvolutionEffect(), new FakeContext(), use, t));
         assertTrue(t.has(use.expansion().abilityId()));
     }
 
