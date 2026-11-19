@@ -1,9 +1,18 @@
 import { useState } from 'react'
+import { sectionAnchor, type Section } from '../../data/info'
 import SideList from './SideList'
-import type { SideItem } from './SideList'
 
-// SideList che si ricorda da sola quale voce hai scelto (serve a "In questa pagina", "Argomenti"...).
-export default function SectionList({ title, items }: { title: string; items: SideItem[] }) {
+// Indice "In questa pagina": scegliendo una voce il testo scorre fino a quella sezione.
+// Con "riduci movimento" attivo lo scorrimento è immediato invece che animato.
+export default function SectionList({ title, sections }: { title: string; sections: Section[] }) {
   const [active, setActive] = useState(0)
-  return <SideList title={title} items={items} active={active} onSelect={setActive} />
+
+  const go = (i: number) => {
+    setActive(i)
+    const target = document.getElementById(sectionAnchor(sections[i].id))
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    target?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  }
+
+  return <SideList title={title} items={sections.map((s) => ({ label: s.title }))} active={active} onSelect={go} />
 }
