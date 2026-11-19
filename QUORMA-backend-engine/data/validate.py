@@ -125,7 +125,9 @@ def check_expansion(where, x, origin, card_kind=None):
     # 4 trigger context
     ctx = S[s].get("requires_context")
     provided = card_contexts(card_kind) if t is None else provides_of(t, tp)
-    if ctx and ctx not in provided:
+    # an ability written on a card is checked like the engine does: the context only for class T (a spell or equipment
+    # takes the context of its targets from the card; a replacement reads the context its trigger implies)
+    if ctx and ctx not in provided and (origin is not None and origin in kw or origin in evo or origin in syn or cls == "T"):
         err(where, f"target {s} needs context '{ctx}' not provided by " + (f"a {card_kind}" if t is None else t))
     # 5 duration
     mode = E[e]["duration_mode"]
@@ -137,7 +139,9 @@ def check_expansion(where, x, origin, card_kind=None):
         err(where, f"effect {e} is sustained_only, got {d}")
     # 11 reach: a creature target must be found in the class of the expansion (a continuous effect reaches it, a
     # triggered effect chooses it when it resolves); the other classes are checked elsewhere
-    if cls in ("C", "T") and "creature" in S[s]["kind"] and cls not in S[s].get("reach_classes", []):
+    # (a continuous effect of a spell may aim at a selection, S33-S40, which the engine resolves when the spell is cast)
+    chosen_by_spell = card_kind == "spell" and cls == "C" and s in {f"S{n}" for n in range(33, 41)}
+    if cls in ("C", "T") and "creature" in S[s]["kind"] and not chosen_by_spell and cls not in S[s].get("reach_classes", []):
         err(where, f"target {s} is not found by a class {cls} effect (reach_classes {S[s].get('reach_classes', [])})")
     # 6 class I only
     if card_kind is None and set(E[e]["class"]) == {"I"}:
@@ -154,11 +158,13 @@ def check_expansion(where, x, origin, card_kind=None):
             err(where, "E14 grants " + unknown("keyword", p.get("keyword")))
         else:
             schema, given = k.get("params", {}), p.get("keyword_params", {})
+            b_ = bal["keywords"].get(k.get("balance_ref"), {})
+            scaled = list(b_.get("tier_scaled", [])) + list(b_.get("params", {}))  # as the engine allows them
             for n, spec in schema.items():
                 if spec.get("required") and n not in given:
                     err(where, f"E14 missing required keyword param {n}")
             for n in given:
-                if n not in schema:
+                if n not in schema and n not in scaled:
                     err(where, f"E14 unknown keyword param {n}")
     # 9 references
     for ref in re.findall(r"\$tune\.([A-Za-z0-9_.]+)", json.dumps(x)):
@@ -411,6 +417,111 @@ for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targ
     nums = [int(i[1:]) for s in sections for i in list(vocab[s]) + list(p_vocab.get(s, {}))
             if i[1:].isdigit() and i.startswith(prefix)]
     print(f"INFO  next free {prefix} id: {prefix}{max(nums) + 1 if nums else 0} (live and parked counted)")
+
+# Cards (cards.json): the base set as the engine reads it, plus "expansions" (names are card text, not here). Every ability is checked
+# like a keyword or evolution of the same shape; ids, params, slots and rank eligibility are checked here.
+if (root / "cards.json").exists():
+    cards_doc = load("cards.json")
+    consts = vocab["constants"]
+    rank_code = {1: "A", 11: "J", 12: "Q", 13: "K"}
+    suit_codes = {x.upper(): x for x in consts["suits"]}
+    sub_faction = {x.upper(): f for f, names in consts["subfactions"].items() for x in names}
+    faction_codes = {f.upper().replace(" ", "_"): f for f in consts["factions"]}
+    slots = bal["globals"].get("card_ability_slots", {})
+    seen_ids, counts = set(), {}
+    for card in cards_doc.get("cards", []):
+        cid = card.get("id", "?")
+        where = f"cards.json {cid}"
+        if cid in seen_ids:
+            err(where, "duplicate id")
+        seen_ids.add(cid)
+        exps = card.get("expansions")
+        if not isinstance(exps, list) or not exps or len(set(exps)) != len(exps) or not all(
+                isinstance(e_, str) and re.fullmatch(r"[A-Z0-9_]+", e_) for e_ in exps):
+            err(where, "expansions must be a non-empty list of distinct codes (A-Z, 0-9, _)")
+        kind = card.get("kind")
+        card_kind = {"CREATURE": None, "SPELL": "spell", "EQUIPMENT": "equipment"}.get(kind, "?")
+        if card_kind == "?":
+            err(where, f"unknown kind '{kind}'")
+            continue
+        if kind == "CREATURE":
+            extra = set(card) - {"id", "expansions", "kind", "rank", "suit", "subfaction", "atk", "def", "abilities"}
+            if extra:
+                err(where, f"unknown fields {sorted(extra)}")
+            if card.get("rank") not in range(1, 14):
+                err(where, f"rank {card.get('rank')!r} must be 1..13 (Ace 1, Jack 11, Queen 12, King 13)")
+            if card.get("suit") not in suit_codes:
+                err(where, f"unknown suit '{card.get('suit')}'")
+            if card.get("subfaction") not in sub_faction:
+                err(where, f"unknown subfaction '{card.get('subfaction')}'")
+            for f_ in ("atk", "def"):
+                if not isinstance(card.get(f_), int) or isinstance(card.get(f_), bool) or card[f_] < (1 if f_ == "def" else 0):
+                    err(where, f"{f_} must be an integer ({'>= 1' if f_ == 'def' else '>= 0'})")
+            faction = sub_faction.get(card.get("subfaction"))
+            prefix = {"Resistenza Umana": "BASE-RES-", "Potenze Artificiali": "BASE-AI-"}.get(faction)
+            if prefix and not cid.startswith(prefix):
+                err(where, f"id should start with {prefix} for a {faction} subfaction")
+            rank_name = rank_code.get(card.get("rank"), str(card.get("rank")))
+        else:
+            extra = set(card) - {"id", "expansions", "kind", "faction", "abilities"}
+            if extra:
+                err(where, f"unknown fields {sorted(extra)}")
+            faction = faction_codes.get(card.get("faction"))
+            if faction is None:
+                err(where, f"unknown faction '{card.get('faction')}'")
+            rank_name = None
+        counts[(faction, kind)] = counts.get((faction, kind), 0) + 1
+        abilities = card.get("abilities")
+        if not isinstance(abilities, list) or not abilities:
+            err(where, "abilities must be a non-empty list")
+            continue
+        n_kw = n_evo = 0
+        used = set()
+        for i, a in enumerate(abilities):
+            aw = f"{where} ability[{i}]"
+            if "expansions" in a:
+                if set(a) != {"expansions"} or not a["expansions"]:
+                    err(aw, "an inline ability has only a non-empty 'expansions' list")
+                    continue
+                for j, x in enumerate(a["expansions"]):
+                    if "$param" in json.dumps(x):
+                        err(f"{aw}[{j}]", "unresolved $param reference")
+                    check_expansion(f"{aw}[{j}]", x, None, card_kind)
+                continue
+            if card_kind is not None:
+                err(aw, "spells and equipment write their abilities as expansions")
+                continue
+            aid = a.get("id")
+            if set(a) - {"id", "params"}:
+                err(aw, f"unknown fields {sorted(set(a) - {'id', 'params'})}")
+            table, bal_table = (kw, bal["keywords"]) if aid in kw else (evo, bal["evolutions"]) if aid in evo else (None, None)
+            if table is None:
+                err(aw, unknown("keyword or evolution", aid))
+                continue
+            if aid in used:
+                err(aw, f"{aid} is listed twice")
+            used.add(aid)
+            if table is kw:
+                n_kw += 1
+            else:
+                n_evo += 1
+            schema, given = table[aid].get("params") or {}, a.get("params", {})
+            bal_entry = bal_table.get(table[aid]["balance_ref"], {})
+            for n_, spec in schema.items():
+                if spec.get("required") and n_ not in given:
+                    err(aw, f"{aid} missing required param {n_}")
+            for n_ in given:  # a card may also write a tier-scaled number or a number of the ability's balance.json entry
+                if n_ not in schema and n_ not in bal_entry.get("tier_scaled", []) and n_ not in bal_entry.get("params", {}):
+                    err(aw, f"{aid} unknown param {n_}")
+            allowed = bal_entry.get("allowed_ranks")
+            if allowed is not None and rank_name is not None and rank_name not in allowed:
+                err(aw, f"{aid} is not allowed on rank {rank_name} (allowed: {', '.join(allowed)})")
+        if slots and n_kw > slots.get("keyword", 99):
+            err(where, f"{n_kw} keywords, at most {slots['keyword']}")
+        if slots and n_evo > slots.get("evolution", 99):
+            err(where, f"{n_evo} evolutions, at most {slots['evolution']}")
+    for (f_, k_), n_ in sorted(counts.items(), key=str):
+        print(f"INFO  cards {f_} {k_}: {n_}")
 
 # Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
 # Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.

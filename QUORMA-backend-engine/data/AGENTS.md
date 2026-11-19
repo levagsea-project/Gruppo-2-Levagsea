@@ -19,6 +19,7 @@ All game text is in Italian. IDs, field names and this guide are in English. Eve
 | `subfactions.json` | The subfaction matrix (ruleset 2.4, lore section 08): faction, cycle, who each subfaction is strong and weak against. Structure only: the x1.1 and x0.9 numbers are in `balance.json` → `subfaction_advantage_permille`. | The matrix changes. |
 | `ranks.json` | The rank ladder (Tier names, roles per rank and faction, naming rules) and `role_affinity`. Lore plus pool-generation hints, no rules. | You change the lore of the ranks. |
 | `invalid-combinations.json` | Class rules per trigger, a description of the derived rules, and the few hand-written exceptions. | You find a combination that should be illegal. |
+| `cards.json` | The base set's 150 cards (104 creatures, 26 spells, 20 equipment) in the engine's card shape plus `expansions` (the expansions the card belongs to, `["BASE"]` here). A changeset for the catalogue: names and flavour are card text (`labels/cards.<locale>.json`), outside the snapshot. **Generated** by `tools/base-set/export_cards.py` from `docs/cards/card-effects.json`: do not edit by hand. Not part of the ruleset hash and not bundled in the engine jar: it is the catalogue the backend imports. `validate.py` checks it (check 12). | The base set changes (edit `docs/cards/card-effects.json`, rerun the exporter). |
 | `parked/*.json` | Abilities, vocab entries and rules kept out of the game until needed (section 13). Same shapes as the live files. Not loaded by the engine, not bundled in the jar. | You park or restore an ability. |
 | `labels/<locale>.json` | Player-facing text in Italian (`it`) and English (`en`): API error codes and base game vocabulary. Flat `"dotted.key": "text"`, `{name}` placeholders. Game terms use `game.<group>.<code in lower case>`, where the code is the language-neutral identifier the API and the MatchLog send (`game.faction.resistenza_umana`, `game.hand_type.high_card`). Effect text (keywords, evolutions, synergies) is not translated yet. | You add an error code or a game term, or a language. |
 
@@ -65,7 +66,7 @@ Text placeholders such as `{reduction_pct}` or `{x}` in descriptions are filled 
 
 ## 4. Cards reference abilities
 
-There is no cards file yet. The intended card shape:
+The card file is `cards.json` (generated, see section 1). The ability part of a card looks like this:
 
 ```json
 {
@@ -123,6 +124,8 @@ Repeatable growth is **not** an evolution. Use a normal trigger plus `max_stacks
 11. **Reach**: a creature target must be found in the class of the expansion, `targets[target].reach_classes`: `C` if a continuous effect reaches it, `T` if a triggered effect chooses it when it resolves. The engine checks the same at bind time, for the abilities cards write inline, and a test keeps `reach_classes` in step with the `Target` classes.
 
 An id that exists only in `parked/` fails check 1 with a message saying where to restore it from. The validator also checks that no id is both live and parked, and prints the next free id of each kind.
+
+12. **Cards** (`cards.json`): ids unique, the card fields the engine schema knows plus `expansions`, the id prefix agrees with the subfaction's faction, every ability is a live keyword or evolution (required and allowed params, rank within `allowed_ranks`, no duplicates, within `card_ability_slots`) or a list of expansions that passes checks 1-9. For a spell or equipment, and for any ability written on a card, the target context is checked only for class `T` and a continuous spell effect may aim at a selection (S33-S40), as the engine does (`EffectRegistry`).
 
 The structure files are meant to pass all the checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; with only four live keywords Vincolo misses the suit target and Vestigio Tier 3 the role target, see `2026-11-14-vincolo-no-themed-ability`), and prints theme-coverage warnings (section 10); warnings never fail the run.
 
