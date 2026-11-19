@@ -55,6 +55,14 @@ packs:
       slots: {TIER_2: 2, TIER_3: 2, TIER_4: 1}
       support-slots: 3
 
+matches:
+  # How long a challenge by nickname waits for an answer (at most 7 days).
+  challenge-ttl: ${MATCHES_CHALLENGE_TTL:48h}
+  # How long an open room waits for someone to join.
+  room-ttl: ${MATCHES_ROOM_TTL:10m}
+  # Matchmaking skips players who have not logged in for longer than this (at most 7 days).
+  matchmaking-max-offline: ${MATCHES_MATCHMAKING_MAX_OFFLINE:7d}
+
 auth:
   # Registration bonus for new users
   registration-bonus: ${AUTH_REGISTRATION_BONUS:0}

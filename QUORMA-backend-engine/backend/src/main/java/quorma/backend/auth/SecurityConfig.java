@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/error").permitAll()
                         .requestMatchers("/decks/**").hasRole("PLAYER")
                         .requestMatchers("/packs/**", "/collection/**").hasRole("PLAYER")
+                        .requestMatchers("/challenges/**", "/rooms/**", "/matchmaking/**", "/matches/**").hasRole("PLAYER")
                         .requestMatchers("/v1/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(j -> j.jwtAuthenticationConverter(jwtAuthenticationConverter())))
