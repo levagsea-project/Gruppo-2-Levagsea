@@ -40,6 +40,12 @@
   "pack.type.elite": "Pacchetto Élite",
   "engine.input_invalid": "Impossibile giocare la partita: dati non validi",
   "engine.unavailable": "Il motore di gioco non è disponibile, riprova più tardi",
+  "catalogue.draft_not_found": "Bozza non trovata",
+  "catalogue.draft_open_exists": "C'è già una bozza aperta: pubblicala o scartala prima",
+  "catalogue.draft_closed": "La bozza è già chiusa",
+  "catalogue.draft_stale": "Nel frattempo il catalogo è cambiato: ricalcola la bozza prima di pubblicarla",
+  "catalogue.draft_invalid": "La bozza non è valida: controlla i problemi elencati",
+  "catalogue.item_invalid": "Elemento della bozza non valido",
 
   "error.not_implemented": "Funzione non ancora disponibile",
 

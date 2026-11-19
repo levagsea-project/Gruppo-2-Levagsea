@@ -18,9 +18,11 @@ import quorma.backend.common.ErrorCodes;
 public class DeckEligibility {
 
     private final DeckRepository decks;
+    private final DeckMigrator migrator;
 
-    public DeckEligibility(DeckRepository decks) {
+    public DeckEligibility(DeckRepository decks, DeckMigrator migrator) {
         this.decks = decks;
+        this.migrator = migrator;
     }
 
     /** An outdated deck, for the message the frontend shows when the home page opens. */
@@ -48,9 +50,14 @@ public class DeckEligibility {
         return new PlayStatus(outdated.isEmpty() && missing.isEmpty(), outdated, missing, outdatedDecks);
     }
 
-    /** 409 {@code deck.defense_required} unless the player has a legal defense deck for both factions. */
+    /**
+     * 409 {@code deck.defense_required} unless the player has a legal defense deck for both factions. First moves the
+     * player's decks to the active snapshot ({@link DeckMigrator}), a safety net for a session that outlives a publish:
+     * with every deck already on it this does nothing, and a failure is logged without blocking.
+     */
     @Transactional(readOnly = true)
     public void requireCanPlay(UUID userId) {
+        migrator.migrateOwnerQuietly(userId);
         if (!status(userId).canPlay()) {
             throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_DEFENSE_REQUIRED);
         }

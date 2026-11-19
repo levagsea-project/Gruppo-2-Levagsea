@@ -40,6 +40,12 @@
   "pack.type.elite": "Elite Pack",
   "engine.input_invalid": "The match could not be played: invalid input",
   "engine.unavailable": "The game engine is not available, please try again later",
+  "catalogue.draft_not_found": "Draft not found",
+  "catalogue.draft_open_exists": "A draft is already open: publish or discard it first",
+  "catalogue.draft_closed": "The draft is already closed",
+  "catalogue.draft_stale": "The catalogue has changed since: rebase the draft before publishing it",
+  "catalogue.draft_invalid": "The draft is not valid: check the listed problems",
+  "catalogue.item_invalid": "Invalid draft item",
 
   "error.not_implemented": "Not available yet",
 

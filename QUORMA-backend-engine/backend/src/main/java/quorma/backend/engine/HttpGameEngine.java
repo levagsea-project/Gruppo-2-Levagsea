@@ -10,12 +10,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
+import quorma.backend.catalogue.publish.CardChecker;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /** Calls the engine-service and returns its MatchLog without interpreting or recomputing it. */
 @Component
-public class HttpGameEngine {
+public class HttpGameEngine implements CardChecker {
 
     private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
@@ -41,6 +42,20 @@ public class HttpGameEngine {
                 .bodyValue(input)
                 .retrieve()
                 .bodyToMono(MatchLog.class)
+                .timeout(timeout)
+                .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
+                .onErrorMap(HttpGameEngine::translate)
+                .block();
+    }
+
+    /** {@code POST /v1/cards/check}: the engine's report on a candidate card pool, as the engine wrote it. */
+    @Override
+    public JsonNode check(JsonNode request) {
+        return client.post()
+                .uri("/v1/cards/check")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
                 .timeout(timeout)
                 .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
                 .onErrorMap(HttpGameEngine::translate)

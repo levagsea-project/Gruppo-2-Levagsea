@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import quorma.backend.common.ErrorCodes;
+import quorma.backend.deck.DeckMigrator;
 import quorma.backend.user.CreditTransaction;
 import quorma.backend.user.CreditTransactionRepository;
 import quorma.backend.user.CreditTransactionType;
@@ -24,14 +25,16 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final JwtService jwt;
     private final AuthProperties props;
+    private final DeckMigrator deckMigrator;
 
     public AuthService(UserRepository users, CreditTransactionRepository ledger, PasswordEncoder encoder,
-                       JwtService jwt, AuthProperties props) {
+                       JwtService jwt, AuthProperties props, DeckMigrator deckMigrator) {
         this.users = users;
         this.ledger = ledger;
         this.encoder = encoder;
         this.jwt = jwt;
         this.props = props;
+        this.deckMigrator = deckMigrator;
         this.dummyHash = encoder.encode("this-user-does-not-exist");
     }
 
@@ -64,6 +67,9 @@ public class AuthService {
         if (user == null || !ok) {
             throw new AuthException(HttpStatus.UNAUTHORIZED, ErrorCodes.INVALID_CREDENTIALS);
         }
+        // The player's decks move to the active snapshot, or are flagged outdated. A failure is logged and never
+        // blocks the login; each deck is migrated in its own transaction.
+        deckMigrator.migrateOwnerQuietly(user.getId());
         return respond(user);
     }
 

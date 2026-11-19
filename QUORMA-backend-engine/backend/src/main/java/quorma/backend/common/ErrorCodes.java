@@ -47,6 +47,13 @@ public final class ErrorCodes {
     public static final String DECK_CARD_WRONG_FACTION = "deck.card_wrong_faction";
     public static final String DECK_CARD_NO_DEFINITION = "deck.card_no_definition";
 
+    public static final String CATALOGUE_DRAFT_NOT_FOUND = "catalogue.draft_not_found";
+    public static final String CATALOGUE_DRAFT_OPEN_EXISTS = "catalogue.draft_open_exists";
+    public static final String CATALOGUE_DRAFT_CLOSED = "catalogue.draft_closed";
+    public static final String CATALOGUE_DRAFT_STALE = "catalogue.draft_stale";
+    public static final String CATALOGUE_DRAFT_INVALID = "catalogue.draft_invalid";
+    public static final String CATALOGUE_ITEM_INVALID = "catalogue.item_invalid";
+
     public static final String ENGINE_INPUT_INVALID = "engine.input_invalid";
     public static final String ENGINE_UNAVAILABLE = "engine.unavailable";
 
