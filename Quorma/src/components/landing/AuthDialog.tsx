@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import {
-  AuthError,
   DEMO_AUTH,
+  PASSWORD_HINT,
+  USERNAME_HINT,
+  formErrors,
   login,
   register,
   saveSession,
@@ -55,9 +57,18 @@ export default function AuthDialog({ mode }: { mode: AuthMode }) {
       saveSession(res, remember)
       navigate('/app')
     } catch (err) {
-      setServerError(err instanceof AuthError ? err.message : 'Qualcosa è andato storto. Riprova.')
+      // Il backend dice quale campo è sbagliato: l'errore va sotto quel campo, il resto nel riquadro.
+      const { fields, message } = formErrors(err)
+      setErrors(fields)
+      setServerError(message)
       setSending(false)
     }
+  }
+
+  // Quando il giocatore corregge un campo, il suo errore sparisce.
+  const edit = (name: keyof FieldErrors, set: (v: string) => void) => (v: string) => {
+    set(v)
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }))
   }
 
   return (
@@ -94,24 +105,24 @@ export default function AuthDialog({ mode }: { mode: AuthMode }) {
               label="Nome del giocatore"
               name="username"
               value={username}
-              onChange={setUsername}
+              onChange={edit('username', setUsername)}
               error={errors.username}
               autoComplete="username"
               autoFocus
-              hint={signup ? 'Da 3 a 32 caratteri: lettere, cifre, _ . -' : undefined}
+              hint={signup ? USERNAME_HINT : undefined}
             />
             {signup && (
-              <Field label="Email" name="email" type="email" value={email} onChange={setEmail} error={errors.email} autoComplete="email" />
+              <Field label="Email" name="email" type="email" value={email} onChange={edit('email', setEmail)} error={errors.email} autoComplete="email" />
             )}
             <Field
               label="Password"
               name="password"
               type="password"
               value={password}
-              onChange={setPassword}
+              onChange={edit('password', setPassword)}
               error={errors.password}
               autoComplete={signup ? 'new-password' : 'current-password'}
-              hint={signup ? 'Da 8 a 72 caratteri.' : undefined}
+              hint={signup ? PASSWORD_HINT : undefined}
             />
 
             <label className="l-spunta">
@@ -126,7 +137,10 @@ export default function AuthDialog({ mode }: { mode: AuthMode }) {
                     type="checkbox"
                     name="terms"
                     checked={terms}
-                    onChange={(e) => setTerms(e.target.checked)}
+                    onChange={(e) => {
+                      setTerms(e.target.checked)
+                      if (errors.terms) setErrors((prev) => ({ ...prev, terms: undefined }))
+                    }}
                     aria-invalid={errors.terms ? true : undefined}
                     aria-describedby={errors.terms ? 'terms-err' : undefined}
                   />
