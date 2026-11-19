@@ -3,8 +3,11 @@ package quorma.backend.user;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +18,19 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByUsernameIgnoreCase(String username);
 
     boolean existsByEmailIgnoreCase(String email);
+
+    /**
+     * Records a login with a plain UPDATE: saving the entity would bump {@code users.version}, which guards the
+     * credit balance, and make a login race with a pack purchase.
+     */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "update users set last_login_at = now() where id = :id", nativeQuery = true)
+    void touchLogin(@Param("id") UUID id);
+
+    /** Random players (not {@code me}) who logged in since {@code since}: the pool for matchmaking. */
+    @Query(value = "select id from users where role = 'PLAYER' and id <> :me and last_login_at >= :since"
+            + " order by random() limit :max", nativeQuery = true)
+    List<UUID> findRecentPlayers(@Param("me") UUID me, @Param("since") Instant since, @Param("max") int max);
 
     /** SELECT ... FOR UPDATE: blocks other transactions on this row until the caller's transaction ends. */
     @Lock(LockModeType.PESSIMISTIC_WRITE)

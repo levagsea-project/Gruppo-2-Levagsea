@@ -36,12 +36,18 @@ public class HttpGameEngine {
     }
 
     public MatchLog simulate(JsonNode input) {
+        return simulate(input, timeout);
+    }
+
+    /** Same call with a shorter limit, for a caller that has a budget for several calls (never longer than the default). */
+    public MatchLog simulate(JsonNode input, Duration limit) {
+        Duration effective = limit.compareTo(timeout) < 0 ? limit : timeout;
         return client.post()
                 .uri("/v1/simulate")
                 .bodyValue(input)
                 .retrieve()
                 .bodyToMono(MatchLog.class)
-                .timeout(timeout)
+                .timeout(effective)
                 .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
                 .onErrorMap(HttpGameEngine::translate)
                 .block();

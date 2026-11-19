@@ -54,16 +54,18 @@ public class AuthService {
         if (bonus > 0) {
             ledger.save(new CreditTransaction(user.getId(), bonus, bonus, CreditTransactionType.REGISTRATION_BONUS, null, null));
         }
+        users.touchLogin(user.getId()); // registering returns a token, so it counts as a login
         return respond(user);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthResponse login(LoginRequest req) {
         User user = users.findByUsernameIgnoreCase(req.username()).orElse(null);
         boolean ok = encoder.matches(req.password(), user == null ? dummyHash : user.getPasswordHash());
         if (user == null || !ok) {
             throw new AuthException(HttpStatus.UNAUTHORIZED, ErrorCodes.INVALID_CREDENTIALS);
         }
+        users.touchLogin(user.getId());
         return respond(user);
     }
 
