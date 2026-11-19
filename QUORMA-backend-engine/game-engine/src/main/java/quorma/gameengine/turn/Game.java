@@ -96,6 +96,11 @@ final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContex
 
     // ================================================================ triggers
 
+    /** T2 effects at the start of {@code phase}. */
+    void phase(String phase, List<MatchEvent> log) {
+        fireAndResolve(List.of(new GameEvent.PhaseStart(phase)), log);
+    }
+
     /** Fires {@code events} and resolves the stack. */
     void fireAndResolve(List<GameEvent> events, List<MatchEvent> log) {
         if (events.isEmpty()) {

@@ -132,6 +132,11 @@ final class TriggerDispatcher {
         }
     }
 
+    /** Pushes {@code e}, an ability of {@code source}; its target is fixed now if it aims at the source (S1). */
+    void push(EffectStack stack, Board b, Side side, Creature source, BoundExpansion e, TriggerContext ctx) {
+        stack.push(EffectStack.Item.triggered(side, source, e, scaleOf(b, side, source, e), ctx));
+    }
+
     /** The factor of the creature's E19 (Spira 4) for an Evolution, 1000 otherwise. */
     int scaleOf(Board b, Side side, Creature source, BoundExpansion e) {
         if (!e.evolution() || source.destroyed()) {

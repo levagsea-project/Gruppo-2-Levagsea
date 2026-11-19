@@ -62,7 +62,8 @@ game-engine/src/main/java/quorma/gameengine/
   effects/   ability binder, effect registry, stack, one Effect / PlayerEffect / Condition / Target class per vocabulary ID
              (`Effects`, `PlayerEffects`, `Conditions`, `Targets` look them up), `EffectContext`, `ConditionContext` and `TargetView` (what
              they may ask of the turn), `PerMille` math
-  turn/      setup, turn phases (TurnResolver), one turn's effects (Game: wires the pieces below, implements the stack
+  turn/      setup, turn phases (TurnResolver runs the turn and exposes each phase; Declaration, Combat, Refill and
+             TurnEnd hold them, Evaluate and T5 stay in it), one turn's effects (Game: wires the pieces below, implements the stack
              hooks and EffectContext, spells, equipment, draws and placements), triggers (TriggerDispatcher: which
              abilities listen and in what order), damage and destruction by
              effects with the T20/T21 replacements (Destruction), the table as effects see it: static effects, reach,
