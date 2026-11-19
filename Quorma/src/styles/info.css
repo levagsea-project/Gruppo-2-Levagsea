@@ -1,0 +1,55 @@
+/* Pagine Informazioni: Chi siamo, FAQ, Glossario, Contatti, Privacy, Cookie, Termini */
+.info-page { gap: 22px; }
+.info-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; }
+.info-note { margin: 0; font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--steel-300); }
+
+/* colonne: lista a sinistra, riquadro grande, (FAQ e Contatti) colonna a destra */
+.info-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 28px; }
+.info-body.has-aside { grid-template-columns: 232px minmax(0, 1fr) 296px; }
+@media (max-width: 1279px) { .info-body { grid-template-columns: 200px minmax(0, 1fr); gap: 22px; } .info-body.has-aside { grid-template-columns: 200px minmax(0, 1fr) 240px; } }
+
+.info-side { min-height: 0; display: flex; flex-direction: column; gap: 26px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+
+/* il riquadro grande riempie l'altezza; quando ci sarà il testo scorre dentro */
+.info-tela { min-height: 0; }
+.info-tela > .q-tela__in { min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+
+/* colonna destra */
+.info-aside { min-height: 0; display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
+.info-help { min-height: 190px; }
+.info-help > .q-tela__in { min-height: 190px; }
+.info-channels { min-height: 160px; }
+.info-aside .q-btn { display: flex; }
+
+/* liste a sinistra */
+.info-list { display: flex; flex-direction: column; gap: 2px; }
+.info-list-title { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--steel-300); }
+.info-list-title::before { content: ""; width: 6px; height: 6px; background: var(--petrol-500); box-shadow: 0 0 6px rgba(74,166,173,.7); }
+.info-list-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 34px; padding: 5px 10px; border: 0; text-align: left; font-size: 13.5px; line-height: 1.3; color: var(--silver-100); background: transparent; transition: background .15s ease; }
+.info-list-item:hover { background: rgba(213,225,229,.07); }
+.info-list-item:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
+.info-list-label { display: flex; align-items: center; gap: 10px; }
+.info-list-label::before { content: ""; width: 5px; height: 5px; background: var(--steel-300); }
+.info-list-count { font-size: 12px; color: var(--steel-300); }
+.info-list-item[aria-current="true"] { font-weight: 600; color: var(--ground-950); background: linear-gradient(90deg, #F1F6F7, #C3D1D6); }
+.info-list-item[aria-current="true"] .info-list-label::before { background: var(--ground-950); }
+.info-list-item[aria-current="true"] .info-list-count { color: var(--ground-950); }
+
+/* Contatti: testo "Prima di scrivere" */
+.info-hint { margin: 0; font-size: 13.5px; line-height: 20px; color: var(--silver-100); }
+.info-hint button { padding: 0; border: 0; font: inherit; color: var(--petrol-300); background: none; }
+.info-hint button:hover { text-decoration: underline; }
+
+/* Glossario: griglia delle lettere */
+.letter-grid { display: grid; grid-template-columns: repeat(7, 28px); gap: 6px 8px; }
+.letter-cell { height: 28px; border: 0; font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--silver-100); background: transparent; }
+.letter-cell:hover:not(:disabled) { background: rgba(213,225,229,.1); }
+.letter-cell:disabled { opacity: .3; cursor: default; }
+.letter-cell[aria-current="true"] { color: var(--ground-950); background: linear-gradient(180deg, #F1F6F7, #C3D1D6); }
+
+/* sotto i 1024px: tutto in una colonna, scorre la pagina intera */
+@media (max-width: 1023px) {
+  .info-body, .info-body.has-aside { display: flex; flex-direction: column; gap: 20px; }
+  .info-side, .info-aside { overflow: visible; }
+  .info-tela { min-height: 260px; }
+}

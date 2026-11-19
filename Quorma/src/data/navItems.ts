@@ -2,7 +2,10 @@
 import type { NavIconName } from '../components/layout/NavIcon'
 
 // Tutte le pagine che esistono nell'app. Aggiungi qui il nome di una nuova pagina.
-export type Page = 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'regole' | 'altro' // 'altro' esiste solo su telefono
+export type Page =
+  | 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'regole'
+  | 'chi-siamo' | 'faq' | 'glossario' | 'contatti' | 'privacy' | 'cookie' | 'termini' // pagine "Informazioni"
+  | 'altro' // 'altro' esiste solo su telefono
 
 export type NavItemData = {
   label: string
@@ -22,7 +25,22 @@ export const navItems: NavItemData[] = [
   { label: 'Regole', icon: 'regole', page: 'regole' },
 ]
 
-export const footerLinks = {
-  info: ['Chi siamo', 'FAQ', 'Glossario', 'Contatti'],
-  legal: ['Privacy', 'Cookie', 'Termini'],
+// Link del footer e del sotto-menu "Informazioni": ognuno porta a una pagina.
+export type InfoLink = { label: string; page: Page }
+
+export const footerLinks: { info: InfoLink[]; legal: InfoLink[] } = {
+  info: [
+    { label: 'Chi siamo', page: 'chi-siamo' },
+    { label: 'FAQ', page: 'faq' },
+    { label: 'Glossario', page: 'glossario' },
+    { label: 'Contatti', page: 'contatti' },
+  ],
+  legal: [
+    { label: 'Privacy', page: 'privacy' },
+    { label: 'Cookie', page: 'cookie' },
+    { label: 'Termini', page: 'termini' },
+  ],
 }
+
+// Tutte e 7 insieme, nell'ordine del sotto-menu "Informazioni".
+export const infoLinks: InfoLink[] = [...footerLinks.info, ...footerLinks.legal]

@@ -10,6 +10,11 @@ import DecksPage from './components/decks/DecksPage'
 import NewDeckPage from './components/newdeck/NewDeckPage'
 import RulesPage from './components/rules/RulesPage'
 import PlayPage from './components/play/PlayPage'
+import AboutPage from './components/info/AboutPage'
+import FaqPage from './components/info/FaqPage'
+import GlossaryPage from './components/info/GlossaryPage'
+import ContactsPage from './components/info/ContactsPage'
+import LegalPage from './components/info/LegalPage'
 import './styles/layout.css'
 import './styles/sidebar.css'
 import './styles/home.css'
@@ -53,6 +58,14 @@ export default function App() {
       {page === 'gioca' && <PlayPage decks={decks} onNavigate={open} />}
 
       {page === 'regole' && <RulesPage />}
+
+      {page === 'chi-siamo' && <AboutPage onNavigate={open} />}
+      {page === 'faq' && <FaqPage onNavigate={open} />}
+      {page === 'glossario' && <GlossaryPage onNavigate={open} />}
+      {page === 'contatti' && <ContactsPage onNavigate={open} />}
+      {page === 'privacy' && <LegalPage kind="privacy" onNavigate={open} />}
+      {page === 'cookie' && <LegalPage kind="cookie" onNavigate={open} />}
+      {page === 'termini' && <LegalPage kind="termini" onNavigate={open} />}
 
       {page === 'altro' && <MorePage onNavigate={open} />}
 

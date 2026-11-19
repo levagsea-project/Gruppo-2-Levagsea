@@ -14,7 +14,7 @@ export default function Sidebar({ current, onNavigate }: Props) {
       <Logo />
       <NavMenu current={current} onNavigate={onNavigate} />
       <PlayerCard />
-      <SidebarFooter />
+      <SidebarFooter onNavigate={onNavigate} />
     </aside>
   )
 }

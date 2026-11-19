@@ -69,13 +69,13 @@ export default function MorePage({ onNavigate }: { onNavigate: (page: Page) => v
 
       <Group title="Informazioni">
         {footerLinks.info.map((link) => (
-          <MobileRow key={link} title={link} />
+          <MobileRow key={link.page} title={link.label} onClick={() => onNavigate(link.page)} />
         ))}
       </Group>
 
       <Group title="Note legali">
         {footerLinks.legal.map((link) => (
-          <MobileRow key={link} title={link} />
+          <MobileRow key={link.page} title={link.label} onClick={() => onNavigate(link.page)} />
         ))}
       </Group>
 
