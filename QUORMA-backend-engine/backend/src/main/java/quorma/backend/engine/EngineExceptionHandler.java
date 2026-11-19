@@ -14,7 +14,8 @@ import quorma.backend.common.ErrorCodes;
  * Errors carry a language-neutral {@code code}; the frontend translates it. The engine's own message (English,
  * for developers) and the technical reason go to the log, never to the client.
  */
-@RestControllerAdvice(assignableTypes = {SimulationController.class, AdminCatalogueController.class})
+@RestControllerAdvice(assignableTypes = {SimulationController.class, AdminCatalogueController.class},
+        basePackages = "quorma.backend.match")
 class EngineExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(EngineExceptionHandler.class);

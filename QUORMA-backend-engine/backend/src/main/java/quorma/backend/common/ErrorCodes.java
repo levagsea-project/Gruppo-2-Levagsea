@@ -65,6 +65,9 @@ public final class ErrorCodes {
     public static final String CATALOGUE_PACK_TYPE_INVALID = "catalogue.pack_type_invalid";
     public static final String CATALOGUE_PACK_TYPE_CONFLICT = "catalogue.pack_type_conflict";
 
+    public static final String REPLAY_ENGINE_VERSION_MISMATCH = "replay.engine_version_mismatch";
+    public static final String REPLAY_RULESET_MISMATCH = "replay.ruleset_mismatch";
+
     public static final String ENGINE_INPUT_INVALID = "engine.input_invalid";
     public static final String ENGINE_UNAVAILABLE = "engine.unavailable";
 

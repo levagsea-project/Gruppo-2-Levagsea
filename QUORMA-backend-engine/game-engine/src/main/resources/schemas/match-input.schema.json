@@ -23,6 +23,12 @@
       "description": "Optional. SHA-256 of the rule pack the caller expects (a replay must send it). The engine refuses a mismatch.",
       "$ref": "#/$defs/sha256"
     },
+    "engine_version": {
+      "description": "Optional. The engine version the caller expects, as the MatchLog header names it (a replay must send it: the same input can play differently on another engine). The engine refuses a mismatch.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
     "players": {
       "type": "object",
       "additionalProperties": false,

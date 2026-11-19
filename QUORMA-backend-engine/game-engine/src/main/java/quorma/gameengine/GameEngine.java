@@ -123,6 +123,10 @@ public final class GameEngine {
             throw new MatchInputException("input.ruleset_version: this engine plays " + rules.rulesetVersion()
                     + ", got " + input.rulesetVersion());
         }
+        if (input.engineVersion().isPresent() && !input.engineVersion().get().equals(EngineVersion.VERSION)) {
+            throw new MatchInputException("input.engine_version: this engine is " + EngineVersion.VERSION + ", the match was played by "
+                    + input.engineVersion().get() + " (a replay needs the engine that played it: run that version)");
+        }
         if (input.rulesetHash().isPresent() && !input.rulesetHash().get().equals(rulesetHash)) {
             throw new MatchInputException("input.ruleset_hash: this engine plays the rule pack " + rulesetHash
                     + ", got " + input.rulesetHash().get() + " (ruleset 12.6: a replay needs the same rules)");

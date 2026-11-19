@@ -16,7 +16,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /** Calls the engine-service and returns its MatchLog without interpreting or recomputing it. */
 @Component
-public class HttpGameEngine implements CardChecker {
+public class HttpGameEngine implements CardChecker, EngineInfoSource {
 
     private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
@@ -42,6 +42,19 @@ public class HttpGameEngine implements CardChecker {
                 .bodyValue(input)
                 .retrieve()
                 .bodyToMono(MatchLog.class)
+                .timeout(timeout)
+                .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
+                .onErrorMap(HttpGameEngine::translate)
+                .block();
+    }
+
+    /** {@code GET /engine/info}: which engine build and rule pack the engine service is running. */
+    @Override
+    public EngineInfo info() {
+        return client.get()
+                .uri("/engine/info")
+                .retrieve()
+                .bodyToMono(EngineInfo.class)
                 .timeout(timeout)
                 .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
                 .onErrorMap(HttpGameEngine::translate)

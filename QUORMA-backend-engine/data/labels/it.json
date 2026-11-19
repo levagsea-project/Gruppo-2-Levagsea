@@ -41,6 +41,8 @@
   "pack.type.elite": "Pacchetto Élite",
   "engine.input_invalid": "Impossibile giocare la partita: dati non validi",
   "engine.unavailable": "Il motore di gioco non è disponibile, riprova più tardi",
+  "replay.engine_version_mismatch": "Questa partita è stata giocata con un'altra versione del motore: non si può rigiocare con quella in esecuzione",
+  "replay.ruleset_mismatch": "Questa partita è stata giocata con un altro regolamento: non si può rigiocare con quello in esecuzione",
   "catalogue.draft_not_found": "Bozza non trovata",
   "catalogue.draft_open_exists": "C'è già una bozza aperta: pubblicala o scartala prima",
   "catalogue.draft_closed": "La bozza è già chiusa",
