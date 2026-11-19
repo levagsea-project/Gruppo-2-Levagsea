@@ -523,12 +523,12 @@ if (root / "cards.json").exists():
     for (f_, k_), n_ in sorted(counts.items(), key=str):
         print(f"INFO  cards {f_} {k_}: {n_}")
 
-# Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
+# Labels (labels/<locale>.json, not the cards.<locale>.json files, see check 13): same keys and same {placeholders} in every locale, and every vocab constant has a label.
 # Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.
 labels_dir = root / "labels"
 if labels_dir.is_dir():
     placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
-    locales = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(labels_dir.glob("*.json"))}
+    locales = {p.stem: json.loads(p.read_text(encoding="utf-8")) for p in sorted(labels_dir.glob("*.json")) if not p.name.startswith("cards.")}
     base_name = "it" if "it" in locales else next(iter(locales), None)
     for loc, table in locales.items():
         for k, v in table.items():
@@ -560,6 +560,44 @@ if labels_dir.is_dir():
             for n in names:
                 if f"game.{group}.{slug(n)}" not in base:
                     err(f"labels/{base_name}.json", f"no label 'game.{group}.{slug(n)}' for vocab value '{n}'")
+
+# Card text (labels/cards.<locale>.json, check 13): card names, flavour and expansion texts. Mutable, outside the snapshot hash.
+# Italian is the fallback locale, so it must be complete: a name and a flavour for every card of cards.json and a name and
+# a description for every expansion those cards name. Any other locale may be partial, but must not have unknown keys,
+# must keep the same {placeholders}, and its names must be unique. Italian names are unique too (a deck list must tell
+# two cards apart).
+if labels_dir.is_dir() and (root / "cards.json").exists():
+    placeholders = lambda s: set(re.findall(r"\{(\w+)\}", s))
+    card_ids = [c_.get("id") for c_ in cards_doc.get("cards", [])]
+    exp_codes = sorted({e_ for c_ in cards_doc.get("cards", []) for e_ in (c_.get("expansions") or []) if isinstance(e_, str)})
+    allowed = {f"card.{i_}.{f_}" for i_ in card_ids for f_ in ("name", "flavour")}
+    allowed |= {f"expansion.{e_}.{f_}" for e_ in exp_codes for f_ in ("name", "description")}
+    card_texts = {}
+    for p_ in sorted(labels_dir.glob("cards.*.json")):
+        loc = p_.name[len("cards."):-len(".json")]
+        card_texts[loc] = json.loads(p_.read_text(encoding="utf-8"))
+    base_ct = card_texts.get("it")
+    if base_ct is None:
+        err("labels/cards.it.json", "missing: Italian is the fallback locale and must exist")
+    for loc, table in card_texts.items():
+        where = f"labels/cards.{loc}.json"
+        names = {}
+        for k, v in table.items():
+            if not isinstance(v, str) or not v.strip():
+                err(where, f"'{k}' must be a non-empty string")
+                continue
+            if k not in allowed:
+                err(where, f"unknown key '{k}' (no such card or expansion in cards.json)")
+            if k.endswith(".name"):
+                names.setdefault(v.strip().casefold(), []).append(k)
+            if base_ct is not None and loc != "it" and k in base_ct and isinstance(base_ct[k], str)                     and placeholders(base_ct[k]) != placeholders(v):
+                err(where, f"'{k}' placeholders {sorted(placeholders(v))} differ from cards.it.json {sorted(placeholders(base_ct[k]))}")
+        for v_, keys in sorted(names.items()):
+            if len(keys) > 1:
+                err(where, f"name '{v_}' used by {', '.join(sorted(keys))}")
+    if base_ct is not None:
+        for k in sorted(allowed - base_ct.keys()):
+            err("labels/cards.it.json", f"missing key '{k}'")
 
 for w in warnings:
     print("WARN ", w)
