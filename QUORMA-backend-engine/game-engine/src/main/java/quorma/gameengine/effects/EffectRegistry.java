@@ -59,8 +59,9 @@ public final class EffectRegistry {
         for (Effect effect : Effects.all()) {
             effect(effect.id(), effect.classes(), effect.modes());
         }
-        effect("E8", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
-        effect("E9", TI, Map.of("", ParamRule.ints(Map.of("amount", NON_NEGATIVE))));
+        for (PlayerEffect effect : PlayerEffects.all()) {
+            effect(effect.id(), effect.classes(), effect.modes());
+        }
         effect("E11", R, Map.of("", ParamRule.ints(Map.of("count", range(1, MAX)))
                 .optInts(Map.of("set_def", range(1, MAX))).bools(Set.of("spill_on_prevent"))
                 .defaults(Map.of("set_def", 1))));
@@ -83,23 +84,16 @@ public final class EffectRegistry {
         effect("E32", C, Map.of("", ParamRule.none().strings(Map.of("rank", Set.copyOf(ranksOrAlly)))));
         effect("E34", C, Map.of("", ParamRule.none().strings(Map.of("group",
                 Set.of("Vincolo", "Frattura", "Spira", "Vestigio", "stesso_giocatore")))));
-        effect("E35", I, Map.of("", ParamRule.none()));
-        effect("E36", I, Map.of("", ParamRule.none().optInts(Map.of("lane", range(1, 5)))
-                .optStrings(Map.of("source", Set.of("deck", "discard")))));
         effect("E47", R, Map.of("", ParamRule.none().optInts(Map.of("lane", range(1, 5)))
                 .optStrings(Map.of("player", Set.of("controllore", "avversario")))));
-        effect("E49", I, Map.of("", ParamRule.none().strings(Map.of("position", Set.of("top", "bottom")))));
         effect("E51", R, Map.of("", ParamRule.ints(Map.of("permille", NON_NEGATIVE))));
         effect("E52", C, Map.of("", ParamRule.none()));
         effect("E54", C, Map.of("", ParamRule.none().optInts(Map.of("step", range(1, 12)))));
         effect("E55", C, Map.of("", ParamRule.none()));
         effect("E56", C, Map.of("", ParamRule.ints(Map.of("pct", range(0, 100)))));
-        effect("E57", I, Map.of("", ParamRule.ints(Map.of("count", NON_NEGATIVE))));
         effect("E60", C, Map.of("", ParamRule.none()));
         effect("E61", C, Map.of("", ParamRule.none()));
         effect("E63", R, Map.of("", ParamRule.none()));
-        effect("E64", T, Map.of("", ParamRule.none().strings(Map.of("effect_id", Set.of("E1", "E2", "E6"),
-                "duration", Set.of())).prefixes(Set.of("effect_params"))));
     }
 
     /** Per trigger: the class it allows. */

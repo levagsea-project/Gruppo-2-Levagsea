@@ -5,11 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.OptionalInt;
-import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Ruleset;
-import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.Effect;
@@ -18,6 +15,9 @@ import quorma.gameengine.effects.EffectStack;
 import quorma.gameengine.effects.Effects;
 import quorma.gameengine.effects.Followups;
 import quorma.gameengine.effects.Outcome;
+import quorma.gameengine.effects.PlayerEffect;
+import quorma.gameengine.effects.PlayerEffectContext;
+import quorma.gameengine.effects.PlayerEffects;
 import quorma.gameengine.effects.RankedTarget;
 import quorma.gameengine.effects.Target;
 import quorma.gameengine.effects.TargetIds;
@@ -34,7 +34,6 @@ import quorma.gameengine.log.MatchEvent.EquipmentLost;
 import quorma.gameengine.log.MatchEvent.EquipmentPending;
 import quorma.gameengine.log.MatchEvent.SpellResolved;
 import quorma.gameengine.log.StatChange;
-import quorma.gameengine.log.TargetRef;
 import quorma.gameengine.model.Aura;
 import quorma.gameengine.model.Card;
 import quorma.gameengine.model.Creature;
@@ -54,7 +53,7 @@ import quorma.gameengine.model.SpellCard;
  * effects (with the replacements T20 and T21), applies spells and equipment, and ends what lasts until a moment of the
  * turn ({@link #expire}).
  */
-final class Game implements EffectStack.Hooks, EffectContext {
+final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContext {
 
     final Ruleset rules;
     final AbilityBinder binder;
@@ -139,23 +138,13 @@ final class Game implements EffectStack.Hooks, EffectContext {
         BoundExpansion e = item.expansion().scaled(item.scalePermille());
         CreatureRef source = CreatureRef.of(item.side(), item.source());
         Board b = board();
-        switch (e.targetId()) {
-            case TargetIds.OPPONENT_PLAYER, TargetIds.OWN_PLAYER -> {
-                Side player = e.targetId().equals(TargetIds.OWN_PLAYER) ? item.side() : item.side().other();
-                StatChange change = changeLife(e, player);
-                log.add(new EffectResolved(source, e.abilityId(), e.effectId(), new TargetRef.PlayerRef(player),
-                        List.of(change), OptionalInt.empty()));
-                return;
-            }
-            case TargetIds.LANE -> {
-                PlayerState p = state.player(item.side());
-                BoundExpansion pending = laneEffect(e);
-                p.addLaneEffect(new LaneEffect(item.source().lane(), item.source().card().id(), pending));
-                log.add(new EffectResolved(source, e.abilityId(), e.effectId(),
-                        new TargetRef.LaneRef(item.side(), item.source().lane()), List.of(), OptionalInt.empty()));
-                return;
-            }
-            default -> { }
+        PlayerEffect playerEffect = PlayerEffects.find(e.effectId()).orElse(null);
+        if (playerEffect != null) {
+            Side player = e.targetId().equals(TargetIds.OPPONENT_PLAYER) ? item.side().other() : item.side();
+            playerEffect.apply(this, new PlayerEffect.Use(e, item.side(), player, item.source(), log))
+                    .ifPresent(r -> log.add(new EffectResolved(source, e.abilityId(), e.effectId(), r.target(),
+                            r.changes(), OptionalInt.empty())));
+            return;
         }
         List<Creature> targets;
         if (item.target() != null) {
@@ -190,15 +179,17 @@ final class Game implements EffectStack.Hooks, EffectContext {
         }
     }
 
-    private BoundExpansion laneEffect(BoundExpansion e64) {
-        String effectId = e64.stringParam("effect_id").orElseThrow();
-        String duration = e64.stringParam("duration").orElseThrow();
-        return new BoundExpansion(e64.abilityId(), null, Map.of(), effectId, TargetIds.REPLACEMENT, Map.of(), List.of(), duration,
-                ResClass.I, e64.nested("effect_params"), OptionalInt.empty(), Optional.empty(), false, 0, false,
-                e64.index());
+    // ================================================================ effects on a creature
+
+    @Override
+    public PlayerState player(Side side) {
+        return state.player(side);
     }
 
-    // ================================================================ effects on a creature
+    @Override
+    public Creature newCreature(CreatureCard card, int lane) {
+        return new Creature(card, lane, binder.bind(card));
+    }
 
     @Override
     public AbilityBinder binder() {
@@ -263,18 +254,6 @@ final class Game implements EffectStack.Hooks, EffectContext {
         return effect.apply(this, new Effect.Use(e, item.side(), side, source, lasting, item.context(), after), t);
     }
 
-    /** E8 (lose) or E9 (gain) life. */
-    private StatChange changeLife(BoundExpansion e, Side player) {
-        PlayerState p = state.player(player);
-        int before = p.life();
-        switch (e.effectId()) {
-            case "E8" -> p.loseLife(e.intParam("amount"));
-            case "E9" -> p.gainLife(e.intParam("amount"));
-            default -> throw new IllegalStateException("effect " + e.effectId() + " does not aim at a player");
-        }
-        return new StatChange(StatChange.Stat.LIFE, before, p.life());
-    }
-
     // ================================================================ damage and destruction
 
     // ================================================================ durations
@@ -305,7 +284,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
      * Draws the top card of {@code side}'s deck for {@code lane} (ruleset 10.4 to 10.6): a creature is placed there,
      * a spell resolves, an equipment waits for the next creature. Returns true if the lane was filled.
      */
-    boolean draw(Side side, int lane, List<MatchEvent> log) {
+    @Override
+    public boolean draw(Side side, int lane, List<MatchEvent> log) {
         PlayerState player = state.player(side);
         Card card = player.deck().remove(0);
         switch (card) {
@@ -336,7 +316,8 @@ final class Game implements EffectStack.Hooks, EffectContext {
      * Places {@code creature} in its empty lane: the effects waiting on the lane (E64), then T29 (10.4), then the
      * equipment waiting for it if it was drawn.
      */
-    void place(Side side, Creature creature, boolean drawn, List<MatchEvent> log) {
+    @Override
+    public void place(Side side, Creature creature, boolean drawn, List<MatchEvent> log) {
         PlayerState player = state.player(side);
         player.place(creature);
         if (drawn) {
@@ -450,31 +431,13 @@ final class Game implements EffectStack.Hooks, EffectContext {
         Map<String, Creature> chosen = new LinkedHashMap<>();
         for (BoundExpansion e : binder.bindImmediate(card)) {
             Board b = board();
-            switch (e.targetId()) {
-                case TargetIds.OPPONENT_PLAYER, TargetIds.OWN_PLAYER -> {
-                    Side player = e.targetId().equals(TargetIds.OWN_PLAYER) ? owner : owner.other();
-                    if (e.effectId().equals("E57")) {
-                        mill(player, e, log);
-                        continue;
-                    }
-                    if (e.effectId().equals("E35")) {
-                        drawFirst(player, log);
-                        continue;
-                    }
-                    StatChange change = changeLife(e, player);
-                    log.add(new MatchEvent.CardEffectResolved(owner, card.id(), e.abilityId(), e.effectId(),
-                            new TargetRef.PlayerRef(player), List.of(change)));
-                    continue;
-                }
-                case TargetIds.DISCARD_PILE -> {
-                    returnFromDiscard(owner, e, card, log);
-                    continue;
-                }
-                case TargetIds.DECK_TOP -> {
-                    moveInDeck(owner, e, log);
-                    continue;
-                }
-                default -> { }
+            PlayerEffect playerEffect = PlayerEffects.find(e.effectId()).orElse(null);
+            if (playerEffect != null) {
+                Side player = e.targetId().equals(TargetIds.OPPONENT_PLAYER) ? owner.other() : owner;
+                playerEffect.apply(this, new PlayerEffect.Use(e, owner, player, null, log))
+                        .ifPresent(r -> log.add(new MatchEvent.CardEffectResolved(owner, card.id(), e.abilityId(),
+                                e.effectId(), r.target(), r.changes())));
+                continue;
             }
             List<Creature> targets = Targets.find(e.targetId()).orElseThrow(
                     () -> new IllegalStateException("not a selection target: " + e.targetId()))
@@ -510,93 +473,5 @@ final class Game implements EffectStack.Hooks, EffectContext {
                 .orElseThrow(() -> new IllegalStateException("no immediate resolution for effect " + e.effectId()));
         return effect.apply(this, new Effect.Use(e, owner, side, null, Lasting.permanent(), TriggerContext.NONE,
                 after), t).changes();
-    }
-
-    /** E57: the top {@code count} cards of {@code player}'s deck go to the discard pile with no effect. */
-    private void mill(Side player, BoundExpansion e, List<MatchEvent> log) {
-        PlayerState p = state.player(player);
-        List<String> ids = new ArrayList<>();
-        for (int i = 0; i < e.intParam("count") && !p.deck().isEmpty(); i++) {
-            Card c = p.deck().remove(0);
-            p.discard().add(c);
-            ids.add(c.id());
-        }
-        log.add(new MatchEvent.CardsMilled(player, e.abilityId(), ids));
-    }
-
-    /**
-     * E35: draws the top card. A creature goes to the lowest empty lane (if there is none it stays on the deck), a
-     * spell resolves at once, an equipment waits for the next creature drawn.
-     */
-    private void drawFirst(Side player, List<MatchEvent> log) {
-        PlayerState p = state.player(player);
-        if (p.deck().isEmpty()) {
-            return;
-        }
-        if (p.deck().get(0) instanceof CreatureCard) {
-            OptionalInt lane = p.lowestEmptyLane();
-            if (lane.isPresent()) {
-                draw(player, lane.getAsInt(), log);
-            }
-            return;
-        }
-        draw(player, p.lowestEmptyLane().orElse(1), log);
-    }
-
-    /**
-     * E36: places a creature in the lowest empty lane of the owner. With {@code source: discard} it is the last
-     * creature that went to the discard pile, back with full DEF and no modifiers; with {@code source: deck}, the top
-     * card if it is a creature. Nothing happens with no empty lane or no creature.
-     */
-    private void returnFromDiscard(Side owner, BoundExpansion e, Card card, List<MatchEvent> log) {
-        PlayerState p = state.player(owner);
-        OptionalInt lane = e.effectParams().containsKey("lane") ? (p.creatureAt(e.intParam("lane")).isEmpty()
-                ? OptionalInt.of(e.intParam("lane")) : OptionalInt.empty()) : p.lowestEmptyLane();
-        if (lane.isEmpty()) {
-            return;
-        }
-        if (e.stringParam("source").orElse("deck").equals("discard")) {
-            for (int i = p.discard().size() - 1; i >= 0; i--) {
-                if (p.discard().get(i) instanceof CreatureCard creatureCard) {
-                    p.discard().remove(i);
-                    place(owner, new Creature(creatureCard, lane.getAsInt(), binder.bind(creatureCard)), false, log);
-                    return;
-                }
-            }
-            return;
-        }
-        if (!p.deck().isEmpty() && p.deck().get(0) instanceof CreatureCard creatureCard) {
-            p.deck().remove(0);
-            place(owner, new Creature(creatureCard, lane.getAsInt(), binder.bind(creatureCard)), true, log);
-        }
-    }
-
-    /** E49 on S47: the highest-ranked creature among the top {@code count} cards goes on top (or to the bottom). */
-    private void moveInDeck(Side owner, BoundExpansion e, List<MatchEvent> log) {
-        PlayerState p = state.player(owner);
-        int count = ((Value.IntV) e.targetParams().get("count")).v() > Integer.MAX_VALUE ? Integer.MAX_VALUE
-                : Math.toIntExact(((Value.IntV) e.targetParams().get("count")).v());
-        int best = -1;
-        int bestRank = -1;
-        for (int i = 0; i < Math.min(count, p.deck().size()); i++) {
-            if (p.deck().get(i) instanceof CreatureCard c) {
-                int rank = c.rank() == 1 ? 14 : c.rank();
-                if (rank > bestRank) {
-                    bestRank = rank;
-                    best = i;
-                }
-            }
-        }
-        if (best < 0) {
-            return;
-        }
-        Card card = p.deck().remove(best);
-        String position = e.stringParam("position").orElse("top");
-        if (position.equals("top")) {
-            p.deck().add(0, card);
-        } else {
-            p.deck().add(card);
-        }
-        log.add(new MatchEvent.CardMoved(owner, card.id(), position));
     }
 }
