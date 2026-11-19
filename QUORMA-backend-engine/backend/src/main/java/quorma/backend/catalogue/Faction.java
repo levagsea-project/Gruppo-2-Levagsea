@@ -11,4 +11,9 @@ public enum Faction {
 
     /** For {@code @Pattern} on request fields: must list every constant. */
     public static final String PATTERN = "POTENZE_ARTIFICIALI|RESISTENZA_UMANA";
+
+    /** The other faction: the two players of a game always have opposite ones. */
+    public Faction opposite() {
+        return this == POTENZE_ARTIFICIALI ? RESISTENZA_UMANA : POTENZE_ARTIFICIALI;
+    }
 }
