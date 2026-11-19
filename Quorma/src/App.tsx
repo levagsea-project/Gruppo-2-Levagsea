@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Page } from './data/navItems'
 import { useDecks } from './hooks/useDecks'
+import { usePlayStatus } from './hooks/usePlayStatus'
 import Sidebar from './components/layout/Sidebar'
 import MobileTopBar from './components/mobile/MobileTopBar'
 import MobileTabBar from './components/mobile/MobileTabBar'
@@ -28,11 +29,21 @@ import './styles/mobile.css' // per ultimo: su telefono sovrascrive gli stili so
 // Su telefono la sidebar sparisce e al suo posto ci sono la barra in alto e le schede in basso.
 export default function App() {
   const [page, setPage] = useState<Page>('home') // pagina aperta ora
-  const { decks, selected, setSelectedId, deleteDeck } = useDecks() // sta qui così non si perde cambiando pagina
+  // Stanno qui così non si perdono cambiando pagina. Entrambi letti dal backend.
+  const { decks, state: decksState, error: decksError, reload: reloadDecks, selected, setSelectedId, deleteDeck } = useDecks()
+  const { playStatus, playStatusFailed, reloadPlayStatus } = usePlayStatus()
 
   const open = (next: Page) => {
     setPage(next)
     window.scrollTo({ top: 0 }) // su telefono scorre tutta la finestra: la nuova pagina parte dall'alto
+    // Il backend chiede di rileggere "posso giocare?" quando si apre la home: lo facciamo anche per Gioca.
+    if (next === 'home' || next === 'gioca') reloadPlayStatus()
+  }
+
+  // Dopo un'eliminazione cambiano i mazzi obsoleti: si rilegge anche "posso giocare?".
+  const removeDeck = async (id: string) => {
+    await deleteDeck(id)
+    reloadPlayStatus()
   }
 
   return (
@@ -40,14 +51,28 @@ export default function App() {
       <Sidebar current={page} onNavigate={open} />
       <MobileTopBar onHome={() => open('home')} />
 
-      {page === 'home' && <HomePage lastDeck={selected} onNavigate={open} />}
+      {page === 'home' && (
+        <HomePage
+          decks={decks}
+          lastDeck={selected}
+          decksState={decksState}
+          onRetryDecks={reloadDecks}
+          playStatus={playStatus}
+          playStatusFailed={playStatusFailed}
+          onRetryPlayStatus={reloadPlayStatus}
+          onNavigate={open}
+        />
+      )}
 
       {page === 'mazzi' && (
         <DecksPage
           decks={decks}
+          state={decksState}
+          error={decksError}
+          onRetry={() => void reloadDecks()}
           selected={selected}
           onSelect={setSelectedId}
-          onDelete={deleteDeck}
+          onDelete={removeDeck}
           onNewDeck={() => open('nuovo-mazzo')}
           onPlay={() => open('gioca')}
         />
@@ -55,7 +80,7 @@ export default function App() {
 
       {page === 'nuovo-mazzo' && <NewDeckPage onCancel={() => open('mazzi')} />}
 
-      {page === 'gioca' && <PlayPage decks={decks} onNavigate={open} />}
+      {page === 'gioca' && <PlayPage decks={decks} playStatus={playStatus} onNavigate={open} />}
 
       {page === 'regole' && <RulesPage />}
 
