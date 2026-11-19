@@ -39,11 +39,12 @@ public class RoomService {
     private final DeckSnapshotService snapshots;
     private final SeriesRunner runner;
     private final SeriesViewService views;
+    private final MatchSeriesRepository seriesRepository;
     private final MatchProperties props;
 
     public RoomService(RoomRepository rooms, ChallengeRepository challenges, ChallengeDeckRepository challengeDecks,
                        DeckEligibility eligibility, DeckSnapshotService snapshots, SeriesRunner runner,
-                       SeriesViewService views, MatchProperties props) {
+                       SeriesViewService views, MatchSeriesRepository seriesRepository, MatchProperties props) {
         this.rooms = rooms;
         this.challenges = challenges;
         this.challengeDecks = challengeDecks;
@@ -51,6 +52,7 @@ public class RoomService {
         this.snapshots = snapshots;
         this.runner = runner;
         this.views = views;
+        this.seriesRepository = seriesRepository;
         this.props = props;
     }
 
@@ -82,6 +84,23 @@ public class RoomService {
         List<Room> open = rooms.findJoinable(userId, Instant.now());
         Map<UUID, UserRef> refs = views.refs(open.stream().map(Room::getCreatorId).distinct().toList());
         return open.stream().map(r -> response(r, refs.get(r.getCreatorId()))).toList();
+    }
+
+    /**
+     * The last room I opened, with what became of it: still open, expired, closed, or MATCHED with the series that
+     * was played (the creator was waiting and did not get the response). 404 if I never opened one.
+     */
+    @Transactional(readOnly = true)
+    public RoomResponse mine(UUID creatorId) {
+        Room room = rooms.findFirstByCreatorIdOrderByCreatedAtDesc(creatorId)
+                .orElseThrow(() -> new ChallengeException(HttpStatus.NOT_FOUND, ErrorCodes.ROOM_NOT_FOUND));
+        RoomStatus shown = room.getStatus() == RoomStatus.OPEN && !room.getExpiresAt().isAfter(Instant.now())
+                ? RoomStatus.EXPIRED : room.getStatus();
+        UUID seriesId = room.getStatus() == RoomStatus.MATCHED && room.getChallengeId() != null
+                ? seriesRepository.findByChallengeId(room.getChallengeId()).map(MatchSeries::getId).orElse(null) : null;
+        UserRef creator = views.refs(List.of(creatorId)).get(creatorId);
+        return new RoomResponse(room.getId(), room.getCode(), creator, room.getCreatorFaction(), shown,
+                room.getCreatedAt(), room.getExpiresAt(), seriesId);
     }
 
     /** The creator closes their room. */
@@ -184,6 +203,6 @@ public class RoomService {
 
     private static RoomResponse response(Room r, UserRef creator) {
         return new RoomResponse(r.getId(), r.getCode(), creator, r.getCreatorFaction(), r.getStatus(), r.getCreatedAt(),
-                r.getExpiresAt());
+                r.getExpiresAt(), null);
     }
 }

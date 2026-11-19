@@ -26,7 +26,7 @@ public class MatchmakingController {
     }
 
     @PostMapping
-    @Operation(summary = "Play against a random opponent", description = "The server picks a player who logged in within the last "
+    @Operation(operationId = "playMatchmaking", summary = "Play against a random opponent", description = "The server picks a player who logged in within the last "
             + "7 days and has a legal defense deck for both factions, and plays the whole series (best of three, factions swapped) "
             + "at once against their defense decks: in each game they use the defense deck of the faction opposite to mine. "
             + "I choose my decks (one per faction). The response has the series with the log of every game; the opponent "

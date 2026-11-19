@@ -37,7 +37,7 @@ public class ChallengeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Challenge a player", description = "Locks a snapshot of my decks (one per faction) and waits for the "
+    @Operation(operationId = "createChallenge", summary = "Challenge a player", description = "Locks a snapshot of my decks (one per faction) and waits for the "
             + "opponent, for the time set in `matches.challenge-ttl` (48 h, at most 7 days). One pending challenge at a time "
             + "from me to the same player. I need a legal defense deck for both factions.")
     @ApiResponse(responseCode = "201", description = "Challenge created, status PENDING")
@@ -49,22 +49,23 @@ public class ChallengeController {
     }
 
     @GetMapping
-    @Operation(summary = "My challenges", description = "The ones I sent and the ones I received, newest first. "
+    @Operation(operationId = "listChallenges", summary = "My challenges", description = "The ones I sent and the ones I received, newest first. "
             + "A pending challenge past its expiry is listed as EXPIRED.")
     public List<ChallengeResponse> list(@AuthenticationPrincipal Jwt jwt,
-                                        @RequestParam(required = false) ChallengeStatus status) {
+                                        @RequestParam(name = "status", required = false) ChallengeStatus status) {
         return challenges.list(userId(jwt), Optional.ofNullable(status));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "One of my challenges")
+    @Operation(operationId = "getChallenge", summary = "One of my challenges")
+    @ApiResponse(responseCode = "200", description = "The challenge")
     @ApiResponse(responseCode = "404", description = "Not found, or not mine. Body `code`: challenge.not_found", content = @Content)
-    public ChallengeResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+    public ChallengeResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID id) {
         return challenges.get(userId(jwt), id);
     }
 
     @PostMapping("/{id}/accept")
-    @Operation(summary = "Accept a challenge and play it", description = "Only the challenged player. I choose my decks (one per "
+    @Operation(operationId = "acceptChallenge", summary = "Accept a challenge and play it", description = "Only the challenged player. I choose my decks (one per "
             + "faction); the server draws a seed for every game, calls the engine, stores the recipe of each game (decks, seed, "
             + "versions, SHA-256 of the log) and the challenge becomes ACCEPTED. The response has the whole series with the "
             + "log of every game. If the engine fails nothing is saved and the challenge stays PENDING: retry later. "
@@ -74,24 +75,26 @@ public class ChallengeController {
     @ApiResponse(responseCode = "404", description = "Not found, or I am not the challenged player. Body `code`: challenge.not_found", content = @Content)
     @ApiResponse(responseCode = "409", description = "challenge.not_pending, challenge.expired, deck.outdated or deck.defense_required")
     @ApiResponse(responseCode = "503", description = "The engine is down or too slow. Body `code`: engine.unavailable")
-    public SeriesResponse accept(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id,
+    public SeriesResponse accept(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID id,
                                  @Valid @RequestBody DecksRequest request) {
         return challenges.accept(userId(jwt), id, request.decks());
     }
 
     @PostMapping("/{id}/decline")
-    @Operation(summary = "Decline a challenge", description = "Only the challenged player, while it is pending.")
+    @Operation(operationId = "declineChallenge", summary = "Decline a challenge", description = "Only the challenged player, while it is pending.")
+    @ApiResponse(responseCode = "200", description = "The challenge, now DECLINED")
     @ApiResponse(responseCode = "404", description = "Not found, or I am not the challenged player", content = @Content)
     @ApiResponse(responseCode = "409", description = "challenge.not_pending or challenge.expired")
-    public ChallengeResponse decline(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+    public ChallengeResponse decline(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID id) {
         return challenges.decline(userId(jwt), id);
     }
 
     @PostMapping("/{id}/cancel")
-    @Operation(summary = "Withdraw a challenge", description = "Only the challenger, while it is pending.")
+    @Operation(operationId = "cancelChallenge", summary = "Withdraw a challenge", description = "Only the challenger, while it is pending.")
+    @ApiResponse(responseCode = "200", description = "The challenge, now CANCELLED")
     @ApiResponse(responseCode = "404", description = "Not found, or I am not the challenger", content = @Content)
     @ApiResponse(responseCode = "409", description = "challenge.not_pending or challenge.expired")
-    public ChallengeResponse cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+    public ChallengeResponse cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable("id") UUID id) {
         return challenges.cancel(userId(jwt), id);
     }
 

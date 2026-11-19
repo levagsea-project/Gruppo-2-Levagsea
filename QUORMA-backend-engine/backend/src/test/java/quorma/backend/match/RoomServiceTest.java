@@ -37,8 +37,9 @@ class RoomServiceTest {
     private final DeckSnapshotService snapshots = mock(DeckSnapshotService.class);
     private final SeriesRunner runner = mock(SeriesRunner.class);
     private final SeriesViewService views = mock(SeriesViewService.class);
+    private final MatchSeriesRepository seriesRepository = mock(MatchSeriesRepository.class);
     private final RoomService service = new RoomService(rooms, challenges, challengeDecks, eligibility, snapshots,
-            runner, views, new MatchProperties(null, null, null));
+            runner, views, seriesRepository, new MatchProperties(null, null, null));
 
     private final UUID creatorId = UUID.randomUUID();
     private final UUID joinerId = UUID.randomUUID();
@@ -187,5 +188,28 @@ class RoomServiceTest {
 
         assertEquals(1, list.size());
         assertEquals("luca", list.get(0).creator().username());
+    }
+
+    @Test
+    void theCreatorFindsTheirLastRoomAndTheSeriesOfAMatchedOne() {
+        when(rooms.findFirstByCreatorIdOrderByCreatedAtDesc(creatorId)).thenReturn(Optional.empty());
+        assertEquals(ErrorCodes.ROOM_NOT_FOUND, assertThrows(ChallengeException.class, () -> service.mine(creatorId)).code());
+
+        Room expired = room(Instant.now().minusSeconds(10));
+        when(rooms.findFirstByCreatorIdOrderByCreatedAtDesc(creatorId)).thenReturn(Optional.of(expired));
+        assertEquals(RoomStatus.EXPIRED, service.mine(creatorId).status(), "an open room past its expiry is shown as expired");
+
+        Room matched = room(Instant.now().plus(Duration.ofMinutes(5)));
+        UUID challengeId = UUID.randomUUID();
+        UUID seriesId = UUID.randomUUID();
+        matched.setStatus(RoomStatus.MATCHED);
+        matched.setChallengeId(challengeId);
+        MatchSeries series = mock(MatchSeries.class);
+        when(series.getId()).thenReturn(seriesId);
+        when(seriesRepository.findByChallengeId(challengeId)).thenReturn(Optional.of(series));
+        when(rooms.findFirstByCreatorIdOrderByCreatedAtDesc(creatorId)).thenReturn(Optional.of(matched));
+        RoomResponse shown = service.mine(creatorId);
+        assertEquals(RoomStatus.MATCHED, shown.status());
+        assertEquals(seriesId, shown.seriesId());
     }
 }

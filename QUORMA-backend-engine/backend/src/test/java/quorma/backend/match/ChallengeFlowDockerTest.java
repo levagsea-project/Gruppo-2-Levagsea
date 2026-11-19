@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,6 +178,41 @@ class ChallengeFlowDockerTest {
 
     private long count(String sql, Object... args) {
         return jdbc.queryForObject(sql, Long.class, args);
+    }
+
+    // -- the real engine ---------------------------------------------------------------------------------------
+
+    /**
+     * Plays a real series on a running engine-service, to check that the input the backend builds (deck snapshots,
+     * ruleset version, seeds) is accepted and that the log has what the backend reads. Skipped unless
+     * {@code -Dengine.url=http://localhost:8081} is given (start it with {@code docker compose up engine}).
+     */
+    @Test
+    void aSeriesPlaysOnTheRealEngineWhenOneIsRunning() {
+        String url = System.getProperty("engine.url");
+        Assumptions.assumeTrue(url != null && !url.isBlank(), "no real engine: pass -Dengine.url=http://localhost:8081");
+        HttpGameEngine real = new HttpGameEngine(url, Duration.ofSeconds(30), Duration.ofSeconds(2));
+        when(engine.simulate(any(JsonNode.class), any(Duration.class)))
+                .thenAnswer(i -> real.simulate(i.getArgument(0), i.getArgument(1)));
+        UUID luca = newUser("luca");
+        UUID mattia = newUser("mattia");
+        Map<Faction, UUID> lucaDecks = withDecks(luca);
+        Map<Faction, UUID> mattiaDecks = withDecks(mattia);
+        UUID id = challenges.create(luca, new CreateChallengeRequest(username(mattia), "RESISTENZA_UMANA", choices(lucaDecks))).id();
+
+        SeriesResponse series = challenges.accept(mattia, id, choices(mattiaDecks));
+
+        assertEquals(SeriesStatus.FINISHED, series.status());
+        assertTrue(series.games().size() >= 2 && series.games().size() <= 3, "games: " + series.games().size());
+        for (GameResponse game : series.games()) {
+            assertTrue(game.resultHash().matches("^[0-9a-f]{64}$"), game.resultHash());
+            assertEquals(game.resultHash(), game.log().path("result_hash").asString());
+            assertNotNull(game.outcome());
+        }
+        Map<String, Object> row = jdbc.queryForMap("select * from matches where series_id = ? and game_number = 1", series.id());
+        assertTrue(row.get("ruleset_hash").toString().matches("^[0-9a-f]{64}$"));
+        assertFalse(row.get("engine_version").toString().isBlank());
+        assertEquals("SplitMix64", row.get("prng_name"));
     }
 
     // -- accept: the recipe ----------------------------------------------------------------------------------
@@ -479,6 +515,9 @@ class ChallengeFlowDockerTest {
         assertEquals(0, rooms.list(creator).stream().filter(r -> r.code().equals(room.code())).count(), "not listed to its creator");
         assertEquals(ErrorCodes.ROOM_ALREADY_OPEN, assertThrows(ChallengeException.class,
                 () -> rooms.open(creator, new OpenRoomRequest("RESISTENZA_UMANA", choices(creatorDecks)))).code());
+        RoomResponse beforeJoin = rooms.mine(creator); // what the creator sees after a page reload
+        assertEquals(room.code(), beforeJoin.code());
+        assertEquals(RoomStatus.OPEN, beforeJoin.status());
         assertEquals(ErrorCodes.ROOM_OWN_ROOM, assertThrows(ChallengeException.class,
                 () -> rooms.join(creator, room.code(), choices(creatorDecks))).code());
 
@@ -512,6 +551,10 @@ class ChallengeFlowDockerTest {
         assertEquals("ACCEPTED", jdbc.queryForObject("select status from challenges where code = ?", String.class, room.code()));
         assertEquals(1, count("select count(*) from match_series s join challenges c on c.id = s.challenge_id where c.code = ?", room.code()));
         assertEquals(0, rooms.list(second).stream().filter(r -> r.code().equals(room.code())).count());
+        RoomResponse afterJoin = rooms.mine(creator);
+        assertEquals(RoomStatus.MATCHED, afterJoin.status());
+        assertNotNull(afterJoin.seriesId(), "the creator finds the series that was played while waiting");
+        assertEquals(1, matchService.list(creator, true, 0, 20).size());
     }
 
     @Test
@@ -643,6 +686,28 @@ class ChallengeFlowDockerTest {
         HttpResponse<String> invalid = http("POST", "/challenges", token(luca), "{\"opponentUsername\":\"\"}");
         assertEquals(400, invalid.statusCode());
         assertEquals(ErrorCodes.VALIDATION_FAILED, MAPPER.readTree(invalid.body()).path("code").asString());
+    }
+
+    @Test
+    void theOpenApiDocumentHasExplicitUniqueOperationIds() throws Exception {
+        HttpResponse<String> response = http("GET", "/api-docs", null, null);
+        assertEquals(200, response.statusCode());
+        JsonNode paths = MAPPER.readTree(response.body()).path("paths");
+        List<String> ids = new ArrayList<>();
+        for (var path : paths.properties()) {
+            for (var operation : path.getValue().properties()) {
+                if (operation.getValue().has("operationId")) {
+                    ids.add(operation.getValue().path("operationId").asString());
+                }
+            }
+        }
+        assertEquals(ids.size(), ids.stream().distinct().count(), "operationIds must be unique: " + ids);
+        for (String expected : List.of("createChallenge", "listChallenges", "getChallenge", "acceptChallenge", "declineChallenge",
+                "cancelChallenge", "openRoom", "listRooms", "getMyRoom", "joinRoom", "cancelRoom", "playMatchmaking",
+                "listMatchSeries", "getMatchSeries", "markMatchSeriesSeen")) {
+            assertTrue(ids.contains(expected), expected + " is missing from " + ids);
+        }
+        java.nio.file.Files.writeString(java.nio.file.Path.of(System.getProperty("java.io.tmpdir"), "quorma-openapi.json"), response.body());
     }
 
     private String username(UUID user) {

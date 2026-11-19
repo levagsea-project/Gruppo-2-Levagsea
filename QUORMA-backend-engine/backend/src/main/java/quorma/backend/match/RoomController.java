@@ -33,7 +33,7 @@ public class RoomController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "Open a room", description = "Locks a snapshot of my decks (one per faction) and waits for someone to "
+    @Operation(operationId = "openRoom", summary = "Open a room", description = "Locks a snapshot of my decks (one per faction) and waits for someone to "
             + "join, for the time set in `matches.room-ttl` (10 minutes). One open room at a time. I need a legal defense "
             + "deck for both factions.")
     @ApiResponse(responseCode = "201", description = "Room open")
@@ -45,14 +45,24 @@ public class RoomController {
     }
 
     @GetMapping
-    @Operation(summary = "Open rooms", description = "The rooms I could join: not mine, not expired, oldest first. "
+    @Operation(operationId = "listRooms", summary = "Open rooms", description = "The rooms I could join: not mine, not expired, oldest first. "
             + "Each one shows the faction its creator plays in game 1.")
     public List<RoomResponse> list(@AuthenticationPrincipal Jwt jwt) {
         return rooms.list(userId(jwt));
     }
 
+    @GetMapping("/mine")
+    @Operation(operationId = "getMyRoom", summary = "The last room I opened", description = "Still open, expired, closed, or MATCHED "
+            + "with the `seriesId` of the series that was played while I was waiting. After a page reload this is how the "
+            + "creator finds the code to close the room, or the result.")
+    @ApiResponse(responseCode = "200", description = "My last room")
+    @ApiResponse(responseCode = "404", description = "I never opened a room. Body `code`: room.not_found", content = @Content)
+    public RoomResponse mine(@AuthenticationPrincipal Jwt jwt) {
+        return rooms.mine(userId(jwt));
+    }
+
     @PostMapping("/{code}/join")
-    @Operation(summary = "Join a room and play", description = "I choose my decks (one per faction); the server draws a seed for "
+    @Operation(operationId = "joinRoom", summary = "Join a room and play", description = "I choose my decks (one per faction); the server draws a seed for "
             + "every game, calls the engine and stores the recipe of each game. The response has the whole series with the log of "
             + "every game. The creator reads the result at their next login. Two players joining together: the second one gets "
             + "room.not_open. If the engine fails nothing is saved and the room stays open.")
@@ -61,16 +71,17 @@ public class RoomController {
     @ApiResponse(responseCode = "404", description = "room.not_found, or deck.not_found (a deck that is not mine)", content = @Content)
     @ApiResponse(responseCode = "409", description = "room.not_open, room.expired, deck.outdated or deck.defense_required")
     @ApiResponse(responseCode = "503", description = "The engine is down or too slow. Body `code`: engine.unavailable")
-    public SeriesResponse join(@AuthenticationPrincipal Jwt jwt, @PathVariable String code,
+    public SeriesResponse join(@AuthenticationPrincipal Jwt jwt, @PathVariable("code") String code,
                                @Valid @RequestBody DecksRequest request) {
         return rooms.join(userId(jwt), code, request.decks());
     }
 
     @PostMapping("/{code}/cancel")
-    @Operation(summary = "Close my room", description = "Only the creator, while it is open.")
+    @Operation(operationId = "cancelRoom", summary = "Close my room", description = "Only the creator, while it is open.")
+    @ApiResponse(responseCode = "200", description = "The room, now CANCELLED")
     @ApiResponse(responseCode = "404", description = "room.not_found, or it is not mine", content = @Content)
     @ApiResponse(responseCode = "409", description = "room.not_open or room.expired")
-    public RoomResponse cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable String code) {
+    public RoomResponse cancel(@AuthenticationPrincipal Jwt jwt, @PathVariable("code") String code) {
         return rooms.cancel(userId(jwt), code);
     }
 

@@ -21,6 +21,9 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
 
     Optional<Room> findByCreatorIdAndStatus(UUID creatorId, RoomStatus status);
 
+    /** The most recent room a player opened, whatever happened to it. */
+    Optional<Room> findFirstByCreatorIdOrderByCreatedAtDesc(UUID creatorId);
+
     /** Open rooms that have not expired and were not opened by {@code userId}, oldest first. */
     @Query("select r from Room r where r.status = quorma.backend.match.RoomStatus.OPEN and r.expiresAt > :now and r.creatorId <> :userId order by r.createdAt")
     List<Room> findJoinable(@Param("userId") UUID userId, @Param("now") Instant now);
