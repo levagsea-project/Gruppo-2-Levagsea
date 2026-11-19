@@ -16,9 +16,11 @@ import quorma.gameengine.model.PlayerState;
  */
 public final class PendingLaneEffect implements PlayerEffect {
 
+    public static final String ID = "E64";
+
     @Override
     public String id() {
-        return "E64";
+        return ID;
     }
 
     @Override

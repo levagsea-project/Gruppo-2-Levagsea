@@ -12,6 +12,7 @@ import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
+import quorma.gameengine.effects.ForceEvolutionsEffect;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandEvaluator;
@@ -166,14 +167,14 @@ public final class TurnResolver {
                 for (BoundExpansion e : b.abilities(creature, "T5")) {
                     Suit suit = Suit.valueOf(((Value.StrV) e.triggerParams().get("suit")).v().toUpperCase(java.util.Locale.ROOT));
                     long level = ((Value.IntV) e.triggerParams().get("level")).v();
-                    if (!e.effectId().equals("E17") && state.player(side).suitCount(suit) >= level
+                    if (!e.effectId().equals(ForceEvolutionsEffect.ID) && state.player(side).suitCount(suit) >= level
                             && b.holds(e, side, creature, Board.Ctx.NONE)) {
                         g.triggers.push(stack, b, side, creature, e, TriggerContext.NONE);
                     }
                 }
             }
             for (BoundExpansion force : state.player(side).playerAbilities()) {
-                if (!force.triggerId().equals("T5") || !force.effectId().equals("E17")) {
+                if (!force.triggerId().equals("T5") || !force.effectId().equals(ForceEvolutionsEffect.ID)) {
                     continue;
                 }
                 Suit suit = Suit.valueOf(((Value.StrV) force.targetParams().get("suit")).v().toUpperCase(java.util.Locale.ROOT));

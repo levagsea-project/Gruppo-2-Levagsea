@@ -14,9 +14,11 @@ import quorma.gameengine.model.PlayerState;
 /** E8: the player loses {@code amount} life. */
 public final class LoseLifeEffect implements PlayerEffect {
 
+    public static final String ID = "E8";
+
     @Override
     public String id() {
-        return "E8";
+        return ID;
     }
 
     @Override

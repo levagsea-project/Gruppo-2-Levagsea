@@ -13,9 +13,11 @@ import quorma.gameengine.model.Creature;
 /** E6: heal a flat amount or a share of the base DEF, times the E51 factor of the target. */
 public final class HealEffect implements Effect {
 
+    public static final String ID = "E6";
+
     @Override
     public String id() {
-        return "E6";
+        return ID;
     }
 
     @Override

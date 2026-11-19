@@ -25,16 +25,7 @@ import quorma.gameengine.data.Value;
 public final class EffectRegistry {
 
     private static final int MAX = Integer.MAX_VALUE;
-    private static final int MIN = Integer.MIN_VALUE;
     private static final Set<String> SUITS = Set.of("Vincolo", "Frattura", "Spira", "Vestigio");
-    private static final Set<String> RANKS = Set.of("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K");
-
-    private static int[] range(int lo, int hi) {
-        return ParamRule.range(lo, hi);
-    }
-
-    private static final int[] ANY = ParamRule.ANY;
-    private static final int[] NON_NEGATIVE = ParamRule.NON_NEGATIVE;
 
     /** Per effect: the classes it is implemented for. */
     private static final Map<String, Set<ResClass>> CLASSES = new LinkedHashMap<>();
@@ -47,53 +38,10 @@ public final class EffectRegistry {
         PARAMS.put(id, modes);
     }
 
-    private static final Set<ResClass> C = Set.of(ResClass.C);
-    private static final Set<ResClass> T = Set.of(ResClass.T);
-    private static final Set<ResClass> R = Set.of(ResClass.R);
-    private static final Set<ResClass> I = Set.of(ResClass.I);
-    private static final Set<ResClass> TI = Set.of(ResClass.T, ResClass.I);
-    private static final Set<ResClass> CT = Set.of(ResClass.C, ResClass.T);
-    private static final Set<ResClass> CTI = Set.of(ResClass.C, ResClass.T, ResClass.I);
-
     static {
-        for (Effect effect : Effects.all()) {
+        for (EffectDefinition effect : EffectDefinitions.all()) {
             effect(effect.id(), effect.classes(), effect.modes());
         }
-        for (PlayerEffect effect : PlayerEffects.all()) {
-            effect(effect.id(), effect.classes(), effect.modes());
-        }
-        effect("E11", R, Map.of("", ParamRule.ints(Map.of("count", range(1, MAX)))
-                .optInts(Map.of("set_def", range(1, MAX))).bools(Set.of("spill_on_prevent"))
-                .defaults(Map.of("set_def", 1))));
-        effect("E12", R, Map.of("", ParamRule.none()
-                .optInts(Map.of("lockout.reactivate_below", range(1, 5)))
-                .optStrings(Map.of("then", Set.of("none", "destroy_at_next_refill"), "lockout.key", Set.of(),
-                        "lockout.suit", SUITS))));
-        effect("E17", T, Map.of("", ParamRule.none()));
-        effect("E19", C, Map.of("", ParamRule.ints(Map.of("factor", NON_NEGATIVE))));
-        effect("E21", R, Map.of("", ParamRule.ints(Map.of("factor", NON_NEGATIVE))));
-        effect("E22", R, Map.of("", ParamRule.ints(Map.of("permille", range(0, 1000)))));
-        effect("E23", R, Map.of("", ParamRule.none()));
-        effect("E24", T, Map.of("", ParamRule.none().strings(Map.of("new_target_id", Set.of("S1", "S7")))));
-        effect("E25", R, Map.of("", ParamRule.none()));
-        effect("E26", C, Map.of("", ParamRule.none()));
-        effect("E29", R, Map.of("", ParamRule.none().optInts(Map.of("amount", NON_NEGATIVE)).bools(Set.of("once"))));
-        effect("E30", C, Map.of("", ParamRule.none().strings(Map.of("rank", RANKS))));
-        Set<String> ranksOrAlly = new java.util.HashSet<>(RANKS);
-        ranksOrAlly.add("highest_ally");
-        effect("E32", C, Map.of("", ParamRule.none().strings(Map.of("rank", Set.copyOf(ranksOrAlly)))));
-        effect("E34", C, Map.of("", ParamRule.none().strings(Map.of("group",
-                Set.of("Vincolo", "Frattura", "Spira", "Vestigio", "stesso_giocatore")))));
-        effect("E47", R, Map.of("", ParamRule.none().optInts(Map.of("lane", range(1, 5)))
-                .optStrings(Map.of("player", Set.of("controllore", "avversario")))));
-        effect("E51", R, Map.of("", ParamRule.ints(Map.of("permille", NON_NEGATIVE))));
-        effect("E52", C, Map.of("", ParamRule.none()));
-        effect("E54", C, Map.of("", ParamRule.none().optInts(Map.of("step", range(1, 12)))));
-        effect("E55", C, Map.of("", ParamRule.none()));
-        effect("E56", C, Map.of("", ParamRule.ints(Map.of("pct", range(0, 100)))));
-        effect("E60", C, Map.of("", ParamRule.none()));
-        effect("E61", C, Map.of("", ParamRule.none()));
-        effect("E63", R, Map.of("", ParamRule.none()));
     }
 
     /** Per trigger: the class it allows. */
@@ -203,7 +151,7 @@ public final class EffectRegistry {
         if (rule == null) {
             return Optional.of(notImplemented("effect " + effect + " with mode " + (mode.isEmpty() ? "(none)" : mode)));
         }
-        Optional<String> own = Effects.find(effect).flatMap(x -> x.validate(mode, effectParams));
+        Optional<String> own = EffectDefinitions.find(effect).flatMap(x -> x.validate(mode, effectParams));
         if (own.isPresent()) {
             return own;
         }

@@ -15,12 +15,14 @@ import quorma.gameengine.model.Lasting;
 /** E1: ATK + {@code amount} or a share of the base ATK, for as long as the duration says. */
 public final class AtkEffect implements Effect {
 
+    public static final String ID = "E1";
+
     private static final Set<String> SCALE_BY =
             Set.of("own_evolutions_triggered", "non_attackers", "creatures_in_play", "own_empty_lanes");
 
     @Override
     public String id() {
-        return "E1";
+        return ID;
     }
 
     @Override

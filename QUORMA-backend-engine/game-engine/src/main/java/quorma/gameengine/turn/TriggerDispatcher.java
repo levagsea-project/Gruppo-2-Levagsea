@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.function.Supplier;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
+import quorma.gameengine.effects.EvolutionFactorEffect;
+import quorma.gameengine.effects.ForceEvolutionsEffect;
+import quorma.gameengine.effects.RedirectAttackEffect;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.MatchState;
@@ -123,7 +126,7 @@ final class TriggerDispatcher {
             return;
         }
         for (BoundExpansion e : b.abilities(source, trigger)) {
-            if (e.effectId().equals("E24") || e.effectId().equals("E17") || !params.test(e)
+            if (e.effectId().equals(RedirectAttackEffect.ID) || e.effectId().equals(ForceEvolutionsEffect.ID) || !params.test(e)
                     || !b.holds(e, side, source, Board.Ctx.of(ctx))) {
                 continue;
             }
@@ -143,7 +146,7 @@ final class TriggerDispatcher {
             return 1000;
         }
         long factor = 1000;
-        for (Board.Active a : b.reaching("E19", source, Board.Ctx.NONE)) {
+        for (Board.Active a : b.reaching(EvolutionFactorEffect.ID, source, Board.Ctx.NONE)) {
             factor = factor * a.e().intParam("factor") / 1000;
         }
         return Math.toIntExact(factor);

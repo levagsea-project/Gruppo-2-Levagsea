@@ -1,10 +1,7 @@
 package quorma.gameengine.effects;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.MatchEvent;
 import quorma.gameengine.log.StatChange;
 import quorma.gameengine.log.TargetRef;
@@ -16,16 +13,7 @@ import quorma.gameengine.model.Side;
  * returning or reordering cards (E36, E49), a pending effect on a lane (E64). One class per effect ID, found through
  * {@link PlayerEffects}. These effects aim at no creature, so they do not fit {@link Effect}.
  */
-public interface PlayerEffect {
-
-    /** The vocabulary ID this class implements, such as {@code "E8"}. Never renumbered. */
-    String id();
-
-    /** The resolution classes the effect is implemented for. */
-    Set<ResClass> classes();
-
-    /** The params the effect takes, per {@code mode} ({@code ""} when it has no mode), as {@link Effect#modes()}. */
-    Map<String, ParamRule> modes();
+public interface PlayerEffect extends EffectDefinition {
 
     /**
      * Applies the effect.

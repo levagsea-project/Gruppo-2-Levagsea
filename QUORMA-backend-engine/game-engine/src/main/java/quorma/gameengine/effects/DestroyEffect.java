@@ -8,9 +8,11 @@ import quorma.gameengine.model.Creature;
 /** E10: destroys the creature (not damage), unless a T20 replacement saves it. */
 public final class DestroyEffect implements Effect {
 
+    public static final String ID = "E10";
+
     @Override
     public String id() {
-        return "E10";
+        return ID;
     }
 
     @Override

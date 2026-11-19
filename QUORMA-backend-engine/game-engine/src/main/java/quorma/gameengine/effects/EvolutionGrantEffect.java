@@ -9,9 +9,11 @@ import quorma.gameengine.model.Grant;
 /** E16: the creature gains an Evolution it does not already have, for as long as the duration says. */
 public final class EvolutionGrantEffect implements Effect {
 
+    public static final String ID = "E16";
+
     @Override
     public String id() {
-        return "E16";
+        return ID;
     }
 
     @Override

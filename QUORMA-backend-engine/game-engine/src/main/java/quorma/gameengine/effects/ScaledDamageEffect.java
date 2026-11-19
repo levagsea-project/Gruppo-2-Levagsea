@@ -11,9 +11,11 @@ import quorma.gameengine.model.Creature;
 /** E58: damage by an effect, a share ({@code permille}) of the source's ATK or of the amount that triggered it. */
 public final class ScaledDamageEffect implements Effect {
 
+    public static final String ID = "E58";
+
     @Override
     public String id() {
-        return "E58";
+        return ID;
     }
 
     @Override

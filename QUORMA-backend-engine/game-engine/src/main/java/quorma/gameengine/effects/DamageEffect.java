@@ -11,9 +11,11 @@ import quorma.gameengine.model.Creature;
 /** E7: damage by an effect, {@code amount} flat. */
 public final class DamageEffect implements Effect {
 
+    public static final String ID = "E7";
+
     @Override
     public String id() {
-        return "E7";
+        return ID;
     }
 
     @Override

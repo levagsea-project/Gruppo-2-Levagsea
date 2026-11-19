@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
+import quorma.gameengine.effects.RedirectAttackEffect;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.FizzleReason;
@@ -70,7 +71,7 @@ final class Declaration {
             TriggerContext ctx = new TriggerContext(attacker, attackerSide, null, null, null, null, 0, false, null, 0,
                     target, targetSide, null);
             for (BoundExpansion e : b.abilities(target, "T9")) {
-                if (!e.effectId().equals("E24") && b.holds(e, targetSide, target, Board.Ctx.of(ctx))) {
+                if (!e.effectId().equals(RedirectAttackEffect.ID) && b.holds(e, targetSide, target, Board.Ctx.of(ctx))) {
                     g.triggers.push(stack, b, targetSide, target, e, ctx);
                 }
             }
@@ -92,7 +93,7 @@ final class Declaration {
                     continue;
                 }
                 for (BoundExpansion e : b.abilities(ally, "T35")) {
-                    if (!e.effectId().equals("E24") && b.holds(e, targetSide, ally, Board.Ctx.of(ctx))) {
+                    if (!e.effectId().equals(RedirectAttackEffect.ID) && b.holds(e, targetSide, ally, Board.Ctx.of(ctx))) {
                         g.triggers.push(stack, b, targetSide, ally, e, ctx);
                     }
                 }
@@ -145,7 +146,7 @@ final class Declaration {
         Board b = g.board();
         Side side = attack.target().get().side();
         for (BoundExpansion e : b.abilities(creature, "T9")) {
-            if (!e.effectId().equals("E24")) {
+            if (!e.effectId().equals(RedirectAttackEffect.ID)) {
                 continue;
             }
             CreatureRef source = CreatureRef.of(side, creature);
@@ -167,10 +168,10 @@ final class Declaration {
                 continue;
             }
             for (BoundExpansion e : b.abilities(ally, "T35")) {
-                if (!e.effectId().equals("E24") || !b.holds(e, side, ally, Board.Ctx.NONE)) {
+                if (!e.effectId().equals(RedirectAttackEffect.ID) || !b.holds(e, side, ally, Board.Ctx.NONE)) {
                     continue;
                 }
-                log.add(new MatchEvent.EffectTriggered(CreatureRef.of(side, ally), e.abilityId(), "T35", "E24", 1));
+                log.add(new MatchEvent.EffectTriggered(CreatureRef.of(side, ally), e.abilityId(), "T35", RedirectAttackEffect.ID, 1));
                 Target to = new Target(side, ally.lane());
                 log.add(new MatchEvent.AttackRedirected(attack, to, e.abilityId()));
                 return attack.redirectTo(to);

@@ -13,9 +13,11 @@ import quorma.gameengine.model.Creature;
 /** E3: the creature's base DEF changes by {@code amount} for good (an equipment). Immediate effects only. */
 public final class BaseDefEffect implements Effect {
 
+    public static final String ID = "E3";
+
     @Override
     public String id() {
-        return "E3";
+        return ID;
     }
 
     @Override

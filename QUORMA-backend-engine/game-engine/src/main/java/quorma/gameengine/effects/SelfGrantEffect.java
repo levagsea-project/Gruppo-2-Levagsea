@@ -11,9 +11,11 @@ import quorma.gameengine.model.Lasting;
 /** E18: grants the creature a static copy of the effect (aimed at itself), once. See E28 for the stacking one. */
 public final class SelfGrantEffect implements Effect {
 
+    public static final String ID = "E18";
+
     @Override
     public String id() {
-        return "E18";
+        return ID;
     }
 
     @Override

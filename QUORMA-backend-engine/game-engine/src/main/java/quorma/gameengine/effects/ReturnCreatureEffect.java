@@ -18,9 +18,11 @@ import quorma.gameengine.model.Side;
  */
 public final class ReturnCreatureEffect implements PlayerEffect {
 
+    public static final String ID = "E36";
+
     @Override
     public String id() {
-        return "E36";
+        return ID;
     }
 
     @Override

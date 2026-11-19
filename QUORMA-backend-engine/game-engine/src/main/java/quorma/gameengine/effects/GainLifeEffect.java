@@ -14,9 +14,11 @@ import quorma.gameengine.model.PlayerState;
 /** E9: the player gains {@code amount} life. */
 public final class GainLifeEffect implements PlayerEffect {
 
+    public static final String ID = "E9";
+
     @Override
     public String id() {
-        return "E9";
+        return ID;
     }
 
     @Override

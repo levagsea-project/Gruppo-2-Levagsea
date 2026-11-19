@@ -17,9 +17,11 @@ import quorma.gameengine.model.Side;
  */
 public final class ReorderDeckEffect implements PlayerEffect {
 
+    public static final String ID = "E49";
+
     @Override
     public String id() {
-        return "E49";
+        return ID;
     }
 
     @Override

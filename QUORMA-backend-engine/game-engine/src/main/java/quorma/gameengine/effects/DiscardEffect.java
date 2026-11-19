@@ -8,9 +8,11 @@ import quorma.gameengine.model.Creature;
 /** E13: puts the creature in its owner's discard pile, with no destruction (no T10, no T20). */
 public final class DiscardEffect implements Effect {
 
+    public static final String ID = "E13";
+
     @Override
     public String id() {
-        return "E13";
+        return ID;
     }
 
     @Override

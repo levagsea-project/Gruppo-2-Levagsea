@@ -15,9 +15,11 @@ import quorma.gameengine.model.PlayerState;
 /** E57: the top {@code count} cards of the player's deck go to the discard pile with no effect. */
 public final class MillEffect implements PlayerEffect {
 
+    public static final String ID = "E57";
+
     @Override
     public String id() {
-        return "E57";
+        return ID;
     }
 
     @Override

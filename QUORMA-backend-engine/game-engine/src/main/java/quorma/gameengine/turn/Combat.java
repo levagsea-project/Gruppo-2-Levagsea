@@ -3,6 +3,9 @@ package quorma.gameengine.turn;
 import java.util.ArrayList;
 import java.util.List;
 import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.PreventAttackEffect;
+import quorma.gameengine.effects.PreventCombatDamageEffect;
+import quorma.gameengine.effects.SetDefRescueEffect;
 import quorma.gameengine.effects.TriggerContext;
 import quorma.gameengine.log.MatchEvent.AttackSkipped;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
@@ -149,7 +152,7 @@ final class Combat {
         Side targetSide = attack.target().orElseThrow().side();
         Board b = g.board();
         for (Board.Active a : b.replacements("T39", target)) {
-            if (a.e().effectId().equals("E25") && attackerSide != targetSide) {
+            if (a.e().effectId().equals(PreventAttackEffect.ID) && attackerSide != targetSide) {
                 g.destruction.markReplacement(a, target);
                 log.add(new AttackSkipped(attack, cycle, SkipReason.PREVENTED));
                 return false;
@@ -168,12 +171,12 @@ final class Combat {
                 continue;
             }
             switch (e.effectId()) {
-                case "E25" -> {
+                case PreventAttackEffect.ID -> {
                     attacker.markTriggered(e, g.turn());
                     log.add(new AttackSkipped(attack, cycle, SkipReason.PREVENTED));
                     return false;
                 }
-                case "E23" -> {
+                case PreventCombatDamageEffect.ID -> {
                     attacker.markTriggered(e, g.turn());
                     target.preventDamageTo(attacker, e.abilityId(), g.lasting(e.duration(), attacker));
                 }
@@ -205,8 +208,8 @@ final class Combat {
         Target targetRef = attack.target().orElseThrow();
         Board.Active rescue = strike.killed() ? g.destruction.rescue(targetRef.side(), target) : null;
         if (rescue != null) {
-            boolean keepSpill = rescue.e().effectId().equals("E11") && rescue.e().boolParam("spill_on_prevent", false);
-            if (rescue.e().effectId().equals("E11")) {
+            boolean keepSpill = rescue.e().effectId().equals(SetDefRescueEffect.ID) && rescue.e().boolParam("spill_on_prevent", false);
+            if (rescue.e().effectId().equals(SetDefRescueEffect.ID)) {
                 strike = strike.saved(target.currentDef(), keepSpill);
             } else {
                 strike = strike.saved(target.currentDef(), false);

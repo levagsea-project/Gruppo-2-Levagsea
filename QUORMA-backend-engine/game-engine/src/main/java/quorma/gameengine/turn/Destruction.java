@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.function.Supplier;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.Followups;
+import quorma.gameengine.effects.FullDefRescueEffect;
+import quorma.gameengine.effects.PreventDamageEffect;
+import quorma.gameengine.effects.SetDefRescueEffect;
 import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.MatchEvent.CreatureDestroyed;
 import quorma.gameengine.log.MatchEvent.CreatureDiscarded;
@@ -71,7 +74,7 @@ final class Destruction {
     Prevention preventDamage(Creature t, int amount) {
         String by = null;
         for (Board.Active a : board.get().replacements("T21", t)) {
-            if (!a.e().effectId().equals("E29") || amount <= 0) {
+            if (!a.e().effectId().equals(PreventDamageEffect.ID) || amount <= 0) {
                 continue;
             }
             markReplacement(a, t);
@@ -121,7 +124,7 @@ final class Destruction {
         for (Board.Active a : board.get().replacements("T20", target)) {
             BoundExpansion e = a.e();
             switch (e.effectId()) {
-                case "E12" -> {
+                case FullDefRescueEffect.ID -> {
                     if (e.stringParam("lockout.key").isPresent()) {
                         state.player(side).lock(e.stringParam("lockout.key").orElseThrow(),
                                 Suit.valueOf(e.stringParam("lockout.suit").orElseThrow().toUpperCase(java.util.Locale.ROOT)),
@@ -129,7 +132,7 @@ final class Destruction {
                     }
                     target.saveWithFullDef("destroy_at_next_refill".equals(e.stringParam("then").orElse("none")));
                 }
-                case "E11" -> {
+                case SetDefRescueEffect.ID -> {
                     target.setDef(e.intParam("set_def"));
                     target.undestroy();
                 }

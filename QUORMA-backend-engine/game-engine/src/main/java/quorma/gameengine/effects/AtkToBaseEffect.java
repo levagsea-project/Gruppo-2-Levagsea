@@ -10,9 +10,11 @@ import quorma.gameengine.model.Creature;
 /** E4: the creature's ATK goes back to its base value (it replaces the ATK bonuses while it lasts). */
 public final class AtkToBaseEffect implements Effect {
 
+    public static final String ID = "E4";
+
     @Override
     public String id() {
-        return "E4";
+        return ID;
     }
 
     @Override

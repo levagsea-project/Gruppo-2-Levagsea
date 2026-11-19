@@ -4,7 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import quorma.gameengine.data.RulesetException;
 import quorma.gameengine.data.Value;
+import quorma.gameengine.effects.AtkToBaseEffect;
 import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.IgnoreMitigationEffect;
+import quorma.gameengine.effects.LethalDamageEffect;
+import quorma.gameengine.effects.PreventCombatDamageEffect;
+import quorma.gameengine.effects.PreventDamageEffect;
+import quorma.gameengine.effects.SpillDefShareEffect;
+import quorma.gameengine.effects.SpillMultiplierEffect;
 import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.Modifier;
@@ -60,7 +67,7 @@ record Strike(
         List<Modifier> damageModifiers = new ArrayList<>(atkBonuses);
         if (attacker.atkSetToBase()) {
             atk = attacker.card().atk();
-            damageModifiers.add(new Modifier(attackerRef, attacker.atkSetToBaseBy(), "E4", Modifier.Kind.ATK_SET,
+            damageModifiers.add(new Modifier(attackerRef, attacker.atkSetToBaseBy(), AtkToBaseEffect.ID, Modifier.Kind.ATK_SET,
                     attacker.card().atk()));
         }
         int advantage = g.rules.advantagePermille(
@@ -91,7 +98,7 @@ record Strike(
         // The attacker's pierce: several add up, at most 100.
         List<Modifier> piercing = new ArrayList<>();
         int pierce = 0;
-        for (Board.Active a : b.reaching("E56", attacker, Board.Ctx.NONE)) {
+        for (Board.Active a : b.reaching(IgnoreMitigationEffect.ID, attacker, Board.Ctx.NONE)) {
             pierce = Math.min(100, pierce + a.e().intParam("pct"));
             piercing.add(new Modifier(attackerRef, a.e().abilityId(), a.e().effectId(), Modifier.Kind.PIERCE_PCT,
                     a.e().intParam("pct")));
@@ -110,14 +117,14 @@ record Strike(
         // E23: an effect stops the attacker from damaging this target; E29: the target prevents the next damage.
         String preventedBy = damage > 0 ? attacker.cannotDamageBy(target) : null;
         if (preventedBy != null) {
-            damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), preventedBy, "E23",
+            damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), preventedBy, PreventCombatDamageEffect.ID,
                     Modifier.Kind.DAMAGE_PREVENTED, damage));
             damage = 0;
         }
         if (damage > 0 && land) {
             Destruction.Prevention p = g.destruction.preventDamage(target, damage);
             if (p.left() != damage) {
-                damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), p.abilityId(), "E29",
+                damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), p.abilityId(), PreventDamageEffect.ID,
                         Modifier.Kind.DAMAGE_PREVENTED, damage - p.left()));
                 damage = p.left();
             }
@@ -126,10 +133,10 @@ record Strike(
         int defBefore = target.currentDef();
         int defAfter = Math.subtractExact(defBefore, damage);
         List<Board.Active> lethalOnes = damage > 0 && defAfter > 0
-                ? b.reaching("E26", attacker, Board.Ctx.NONE) : List.of();
+                ? b.reaching(LethalDamageEffect.ID, attacker, Board.Ctx.NONE) : List.of();
         boolean lethal = !lethalOnes.isEmpty();
         if (lethal) {
-            damageModifiers.add(new Modifier(attackerRef, lethalOnes.get(0).e().abilityId(), "E26",
+            damageModifiers.add(new Modifier(attackerRef, lethalOnes.get(0).e().abilityId(), LethalDamageEffect.ID,
                     Modifier.Kind.LETHAL, 0));
         }
         boolean killed = defAfter <= 0 || lethal;
@@ -144,11 +151,11 @@ record Strike(
                 BoundExpansion e = a.e();
                 Creature from = a.sourceOr(attacker);
                 CreatureRef fromRef = CreatureRef.of(b.sideOf(from), from);
-                if (e.effectId().equals("E21")) {
+                if (e.effectId().equals(SpillMultiplierEffect.ID)) {
                     factors.add(e.intParam("factor"));
                     spillModifiers.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
                             Modifier.Kind.SPILL_MULTIPLIER, e.intParam("factor")));
-                } else if (e.effectId().equals("E22")) {
+                } else if (e.effectId().equals(SpillDefShareEffect.ID)) {
                     defShares.add(e.intParam("permille"));
                     spillModifiers.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
                             Modifier.Kind.SPILL_DEF_PERMILLE, e.intParam("permille")));

@@ -9,9 +9,11 @@ import quorma.gameengine.model.Grant;
 /** E14: the creature gains a keyword (with the numbers in {@code keyword_params}) for as long as the duration says. */
 public final class KeywordGrantEffect implements Effect {
 
+    public static final String ID = "E14";
+
     @Override
     public String id() {
-        return "E14";
+        return ID;
     }
 
     @Override

@@ -14,9 +14,11 @@ import quorma.gameengine.model.Lasting;
 /** E28: grants the creature a static copy of the effect (aimed at itself), up to {@code max_stacks} times. */
 public final class StackedGrantEffect implements Effect {
 
+    public static final String ID = "E28";
+
     @Override
     public String id() {
-        return "E28";
+        return ID;
     }
 
     @Override

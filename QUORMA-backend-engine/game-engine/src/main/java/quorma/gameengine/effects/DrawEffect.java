@@ -15,9 +15,11 @@ import quorma.gameengine.model.Side;
  */
 public final class DrawEffect implements PlayerEffect {
 
+    public static final String ID = "E35";
+
     @Override
     public String id() {
-        return "E35";
+        return ID;
     }
 
     @Override

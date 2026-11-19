@@ -11,9 +11,11 @@ import quorma.gameengine.model.Creature;
 /** E59: cancels the bonuses on the creature's ATK and DEF. */
 public final class CancelBonusesEffect implements Effect {
 
+    public static final String ID = "E59";
+
     @Override
     public String id() {
-        return "E59";
+        return ID;
     }
 
     @Override

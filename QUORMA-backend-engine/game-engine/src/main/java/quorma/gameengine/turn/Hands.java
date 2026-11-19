@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import quorma.gameengine.data.ConditionDef;
+import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.ExcludeFromHandEffect;
+import quorma.gameengine.effects.ExtraRankEffect;
 import quorma.gameengine.effects.HandTypeCondition;
 import quorma.gameengine.effects.RankedTarget;
+import quorma.gameengine.effects.ReplaceRankEffect;
 import quorma.gameengine.effects.Targets;
-import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.hand.HandCard;
 import quorma.gameengine.hand.HandResult;
 import quorma.gameengine.hand.HandType;
@@ -54,7 +57,7 @@ final class Hands {
             }
             Side side = b.sideOf(c);
             for (BoundExpansion e : b.abilities(c, "T4")) {
-                if (e.effectId().equals("E63") && b.holds(e, side, c, Board.Ctx.NONE)) {
+                if (e.effectId().equals(ExcludeFromHandEffect.ID) && b.holds(e, side, c, Board.Ctx.NONE)) {
                     pick(b, e, side, c).ifPresent(out::add);
                 }
             }
@@ -62,7 +65,7 @@ final class Hands {
         for (Side owner : b.prioritySides()) {
             for (Aura aura : b.state().player(owner).auras()) {
                 BoundExpansion e = aura.expansion();
-                if ("T4".equals(e.triggerId()) && e.effectId().equals("E63")) {
+                if ("T4".equals(e.triggerId()) && e.effectId().equals(ExcludeFromHandEffect.ID)) {
                     pick(b, e, owner, null).ifPresent(out::add);
                 }
             }
@@ -101,14 +104,14 @@ final class Hands {
     private static List<Option> options(Board b, Side side, Creature c) {
         List<Option> out = new ArrayList<>();
         out.add(new Option(c.card().rank(), null, false));
-        for (Board.Active a : reachingIgnoringC9(b, "E32", c)) {
+        for (Board.Active a : reachingIgnoringC9(b, ReplaceRankEffect.ID, c)) {
             String rank = a.e().stringParam("rank").orElseThrow();
             int value = rank.equals("highest_ally") ? highestAlly(b, side, c) : rankOf(rank);
             if (value > 0) {
                 out.add(new Option(value, needs(a.e()), false));
             }
         }
-        for (Board.Active a : reachingIgnoringC9(b, "E30", c)) {
+        for (Board.Active a : reachingIgnoringC9(b, ExtraRankEffect.ID, c)) {
             out.add(new Option(rankOf(a.e().stringParam("rank").orElseThrow()), needs(a.e()), true));
         }
         int step = b.rankStep(c);

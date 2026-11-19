@@ -15,9 +15,11 @@ import quorma.gameengine.model.Creature;
  */
 public final class DefEffect implements Effect {
 
+    public static final String ID = "E2";
+
     @Override
     public String id() {
-        return "E2";
+        return ID;
     }
 
     @Override

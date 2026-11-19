@@ -8,9 +8,11 @@ import quorma.gameengine.model.Creature;
 /** E15: the creature loses a keyword for as long as the duration says. */
 public final class RemoveKeywordEffect implements Effect {
 
+    public static final String ID = "E15";
+
     @Override
     public String id() {
-        return "E15";
+        return ID;
     }
 
     @Override

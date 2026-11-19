@@ -9,17 +9,31 @@ import java.util.Optional;
 import quorma.gameengine.data.ConditionDef;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.AbilityBinder;
+import quorma.gameengine.effects.AdjacencyLinkEffect;
+import quorma.gameengine.effects.AtkEffect;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.Condition;
 import quorma.gameengine.effects.ConditionContext;
 import quorma.gameengine.effects.Conditions;
 import quorma.gameengine.effects.EffectRegistry;
+import quorma.gameengine.effects.EvolutionGrantEffect;
+import quorma.gameengine.effects.HealFactorEffect;
+import quorma.gameengine.effects.IsolatedEffect;
+import quorma.gameengine.effects.KeywordGrantEffect;
+import quorma.gameengine.effects.LethalDamageEffect;
+import quorma.gameengine.effects.NoAtkReductionEffect;
+import quorma.gameengine.effects.NoBonusEffect;
 import quorma.gameengine.effects.PerMille;
+import quorma.gameengine.effects.RankStepEffect;
 import quorma.gameengine.effects.RankedTarget;
-import quorma.gameengine.effects.Targets;
+import quorma.gameengine.effects.RemoveKeywordEffect;
+import quorma.gameengine.effects.SelfGrantEffect;
+import quorma.gameengine.effects.StackedGrantEffect;
 import quorma.gameengine.effects.TargetIds;
 import quorma.gameengine.effects.TargetView;
+import quorma.gameengine.effects.Targets;
 import quorma.gameengine.effects.TriggerContext;
+import quorma.gameengine.effects.WildSuitEffect;
 import quorma.gameengine.hand.HandType;
 import quorma.gameengine.hand.Suit;
 import quorma.gameengine.log.CreatureRef;
@@ -136,15 +150,15 @@ final class Board implements TargetView {
             Side side = sideOf(c);
             for (Active a : layer1Statics()) {
                 String effect = a.e().effectId();
-                if (!(effect.equals("E14") || effect.equals("E15") || effect.equals("E16")) || !reaches(a, side, c)
+                if (!(effect.equals(KeywordGrantEffect.ID) || effect.equals(RemoveKeywordEffect.ID) || effect.equals(EvolutionGrantEffect.ID)) || !reaches(a, side, c)
                         || !holds(a, c, Ctx.NONE)) {
                     continue;
                 }
                 String where = "static " + a.e().abilityId() + " " + effect;
                 switch (effect) {
-                    case "E14" -> out.addAll(binder.bindKeyword(where, a.e().stringParam("keyword").orElseThrow(),
+                    case KeywordGrantEffect.ID -> out.addAll(binder.bindKeyword(where, a.e().stringParam("keyword").orElseThrow(),
                             a.e().nested("keyword_params")));
-                    case "E16" -> {
+                    case EvolutionGrantEffect.ID -> {
                         String evo = a.e().stringParam("evolution_id").orElseThrow();
                         if (out.stream().noneMatch(x -> x.abilityId().equals(evo))) {
                             out.addAll(binder.bindEvolution(where, evo, a.e().nested("evolution_params")));
@@ -363,7 +377,7 @@ final class Board implements TargetView {
         }
         List<BoundExpansion> list = computingLayers ? x.abilities() : abilities(x);
         for (BoundExpansion e : list) {
-            if (!"T0".equals(e.triggerId()) || !e.effectId().equals("E34")) {
+            if (!"T0".equals(e.triggerId()) || !e.effectId().equals(AdjacencyLinkEffect.ID)) {
                 continue;
             }
             String group = e.stringParam("group").orElse("");
@@ -391,38 +405,38 @@ final class Board implements TargetView {
 
     /** E60: adjacent to no creature of its player. */
     boolean isolated(Creature c) {
-        return any("E60", c);
+        return any(IsolatedEffect.ID, c);
     }
 
     /** E61: positive ATK and DEF modifiers do not apply. */
     boolean noBonus(Creature c) {
-        return any("E61", c);
+        return any(NoBonusEffect.ID, c);
     }
 
     /** E52: its ATK cannot be lowered by effects. */
     boolean noReduce(Creature c) {
-        return any("E52", c);
+        return any(NoAtkReductionEffect.ID, c);
     }
 
     /** E18: its Evolutions cannot fire. */
     boolean evolutionsSuppressed(Creature c) {
-        return any("E18", c);
+        return any(SelfGrantEffect.ID, c);
     }
 
     /** E26: any combat damage it deals destroys. */
     boolean lethal(Creature c) {
-        return any("E26", c);
+        return any(LethalDamageEffect.ID, c);
     }
 
     /** E55: counts as any suit for the hand. */
     boolean wildSuit(Creature c) {
-        return any("E55", c);
+        return any(WildSuitEffect.ID, c);
     }
 
     /** E54: the largest rank step it may use for straights, 0 if none. */
     int rankStep(Creature c) {
         int step = 0;
-        for (Active a : reaching("E54", c, Ctx.NONE)) {
+        for (Active a : reaching(RankStepEffect.ID, c, Ctx.NONE)) {
             step = Math.max(step, a.e().intParam("step", 1));
         }
         return step;
@@ -448,7 +462,7 @@ final class Board implements TargetView {
         boolean noReduce = noReduce(receiver);
         Ctx ctx = new Ctx(target, start, TriggerContext.NONE, null);
         for (Active a : statics()) {
-            if (!a.e().effectId().equals("E1") || !reaches(a, side, receiver) || !holds(a, receiver, ctx)) {
+            if (!a.e().effectId().equals(AtkEffect.ID) || !reaches(a, side, receiver) || !holds(a, receiver, ctx)) {
                 continue;
             }
             int amount = Math.multiplyExact(PerMille.baseAmount(a.e(), receiver.card().atk()), scale(a, side));
@@ -456,7 +470,7 @@ final class Board implements TargetView {
                 continue;
             }
             Creature from = a.sourceOr(receiver);
-            out.add(new Modifier(CreatureRef.of(sideOf(from), from), a.e().abilityId(), "E1",
+            out.add(new Modifier(CreatureRef.of(sideOf(from), from), a.e().abilityId(), AtkEffect.ID,
                     amount > 0 ? Modifier.Kind.ATK_BONUS : Modifier.Kind.ATK_MALUS, Math.abs(amount)));
         }
         return out;
@@ -485,14 +499,14 @@ final class Board implements TargetView {
      * creature's own reductions come in card order.
      */
     List<Active> reductions(Creature target) {
-        return reaching("E28", target, Ctx.NONE);
+        return reaching(StackedGrantEffect.ID, target, Ctx.NONE);
     }
 
     /** The share (per mille) of a heal {@code c} receives: E51 replacements multiplied, 1000 with none. */
     int healPermille(Creature c) {
         long factor = 1000;
         for (Active a : replacements("T23", c)) {
-            if (a.e().effectId().equals("E51")) {
+            if (a.e().effectId().equals(HealFactorEffect.ID)) {
                 factor = factor * a.e().intParam("permille") / 1000;
             }
         }

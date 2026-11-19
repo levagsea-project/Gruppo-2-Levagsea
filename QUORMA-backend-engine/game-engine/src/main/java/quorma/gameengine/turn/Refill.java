@@ -5,6 +5,7 @@ import java.util.List;
 import quorma.gameengine.data.Value;
 import quorma.gameengine.effects.BoundExpansion;
 import quorma.gameengine.effects.EffectStack;
+import quorma.gameengine.effects.PreventRefillEffect;
 import quorma.gameengine.effects.TargetIds;
 import quorma.gameengine.effects.Targets;
 import quorma.gameengine.effects.TriggerContext;
@@ -102,7 +103,7 @@ final class Refill {
         for (Side owner : TurnResolver.prioritySides(state)) {
             for (Aura aura : state.player(owner).auras()) {
                 BoundExpansion e = aura.expansion();
-                if (!"T25".equals(e.triggerId()) || !e.effectId().equals("E47") || !aura.canTrigger()) {
+                if (!"T25".equals(e.triggerId()) || !e.effectId().equals(PreventRefillEffect.ID) || !aura.canTrigger()) {
                     continue;
                 }
                 String who = e.stringParam("player").orElse("avversario");
