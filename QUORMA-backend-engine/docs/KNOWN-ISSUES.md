@@ -44,11 +44,6 @@ The base set's structure is fixed in `docs/cards/card-effects.json` (decisions `
 - **Others:** Tabita +8.5 (recheck with the one-substitution rule), Pannello della Reliquia / Muro +8.9 (no stalls), Campi vuoti (recheck at 60), Presagio (recheck with the scope and once-per-turn), Posto tenuto and the E36 spells (new semantics, never simulated), Rinforzo (fires in 85% of games), Calce -5.4, Nives -4.5, Lacuna -4.9, Zaira's Sigillo aperto (rarely matters), Flessibile (almost inert).
 
 
-### `2026-11-06-faction-swap-open-rules`: Faction-swap series: open rules
-
-Not decided yet: whether `FACTION_SWAP` is the main format; how the faction of game 3 is chosen; when game 3 is needed (a 1-1 split, or also after draws) and when a series ends; how the series outcome follows from the games; and how many games a series may last (after a drawn game 3 the rule is "swap and play again", with no stated cap). The schema stores each game and its factions and leaves these to the backend.
-
-
 ### `2026-11-17-no-spell-equipment-data`: Spells and equipment have no balance data
 
 The 46 spells and equipment of the base set are defined (`data/sets/BASE.json`, checked by `validate.py` check 12 and by the engine's card check) and the engine plays all their effects (`2026-11-17-base-set-engine`). What `data/` still lacks: there is no `spells.json` and `balance.json` has no `spells` / `equipment` sections, so pool generation does not make them and nothing prices or limits their power (no stat cost, no cap class), and the five-build matrix of `data/AGENTS.md` section 9 does not cover them. To decide: their rarity and cost, where those numbers live (`balance.json`), and a validator pass over them.

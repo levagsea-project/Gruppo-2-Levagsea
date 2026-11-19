@@ -64,6 +64,7 @@ public class AuthService {
         if (bonus > 0) {
             ledger.save(new CreditTransaction(user.getId(), bonus, bonus, CreditTransactionType.REGISTRATION_BONUS, null, null));
         }
+        users.touchLogin(user.getId()); // registering returns a token, so it counts as a login
         // The starter decks (one per faction, set as the defense decks) once the registration is committed, in their own
         // transaction: a catalogue that is not ready must never stop a player from registering.
         UUID userId = user.getId();
@@ -76,7 +77,7 @@ public class AuthService {
         return respond(user);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthResponse login(LoginRequest req) {
         User user = users.findByUsernameIgnoreCase(req.username()).orElse(null);
         boolean ok = encoder.matches(req.password(), user == null ? dummyHash : user.getPasswordHash());
@@ -90,6 +91,7 @@ public class AuthService {
             // covers a player who registered before the catalogue had a starter set: a faction with no deck gets its starter deck
             starterDecks.provisionQuietly(user.getId());
         }
+        users.touchLogin(user.getId());
         return respond(user);
     }
 

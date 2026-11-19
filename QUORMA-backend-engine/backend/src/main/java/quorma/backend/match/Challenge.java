@@ -33,6 +33,12 @@ public class Challenge {
 
     private UUID opponentId;
 
+    /** Shown to players: {@code ch-XXXX-XXXX} for a challenge by nickname, {@code rnd-XXXX-XXXX} when it came from a room. */
+    private String code;
+
+    /** The faction the challenger plays in game 1; the opponent has the opposite one, and they swap every game. */
+    private String challengerFaction;
+
     @Enumerated(EnumType.STRING)
     private SeriesFormat format;
 
@@ -52,9 +58,12 @@ public class Challenge {
     @Version
     private Long version;
 
-    public Challenge(UUID challengerId, UUID opponentId, SeriesFormat format, ChallengeStatus status, Instant expiresAt) {
+    public Challenge(UUID challengerId, UUID opponentId, String code, String challengerFaction, SeriesFormat format,
+                     ChallengeStatus status, Instant expiresAt) {
         this.challengerId = challengerId;
         this.opponentId = opponentId;
+        this.code = code;
+        this.challengerFaction = challengerFaction;
         this.format = format;
         this.status = status;
         this.expiresAt = expiresAt;

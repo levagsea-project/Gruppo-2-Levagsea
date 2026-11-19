@@ -60,6 +60,21 @@
   "catalogue.pack_type_invalid": "Dati del tipo di pacchetto non validi",
   "catalogue.pack_type_conflict": "Il tipo di pacchetto è già stato venduto: non si può cambiarne il set né eliminarlo",
 
+  "challenge.not_found": "Sfida non trovata",
+  "challenge.not_pending": "La sfida non è più in attesa",
+  "challenge.expired": "La sfida è scaduta",
+  "challenge.self": "Non puoi sfidare te stesso",
+  "challenge.opponent_not_found": "Giocatore non trovato",
+  "challenge.already_pending": "Hai già una sfida in attesa verso questo giocatore",
+  "challenge.decks_invalid": "Scegli esattamente un mazzo per ciascuna fazione",
+  "room.not_found": "Stanza non trovata",
+  "room.not_open": "La stanza non è più aperta",
+  "room.expired": "La stanza è scaduta",
+  "room.own_room": "Non puoi entrare nella tua stanza",
+  "room.already_open": "Hai già una stanza aperta",
+  "matchmaking.no_opponent": "Nessun avversario disponibile al momento, riprova più tardi",
+  "match.not_found": "Partita non trovata",
+
   "error.not_implemented": "Funzione non ancora disponibile",
 
   "game.faction.resistenza_umana": "Resistenza Umana",
