@@ -3,3 +3,9 @@
 /* Toglie sfondo e bordo predefiniti del browser ai pulsanti. :where = precedenza zero, le classi vincono sempre */
 :where(.app) button { border: 0; background: none; color: inherit; font: inherit; }
 @media (max-width: 1279px) { .app { grid-template-columns: 88px minmax(0, 1fr); } }
+
+/* Testo solo per gli screen reader (es. "saldo in arrivo" accanto al trattino delle valute) */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Selezione del testo nei colori del tema (petrolio), non l'azzurro predefinito del browser */
+.app ::selection { background: rgba(74,166,173,.45); color: #F1F6F7; }

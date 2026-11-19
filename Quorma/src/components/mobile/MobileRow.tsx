@@ -4,7 +4,7 @@ type Props = {
   title: string
   detail?: string // riga piccola sotto il titolo
   icon?: ReactNode // di solito un <Arch>; senza icona è una riga di solo testo
-  onClick?: () => void // senza onClick la pagina non esiste ancora: la riga resta visibile ma non fa nulla
+  onClick?: () => void // senza onClick la pagina non esiste ancora: riga "in arrivo", non cliccabile
 }
 
 function Arrow() {
@@ -15,19 +15,33 @@ function Arrow() {
   )
 }
 
-// Una riga degli elenchi mobile (Home "In attesa", pagina Altro): icona, testo, freccia.
+// Una riga degli elenchi mobile (Home, pagina Altro): icona, testo, freccia.
+// Le sezioni che non esistono ancora non sono pulsanti: niente freccia, etichetta "In arrivo".
 export default function MobileRow({ title, detail, icon, onClick }: Props) {
+  const className = icon ? 'mb-riga' : 'mb-riga mb-riga--testo'
+  const text = icon ? (
+    <span>
+      <b>{title}</b>
+      {detail && <small>{detail}</small>}
+    </span>
+  ) : (
+    <span>{title}</span>
+  )
+
+  if (!onClick) {
+    return (
+      <div className={`${className} mb-riga--presto`}>
+        {icon}
+        {text}
+        <span className="mb-presto">In arrivo</span>
+      </div>
+    )
+  }
+
   return (
-    <button type="button" className={icon ? 'mb-riga' : 'mb-riga mb-riga--testo'} onClick={onClick}>
+    <button type="button" className={className} onClick={onClick}>
       {icon}
-      {icon ? (
-        <span>
-          <b>{title}</b>
-          {detail && <small>{detail}</small>}
-        </span>
-      ) : (
-        <span>{title}</span>
-      )}
+      {text}
       <Arrow />
     </button>
   )

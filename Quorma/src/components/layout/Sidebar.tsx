@@ -11,7 +11,7 @@ type Props = { current: Page; onNavigate: (page: Page) => void }
 export default function Sidebar({ current, onNavigate }: Props) {
   return (
     <aside className="q-navata">
-      <Logo />
+      <Logo onHome={() => onNavigate('home')} />
       <NavMenu current={current} onNavigate={onNavigate} />
       <PlayerCard />
       <SidebarFooter onNavigate={onNavigate} />

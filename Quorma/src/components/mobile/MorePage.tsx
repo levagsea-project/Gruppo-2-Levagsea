@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import type { Page } from '../../data/navItems'
 import { footerLinks } from '../../data/navItems'
-import { player } from '../../data/player'
+import { currentPlayer } from '../../data/player'
 import { clearSession } from '../../lib/auth'
 import NavIcon from '../layout/NavIcon'
 import Arch from './Arch'
@@ -34,9 +34,10 @@ const SettingsIcon = () => (
 )
 
 // Pagina "Altro" (solo telefono): tutte le sezioni che non stanno nella barra in basso.
-// Le righe senza onClick portano a pagine che non esistono ancora.
+// Le righe senza onClick sono sezioni che non esistono ancora: MobileRow le mostra "in arrivo".
 export default function MorePage({ onNavigate }: { onNavigate: (page: Page) => void }) {
   const navigate = useNavigate()
+  const player = currentPlayer()
 
   const logout = () => {
     clearSession()
@@ -51,8 +52,8 @@ export default function MorePage({ onNavigate }: { onNavigate: (page: Page) => v
       </div>
 
       <Group title="Gioco">
-        <MobileRow title="Scambi" detail="Nuove proposte dai tuoi amici" icon={<Arch alert><NavIcon name="scambi" /></Arch>} />
-        <MobileRow title="Sfide" detail="Ricompense da riscuotere" icon={<Arch alert><NavIcon name="sfide" /></Arch>} />
+        <MobileRow title="Scambi" detail="Scambia i doppioni con altri giocatori" icon={<Arch><NavIcon name="scambi" /></Arch>} />
+        <MobileRow title="Sfide" detail="Sfida gli altri giocatori" icon={<Arch><NavIcon name="sfide" /></Arch>} />
         <MobileRow title="Negozio" detail="Buste e offerte" icon={<Arch><NavIcon name="negozio" /></Arch>} />
         <MobileRow
           title="Regole"
@@ -63,7 +64,7 @@ export default function MorePage({ onNavigate }: { onNavigate: (page: Page) => v
       </Group>
 
       <Group title="Account">
-        <MobileRow title="Profilo" detail={`${player.name} · Livello ${player.level}`} icon={<Arch><ProfileIcon /></Arch>} />
+        <MobileRow title="Profilo" detail={player.name} icon={<Arch><ProfileIcon /></Arch>} />
         <MobileRow title="Impostazioni" detail="Account, partita, audio" icon={<Arch><SettingsIcon /></Arch>} />
       </Group>
 

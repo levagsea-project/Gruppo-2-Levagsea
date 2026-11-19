@@ -1,7 +1,9 @@
 import type { CSSProperties } from 'react'
 import { factions } from '../../data/factions'
 import type { Page } from '../../data/navItems'
-import { lastMatch, pending, player } from '../../data/player'
+import { comingSoon, currentPlayer } from '../../data/player'
+import type { LoadState } from '../../hooks/useDecks'
+import type { PlayNotice } from '../../hooks/usePlayStatus'
 import type { Deck } from '../../types/deck'
 import NavIcon from '../layout/NavIcon'
 import Arch from './Arch'
@@ -13,46 +15,80 @@ const Star = () => (
   </svg>
 )
 
-// Titolo di sezione con la linea azzurra.
-function Marker({ title, extra }: { title: string; extra?: React.ReactNode }) {
+// Titolo di sezione con la linea azzurra; id serve ad aria-labelledby della sezione.
+function Marker({ id, title }: { id: string; title: string }) {
   return (
     <div className="q-marker">
-      <h2 className="q-marker__title">{title}</h2>
-      <span className="q-marker__line" />
-      {extra}
+      <h2 id={id} className="q-marker__title">{title}</h2>
+      <span className="q-marker__line" aria-hidden="true" />
     </div>
   )
 }
 
-type Props = { lastDeck: Deck | null; onNavigate: (page: Page) => void }
+type Props = {
+  lastDeck: Deck | null
+  decksState: LoadState // caricamento dei mazzi: finché non è "ready" non sappiamo se ne hai
+  onRetry: () => void
+  notice: PlayNotice // perché non si può ancora giocare (mostrato solo se non è "info")
+  onNoticeAction: (action: NonNullable<PlayNotice['action']>) => void
+  onNavigate: (page: Page) => void
+}
 
-// Home su telefono: riprendi a giocare, cose in attesa, ultima partita, scorciatoie.
-export default function MobileHome({ lastDeck, onNavigate }: Props) {
+const ACTION_LABEL: Record<NonNullable<PlayNotice['action']>, string> = { mazzi: 'Vai ai mazzi', riprova: 'Riprova' }
+
+// Home su telefono: riprendi a giocare, sezioni in arrivo, partite, scorciatoie.
+export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNoticeAction, onNavigate }: Props) {
+  const action = notice.action
+  const player = currentPlayer()
   const faction = lastDeck ? factions[lastDeck.faction] : factions.artificiali
+  const ready = decksState === 'ready'
+
+  // Testi della card in alto: caricamento, errore, mazzo scelto oppure nessun mazzo.
+  const label = !ready ? 'Mazzi' : lastDeck ? 'Mazzo selezionato' : 'Nessun mazzo'
+  const title = decksState === 'loading' ? 'Caricamento…' : decksState === 'error' ? 'Mazzi non disponibili' : lastDeck ? lastDeck.name : 'Il tuo primo mazzo'
+  const sub =
+    decksState === 'loading'
+      ? 'Sto leggendo i tuoi mazzi'
+      : decksState === 'error'
+        ? 'Non riesco a caricarli: riprova'
+        : lastDeck
+          ? `${faction.name} · ${lastDeck.cards} / ${lastDeck.maxCards}`
+          : 'Scegli una fazione e costruiscilo'
 
   return (
     <div className="home-mobile">
       <div className="mb-targa">
         <h1>Bentornato</h1>
-        <span>
-          {player.name} · Livello {player.level}
-        </span>
+        <span className="mb-nome">{player.name}</span>
       </div>
 
-      {/* Riprendi a giocare: l'ultimo mazzo, oppure l'invito a crearne uno */}
-      <section className="q-tela q-tela--arco q-carta q-acceso" style={{ '--arte-h': '190px' } as CSSProperties} aria-labelledby="h-gioca">
+      {/* Riprendi a giocare: il mazzo scelto, oppure l'invito a crearne uno */}
+      <section className="q-tela q-tela--arco q-carta q-acceso" style={{ '--arte-h': '190px' } as CSSProperties} aria-labelledby="h-gioca" aria-busy={decksState === 'loading'}>
         <div className="q-tela__in">
           <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.image})` }} />
           <span className="q-divisorio" />
           <div className="mbh-gioca">
-            <div className="mbh-mazzo">
-              <span className="mb-etichetta">{lastDeck ? 'Ultimo mazzo usato' : 'Nessun mazzo'}</span>
-              <h2 id="h-gioca">{lastDeck ? lastDeck.name : 'Il tuo primo mazzo'}</h2>
-              <span className="mbh-sotto">
-                {lastDeck ? `${faction.name} · ${lastDeck.cards} / ${lastDeck.maxCards}` : 'Scegli una fazione e costruiscilo'}
-              </span>
+            <div className="mbh-mazzo" aria-live="polite">
+              <span className="mb-etichetta">{label}</span>
+              <h2 id="h-gioca">{title}</h2>
+              <span className="mbh-sotto">{sub}</span>
+              {ready && lastDeck && notice.tone !== 'info' && (
+                <span className="mbh-avviso">
+                  {notice.text}
+                  {action && (
+                    <button type="button" className="play-hint__azione" onClick={() => onNoticeAction(action)}>
+                      {ACTION_LABEL[action]}
+                    </button>
+                  )}
+                </span>
+              )}
             </div>
-            {lastDeck ? (
+            {decksState === 'error' && (
+              <button type="button" className="q-btn q-btn--argento" onClick={onRetry}>
+                <span className="q-btn__in">Riprova</span>
+              </button>
+            )}
+            {ready && lastDeck && (
               <button type="button" className="q-btn q-btn--sigillo" onClick={() => onNavigate('gioca')}>
                 <span className="q-btn__in">
                   <Star />
@@ -61,43 +97,46 @@ export default function MobileHome({ lastDeck, onNavigate }: Props) {
                 <span className="q-borchia q-borchia--w" />
                 <span className="q-borchia q-borchia--e" />
               </button>
-            ) : (
+            )}
+            {ready && !lastDeck && (
               <button type="button" className="q-btn q-btn--argento" onClick={() => onNavigate('nuovo-mazzo')}>
                 <span className="q-btn__in">Crea mazzo</span>
               </button>
             )}
           </div>
         </div>
-        <span className="q-borchia q-borchia--n" />
+        <span className="q-borchia q-borchia--n" aria-hidden="true" />
       </section>
 
-      <section className="mbh-sezione" aria-labelledby="h-attesa">
-        <Marker title="In attesa" />
+      {/* Sezioni del gioco che non esistono ancora: cosa saranno, senza numeri inventati */}
+      <section className="mbh-sezione" aria-labelledby="h-arrivo">
+        <Marker id="h-arrivo" title="In arrivo" />
         <div className="q-tela">
           <div className="q-tela__in mb-lista">
-            {pending.map((p) => (
-              <MobileRow key={p.id} title={p.label} detail={p.detail} icon={<Arch alert><NavIcon name={p.icon} /></Arch>} />
+            {comingSoon.map((p) => (
+              <MobileRow key={p.id} title={p.label} detail={p.detail} icon={<Arch><NavIcon name={p.icon} /></Arch>} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mbh-sezione" aria-label="Ultima partita">
-        <Marker title="Ultima partita" extra={<span className="mbh-storico">Storico</span>} />
+      <section className="mbh-sezione" aria-labelledby="h-partite">
+        <Marker id="h-partite" title="Partite" />
         <div className="q-tela">
           <div className="q-tela__in mbh-partita">
-            <span className="mbh-esito">{lastMatch.result}</span>
             <span className="mbh-avversario">
-              <span>contro {lastMatch.opponent}</span>
-              <small>{lastMatch.detail}</small>
+              <span>Nessuna partita giocata</span>
+              <small>Qui vedrai l'esito delle tue ultime partite.</small>
             </span>
           </div>
         </div>
       </section>
 
       <section className="mbh-scorciatoie" aria-label="Scorciatoie">
-        <button type="button" className="q-btn q-btn--acciaio">
-          <span className="q-btn__in">Negozio</span>
+        <button type="button" className="q-btn q-btn--acciaio" aria-disabled="true" title="Negozio · in arrivo">
+          <span className="q-btn__in">
+            Negozio<span className="sr-only">, in arrivo</span>
+          </span>
         </button>
         <button type="button" className="q-btn q-btn--acciaio" onClick={() => onNavigate('regole')}>
           <span className="q-btn__in">Regole</span>

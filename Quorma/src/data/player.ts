@@ -1,17 +1,31 @@
-// Dati di prova del giocatore e del suo account, finché non arrivano dal backend.
-// Li usano la barra laterale (desktop), la barra in alto e la Home (mobile).
-export const player = { name: 'Giocatore 01', initials: 'G1', level: 12, xp: 1280, xpNext: 2000 }
+import { getSession } from '../lib/auth'
 
-export const currencies = [
-  { label: 'Valuta 1', value: '12.500' },
-  { label: 'Valuta 2', value: '250' },
+// Il giocatore. Il backend per ora restituisce solo il nome (all'accesso): livello, esperienza,
+// valute, partite e scambi non esistono ancora, quindi non li mostriamo come se fossero veri
+// (PRODUCT.md, principio 4). Quando arriveranno le chiamate del backend, si collegano qui.
+
+/** Iniziali per l'avatar: "mario_rossi" → "MR", "Lupo" → "LU". */
+function initialsOf(name: string) {
+  const parts = name.split(/[\s_.-]+/).filter(Boolean)
+  const letters = parts.length > 1 ? parts[0][0] + parts[1][0] : name.slice(0, 2)
+  return letters.toUpperCase()
+}
+
+/** Il giocatore che ha fatto l'accesso (nome dalla sessione). */
+export function currentPlayer() {
+  const name = getSession()?.username?.trim() || 'Giocatore'
+  return { name, initials: initialsOf(name) }
+}
+
+// Le due valute: nomi provvisori, saldo non ancora disponibile dal backend (null = "in arrivo").
+export const currencies: { label: string; value: string | null }[] = [
+  { label: 'Valuta 1', value: null },
+  { label: 'Valuta 2', value: null },
 ]
 
-// Home mobile: cose in attesa e ultima partita.
-export const pending = [
-  { id: 'buste', label: 'Buste da aprire', detail: '5 buste nella tua collezione', icon: 'collezione' },
-  { id: 'scambi', label: 'Scambi', detail: '3 nuove proposte dai tuoi amici', icon: 'scambi' },
-  { id: 'sfide', label: 'Sfide', detail: '350 Valuta 1 da riscuotere', icon: 'sfide' },
+// Sezioni del gioco che non esistono ancora: le mostriamo come "in arrivo", senza numeri inventati.
+export const comingSoon = [
+  { id: 'collezione', label: 'Collezione e buste', detail: 'Apri le buste e sfoglia le tue carte', icon: 'collezione' },
+  { id: 'scambi', label: 'Scambi', detail: 'Scambia i doppioni con altri giocatori', icon: 'scambi' },
+  { id: 'sfide', label: 'Sfide', detail: 'Sfida gli altri giocatori e riscuoti le ricompense', icon: 'sfide' },
 ] as const
-
-export const lastMatch = { result: 'Vittoria', opponent: 'Giocatore 27', detail: 'Classificata · Mazzo 02 · 14 turni' }

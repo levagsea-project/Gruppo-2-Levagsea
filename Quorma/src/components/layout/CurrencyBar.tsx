@@ -12,16 +12,24 @@ const ICONS = [
 ]
 
 // Le due valute in alto a destra, nel riquadro a guglia del design system.
+// Finché il backend non dà il saldo, al posto del numero c'è un trattino ("in arrivo").
 export default function CurrencyBar() {
   return (
     <div className="currency-bar q-tela q-tela--guglia">
       <div className="q-tela__in">
         {currencies.map((c, i) => (
-          <div className="q-valore" key={c.label}>
+          <div className="q-valore" key={c.label} title={c.value === null ? `${c.label}: saldo in arrivo` : undefined}>
             {ICONS[i]}
             <span className="q-valore__testo">
               <span className="q-valore__etichetta">{c.label}</span>
-              <span className="q-valore__numero">{c.value}</span>
+              {c.value === null ? (
+                <span className="q-valore__numero q-valore__numero--vuoto">
+                  <span aria-hidden="true">—</span>
+                  <span className="sr-only">saldo in arrivo</span>
+                </span>
+              ) : (
+                <span className="q-valore__numero">{c.value}</span>
+              )}
             </span>
           </div>
         ))}

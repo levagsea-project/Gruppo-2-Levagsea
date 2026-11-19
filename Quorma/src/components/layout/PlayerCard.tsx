@@ -1,12 +1,12 @@
-import type { CSSProperties } from 'react'
-import { player } from '../../data/player'
+import { currentPlayer } from '../../data/player'
 
-// Riquadro del giocatore in basso a sinistra: avatar nell'ogiva, livello e barra dell'esperienza.
+// Riquadro del giocatore in basso a sinistra: avatar nell'ogiva e nome di chi ha fatto l'accesso.
+// Livello ed esperienza non esistono ancora nel backend: al posto della barra c'è "Livelli in arrivo".
 export default function PlayerCard() {
-  const percent = Math.round((player.xp / player.xpNext) * 100)
+  const player = currentPlayer()
 
   return (
-    <div className="q-profilo">
+    <div className="q-profilo" title={player.name}>
       <span className="q-profilo__in">
         <span className="q-profilo__testa">
           <span className="q-profilo__avatar" aria-hidden="true">
@@ -16,27 +16,7 @@ export default function PlayerCard() {
           </span>
           <span className="q-profilo__dati">
             <span className="q-profilo__nome">{player.name}</span>
-            <span className="q-profilo__liv">Livello {player.level}</span>
-          </span>
-        </span>
-        <span className="q-profilo__xp">
-          <span className="q-xp" style={{ '--xp': `${percent}%` } as CSSProperties}>
-            <span
-              className="q-xp__bar"
-              role="progressbar"
-              aria-label={`Esperienza verso il livello ${player.level + 1}`}
-              aria-valuenow={percent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <span className="q-xp__segno" />
-            </span>
-          </span>
-          <span className="q-xp__dati">
-            <span>
-              <b>{player.xp.toLocaleString('it-IT')}</b> / {player.xpNext.toLocaleString('it-IT')} XP
-            </span>
-            <span>Liv. {player.level + 1}</span>
+            <span className="q-profilo__liv q-profilo__liv--vuoto">Livelli in arrivo</span>
           </span>
         </span>
       </span>

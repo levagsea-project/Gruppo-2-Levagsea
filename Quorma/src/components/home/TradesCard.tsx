@@ -1,12 +1,12 @@
-import InfoCard from './InfoCard'
-import OutlineButton from '../ui/OutlineButton'
+import InfoCard, { CardButton } from './InfoCard'
 
+// Gli scambi non esistono ancora nel backend: la card spiega cosa saranno, senza numeri inventati.
+// Quando arriveranno, meta e frase in evidenza mostreranno le proposte vere (metaTone="ember" se ce ne sono).
 export default function TradesCard() {
   return (
-    <InfoCard icon="⇄" title="SCAMBI" meta="3 IN ATTESA">
-      <h3>3 proposte ricevute</h3>
-      <p>Scambia i doppioni con altri giocatori e completa la tua collezione.</p>
-      <OutlineButton>VAI AGLI SCAMBI</OutlineButton>
+    <InfoCard seed="vincolo" title="Scambi" meta="In arrivo" lead="Scambi tra giocatori">
+      <p className="info-card-body">Potrai scambiare i doppioni con altri giocatori e completare la tua collezione.</p>
+      <CardButton>Vai agli scambi</CardButton>
     </InfoCard>
   )
 }

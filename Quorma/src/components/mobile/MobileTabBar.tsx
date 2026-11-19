@@ -5,12 +5,14 @@ import Arch from './Arch'
 type Tab = { label: string; icon: NavIconName | 'altro'; page?: Page; alert?: string; section: Page[] }
 
 // Le 5 schede in basso. "section" = le pagine in cui la scheda resta accesa.
+// Senza page la sezione non esiste ancora: scheda attenuata e non cliccabile.
+// alert = braci arancioni, solo per novità vere (oggi nessuna: il backend non le fornisce ancora).
 const TABS: Tab[] = [
   { label: 'Home', icon: 'home', page: 'home', section: ['home'] },
   { label: 'Gioca', icon: 'gioca', page: 'gioca', section: ['gioca'] },
-  { label: 'Collezione', icon: 'collezione', alert: 'buste da aprire', section: [] },
+  { label: 'Collezione', icon: 'collezione', section: [] },
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi', section: ['mazzi', 'nuovo-mazzo'] },
-  { label: 'Altro', icon: 'altro', page: 'altro', alert: 'nuove proposte di scambio', section: ['altro', 'regole'] },
+  { label: 'Altro', icon: 'altro', page: 'altro', section: ['altro', 'regole'] },
 ]
 
 // Icona "Altro": tre righe.
@@ -30,6 +32,23 @@ export default function MobileTabBar({ current, onNavigate }: { current: Page; o
     <nav className="mb-tab" aria-label="Navigazione principale">
       {TABS.map((t) => {
         const active = t.section.includes(current)
+        const icon = (
+          <Arch active={active} alert={!!t.alert}>
+            {t.icon === 'altro' ? <MenuIcon /> : <NavIcon name={t.icon} />}
+          </Arch>
+        )
+
+        if (!t.page) {
+          return (
+            <a key={t.label} className="q-navata__item" role="link" aria-disabled="true">
+              {icon}
+              {t.label}
+              <span className="sr-only">, in arrivo</span>
+            </a>
+          )
+        }
+
+        const page = t.page
         return (
           <a
             key={t.label}
@@ -39,12 +58,10 @@ export default function MobileTabBar({ current, onNavigate }: { current: Page; o
             aria-label={t.alert ? `${t.label}, ${t.alert}` : undefined}
             onClick={(e) => {
               e.preventDefault()
-              if (t.page) onNavigate(t.page)
+              onNavigate(page)
             }}
           >
-            <Arch active={active} alert={!!t.alert}>
-              {t.icon === 'altro' ? <MenuIcon /> : <NavIcon name={t.icon} />}
-            </Arch>
+            {icon}
             {t.label}
           </a>
         )

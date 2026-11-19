@@ -119,3 +119,15 @@
   .q-scintilla,.q-navata__item[aria-current="page"] .q-ogiva-wrap,.q-focolare__base,.q-focolare__lingua,.q-focolare__favilla,.q-ogiva-wrap.q-braci{animation:none}
   .q-scintilla,.q-focolare__lingua,.q-focolare__favilla{display:none}
 }
+
+/* Sezione "in arrivo": la voce c'è ma non porta ancora da nessuna parte (niente evidenziazione al passaggio) */
+.q-navata__item--presto{cursor:default;opacity:.5}
+.q-navata__item--presto:hover{color:var(--steel-300)}
+.q-navata__item--presto:hover .q-ogiva{background:linear-gradient(160deg,rgba(213,225,229,.45),rgba(124,144,152,.25) 50%,rgba(168,196,200,.4))}
+.q-navata__item--presto:hover .q-navata__ico{color:#9DB2BA}
+
+/* Nome del giocatore: fino a 32 caratteri, si taglia con i puntini invece di allargare la barra */
+.q-profilo__testa,.q-profilo__dati{min-width:0}
+.q-profilo__nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-profilo__liv--vuoto{color:var(--steel-300);letter-spacing:.12em}
+.q-profilo__liv--vuoto::before{background:var(--steel-500);box-shadow:none}
