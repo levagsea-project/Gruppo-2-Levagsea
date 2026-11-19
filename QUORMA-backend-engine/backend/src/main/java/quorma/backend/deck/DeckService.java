@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import quorma.backend.catalogue.ActiveSnapshotService;
+import quorma.backend.catalogue.PreferredLocales;
 import quorma.backend.catalogue.Faction;
 import quorma.backend.common.ErrorCodes;
 
@@ -51,24 +52,36 @@ public class DeckService {
     /** One deck of the owner with its cards; 404 if it does not exist or belongs to someone else. */
     @Transactional(readOnly = true)
     public DeckResponse get(UUID ownerId, UUID deckId) {
+        return get(ownerId, deckId, PreferredLocales.DEFAULT);
+    }
+
+    /** Same, with the card text in the languages asked for (Italian as the fallback). */
+    @Transactional(readOnly = true)
+    public DeckResponse get(UUID ownerId, UUID deckId, PreferredLocales locales) {
         Deck deck = find(ownerId, deckId);
         List<UUID> instanceIds = deckCards.findByDeckId(deckId).stream()
                 .map(dc -> dc.getId().cardInstanceId())
                 .toList();
         List<DeckCardResponse> views = loader.load(ownerId, deck.getFaction(), deck.getSnapshotId(), instanceIds,
-                new ArrayList<>());
+                new ArrayList<>(), locales);
         return toResponse(deck, views);
     }
 
     /** Creates a deck; 409 if the owner already has a deck with that name. */
     @Transactional
     public DeckResponse create(UUID ownerId, DeckRequest req) {
+        return create(ownerId, req, PreferredLocales.DEFAULT);
+    }
+
+    /** Same, with the card text in the languages asked for. */
+    @Transactional
+    public DeckResponse create(UUID ownerId, DeckRequest req, PreferredLocales locales) {
         String name = req.name().strip();
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, new UUID(0, 0))) {
             throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_NAME_TAKEN);
         }
         String faction = req.faction();
-        List<DeckCardResponse> views = validate(ownerId, faction, req.snapshotId(), req.cardInstanceIds());
+        List<DeckCardResponse> views = validate(ownerId, faction, req.snapshotId(), req.cardInstanceIds(), locales);
 
         Deck deck = new Deck(ownerId, name, faction, req.snapshotId(), Instant.now());
         deck.setOutdated(!isLatest(faction, req.snapshotId()));
@@ -80,12 +93,18 @@ public class DeckService {
     /** Replaces name, snapshot and cards of a deck (the faction never changes); same checks as {@link #create}. */
     @Transactional
     public DeckResponse update(UUID ownerId, UUID deckId, DeckUpdateRequest req) {
+        return update(ownerId, deckId, req, PreferredLocales.DEFAULT);
+    }
+
+    /** Same, with the card text in the languages asked for. */
+    @Transactional
+    public DeckResponse update(UUID ownerId, UUID deckId, DeckUpdateRequest req, PreferredLocales locales) {
         Deck deck = find(ownerId, deckId);
         String name = req.name().strip();
         if (decks.existsByOwnerIdAndNameAndIdNot(ownerId, name, deckId)) {
             throw new DeckException(HttpStatus.CONFLICT, ErrorCodes.DECK_NAME_TAKEN);
         }
-        List<DeckCardResponse> views = validate(ownerId, deck.getFaction(), req.snapshotId(), req.cardInstanceIds());
+        List<DeckCardResponse> views = validate(ownerId, deck.getFaction(), req.snapshotId(), req.cardInstanceIds(), locales);
 
         deckCards.deleteByDeckId(deckId);
         // The bulk delete clears the persistence context, so reload the deck before updating it.
@@ -116,6 +135,12 @@ public class DeckService {
      */
     @Transactional
     public DeckResponse setDefense(UUID ownerId, UUID deckId) {
+        return setDefense(ownerId, deckId, PreferredLocales.DEFAULT);
+    }
+
+    /** Same, with the card text in the languages asked for. */
+    @Transactional
+    public DeckResponse setDefense(UUID ownerId, UUID deckId, PreferredLocales locales) {
         Deck deck = find(ownerId, deckId);
         eligibility.requireSelectable(deck);
         if (!deck.isDefense()) {
@@ -128,7 +153,7 @@ public class DeckService {
             deck.setDefense(true);
             save(deck);
         }
-        return get(ownerId, deckId);
+        return get(ownerId, deckId, locales);
     }
 
     /** Outdated means illegal on the active snapshot; a deck saved on another snapshot is flagged until it is moved. */
@@ -137,9 +162,10 @@ public class DeckService {
     }
 
     /** Runs {@link #load} then {@link DeckValidator}; throws 400 listing every broken rule. */
-    private List<DeckCardResponse> validate(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds) {
+    private List<DeckCardResponse> validate(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds,
+                                            PreferredLocales locales) {
         List<DeckError> errors = new ArrayList<>();
-        List<DeckCardResponse> views = loader.load(ownerId, faction, snapshotId, instanceIds, errors);
+        List<DeckCardResponse> views = loader.load(ownerId, faction, snapshotId, instanceIds, errors, locales);
         errors.addAll(validator.validate(Faction.valueOf(faction), views));
         if (!errors.isEmpty()) {
             throw new DeckException(HttpStatus.BAD_REQUEST, ErrorCodes.DECK_INVALID, errors);

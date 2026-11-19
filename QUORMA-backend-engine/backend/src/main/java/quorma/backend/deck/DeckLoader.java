@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardRepository;
-import quorma.backend.catalogue.CardTextService;
+import quorma.backend.catalogue.CardPresenter;
+import quorma.backend.catalogue.PreferredLocales;
 import quorma.backend.catalogue.PoolSnapshotRepository;
 import quorma.backend.collection.CardInstance;
 import quorma.backend.collection.CardInstanceRepository;
@@ -31,25 +32,26 @@ class DeckLoader {
     private final CardRepository cards;
     private final CardDefinitionRepository definitions;
     private final PoolSnapshotRepository snapshots;
-    private final CardTextService cardTexts;
+    private final CardPresenter presenter;
 
     DeckLoader(CardInstanceRepository instances, CardRepository cards, CardDefinitionRepository definitions,
-               PoolSnapshotRepository snapshots, CardTextService cardTexts) {
+               PoolSnapshotRepository snapshots, CardPresenter presenter) {
         this.instances = instances;
         this.cards = cards;
         this.definitions = definitions;
         this.snapshots = snapshots;
-        this.cardTexts = cardTexts;
+        this.presenter = presenter;
     }
 
     /**
      * Joins instances, cards and snapshot definitions into views, adding a message to {@code errors} per problem:
      * repeated instance id, unknown snapshot or snapshot of another faction, instance missing or not owned (one
      * message for both, so other players' ids cannot be probed), card of another faction, card absent from the
-     * snapshot.
+     * snapshot. {@code locales} is the language of the text fields, Italian as the fallback; null skips the text (a
+     * migration needs only the rules, so it does not pay for the extra queries).
      */
     List<DeckCardResponse> load(UUID ownerId, String faction, UUID snapshotId, List<UUID> instanceIds,
-                                List<DeckError> errors) {
+                                List<DeckError> errors, PreferredLocales locales) {
         // repeated instance ids (order of the request is kept)
         Set<UUID> unique = new LinkedHashSet<>();
         Set<UUID> reported = new HashSet<>();
@@ -88,8 +90,8 @@ class DeckLoader {
                     .forEach(d -> defMap.put(d.getCardId(), d));
         }
 
-        // names: card text, outside the snapshot (Italian until the card API takes a language)
-        Map<UUID, String> names = cardTexts.names(cardIds, CardTextService.FALLBACK_LOCALE);
+        // name, flavour and sets: card text and commercial data, outside the snapshot
+        Map<UUID, CardPresenter.CardFace> faces = locales == null ? Map.of() : presenter.faces(cardIds, locales);
 
         List<DeckCardResponse> result = new ArrayList<>();
         for (UUID id : unique) {
@@ -112,8 +114,11 @@ class DeckLoader {
                 }
                 continue;
             }
+            CardPresenter.CardFace face = faces.get(card.getId());
             result.add(new DeckCardResponse(inst.getId(), card.getId(), card.getCardCode(), card.getKind().name(),
-                    names.get(card.getId()), card.getSubfaction() == null ? null : card.getSubfaction().name(),
+                    face == null ? null : face.name(), face == null ? null : face.flavour(),
+                    face == null ? null : face.textLocale(), face == null ? List.of() : face.sets(),
+                    card.getSubfaction() == null ? null : card.getSubfaction().name(),
                     card.getSuit(), card.getRank(), def.getAtk(), def.getDef(), def.getAbilities(), card.getDeckSlot()));
         }
         return result;

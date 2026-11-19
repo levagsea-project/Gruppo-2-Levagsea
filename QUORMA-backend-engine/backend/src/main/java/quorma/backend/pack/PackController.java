@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import quorma.backend.catalogue.PreferredLocales;
 
 @RestController
 @RequestMapping("/packs")
@@ -51,7 +52,8 @@ public class PackController {
                                  @Parameter(description = "A UUID made by the client, new for every purchase and "
                                          + "repeated on every retry of that purchase")
                                  @RequestHeader("Idempotency-Key") UUID idempotencyKey,
-                                 @Valid @RequestBody PackOpenRequest request) {
-        return packs.open(UUID.fromString(jwt.getSubject()), idempotencyKey, request);
+                                 @Valid @RequestBody PackOpenRequest request,
+                                 @Parameter(description = "Language of the card text (name, flavour, set names): the first language in the list that a card has, Italian as the fallback. The response says which language each text is in (`textLocale`).") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return packs.open(UUID.fromString(jwt.getSubject()), idempotencyKey, request, PreferredLocales.parse(acceptLanguage));
     }
 }

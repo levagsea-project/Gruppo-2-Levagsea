@@ -105,7 +105,7 @@ public class DeckMigrator {
         }
         List<UUID> instanceIds = deckCards.findByDeckId(deckId).stream().map(dc -> dc.getId().cardInstanceId()).toList();
         List<DeckError> errors = new ArrayList<>();
-        List<DeckCardResponse> views = loader.load(deck.getOwnerId(), deck.getFaction(), activeId, instanceIds, errors);
+        List<DeckCardResponse> views = loader.load(deck.getOwnerId(), deck.getFaction(), activeId, instanceIds, errors, null);
         errors.addAll(validator.validate(Faction.valueOf(deck.getFaction()), views));
         if (errors.isEmpty()) {
             deckCards.deleteByDeckId(deckId);

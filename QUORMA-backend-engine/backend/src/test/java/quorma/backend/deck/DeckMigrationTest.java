@@ -155,7 +155,7 @@ class DeckMigrationTest extends IntegrationTest {
     void aFailureDuringMigrationNeverBlocksTheLogin() {
         publishChange();
         UUID deck = createResDeck("Vecchio", s1);
-        doThrow(new IllegalStateException("boom")).when(loader).load(any(), any(), any(), any(), any());
+        doThrow(new IllegalStateException("boom")).when(loader).load(any(), any(), any(), any(), any(), any());
 
         var response = auth.login(new LoginRequest("giocatore", "password123"));
 

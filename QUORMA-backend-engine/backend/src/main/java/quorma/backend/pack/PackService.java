@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import quorma.backend.catalogue.ActiveSnapshotService;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardKind;
+import quorma.backend.catalogue.PreferredLocales;
 import quorma.backend.catalogue.CardRepository;
 import quorma.backend.collection.CardInstance;
 import quorma.backend.collection.CardInstanceRepository;
@@ -80,7 +81,7 @@ public class PackService {
      * Buys and opens one pack of the given type and faction.
      */
     @Transactional
-    public PackOpenResponse open(UUID userId, UUID idempotencyKey, PackOpenRequest req) {
+    public PackOpenResponse open(UUID userId, UUID idempotencyKey, PackOpenRequest req, PreferredLocales locales) {
         // 1. Pack type.
         PackType type = props.types().get(req.packType());
         if (type == null) {
@@ -105,7 +106,7 @@ public class PackService {
                 throw new PackException(HttpStatus.UNPROCESSABLE_CONTENT, ErrorCodes.PACK_IDEMPOTENCY_KEY_REUSED);
             }
             // Whoever owns them now: the cards of the pack are returned even if they were traded since.
-            return response(opening, instances.findByOriginRef(opening.getId()));
+            return response(opening, instances.findByOriginRef(opening.getId()), locales);
         }
 
         // 4. Balance.
@@ -150,11 +151,11 @@ public class PackService {
 
         // 9. Response. Flush so a constraint violation surfaces here, inside the transaction.
         instances.flush();
-        return response(opening, created);
+        return response(opening, created, locales);
     }
 
-    private PackOpenResponse response(PackOpening opening, List<CardInstance> packCards) {
+    private PackOpenResponse response(PackOpening opening, List<CardInstance> packCards, PreferredLocales locales) {
         return new PackOpenResponse(opening.getId(), opening.getPackType(), opening.getSnapshotId(),
-                opening.getPrice(), opening.getCreditsAfter(), collection.toViews(packCards));
+                opening.getPrice(), opening.getCreditsAfter(), collection.toViews(packCards, locales));
     }
 }

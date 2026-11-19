@@ -15,7 +15,8 @@ import quorma.backend.catalogue.Card;
 import quorma.backend.catalogue.CardDefinition;
 import quorma.backend.catalogue.CardDefinitionRepository;
 import quorma.backend.catalogue.CardRepository;
-import quorma.backend.catalogue.CardTextService;
+import quorma.backend.catalogue.CardPresenter;
+import quorma.backend.catalogue.PreferredLocales;
 import quorma.backend.catalogue.Faction;
 
 /** Read side of the collection. */
@@ -26,22 +27,22 @@ public class CollectionService {
     private final CardRepository cards;
     private final CardDefinitionRepository definitions;
     private final ActiveSnapshotService activeSnapshots;
-    private final CardTextService cardTexts;
+    private final CardPresenter presenter;
 
     public CollectionService(CardInstanceRepository instances, CardRepository cards,
                              CardDefinitionRepository definitions, ActiveSnapshotService activeSnapshots,
-                             CardTextService cardTexts) {
+                             CardPresenter presenter) {
         this.instances = instances;
         this.cards = cards;
         this.definitions = definitions;
         this.activeSnapshots = activeSnapshots;
-        this.cardTexts = cardTexts;
+        this.presenter = presenter;
     }
 
     /** Every instance owned by the user, newest first, with card data from the active snapshot of each faction. */
     @Transactional(readOnly = true)
-    public CollectionResponse get(UUID ownerId) {
-        Resolved resolved = resolve(instances.findByOwnerIdOrderByAcquiredAtDesc(ownerId));
+    public CollectionResponse get(UUID ownerId, PreferredLocales locales) {
+        Resolved resolved = resolve(instances.findByOwnerIdOrderByAcquiredAtDesc(ownerId), locales);
         return new CollectionResponse(resolved.snapshotIds(), resolved.views());
     }
 
@@ -52,15 +53,15 @@ public class CollectionService {
      * newer pool drops it) still appears, with its name but null stats and abilities.
      */
     @Transactional(readOnly = true)
-    public List<CollectionCardResponse> toViews(List<CardInstance> owned) {
-        return resolve(owned).views();
+    public List<CollectionCardResponse> toViews(List<CardInstance> owned, PreferredLocales locales) {
+        return resolve(owned, locales).views();
     }
 
     /** The views, in the order of {@code owned}, and the snapshots used to build them. */
     private record Resolved(List<UUID> snapshotIds, List<CollectionCardResponse> views) {
     }
 
-    private Resolved resolve(List<CardInstance> owned) {
+    private Resolved resolve(List<CardInstance> owned, PreferredLocales locales) {
         if (owned.isEmpty()) {
             return new Resolved(List.of(), List.of());
         }
@@ -87,8 +88,9 @@ public class CollectionService {
                     }
                 }));
 
-        // Names are card text, outside the snapshot: a card has one even when its faction's active snapshot lacks it.
-        Map<UUID, String> names = cardTexts.names(cardIds, CardTextService.FALLBACK_LOCALE);
+        // Name, flavour and sets are card text and commercial data, outside the snapshot: a card has them even when its
+        // faction's active snapshot lacks it. They follow the language asked for, Italian as the fallback.
+        Map<UUID, CardPresenter.CardFace> faces = presenter.faces(cardIds, locales);
 
         List<CollectionCardResponse> views = new ArrayList<>(owned.size());
         for (CardInstance instance : owned) {
@@ -98,20 +100,24 @@ public class CollectionService {
                 throw new IllegalStateException("card " + instance.getCardId() + " of instance " + instance.getId()
                         + " not found");
             }
-            views.add(toView(instance, card, names.get(card.getId()), definitionByCardId.get(card.getId())));
+            views.add(toView(instance, card, faces.get(card.getId()), definitionByCardId.get(card.getId())));
         }
         return new Resolved(List.copyOf(snapshotIds), views);
     }
 
-    /** {@code definition} is null when the card is not in the active snapshot of its faction; {@code name} is card text and always present. */
-    private static CollectionCardResponse toView(CardInstance instance, Card card, String name, CardDefinition definition) {
+    /** {@code definition} is null when the card is not in the active snapshot of its faction; the card text ({@code face}) is always present. */
+    private static CollectionCardResponse toView(CardInstance instance, Card card, CardPresenter.CardFace face,
+                                                 CardDefinition definition) {
         return new CollectionCardResponse(
                 instance.getId(),
                 card.getId(),
                 card.getCardCode(),
                 card.getFaction(),
                 card.getKind().name(),
-                name,
+                face.name(),
+                face.flavour(),
+                face.textLocale(),
+                face.sets(),
                 card.getSubfaction() == null ? null : card.getSubfaction().name(),
                 card.getSuit(),
                 card.getRank(),

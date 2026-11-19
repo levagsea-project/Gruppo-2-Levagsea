@@ -51,7 +51,7 @@ All requests use JWT. Critical operations (buying packs, accepting trades) are a
 - `/admin/catalogue/**`: **admins only**, the catalogue admin API (draft, preview, publish, batch import and export, drift, direct edits of texts, set status and membership, pack types). Described in "Publishing the catalogue" below and in `docs/plans/cards-into-game-api-changes.md`.
 - `GET /packs`: the pack types on sale.
 - `POST /packs/open`: locks the user row (`SELECT ... FOR UPDATE`), charges credits, creates the card instances. Needs an `Idempotency-Key` header (a UUID): the same key returns the same pack and charges once.
-- `GET /collection`: the owned card instances.
+- `GET /collection`: the owned card instances. Every endpoint that returns cards (`/collection`, `/packs/open`, the deck endpoints that return a deck) takes an optional `Accept-Language` header (`PreferredLocales`): the card text (`name`, `flavour`, the names in `sets`) comes in the first language of the list that the card has, per card, Italian as the fallback and never an error; `textLocale` says which language a card's text is in. Each card carries `sets` (`{code, name}`); the params of an ability are inside `abilities`. `CardPresenter` builds this from card text and set data (four queries for any number of cards); the deck migration passes no language and loads no text.
 - `POST /challenges`: locks the deck snapshot.
 - `POST /challenges/{id}/accept`: generates the seed, calls the engine, stores the recipe.
 - `GET /matches/{id}/replay`: returns the rebuilt log.
