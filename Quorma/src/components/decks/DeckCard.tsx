@@ -17,7 +17,7 @@ export default function DeckCard({ deck, selected, onSelect }: Props) {
         <span className="q-mazzo__strato" aria-hidden="true" />
         <span className={`q-tela q-tela--arco q-carta ${selected ? 'q-acceso' : ''}`}>
           <span className="q-tela__in">
-            <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.image})` } as CSSProperties} />
+            <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus } as CSSProperties} />
             <span className="q-divisorio" />
             <span className="q-carta__targa">
               <span className="q-carta__nome">{deck.name}</span>

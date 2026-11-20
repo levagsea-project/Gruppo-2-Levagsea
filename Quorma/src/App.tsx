@@ -143,7 +143,17 @@ export default function App() {
         />
       )}
 
-      {page === 'gioca' && <PlayPage decks={decks} playStatus={playStatus} onNavigate={open} />}
+      {page === 'gioca' && (
+        <PlayPage
+          decks={decks}
+          playStatus={playStatus}
+          onNavigate={open}
+          onDecksChanged={() => {
+            reloadDecks()
+            reloadPlayStatus()
+          }}
+        />
+      )}
 
       {page === 'regole' && <RulesPage />}
 

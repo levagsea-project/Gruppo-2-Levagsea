@@ -65,7 +65,7 @@ export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNo
       {/* Riprendi a giocare: il mazzo scelto, oppure l'invito a crearne uno */}
       <section className="q-tela q-tela--arco q-carta q-acceso" style={{ '--arte-h': '190px' } as CSSProperties} aria-labelledby="h-gioca" aria-busy={decksState === 'loading'}>
         <div className="q-tela__in">
-          <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.image})` }} />
+          <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
           <span className="q-divisorio" />
           <div className="mbh-gioca">
             <div className="mbh-mazzo" aria-live="polite">

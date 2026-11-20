@@ -9,7 +9,16 @@ export default function FactionCard({ faction, selected, onSelect }: Props) {
   return (
     <button className={`faction-card ${selected ? 'is-selected' : ''}`} onClick={onSelect}>
       <span className="deck-diamond" />
-      <img className="faction-img" src={faction.image} alt="" />
+      {/* illustrazione grande della fazione (1024×427), ritagliata sul soggetto come nella pagina Gioca */}
+      <img
+        className="faction-img"
+        src={faction.cover}
+        alt=""
+        width={1024}
+        height={427}
+        decoding="async"
+        style={{ objectPosition: faction.coverFocus }}
+      />
       <span className="faction-body">
         <span className="faction-name">{faction.name.toUpperCase()}</span>
         <span className="faction-stats">

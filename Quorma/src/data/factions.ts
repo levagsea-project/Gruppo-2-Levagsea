@@ -4,7 +4,8 @@ import type { FactionId } from '../types/deck'
 export type Faction = {
   id: FactionId
   name: string
-  image: string // cartella public/factions
+  cover: string // illustrazione della fazione (1024×427): copertine dei mazzi, Nuovo mazzo, home su telefono
+  coverFocus: string // dove sta il soggetto, per il ritaglio (background-position / object-position)
   cards: string
   creatures: string
   spells: string
@@ -15,7 +16,8 @@ export const factions: Record<FactionId, Faction> = {
   umani: {
     id: 'umani',
     name: 'Resistenza Umana',
-    image: '/factions/umani.jpg',
+    cover: '/images/sfondi/fazione-umana.webp',
+    coverFocus: '50% 70%', // il falò e i sopravvissuti con le torce
     cards: '32',
     creatures: '20–23',
     spells: '9–12',
@@ -29,7 +31,8 @@ export const factions: Record<FactionId, Faction> = {
   artificiali: {
     id: 'artificiali',
     name: 'Potenze Artificiali',
-    image: '/factions/artificiali.jpg',
+    cover: '/images/sfondi/fazione-ia.webp',
+    coverFocus: '80% 30%', // il costrutto più vicino, con gli occhi ciano
     cards: '32',
     creatures: '24–27',
     spells: '5–8',

@@ -154,8 +154,29 @@ button.mb-avatar { padding: 0; border: 0; background: none; cursor: pointer; }
 /* ---------- avatar con immagine (Profilo e Modifica profilo) ---------- */
 .pf-avatar { display: block; padding: 0; font-size: 0; background: #0C171C; }
 .pf-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.pf-sim { margin-left: 10px; font-style: normal; letter-spacing: .14em; color: var(--petrol-300); }
 .pf-nohands { margin: 0 0 26px; }
+.pf-nota-mani { margin: -14px 0 24px; font-size: 12px; color: var(--steel-300); }
+
+/* ---------- Storico dal backend: avvisi, serie, partite ---------- */
+.pf-avviso { margin: 0; font-size: 13px; line-height: 1.5; color: var(--steel-300); }
+.pf-avviso--errore { color: #E8B49A; }
+.pf-avviso button, .pf-link-btn { padding: 0; border: 0; background: none; cursor: pointer; font: inherit; font-weight: 600; color: var(--petrol-300);
+  text-decoration: underline; text-underline-offset: 3px; }
+/* esito della serie con il punteggio accanto: VITTORIA 2–1 */
+.pf-detail-esito { display: flex; align-items: baseline; gap: 12px; }
+.pf-punteggio { font-family: var(--font-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; color: #EEF4F5; }
+/* una scheda per partita, con il suo esito sotto */
+.pf-partite { margin: 14px 0 10px; }
+.pf-partita { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; min-height: 44px; padding: 6px 12px; line-height: 1.2; }
+.pf-partita small { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+.pf-partita small.is-vittoria { color: var(--petrol-300); }
+.pf-partita[aria-pressed="true"] small { color: var(--ground-950); opacity: .75; }
+.pf-partita-fazioni { margin: 0; font-size: 13px; color: var(--silver-100); }
+.pf-partita-fazioni span { color: var(--steel-300); }
+.pf-partita-fazioni em { font-style: normal; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+/* turni non ancora letti: lo stesso spazio della tabella, così il pannello non salta quando arrivano */
+.pf-turns--vuoto { display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center; }
+.pf-detail .q-btn[disabled] { cursor: not-allowed; opacity: .55; }
 
 /* ---------- Modifica profilo ---------- */
 .pe-body { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; }

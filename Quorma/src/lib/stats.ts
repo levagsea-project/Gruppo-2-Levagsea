@@ -1,15 +1,19 @@
-import type { Match, Overview } from '../data/profile'
+import type { Overview, Series } from '../data/profile'
 import { handOrder } from '../data/profile'
+import type { FactionId } from '../types/deck'
 
-// Dalle partite alle statistiche del profilo. Si ricalcola ogni volta: niente numeri salvati che si scollegano.
-export function computeOverview(matches: Match[]): Overview {
-  const count = (r: Match['result']) => matches.filter((m) => m.result === r).length
+// Dallo storico alle statistiche del profilo. Si ricalcola ogni volta: niente numeri salvati che si scollegano.
+// Quando il backend avrà le statistiche del giocatore (previste, non ancora fatte), si cambia solo questo file.
+export function computeOverview(series: Series[]): Overview {
+  const count = (r: Series['result']) => series.filter((s) => s.result === r).length
+  const games = series.flatMap((s) => s.games)
 
-  // Quante volte hai fatto ogni mano, su tutti i turni di tutte le partite.
+  // Mani: solo dalle partite di cui conosciamo il log (giocate da qui o già aperte nel dettaglio).
+  const detailed = games.filter((g) => g.detail)
   const handCounts = new Map<string, number>()
   let turns = 0
-  for (const m of matches) {
-    for (const [mine] of m.turnHands) {
+  for (const g of detailed) {
+    for (const [mine] of g.detail!.turnHands) {
       handCounts.set(mine, (handCounts.get(mine) ?? 0) + 1)
       turns++
     }
@@ -23,20 +27,28 @@ export function computeOverview(matches: Match[]): Overview {
   const strongest = [...handCounts.keys()].sort((a, b) => handOrder.indexOf(b) - handOrder.indexOf(a))[0]
   const bestHand = strongest ? { name: strongest, times: handCounts.get(strongest) ?? 0 } : null
 
-  // Fazione più giocata e il mazzo che usi di più con quella fazione.
-  let faction: Overview['faction'] = null
-  if (matches.length) {
-    const byFaction = new Map<string, number>()
-    for (const m of matches) byFaction.set(m.myFaction, (byFaction.get(m.myFaction) ?? 0) + 1)
-    const [id, n] = [...byFaction.entries()].sort((a, b) => b[1] - a[1])[0]
-    const byDeck = new Map<string, number>()
-    for (const m of matches.filter((m) => m.myFaction === id)) byDeck.set(m.deck, (byDeck.get(m.deck) ?? 0) + 1)
-    faction = {
-      id: id as Match['myFaction'],
-      percent: Math.round((n / matches.length) * 100),
-      deck: [...byDeck.entries()].sort((a, b) => b[1] - a[1])[0][0],
-    }
+  // Fazione con cui vinco di più. In una serie le fazioni si scambiano, quindi "la più giocata" sarebbe sempre
+  // circa metà e metà: conta la percentuale di partite vinte con ciascuna (a parità, quella con più partite).
+  const byFaction = new Map<FactionId, { played: number; won: number }>()
+  for (const g of games) {
+    const f = byFaction.get(g.myFaction) ?? { played: 0, won: 0 }
+    f.played++
+    if (g.result === 'vittoria') f.won++
+    byFaction.set(g.myFaction, f)
   }
+  const ranked = [...byFaction.entries()].sort(([, a], [, b]) => b.won / b.played - a.won / a.played || b.played - a.played)
+  const faction = ranked.length
+    ? { id: ranked[0][0], percent: Math.round((ranked[0][1].won / ranked[0][1].played) * 100), games: ranked[0][1].played }
+    : null
 
-  return { total: matches.length, wins: count('vittoria'), losses: count('sconfitta'), draws: count('pareggio'), hands, bestHand, faction }
+  return {
+    total: series.length,
+    wins: count('vittoria'),
+    losses: count('sconfitta'),
+    draws: count('pareggio'),
+    detailed: detailed.length,
+    hands,
+    bestHand,
+    faction,
+  }
 }

@@ -88,7 +88,7 @@ export default function DeckSavedPage({ deckId, saved, onPlay, onEdit, onBack, o
             <span className="q-mazzo__strato" aria-hidden="true" />
             <span className="q-tela q-tela--arco q-carta q-acceso" style={{ '--arte-h': '300px' } as CSSProperties}>
               <span className="q-tela__in">
-                <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.image})` }} />
+                <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
                 <span className="q-divisorio" />
                 <span className="q-carta__targa saved-carta__targa">
                   <span className="q-carta__nome">{deck.name}</span>

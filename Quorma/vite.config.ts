@@ -2,12 +2,12 @@ import path from 'node:path'
 import { reactRouter } from '@react-router/dev/vite'
 import { defineConfig, loadEnv, type ProxyOptions } from 'vite'
 
-// Le chiamate al backend (docker compose, porta 8080) passano da qui: /auth/*, /decks/* e /collection.
+// Le chiamate al backend (docker compose, porta 8080) passano da qui.
 // Il backend ha il CORS, ma ammette solo le origini di cors.allowed-origins (di default la porta 5173).
 // Togliendo Origin la richiesta diventa "stesso sito" e funziona su qualsiasi porta, anche con
 // "npm run preview" (4173). Per chiamare il backend direttamente, senza proxy, imposta VITE_API_URL.
-// Quando il frontend userà altre chiamate (es. /packs) vanno aggiunte a questa lista.
-const BACKEND_PATHS = ['/auth', '/decks', '/collection']
+// Ogni nuovo percorso del backend usato dal frontend va aggiunto a questa lista, altrimenti Vite risponde 404.
+const BACKEND_PATHS = ['/auth', '/decks', '/collection', '/matchmaking', '/matches', '/challenges', '/rooms', '/packs']
 
 function backendProxy(backend: string): Record<string, ProxyOptions> {
   const options: ProxyOptions = {
