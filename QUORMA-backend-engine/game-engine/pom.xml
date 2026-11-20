@@ -64,6 +64,7 @@
                 <excludes>
                     <exclude>parked/**</exclude>
                 </excludes>
+                <!-- only the top-level rule files: the set files in data/sets/ are catalogue content, not rules the engine runs -->
                 <targetPath>ruleset</targetPath>
                 <filtering>false</filtering>
             </resource>

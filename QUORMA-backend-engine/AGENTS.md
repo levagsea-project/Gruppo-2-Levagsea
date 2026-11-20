@@ -45,6 +45,9 @@ Game text, card names, lore and faction names are **Italian**, spelled exactly a
 ```
 make validate     # validates all data files; must show 0 errors before any commit touching data/
 make engine-test  # game-engine unit tests (needs Maven + JDK 25)
+make test         # every test of every module (the backend integration tests need Docker running)
+make engine-image # builds the engine image tagged with the engine version (the pom version); the build refuses a wrong tag
+make up           # docker compose up --build, with the engine image tagged with the engine version
 docker compose up --build   # postgres + engine-service + backend
 ```
 

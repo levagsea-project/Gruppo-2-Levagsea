@@ -14,8 +14,6 @@ tags:
 
 # SPIRA
 
-![[Spira.png]]
-
 Evoluzione, adattamento, trasformazione.
 
 - **Resistenza:** cambiamento necessario alla sopravvivenza

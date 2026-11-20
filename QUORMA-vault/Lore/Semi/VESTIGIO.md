@@ -14,8 +14,6 @@ tags:
 
 # VESTIGIO
 
-![[Vestigio.png]]
-
 Memoria, eredità, permanenza: ciò che resta dopo perdita o trasformazione.
 
 - **Resistenza:** testimonianza e continuità culturale

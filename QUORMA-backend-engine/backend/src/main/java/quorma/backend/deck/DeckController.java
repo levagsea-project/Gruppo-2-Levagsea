@@ -1,6 +1,7 @@
 package quorma.backend.deck;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import quorma.backend.catalogue.PreferredLocales;
 
 @RestController
 @RequestMapping("/decks")
@@ -43,8 +46,9 @@ public class DeckController {
     @Operation(summary = "Get one of my decks with its cards")
     @ApiResponse(responseCode = "200", description = "The deck with its cards")
     @ApiResponse(responseCode = "404", description = "Not found, or not mine", content = @Content)
-    public DeckResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
-        return decks.get(userId(jwt), id);
+    public DeckResponse get(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id,
+                            @Parameter(description = "Language of the card text (name, flavour, set names): the first language in the list that a card has, Italian as the fallback. The response says which language each text is in (`textLocale`).") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return decks.get(userId(jwt), id, PreferredLocales.parse(acceptLanguage));
     }
 
     @PostMapping
@@ -53,8 +57,9 @@ public class DeckController {
     @ApiResponse(responseCode = "201", description = "Deck created")
     @ApiResponse(responseCode = "400", description = "Invalid deck (structure, ownership or snapshot)")
     @ApiResponse(responseCode = "409", description = "Deck name already used")
-    public DeckResponse create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody DeckRequest request) {
-        return decks.create(userId(jwt), request);
+    public DeckResponse create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody DeckRequest request,
+                               @Parameter(description = "Language of the card text (name, flavour, set names): the first language in the list that a card has, Italian as the fallback. The response says which language each text is in (`textLocale`).") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return decks.create(userId(jwt), request, PreferredLocales.parse(acceptLanguage));
     }
 
     @PutMapping("/{id}")
@@ -64,8 +69,9 @@ public class DeckController {
     @ApiResponse(responseCode = "404", description = "Not found, or not mine", content = @Content)
     @ApiResponse(responseCode = "409", description = "Deck name already used")
     public DeckResponse update(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id,
-                               @Valid @RequestBody DeckUpdateRequest request) {
-        return decks.update(userId(jwt), id, request);
+                               @Valid @RequestBody DeckUpdateRequest request,
+                               @Parameter(description = "Language of the card text (name, flavour, set names): the first language in the list that a card has, Italian as the fallback. The response says which language each text is in (`textLocale`).") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return decks.update(userId(jwt), id, request, PreferredLocales.parse(acceptLanguage));
     }
 
     @PostMapping("/{id}/defense")
@@ -73,8 +79,9 @@ public class DeckController {
     @ApiResponse(responseCode = "200", description = "The deck, now the defense deck")
     @ApiResponse(responseCode = "404", description = "Not found, or not mine", content = @Content)
     @ApiResponse(responseCode = "409", description = "The deck is outdated. Body `code`: deck.outdated")
-    public DeckResponse setDefense(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
-        return decks.setDefense(userId(jwt), id);
+    public DeckResponse setDefense(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id,
+                                   @Parameter(description = "Language of the card text (name, flavour, set names): the first language in the list that a card has, Italian as the fallback. The response says which language each text is in (`textLocale`).") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return decks.setDefense(userId(jwt), id, PreferredLocales.parse(acceptLanguage));
     }
 
     @GetMapping("/play-status")

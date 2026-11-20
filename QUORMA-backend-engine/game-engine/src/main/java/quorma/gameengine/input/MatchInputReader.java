@@ -39,7 +39,7 @@ public final class MatchInputReader {
     private static final Pattern SHA256 = Pattern.compile("^[0-9a-f]{64}$");
     private static final int MAX_DECK = 64;
 
-    private static final Set<String> ROOT_KEYS = Set.of("schema_version", "seed", "ruleset_version", "ruleset_hash", "players");
+    private static final Set<String> ROOT_KEYS = Set.of("schema_version", "seed", "ruleset_version", "ruleset_hash", "engine_version", "players");
     private static final Set<String> PLAYER_KEYS = Set.of("faction", "pool_snapshot_id", "deck");
     private static final Set<String> CREATURE_KEYS = Set.of("id", "kind", "rank", "suit", "subfaction", "atk", "def", "abilities");
     private static final Set<String> OTHER_CARD_KEYS = Set.of("id", "kind", "faction", "abilities");
@@ -80,6 +80,8 @@ public final class MatchInputReader {
             }
             rulesetHash = Optional.of(hash);
         }
+        Optional<String> engineVersion = m.get("engine_version") == null
+                ? Optional.empty() : Optional.of(string(m, "engine_version", "input", 1, 32));
 
         Value.MapV players = object(m.get("players"), "input.players");
         keys(players, "input.players", Set.of("A", "B"), Set.of("A", "B"));
@@ -87,7 +89,17 @@ public final class MatchInputReader {
         for (Side side : Side.values()) {
             out.put(side, player(object(players.get(side.name()), "players." + side), "players." + side));
         }
-        return new MatchInput((int) schemaVersion, seed, rulesetVersion, rulesetHash, out);
+        return new MatchInput((int) schemaVersion, seed, rulesetVersion, rulesetHash, engineVersion, out);
+    }
+
+    /**
+     * Reads one card the way a deck lists it ({@code players.*.deck[]}), for callers that check cards without a match
+     * (the card pool check). {@code path} starts the message of every problem.
+     *
+     * @throws MatchInputException if the value is not a card the schema accepts
+     */
+    public static Card readCard(Value value, String path) {
+        return card(object(value, path), path);
     }
 
     private static MatchInput.Player player(Value.MapV m, String path) {

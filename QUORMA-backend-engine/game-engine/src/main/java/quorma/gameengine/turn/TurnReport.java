@@ -19,7 +19,7 @@ import quorma.gameengine.model.MatchResult;
  * @param cycle1     Cycle 1 events, stack resolutions included
  * @param cycle2     Cycle 2 events
  * @param refill     Refill events
- * @param closing    End of turn: {@code MatchEnded} if the match ended, else nothing
+ * @param closing    End of turn: its T2 and T26 effects, and {@code MatchEnded} if the match ended
  * @param board      the table at the end of the turn, after Refill
  * @param result     present only if the match ended at the end of this turn
  */

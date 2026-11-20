@@ -271,6 +271,1196 @@
       "cap_class": "capped",
       "cap_reason": "copy_scaling: formazione della mano",
       "cap_risk": "copy_scaling"
+    },
+    "K_LETALE": {
+      "stat_cost_pct": 13,
+      "family": "swingy_removal",
+      "favours": [
+        "high_def",
+        "low_atk"
+      ],
+      "params": {
+        "spill_def_permille": 350
+      },
+      "display": {
+        "spill_def_pct": 35
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "A"
+      ],
+      "max_built_in": 4,
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "swingy",
+      "cap_risk": "swingy"
+    },
+    "K_SOSTEGNO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 9,
+      "family": "atk_from_non_attackers",
+      "favours": [
+        "many_non_attackers",
+        "high_card"
+      ],
+      "params": {
+        "x": 15
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "x_range": [
+        5,
+        30
+      ],
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "solo le creature adiacenti (al massimo 2), solo se non attacca",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "K_PROVOCAZIONE": {
+      "allowed_ranks": [
+        "7",
+        "8"
+      ],
+      "max_built_in": 8,
+      "stat_cost_pct": 5.7,
+      "family": "redirect",
+      "favours": [
+        "high_def",
+        "defensive"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "limited",
+      "cap_reason": "stalli solo con Muro, che resta su un solo rango: due ranghi bastano per il ruolo da specialista",
+      "cap_risk": "stall"
+    },
+    "K_CUSTODE": {
+      "stat_cost_pct": 30,
+      "family": "survival",
+      "favours": [
+        "defensive"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "Q",
+        "K"
+      ],
+      "max_built_in": 8,
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "limited",
+      "cap_reason": "ritarda soltanto la distruzione: la creatura viene distrutta al Rifornimento successivo se e' ancora in corsia",
+      "cap_risk": "swingy"
+    },
+    "K_RIGENERANTE": {
+      "stat_cost_pct": 10.8,
+      "family": "def_restoration",
+      "favours": [
+        "high_def",
+        "defensive"
+      ],
+      "params": {
+        "permille": 100
+      },
+      "display": {
+        "heal_pct_base_def": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "stacking max_with Vestigio 4; la cura non supera la DEF base",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_FLESSIBILE": {
+      "allowed_ranks": [
+        "3"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 2,
+      "family": "hand_forming_rank_step",
+      "favours": [
+        "straight_window"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "copy_scaling: formazione della mano",
+      "cap_risk": "copy_scaling"
+    },
+    "K_PRIMO_COLPO": {
+      "stat_cost_pct": 10,
+      "family": "offense_support",
+      "favours": [
+        "high_atk",
+        "pair_heavy"
+      ],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "J"
+      ],
+      "max_built_in": 4,
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "swingy",
+      "cap_risk": "swingy"
+    },
+    "K_MURO": {
+      "stat_cost_pct": 12,
+      "family": "damage_mitigation",
+      "favours": [
+        "high_def",
+        "defensive"
+      ],
+      "params": {
+        "pct": 30
+      },
+      "display": {
+        "reduction_pct": 30
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "allowed_ranks": [
+        "2"
+      ],
+      "max_built_in": 4,
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "copy_scaling: stalli con Provocazione",
+      "cap_risk": "stall"
+    },
+    "K_LASCITO_DIFESA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -3.2,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20,
+        "pct": 20,
+        "heal_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_NON_RISCRIVIBILE": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 7.0,
+      "family": "base_set",
+      "favours": [],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "param scope: adjacent | self_adjacent. Costo da balance-tuning-1.md."
+    },
+    "K_ACCUMULO": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 11,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 60,
+        "max_stacks": 3
+      },
+      "display": {
+        "bonus_pct": 6,
+        "pct": 6,
+        "heal_pct": 6,
+        "max_stacks": 3
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth",
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_ECO": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 4.5,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 600
+      },
+      "display": {
+        "bonus_pct": 60,
+        "pct": 60,
+        "heal_pct": 60
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "trigger_params T13: source = combattimento Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_SCUDO_COMUNITA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 10.4,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "x": 12
+      },
+      "display": {
+        "pct": 12,
+        "x": 12
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "K_LASCITO_CURA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -1.7,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 300
+      },
+      "display": {
+        "bonus_pct": 30,
+        "pct": 30,
+        "heal_pct": 30
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_CATENA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 2.0,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 300
+      },
+      "display": {
+        "bonus_pct": 30,
+        "pct": 30,
+        "heal_pct": 30
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Assorbe Taglio dei legami e Ricaduta (balance-tuning-1.md). Parametro on: hit | kill (default hit); kill usa la condizione C27.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_CONFORMITA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 1.5,
+      "family": "base_set",
+      "favours": [],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md."
+    },
+    "K_CONTA_COME": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 10,
+      "family": "base_set",
+      "favours": [],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Unifica Sinodo, Quasi uguale e Nome preso: una sola regola, parametro rank, valida solo per i gruppi di rango (non per scale e colori). Costo dimezzato rispetto alle versioni per tutte le mani (27 e 20): provvisorio, da simulare. balance-tuning-1.md propone proprio questa restrizione. Regola di cumulo (report-set-base-1): al massimo una sostituzione per mano (vedi vocab_proposed.extensions.E30); senza limite l'abilita' su ogni creatura vinceva il 97,5%."
+    },
+    "K_ALLONTANA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -3,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 150
+      },
+      "display": {
+        "bonus_pct": 15,
+        "pct": 15,
+        "heal_pct": 15
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Svantaggio: stat_cost negativo = bonus di statistiche."
+    },
+    "K_SCUDO_ADIACENTI": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 11.4,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "x": 12
+      },
+      "display": {
+        "pct": 12,
+        "x": 12
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "K_CONFINE": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 7,
+      "family": "base_set",
+      "favours": [],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency",
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "da definire in simulazione"
+    },
+    "K_ASSIMILA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 10.2,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 120,
+        "max_stacks": 3
+      },
+      "display": {
+        "bonus_pct": 12,
+        "pct": 12,
+        "heal_pct": 12,
+        "max_stacks": 3
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "param scope: allies | any | adjacent (default allies), una espansione per valore via K_PARAM; adjacent usa C28. Tutte condividono stack_key K_ASSIMILA. Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_ULTIMO_GESTO": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -2.9,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 700
+      },
+      "display": {
+        "bonus_pct": 70,
+        "pct": 70,
+        "heal_pct": 70
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_INDURISCE": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 10.1,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20,
+        "pct": 20,
+        "heal_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_CAMPI_VUOTI": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 6,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 60
+      },
+      "display": {
+        "bonus_pct": 6,
+        "pct": 6,
+        "heal_pct": 6
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Riscritta come carburante delle mani strette: carta alta ha 4 non attaccanti, coppia 3. Valore base da 80 a 60 per mille a costo invariato (6): al vecchio valore Tacet +8,8 e Tobia +7,6 (report-set-base-1). Il costo -0.3 di tools/balance-sim/py/tuning_final.json non vale: fa fede questo file. Da tarare nel simulatore Java.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_ISOLA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 11.6,
+      "family": "base_set",
+      "favours": [],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md."
+    },
+    "K_APRI_STRADA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -1.4,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 150
+      },
+      "display": {
+        "bonus_pct": 15,
+        "pct": 15,
+        "heal_pct": 15
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_PORTA_AVANTI": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 7.7,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 300
+      },
+      "display": {
+        "bonus_pct": 30,
+        "pct": 30,
+        "heal_pct": 30
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_SALITA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 7.7,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 150,
+        "cost_permille": 100
+      },
+      "display": {
+        "bonus_pct": 15,
+        "pct": 15,
+        "heal_pct": 15,
+        "cost_pct": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_SLANCIO": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -3.2,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 150,
+        "cost_permille": 100
+      },
+      "display": {
+        "bonus_pct": 15,
+        "pct": 15,
+        "heal_pct": 15,
+        "cost_pct": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency",
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Costo da balance-tuning-1.md.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "K_GUSCIO": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -4,
+      "family": "base_set",
+      "favours": [],
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Il prezzo del guscio (Agnese): protetta da fuori, ma niente cure. Si abbina a Scudo."
     }
   },
   "synergies": {
@@ -331,7 +1521,14 @@
     "ranks.json e' una proposta di lore: Assi, Comandanti e Campioni con nome proprio sono canone nuovo (il dossier tiene aperti 'protagonisti ed episodi'). Va approvata dal team narrativo.",
     "Scala delle statistiche (ipotesi di lavoro per la taratura, nessuna carta esiste ancora): ATK intorno a 4000, DEF 1.5-2.5 volte l'ATK, vita 12000, circa 9 turni a partita. I valori flat delle sinergie sono stati riscalati su questa ipotesi (Vincolo 600/400/1000, Frattura 1200, Spira 200 per Evoluzione, Vestigio 1000 e cura 1400); ricontrollarli quando esistono le carte.",
     "Traboccante si cumula con Frattura 4 e 5 (fattore 1200 x 1200 = 1440, con la DEF all'80% o al 50%). Simulare le build Frattura con Traboccante: se lo spill accorcia le partite sotto i 7 turni, abbassare il fattore di Traboccante invece di renderlo non cumulativo.",
-    "Camaleonte (E55) non conta come altro seme per sinergie e condizioni C4/C11. Confermato dal vocabolario; verificare in simulazione se Camaleonte e' troppo debole per le build un-seme."
+    "Camaleonte (E55) non conta come altro seme per sinergie e condizioni C4/C11. Confermato dal vocabolario; verificare in simulazione se Camaleonte e' troppo debole per le build un-seme.",
+    "Provocazione + Muro può produrre stalli: simulare il tasso di turn limit.",
+    "Letale e Doppio Colpo sono le keyword piu' swingy e condividono il rango A: insieme a Carnefice possono occupare al massimo 4 Assi per mazzo (quattro Letale, quattro Doppio Colpo o una combinazione).",
+    "Eredità e Saccheggio usano vita flat (circa 5% della vita iniziale): verificare che non accorcino le partite sotto i 7 turni.",
+    "Spira 4 e 5 dipendono dalle Evoluzioni sulle carte Spira: verificare con pool_generation.evolution_slot_fill_pct. Le 11 Evoluzioni open sono idonee a ogni rango, Asso compreso.",
+    "Il limite e' per rango: le abilita' swingy (Letale, Doppio Colpo, Primo Colpo, Custode e le loro Evoluzioni) stanno sui ranghi A, J, Q, K, cioe' fino a 16 carte per mazzo. In una simulazione semplificata Custode (Q, K, costo 15%) vale ancora circa +8 punti di vittoria in un mazzo di ranghi alti, dove tutte e 8 le carte sono in campo; con un solo rango (K) il valore scende a circa +2.5. Valutare se Custode va su un solo rango.",
+    "Candidati a passare da capped a limited dopo i test: Flessibile (3,4) e Muro (2,3). Camaleonte, Primo Colpo, Letale e Doppio Colpo restano su un rango.",
+    "Custode (Q,K) e' limited perche' ritarda soltanto la distruzione; ricontrollare se Vestigio 5 (stesso effetto) rende troppo frequente il salvataggio."
   ],
   "evolutions": {
     "EVO_CRESCITA": {
@@ -410,6 +1607,513 @@
       ],
       "cap_class": "open",
       "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_EREDITA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 14.3,
+      "params": {
+        "amount": 300
+      },
+      "display": {
+        "life": 300
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "amount"
+      ]
+    },
+    "EVO_VENDETTA": {
+      "allowed_ranks": [
+        "J"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 8,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_PRIMO_COLPO: concede una keyword vincolata",
+      "cap_risk": "swingy"
+    },
+    "EVO_TEMPRATO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 11.2,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": []
+    },
+    "EVO_INTRECCIO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 1.3,
+      "params": {
+        "permille": 100
+      },
+      "display": {
+        "bonus_pct": 10
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_SOPRAVVISSUTO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "params": {
+        "x": 10
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "EVO_MATURAZIONE": {
+      "allowed_ranks": [
+        "3"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 3,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_FLESSIBILE: concede una keyword vincolata",
+      "cap_risk": "copy_scaling"
+    },
+    "EVO_MIMETICO": {
+      "allowed_ranks": [
+        "2"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 25,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adaptation"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_CAMALEONTE: concede una keyword vincolata",
+      "cap_risk": "copy_scaling"
+    },
+    "EVO_PREDATORE": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": -4.0,
+      "params": {
+        "x": 20
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough",
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "EVO_SFONDAMENTO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 1.1,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": []
+    },
+    "EVO_FURIA": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 2.4,
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_SENTINELLA": {
+      "allowed_ranks": [
+        "7",
+        "8"
+      ],
+      "max_built_in": 8,
+      "stat_cost_pct": 5,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "limited",
+      "cap_reason": "eredita il tetto di K_PROVOCAZIONE: concede una keyword vincolata",
+      "cap_risk": "stall"
+    },
+    "EVO_CAPITANO": {
+      "allowed_ranks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+        "A"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 7.6,
+      "params": {
+        "x": 10
+      },
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "adjacency"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "una sola volta per carta per partita (max_triggers 1)",
+      "tier_scaled": [
+        "x"
+      ]
+    },
+    "EVO_CARNEFICE": {
+      "allowed_ranks": [
+        "A"
+      ],
+      "max_built_in": 4,
+      "stat_cost_pct": 12,
+      "params": {},
+      "display": {},
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "breakthrough",
+        "growth"
+      ],
+      "cap_class": "capped",
+      "cap_reason": "eredita il tetto di K_LETALE: concede una keyword vincolata",
+      "cap_risk": "swingy"
+    },
+    "EVO_RISONANZA": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 150
+      },
+      "display": {
+        "bonus_pct": 15,
+        "pct": 15,
+        "heal_pct": 15
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "growth",
+        "adaptation"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Evoluzione nuova (deciso nel Passo 1): trigger T18 limitato alle magie del controllore (T18 controller own, 'ogni rito vicino'). Costo 5 come Allievi. Usata da 2 carte.",
+      "tier_scaled": [
+        "permille"
+      ]
+    },
+    "EVO_RINFORZO": {
+      "allowed_ranks": [
+        "A",
+        "K",
+        "Q",
+        "J",
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "max_built_in": 52,
+      "stat_cost_pct": 5,
+      "family": "base_set",
+      "favours": [],
+      "params": {
+        "permille": 200
+      },
+      "display": {
+        "bonus_pct": 20,
+        "pct": 20,
+        "heal_pct": 20
+      },
+      "sim": {
+        "status": "untested",
+        "ruleset_version": "1.0-alpha",
+        "date": null,
+        "five_build_matrix": null,
+        "cross_faction": null
+      },
+      "themes": [
+        "persistence",
+        "growth"
+      ],
+      "cap_class": "open",
+      "intrinsic_limit": "Evoluzione nuova (deciso nel Passo 1): trigger T29 (vivo). Effetto sulla DEF, perche' +ATK e' gia' di Risonanza e Allievi. Costo 5 come Allievi. Usata da 2 carte.",
       "tier_scaled": [
         "permille"
       ]

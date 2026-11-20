@@ -33,7 +33,7 @@ Indice e regole: [[🪜 Scale delle trame]].
 | Gradino | Carte | Che cosa vede il giocatore |
 |---|---|---|
 | 1 | [[Sportello dell'Assenso]] (3), [[Risponditore di Soccorso]] (6), [[Annali di Ponte Vaio]] (6), [[MER-7A-N02-090-10 «Orizzonte»]] (10), [[EFF-91 «Una Erre»]] (9), [[YLM-66 «Sei Dita»]] (7), [[«Ninna», Persuasora di Cancelli]] (8), [[Quelli del Grazie]] (5) | Una macchina sbaglia in un modo che il giocatore riconosce |
-| 2 | [[«Calligrafo», Lettore di Errori]] (10) | Un umano riconosce di chi è una macchina da come sbaglia |
+| 2 | [[«Calligrafo», Lettore di Errori]] (10), [[Cortina, Voce di Soccorso]] (Q) | Un umano riconosce di chi è una macchina da come sbaglia; il rifiuto cortese ha un lessico più lungo di quello che i rifugi conoscono |
 | 3 | *manca* |  |
 | 4 | *manca* |  |
 

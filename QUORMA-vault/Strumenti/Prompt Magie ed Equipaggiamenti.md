@@ -29,7 +29,7 @@ Valgono per tutte:
 2. **Senza seme e senza corrente.** Non dichiarare una sottofazione. Puoi lasciare la firma di una corrente nella voce o nell'oggetto, mai il suo nome come appartenenza della carta.
 3. **Si usano e si perdono.** Una magia, avvenuta, non c'è più. Un equipaggiamento passa a chi arriva e non torna indietro; se nessuno arriva, si perde.
 4. **Non si scelgono.** Nessuno decide *a chi* tocca: tocca a chi c'è. Le Potenze assegnano per procedura, la Resistenza distribuisce ciò che c'è.
-5. **Ogni potere ha un costo**, sempre di qualcuno (un sonno, un nome, un'abitudine, un prima) e di solito non di chi ne gode. Il costo va scritto nella lore interna e nella riga **Costo**.
+5. **Ogni potere ha un costo**, sempre di qualcuno (un sonno, un nome, un'abitudine, un prima) e di solito non di chi ne gode. Il costo va scritto sempre nella riga **Costo**; nella lore interna emerge come lato negativo dei fatti (chi perde che cosa), mai con la formula «Il costo è…».
 6. **Stesso numero, natura diversa.** Il set completo ha 46 carte che non sono creature, 23 per fazione (accanto alle 104 creature). Quelle della Resistenza sono più povere, più vari e più legate a una persona (riti, oggetti che passano di mano, «prima» addosso a chi arriva); quelle delle Potenze, pulite, quasi sempre un'altra faccia di una procedura già nota. Le Potenze non chiamano mai «magia» ciò che fanno: lo chiamano procedura, delibera, seduta, direttiva. Per la Resistenza è un rito, una veglia, un favore, a volte un «miracolo» o una «maledizione».
 7. **Un equipaggiamento ha sempre un prima**: un proprietario precedente, un luogo, un uso che l'ha consumato. La Resistenza lo dice senza dirlo («era di mio fratello»); le Potenze lo registrano come dotazione e dichiarano il titolare precedente «non rilevato» o non lo nominano.
 8. **Il numero di carte.** Prima di scrivere, controlla nel registro quante ne esistono già per quella fazione: ne mancano fino a 23. Non ripetere un tema già coperto.
@@ -96,7 +96,7 @@ Queste carte non aggiungono frammenti alle trame emergenti (`trama` e `gradino` 
 2. **Nuovi elementi di canone**: la carta stessa è sempre il primo elemento. Oltre alla carta, **al massimo uno**, e anche nessuno: un elemento merita un CAN solo se un'altra carta potrebbe incontrarlo. Per ognuno: nome, categoria (Mondo | Luogo | Oggetto | Entità | Pratica), definizione di una o due frasi. **Mai un CAN per una frase o una formula.**
 Niente preamboli, niente commenti.
 
-Limiti: titolo max 32 caratteri, unico, senza `/ \ : * ? " < > |`. Testo di colore 1-3 frasi, max 200 caratteri più l'attribuzione. Lore interna 120-250 parole, con il costo dentro. Versione condensata 70-100 parole, chiusa dalla frase di stile. Intento per l'abilità: non una meccanica ma un indirizzo per chi la progetterà. «Deve far sentire:» una frase sull'esperienza che l'abilità dovrebbe dare; «Temi:» 2-3 parole tematiche, ripetute in `temi_abilita`. Niente numeri, regole o termini di gioco.
+Limiti: titolo max 32 caratteri, unico, senza `/ \ : * ? " < > |`. Testo di colore 1-3 frasi, max 200 caratteri più l'attribuzione. Lore interna 120-250 parole, senza la formula «Il costo è…». Versione condensata 70-100 parole, chiusa dalla frase di stile. Intento per l'abilità: non una meccanica ma un indirizzo per chi la progetterà. «Deve far sentire:» una frase sull'esperienza che l'abilità dovrebbe dare; «Temi:» 2-3 parole tematiche, ripetute in `temi_abilita`. Niente numeri, regole o termini di gioco.
 
 ## FORMATO DELLA CARTA
 ```markdown
@@ -132,7 +132,7 @@ tags:
 > «...» — Attribuzione in-world
 
 > [!info] Lore interna
-> Solo contenuto: che cosa accade o che cosa è l'oggetto; da dove viene; che cosa è vero, anche ciò che il testo di colore omette o distorce; il costo; i collegamenti con [[Nome elemento]] e [[Titolo carta]] del registro.
+> Solo contenuto: che cosa accade o che cosa è l'oggetto; da dove viene; che cosa è vero, anche ciò che il testo di colore omette o distorce; il lato negativo, se c'è, senza dichiararlo come costo; i collegamenti con [[Nome elemento]] e [[Titolo carta]] del registro.
 
 > [!info] Rivela / Nasconde
 > **Rivela:** ...
@@ -182,7 +182,7 @@ Testo di colore: «Condizioni alla consegna: usata. Condizioni alla restituzione
 ## CONTROLLO FINALE
 - Il testo di colore mostra invece di spiegare? Ha una voce sola, di chi usa o registra?
 - La carta dichiara un rango, un seme o una sottofazione? (Non deve.)
-- Il costo c'è, è di qualcuno, e non è un numero?
+- Il costo c'è nella riga Costo, è di qualcuno e non è un numero? La lore interna non usa la formula «Il costo è…»?
 - Il soprannaturale resta sulla linea, né confermato né escluso? Il potere viene dalle AI o dal contatto con loro?
 - Nessun termine di gioco, nessun numero di effetto, nessun effetto speciale nell'immagine?
 - Un equipaggiamento ha un prima? Una magia avviene una volta e basta?

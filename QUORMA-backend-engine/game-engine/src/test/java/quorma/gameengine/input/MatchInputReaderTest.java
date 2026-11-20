@@ -91,6 +91,16 @@ class MatchInputReaderTest {
     }
 
     @Test
+    void theEngineVersionIsOptionalAndReadWhenSent() {
+        assertEquals(Optional.empty(), MatchInputReader.read(input(CREATURE)).engineVersion());
+        MatchInput in = MatchInputReader.read(input(CREATURE).replace("\"seed\": -42,", "\"seed\": -42, \"engine_version\": \"1.2.3\","));
+        assertEquals(Optional.of("1.2.3"), in.engineVersion());
+        assertTrue(refused(input(CREATURE).replace("\"seed\": -42,", "\"seed\": -42, \"engine_version\": 5,")).contains("engine_version: must be a string"));
+        assertTrue(refused(input(CREATURE).replace("\"seed\": -42,", "\"seed\": -42, \"engine_version\": \"\","))
+                .contains("engine_version: must be 1 to 32 characters"));
+    }
+
+    @Test
     void badJsonIsRefused() {
         assertTrue(refused("{").startsWith("input: invalid JSON"));
         assertTrue(refused("{\"seed\": 1, \"seed\": 2}").contains("invalid JSON"), "duplicate keys");

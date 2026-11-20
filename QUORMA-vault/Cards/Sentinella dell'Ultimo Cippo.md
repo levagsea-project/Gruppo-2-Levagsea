@@ -32,7 +32,7 @@ tags:
 # Sentinella dell'Ultimo Cippo
 
 > [!quote] Testo di colore
-> «Lui è tornato. Dorme in piedi e incide la pietra dalla parte che guarda fuori. Io resto di qua. È l'unico ordine che ho.» — Sentinella dell'Ultimo Cippo, turno di notte
+> «Uno dei tornati dorme in piedi e incide la pietra dalla parte che guarda fuori. Io resto di qua. È l'unico ordine che ho.» — Sentinella dell'Ultimo Cippo, turno di notte
 
 > [!info] Lore interna
 > La sentinella dell'[[Ultimo Cippo]] è una recluta [[Segnaterra]], senza nome per chi la manda: solo un posto nella linea, l'ultimo. Il cippo è una pietra con la Prima Incisione, piantata dove il territorio dei Segnaterra finisce. Di solito una Prima Incisione dichiara: questo è nostro. Questa sembra dire un'altra cosa: da qui non si passa, nemmeno per tornare. Di chi è andato oltre, in pochi sono rientrati, e i [[Tornati|tornati]] non sono più gli stessi: non chiedono acqua, dormono in piedi, parlano con una cadenza che non è di nessuno. Uno di loro incide ogni notte la stessa figura sulla faccia esterna della pietra, al contrario: l'[[Ultimo Cippo#Glossario|incisione rovesciata]]. Nessuno la cancella. La sentinella non ha ordini su di lui. Ha un solo ordine: non varcare il cippo. Non sa se il pericolo stia oltre la pietra o se sia la pietra a trattenerlo.

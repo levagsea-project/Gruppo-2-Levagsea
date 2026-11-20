@@ -18,7 +18,7 @@ import quorma.gameengine.model.Side;
 /**
  * Which suit synergy tiers are active (ruleset 7.10) and who has them. The tiers are data ({@code synergies.json});
  * what their expansions do is done by the code that runs any ability with that trigger, effect and target, for
- * example {@code StaticEffects} for the static ones.
+ * example {@code Board} for the static ones.
  */
 final class SynergyTiers {
 

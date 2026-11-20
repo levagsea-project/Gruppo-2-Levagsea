@@ -7,13 +7,15 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import quorma.backend.catalogue.admin.AdminCatalogueController;
 import quorma.backend.common.ErrorCodes;
 
 /**
  * Errors carry a language-neutral {@code code}; the frontend translates it. The engine's own message (English,
  * for developers) and the technical reason go to the log, never to the client.
  */
-@RestControllerAdvice(assignableTypes = SimulationController.class)
+@RestControllerAdvice(assignableTypes = {SimulationController.class, AdminCatalogueController.class},
+        basePackages = "quorma.backend.match")
 class EngineExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(EngineExceptionHandler.class);

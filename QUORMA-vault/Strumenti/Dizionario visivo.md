@@ -11,13 +11,13 @@ Fonte unica per tradurre la lore in immagini. Ogni descrizione d'illustrazione (
 
 Come si usa:
 - Nella [[Prompt Carte|prompt per scrivere le carte]], incolla il contenuto di questa nota (dal titolo «Dizionario visivo» in giù) nel punto indicato dall'input. L'LLM non vede il vault.
-- Quando una carta introduce un elemento ricorrente che qui manca, aggiungilo a questa nota e usa la formula su tutte le carte che lo mostrano.
+- Qui sta solo ciò che deve essere identico in carte diverse. Un luogo o un oggetto che compare in una carta sola si descrive da zero, senza formula. Quando un elemento compare in una seconda carta, aggiungilo a questa nota e usa la formula su tutte le carte che lo mostrano.
 - Il dizionario non è canone: spiega come si disegna, non che cosa significa.
 
 ---
 
 ## Regole per le illustrazioni
-- **Nessun nome di lore.** Mai sigle, designazioni, nomi di fazione, di luogo, di oggetto o di pratica. Mai i nomi di altre carte, mai `[[link]]`. Nemmeno i nomi dei semi: il seme si sente nella scena, non si scrive.
+- **Nessun nome di lore.** Mai sigle, designazioni, nomi di fazione, di luogo, di oggetto o di pratica. Mai i nomi di altre carte, mai link tra doppie parentesi quadre. Nemmeno i nomi dei semi: il seme si sente nella scena, non si scrive.
 - **Traduci in ciò che si vede.** Ogni elemento di lore usa la formula del dizionario. Un elemento che non c'è si descrive da zero come lo vedrebbe un estraneo (materiale, forma, dimensione, stato), senza dargli un nome, e poi si aggiunge qui.
 - **Solo ciò che un occhio vede.** Niente ruoli, intenzioni, storia o stati interni («custode», «sta per sigillare», «che era dei nostri»): gesti, corpi, oggetti, luoghi.
 - **Nessuna informazione riservata.** L'immagine non rivela ciò che i vincoli di trama vietano di dire: un dettaglio vietato si sostituisce con un'immagine neutra.
@@ -36,19 +36,22 @@ Usa queste formule alla lettera.
 - **Scalpello e quaderno** → piccolo scalpello da pietra e quaderno logoro, sempre senza testo leggibile.
 - **Fascia bianca al braccio** → fascia di stoffa bianca sul braccio sinistro.
 - **Segno a otto tratti** → graffio di otto tratti che si incrociano in un unico punto, come una stella rudimentale; mai riconoscibile come ragno, mai lettere. Compare solo dove la scena lo richiede.
-- **Fascia a spirale** → striscia di stoffa grezza avvolta a spirale attorno all'avambraccio, ricamata con segni non decifrabili.
-- **Velo da lutto** → velo nero che copre interamente il volto.
 - **Guscio** → carcassa di macchina di forma umana, metallo grigio ammaccato, aperta sul petto come un portello, imbottita all'interno di stracci e cuciture; chi la indossa si vede solo quando è aperta. Mai estetica da robot o da giocattolo.
+- **Persona rientrata dal confine** → persona magra e pallida, dalle proporzioni appena sbagliate, sguardo fermo, mani aperte lungo i fianchi; mai un mostro, mai occhi luminosi.
 
 ### Oggetti e luoghi della Resistenza
 - **Sigillo** → placca circolare di metallo scuro e liscio, bordo rilevato, saldata su una porta, un pannello o un cancello, senza scritte. **Sigillo aperto o rotto** → la stessa placca attraversata da sottili fratture da cui filtra luce bianco azzurra.
 - **Cancello / pannello sigillato** → grande portello di metallo liscio senza maniglie né giunture, con una placca circolare al centro.
 - **Cippo** → pietra grezza alta quanto una persona, con tacche incise in file regolari. **Cippo nero** → palo alto annerito di catrame con una carcassa meccanica appesa.
 - **Torre relè** → torre di trasmissione di ferro arrugginito, alta e a traliccio. **Sala relè** → stanza tecnica di cemento con armadi di cavi, quadri spenti e fili pendenti.
+- **Ultimo Cippo (luogo)** → altopiano spoglio, erba gelata, nebbia bassa oltre la pietra; di notte, un braciere caldo da un lato e luce lunare fredda dall'altro.
 - **Tenda di prima linea** → tenda di tela cerata con lampada a olio, casse di metallo e strumenti chirurgici su un panno.
 - **Rifugio di fortuna** → stanza ricavata in un condotto o in un magazzino, pareti di lamiera, stoffe appese, una lampada.
 - **Cordone teso** → due o più cavi o funi tese in linea retta da un punto all'altro, uno dentro l'altro; mai ragnatele.
 - **Lastra incisa** → lastra di pietra grezza con linee incise a mano, sempre senza segni leggibili.
+- **Lampada di torre relè** → piccola lampada ambra in cima alla torre, appena accesa; il resto della torre spento. Attorno alla torre, un largo cerchio di terra nuda.
+- **Strada dei pali** → strada di terra sulla brughiera con una fila di cippi neri che si perdono in prospettiva, erba piegata dal vento.
+- **Galleria dei riti** → galleria sotterranea di cemento con lampade a olio posate a terra e strisce di stoffa appese alle pareti con segni non decifrabili.
 
 ### Potenze artificiali
 La lettura è sempre «macchina»: mai «robot», mai «alieno».
@@ -64,6 +67,11 @@ La lettura è sempre «macchina»: mai «robot», mai «alieno».
 - **Disco forato** → piccolo disco metallico con un foro al centro, incassato sotto la pelle, visibile come rilievo sotto le cicatrici.
 - **Vetro che cresce** → massa di vetro scuro e torbido, color fumo e ambra, con oggetti e figure immobili visibili all'interno come sfocati; mai cristallo lucido, mai ghiaccio.
 - **Sala di riconfigurazione** → grande sala di cemento abbandonata, condotti spenti, travi metalliche, polvere.
+- **Bacino in secca** → bacino di carenaggio in secca su una costa da cui l'acqua si è ritirata lontano, sabbia scura, uno scafo incompiuto di metallo scuro.
+- **Seggi vuoti** → seggi di metallo, tutti vuoti, coperti di polvere e cavi recisi, in file concentriche o in cerchio, in una sala di cemento.
+- **Striscia bianca** → striscia di stoffa bianca senza segni, appesa o applicata a un oggetto.
+- **Mano di macchina** → una lunga mano di metallo grigio chiaro dalle dita sottili.
+- **Banco di dotazione** → tavolo basso in una sala bianca e geometrica senza finestre, oppure panno grigio su un piano di cemento; luce fredda e uniforme dall'alto. L'oggetto sta in primo piano, centrato.
 
 ### Tabù visivi
 Mai illustrare: la figura ai vertici delle potenze artificiali; nomi o scritte leggibili; simboli religiosi riconoscibili; ragni; occhi rossi luminosi; cornici o simboli dei semi.

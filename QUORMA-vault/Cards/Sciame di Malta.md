@@ -32,7 +32,7 @@ tags:
 # Sciame di Malta
 
 > [!quote] Testo di colore
-> «Fossa di Calcara: resa calcarea 0,67 per metro quadro. Materia compatibile. Muro est completato.» — Registro di riparazione YLMOR
+> «Fossa di Calcara: resa calcarea 0,67 per metro quadro, superiore alle cave vicine. Materia compatibile. Muro est completato. Muro ovest: materia sufficiente.» — Registro di riparazione YLMOR
 
 > [!info] Lore interna
 > Lo sciame di malta non ha una designazione: è una routine di riparazione [[YLMOR]], migliaia di unità piccole come insetti, assegnata a ricostruire muri e argini. Ha un solo criterio, la [[Materia compatibile|materia compatibile]], e l'osso rientra nei parametri: calcio, struttura, resistenza. Nella [[Fossa di Calcara|fossa di Calcara]], una fossa comune della Ribellione mai segnata su nessuna mappa, lo sciame ha trovato il miglior rendimento della zona. Il registro misura la resa calcarea per metro quadro e la confronta con le cave vicine. Lo sciame scava, separa, macina, impasta. I muri che costruisce sono bianchi, lisci, più solidi del cemento. Non apre le tombe per crudeltà: le apre perché il registro dice che sono il materiale migliore. Nessuna macchina ha mai profanato tanto senza saperlo. I [[Portanome]] non possono custodire nomi che nessuno ha mai detto; possono solo sapere che quel muro, a est, ne contiene molti.

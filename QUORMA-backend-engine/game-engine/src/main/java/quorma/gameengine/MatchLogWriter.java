@@ -36,6 +36,7 @@ import quorma.gameengine.log.MatchEvent.LaneLeftEmpty;
 import quorma.gameengine.log.MatchEvent.SpellResolved;
 import quorma.gameengine.log.Modifier;
 import quorma.gameengine.log.StatChange;
+import quorma.gameengine.log.TargetRef;
 import quorma.gameengine.model.Ability;
 import quorma.gameengine.model.AbilityRef;
 import quorma.gameengine.model.Attack;
@@ -217,6 +218,11 @@ final class MatchLogWriter {
         out.put("cycle_1", events(t.cycle1(), start));
         out.put("cycle_2", events(t.cycle2(), start));
         out.put("refill", events(t.refill(), start));
+        // T2 and T26 effects of the End of turn; the result has its own key.
+        List<MatchEvent> closing = t.closing().stream().filter(e -> !(e instanceof MatchEvent.MatchEnded)).toList();
+        if (!closing.isEmpty()) {
+            out.put("end_of_turn", events(closing, start));
+        }
         out.put("board", board(t.board()));
         return out;
     }
@@ -284,7 +290,7 @@ final class MatchLogWriter {
                 e.put("card_id", c.cardId());
                 e.put("ability_id", c.abilityId());
                 e.put("effect_id", c.effectId());
-                e.put("target", ref(c.target()));
+                e.put("target", target(c.target()));
                 e.put("changes", c.changes().stream().map(MatchLogWriter::change).toList());
             }
             case CreatureSaved s -> {
@@ -305,7 +311,7 @@ final class MatchLogWriter {
                 e.put("source", ref(r.source()));
                 e.put("ability_id", r.abilityId());
                 e.put("effect_id", r.effectId());
-                e.put("target", ref(r.target()));
+                e.put("target", target(r.target()));
                 e.put("changes", r.changes().stream().map(MatchLogWriter::change).toList());
                 r.stacks().ifPresent(n -> e.put("stacks", n));
             }
@@ -365,6 +371,30 @@ final class MatchLogWriter {
                 e.put("side", l.side().name());
                 e.put("lane", l.lane());
             }
+            case MatchEvent.CardsMilled m -> {
+                e.put("type", "cards_milled");
+                e.put("side", m.side().name());
+                e.put("ability_id", m.abilityId());
+                e.put("card_ids", m.cardIds());
+            }
+            case MatchEvent.CardMoved m -> {
+                e.put("type", "card_moved");
+                e.put("side", m.side().name());
+                e.put("card_id", m.cardId());
+                e.put("position", m.position());
+            }
+            case MatchEvent.CreatureReturned r -> {
+                e.put("type", "creature_returned");
+                e.put("side", r.side().name());
+                e.put("lane", r.lane());
+                e.put("card_id", r.cardId());
+            }
+            case MatchEvent.RefillPrevented p -> {
+                e.put("type", "refill_prevented");
+                e.put("side", p.side().name());
+                e.put("lane", p.lane());
+                e.put("card_id", p.cardId());
+            }
             case MatchEvent.HandEvaluated h -> throw notAPhaseEvent(h);
             case MatchEvent.TargetDeclared d -> throw notAPhaseEvent(d);
             case MatchEvent.MatchEnded m -> throw notAPhaseEvent(m);
@@ -396,6 +426,24 @@ final class MatchLogWriter {
 
     private static Map<String, Object> ref(CreatureRef r) {
         return ref(r.side(), r.lane(), r.cardId());
+    }
+
+    /** What an effect aimed at: a creature ({@code creature_ref}), a player ({@code {side}}) or a lane. */
+    private static Map<String, Object> target(TargetRef t) {
+        return switch (t) {
+            case CreatureRef c -> ref(c);
+            case TargetRef.PlayerRef p -> {
+                Map<String, Object> out = new LinkedHashMap<>();
+                out.put("side", p.side().name());
+                yield out;
+            }
+            case TargetRef.LaneRef l -> {
+                Map<String, Object> out = new LinkedHashMap<>();
+                out.put("side", l.side().name());
+                out.put("lane", l.lane());
+                yield out;
+            }
+        };
     }
 
     private static Map<String, Object> ref(Side side, int lane, String cardId) {

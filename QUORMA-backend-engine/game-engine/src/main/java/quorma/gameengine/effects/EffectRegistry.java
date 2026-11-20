@@ -1,118 +1,76 @@
 package quorma.gameengine.effects;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import quorma.gameengine.data.ConditionDef;
+import quorma.gameengine.data.ExpansionDef;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.data.Value;
+import quorma.gameengine.data.Vocab;
+import quorma.gameengine.data.VocabEntry;
 
 /**
  * What the engine can resolve. A card whose abilities use anything else is refused when it is bound
  * ({@link AbilityException}), so an ability is never silently ignored.
  *
- * <p>Keywords are checked by {@code data/validate.py}, abilities written on the card are not, so every bound
- * expansion is checked here the same way: its (trigger, effect, class, duration) must be one of the
- * {@link #SHAPES} the engine runs, and its effect params must be the ones that shape uses, integers in range.
- * An ability written on the card can change the numbers of a shape and add {@code max_stacks}, nothing else.</p>
+ * <p>Every piece of a bound expansion is checked: its trigger (and trigger params) is one the engine fires, its
+ * effect is implemented for its resolution class, its effect params are the ones of the effect's mode with integers
+ * in range, its target (and target params) is one the engine selects, its duration is one the engine ends and its
+ * conditions are ones the engine evaluates. The class must also fit the trigger: T0 is continuous (C), the "about to"
+ * triggers are replacements (R), the others are triggered (T), and only a spell or equipment effect has no trigger
+ * (I).</p>
  */
 public final class EffectRegistry {
 
-    /** One way the engine runs an effect. Target is always S1 (the creature itself) for now. */
-    private record Shape(String triggerId, String effectId, ResClass cls, String duration) {}
-
-    private static final Set<Shape> SHAPES = Set.of(
-            new Shape("T0", "E28", ResClass.C, "D_Permanente"),  // Scudo: less damage taken
-            new Shape(null, "E1", ResClass.I, "D_Permanente"),    // spell or equipment: permanent + ATK
-            new Shape(null, "E2", ResClass.I, "D_Permanente"),    // spell or equipment: permanent + DEF
-            new Shape(null, "E6", ResClass.I, "D_Istantanea"),    // spell or equipment: heal
-            new Shape("T0", "E55", ResClass.C, "D_Permanente"),  // Camaleonte: counts as any suit for the hand
-            new Shape("T0", "E1", ResClass.C, "D_FincheSorgenteInGioco"), // static ATK bonus (suit synergies, cards)
-            new Shape("T0", "E34", ResClass.C, "D_FincheSorgenteInGioco"), // the group's creatures count as adjacent
-            new Shape("T0", "E52", ResClass.C, "D_FincheSorgenteInGioco"), // ATK cannot be lowered by effects
-            new Shape("T0", "E56", ResClass.C, "D_Permanente"),  // Perforante: ignores part of the target's reductions
-            new Shape("T19", "E1", ResClass.T, "D_Permanente"),  // Insaziabile: + share of base ATK on a kill
-            new Shape("T34", "E21", ResClass.R, "D_Istantanea"),  // Traboccante: spill multiplier factor
-            new Shape("T0", "E19", ResClass.C, "D_FincheSorgenteInGioco"), // Evolution values multiplied (Spira 4)
-            new Shape("T12", "E1", ResClass.T, "D_Permanente"),   // + share of base ATK after surviving damage (Crescita)
-            new Shape("T9", "E2", ResClass.T, "D_Permanente"),    // + share of base DEF when targeted (Trincea)
-            new Shape("T5", "E17", ResClass.T, "D_Istantanea"),   // force the Evolutions of a suit (Spira 5)
-            new Shape("T9", "E24", ResClass.T, "D_Istantanea"),   // redirect an attack declared against this creature
-            new Shape("T34", "E22", ResClass.R, "D_Istantanea"),  // spill treats the target's DEF as a share of itself
-            new Shape("T2", "E6", ResClass.T, "D_Istantanea"),    // heal at the start of a phase (Refill)
-            new Shape("T20", "E12", ResClass.R, "D_Istantanea"),  // saved from destruction (Vestigio 5)
-            new Shape("T29", "E1", ResClass.T, "D_FinoAUccisione")); // + ATK for a replacement until it kills (Vestigio 3)
-
-    /** The params of one effect mode: integer params with their range, string params with their one value. */
-    private record ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults, Map<String, Set<String>> strings,
-            Map<String, Set<String>> optional) {
-
-        ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults) {
-            this(ints, defaults, Map.of(), Map.of());
-        }
-
-        ParamRule(Map<String, int[]> ints, Map<String, Integer> defaults, Map<String, Set<String>> strings) {
-            this(ints, defaults, strings, Map.of());
-        }
-
-        boolean takes(String name) {
-            return ints.containsKey(name) || strings.containsKey(name) || optional.containsKey(name);
-        }
-    }
-
     private static final int MAX = Integer.MAX_VALUE;
+    private static final Set<String> SUITS = Set.of("Vincolo", "Frattura", "Spira", "Vestigio");
+
+    /** Per effect: the classes it is implemented for. */
+    private static final Map<String, Set<ResClass>> CLASSES = new LinkedHashMap<>();
 
     /** Per effect, per {@code mode} ({@code ""}: the effect has no mode). */
-    private static final Map<String, Map<String, ParamRule>> PARAMS_1 = Map.of(
-            "E1", Map.of(
-                    "pct_base_atk", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of()),
-                    "flat", new ParamRule(Map.of("amount", new int[] {0, MAX}), Map.of(), Map.of(),
-                            Map.of("scale_by", Set.of("own_evolutions_triggered")))),
-            "E21", Map.of("", new ParamRule(Map.of("factor", new int[] {0, MAX}), Map.of())),
-            "E28", Map.of(
-                    "reduction_pct", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of()),
-                    "flat", new ParamRule(
-                            Map.of("amount", new int[] {0, MAX}, "min_damage", new int[] {0, MAX}),
-                            Map.of("min_damage", 1))),
-            "E55", Map.of("", new ParamRule(Map.of(), Map.of())),
-            "E22", Map.of("", new ParamRule(Map.of("permille", new int[] {0, 1000}), Map.of())),
-            "E52", Map.of("", new ParamRule(Map.of(), Map.of())),
-            "E34", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("group", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))),
-            "E56", Map.of("", new ParamRule(Map.of("pct", new int[] {0, 100}), Map.of())),
-            "E6", Map.of("flat", new ParamRule(Map.of("amount", new int[] {0, MAX}), Map.of())),
-            "E12", Map.of("", new ParamRule(Map.of("lockout.reactivate_below", new int[] {1, 5}), Map.of(), Map.of(
-                    "then", Set.of("destroy_at_next_refill"),
-                    "lockout.key", Set.of(),
-                    "lockout.suit", Set.of("Vincolo", "Frattura", "Spira", "Vestigio")))));
+    private static final Map<String, Map<String, ParamRule>> PARAMS = new LinkedHashMap<>();
 
-    private static final Map<String, Map<String, ParamRule>> PARAMS_2 = Map.of(
-            "E2", Map.of(
-                    "pct_base_def", new ParamRule(Map.of("permille", new int[] {0, MAX}), Map.of()),
-                    "flat", new ParamRule(Map.of("amount", new int[] {0, MAX}), Map.of())),
-            "E17", Map.of("", new ParamRule(Map.of(), Map.of())),
-            "E24", Map.of("", new ParamRule(Map.of(), Map.of(), Map.of("new_target_id", Set.of("S7")))),
-            "E19", Map.of("", new ParamRule(Map.of("factor", new int[] {0, MAX}), Map.of())));
-
-    private static final Map<String, Map<String, ParamRule>> PARAMS;
-
-    static {
-        Map<String, Map<String, ParamRule>> all = new LinkedHashMap<>(PARAMS_1);
-        all.putAll(PARAMS_2);
-        PARAMS = Map.copyOf(all);
+    private static void effect(String id, Set<ResClass> classes, Map<String, ParamRule> modes) {
+        CLASSES.put(id, classes);
+        PARAMS.put(id, modes);
     }
 
-    private static final Set<String> TRIGGERS = Set.of("T0", "T2", "T5", "T9", "T12", "T19", "T20", "T29", "T34");
-    private static final Set<String> TARGETS = Set.of("S1", "S9", "S10", "S12", "S27", "S41");
-    private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco", "D_FinoAUccisione");
+    static {
+        for (EffectDefinition effect : EffectDefinitions.all()) {
+            effect(effect.id(), effect.classes(), effect.modes());
+        }
+    }
 
-    /** Conditions the engine evaluates while the creature is in play ({@code StaticEffects}). */
-    private static final Set<String> CONDITIONS = Set.of("C1", "C4", "C11", "C22", "C24", "C25");
+    /** Per trigger: the class it allows. */
+    private static final Map<String, ResClass> TRIGGERS = new LinkedHashMap<>();
 
-    /** The filters of target S41 ({@code params.filters}). */
-    private static final Set<String> TARGET_FILTERS = Set.of("attacker");
+    static {
+        TRIGGERS.put("T0", ResClass.C);
+        for (String t : List.of("T2", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12", "T13", "T15", "T18", "T19",
+                "T26", "T29", "T35", "T36", "T37", "T38")) {
+            TRIGGERS.put(t, ResClass.T);
+        }
+        for (String t : List.of("T4", "T20", "T21", "T22", "T23", "T25", "T34", "T39")) {
+            TRIGGERS.put(t, ResClass.R);
+        }
+    }
 
-    private static final Set<String> SUITS = Set.of("Vincolo", "Frattura", "Spira", "Vestigio");
+    private static final Set<String> PHASES = Set.of("Valutazione", "Dichiarazione", "Inizio del combattimento",
+            "Ciclo 1", "Ciclo 2", "Fine del combattimento", "Rifornimento", "Fine del turno");
+
+    private static final Set<String> DURATIONS = Set.of("D_Permanente", "D_Istantanea", "D_FincheSorgenteInGioco",
+            "D_FinoAUccisione", "D_FinoAlProssimoRifornimento", "D_FinoAllaFineDelCombattimento", "D_FinoAllaFineDelTurno");
+
+    /** The filters of {@code target_params.filters}. */
+    public static final Set<String> TARGET_FILTERS = Set.of("attacker", "non_attacker", "own", "ally", "enemy",
+            "damaged", "not_damaged", "damaged_this_turn", "suit:Vincolo", "suit:Frattura", "suit:Spira", "suit:Vestigio");
 
     private EffectRegistry() {}
 
@@ -135,87 +93,9 @@ public final class EffectRegistry {
      * same test as {@link #check}, without the ranges of the numbers. For data files that may hold more than the
      * engine implements, such as {@code synergies.json}; a tier expansion that is not implemented changes nothing.
      */
-    public static boolean isImplemented(quorma.gameengine.data.ExpansionDef x) {
-        Map<String, ParamRule> modes = PARAMS.get(x.effectId());
-        if (modes == null || (x.triggerId() != null && !TRIGGERS.contains(x.triggerId()))
-                || !triggerParamsOk(x.triggerId(), x.triggerParams()) || !TARGETS.contains(x.targetId())
-                || (everyoneTarget(x.targetId()) && x.cls() != ResClass.I)
-                || !DURATIONS.contains(x.duration())
-                || !SHAPES.contains(new Shape(x.triggerId(), x.effectId(), x.cls(), x.duration()))
-                || !x.common().isEmpty()) {
-            return false;
-        }
-        ParamRule rule = modes.get(x.effectParams().get("mode") instanceof Value.StrV s ? s.v() : "");
-        if (rule == null) {
-            return false;
-        }
-        Map<String, Value> flat = new LinkedHashMap<>();
-        flattenParams("", x.effectParams(), flat);
-        for (String name : flat.keySet()) {
-            if (!name.equals("mode") && !rule.takes(name)) {
-                return false;
-            }
-        }
-        for (String name : rule.strings().keySet()) {
-            Set<String> allowed = rule.strings().get(name);
-            if (!(flat.get(name) instanceof Value.StrV s && (allowed.isEmpty() || allowed.contains(s.v())))) {
-                return false;
-            }
-        }
-        for (Map.Entry<String, Set<String>> o : rule.optional().entrySet()) {
-            if (flat.containsKey(o.getKey())
-                    && !(flat.get(o.getKey()) instanceof Value.StrV s && o.getValue().contains(s.v()))) {
-                return false;
-            }
-        }
-        for (quorma.gameengine.data.ConditionDef c : x.conditions()) {
-            if (!CONDITIONS.contains(c.id())) {
-                return false;
-            }
-        }
-        return targetParamsOk(x.targetId(), x.targetParams());
-    }
-
-    private static void flattenParams(String prefix, Map<String, Value> params, Map<String, Value> out) {
-        for (Map.Entry<String, Value> e : params.entrySet()) {
-            if (e.getValue() instanceof Value.MapV m) {
-                flattenParams(prefix + e.getKey() + ".", m.fields(), out);
-            } else {
-                out.put(prefix + e.getKey(), e.getValue());
-            }
-        }
-    }
-
-    /** T2 takes the phase (only Refill is implemented), T5 the suit and level; no other trigger takes params. */
-    private static boolean triggerParamsOk(String triggerId, Map<String, Value> params) {
-        if (triggerId == null) {
-            return params.isEmpty();
-        }
-        if (triggerId.equals("T5")) {
-            return params.size() == 2 && params.get("suit") instanceof Value.StrV s && SUITS.contains(s.v())
-                    && params.get("level") instanceof Value.IntV n && n.v() >= 3 && n.v() <= 5;
-        }
-        if (triggerId.equals("T2")) {
-            return params.size() == 1 && params.get("phase") instanceof Value.StrV p && p.v().equals("Rifornimento");
-        }
-        return params.isEmpty();
-    }
-
-    /** S9 and S10 name the creatures of a whole side: only the immediate effects of spells use them. */
-    private static boolean everyoneTarget(String targetId) {
-        return targetId.equals("S9") || targetId.equals("S10");
-    }
-
-    private static boolean targetParamsOk(String targetId, Map<String, Value> params) {
-        if (targetId.equals("S12")) {
-            return params.size() == 1 && params.get("suit") instanceof Value.StrV s && SUITS.contains(s.v());
-        }
-        if (targetId.equals("S41")) {
-            return params.keySet().stream().allMatch(k -> k.equals("filters"))
-                    && (params.get("filters") == null || params.get("filters") instanceof Value.ListV l
-                            && l.items().stream().allMatch(v -> v instanceof Value.StrV f && TARGET_FILTERS.contains(f.v())));
-        }
-        return params.isEmpty();
+    public static boolean isImplemented(ExpansionDef x) {
+        return problem(Origin.CREATURE, x.triggerId(), x.triggerParams(), x.effectId(), x.effectParams(), x.targetId(),
+                x.targetParams(), x.duration(), x.cls(), x.conditions(), false).isEmpty();
     }
 
     /**
@@ -224,113 +104,262 @@ public final class EffectRegistry {
      * @param where card and ability, for the error message
      * @throws AbilityException naming the first problem
      */
-    public static void check(BoundExpansion expansion, String where) {
-        String effect = expansion.effectId();
-        Map<String, ParamRule> modes = PARAMS.get(effect);
-        if (modes == null) {
-            throw notImplemented(where, "effect " + effect);
+    public static void check(Vocab vocab, BoundExpansion e, String where, Origin origin) {
+        Optional<String> problem = problem(origin, e.triggerId(), e.triggerParams(), e.effectId(), e.effectParams(), e.targetId(),
+                e.targetParams(), e.duration(), e.cls(), e.conditions(), true);
+        if (problem.isEmpty()) {
+            problem = vocabProblem(vocab, e, origin);
         }
-        if (expansion.triggerId() != null && !TRIGGERS.contains(expansion.triggerId())) {
-            throw notImplemented(where, "trigger " + expansion.triggerId());
-        }
-        if (everyoneTarget(expansion.targetId()) && expansion.cls() != ResClass.I) {
-            throw notImplemented(where, "target " + expansion.targetId() + " outside a spell");
-        }
-        if (!TARGETS.contains(expansion.targetId())) {
-            throw notImplemented(where, "target " + expansion.targetId());
-        }
-        if (!DURATIONS.contains(expansion.duration())) {
-            throw notImplemented(where, "duration " + expansion.duration());
-        }
-        if (!triggerParamsOk(expansion.triggerId(), expansion.triggerParams())) {
-            throw notImplemented(where, "trigger " + expansion.triggerId() + " with params " + expansion.triggerParams());
-        }
-        if (!targetParamsOk(expansion.targetId(), expansion.targetParams())) {
-            throw notImplemented(where, "target " + expansion.targetId() + " with params " + expansion.targetParams().keySet());
-        }
-        for (quorma.gameengine.data.ConditionDef c : expansion.conditions()) {
-            checkCondition(c, where);
-        }
-        Optional<String> mode = expansion.stringParam("mode");
-        ParamRule rule = modes.get(mode.orElse(""));
-        if (rule == null) {
-            throw notImplemented(where, "effect " + effect + " with mode " + mode.orElse("(none)"));
-        }
-        Shape shape = new Shape(expansion.triggerId(), effect, expansion.cls(), expansion.duration());
-        if (!SHAPES.contains(shape)) {
-            throw new AbilityException(where + ": effect " + effect + " with trigger " + shape.triggerId() + ", class "
-                    + shape.cls() + " and duration " + shape.duration() + " is not implemented by the engine yet"
-                    + " (supported: " + supported(effect) + ")");
-        }
-        checkParams(expansion, where, rule);
+        problem.ifPresent(p -> {
+            throw new AbilityException(where + ": " + p);
+        });
     }
 
-    private static void checkCondition(quorma.gameengine.data.ConditionDef c, String where) {
-        if (!CONDITIONS.contains(c.id())) {
-            throw notImplemented(where, "condition " + c.id());
+    /**
+     * What {@code vocab.json} says about how an effect, a target and a trigger fit together, which
+     * {@code data/validate.py} checks for the data files: the effect aims at the kind of thing the target is, it lasts or
+     * is instant as it says, a triggered effect only uses the context its trigger provides, and a creature target is
+     * found in the class of the expansion. A spell or an equipment ({@code origin}) has no trigger on an immediate
+     * effect, so its targets take their context from the card and that is not checked; the engine ignores the
+     * duration of an immediate effect (it applies for good), so that is not checked either; and a continuous
+     * effect of a spell may aim at a selection (S33 to S40), which {@code Game.castSpell} resolves when the spell is
+     * cast.
+     */
+    private static Optional<String> vocabProblem(Vocab vocab, BoundExpansion e, Origin origin) {
+        VocabEntry effect = vocab.effects().get(e.effectId());
+        VocabEntry target = vocab.targets().get(e.targetId());
+        if (effect == null || target == null) {
+            return Optional.empty();
         }
-        if (c.id().equals("C24") && !(c.params().get("key") instanceof Value.StrV k && !k.v().isEmpty())) {
-            throw new AbilityException(where + ": condition C24 needs a text param 'key'");
+        Set<String> targetKinds = strings(target.raw().get("kind"));
+        Set<String> effectKinds = strings(effect.raw().get("target_kind"));
+        boolean creature = targetKinds.contains("creature");
+        Set<String> fits = new HashSet<>(targetKinds);
+        if (creature) {
+            fits.add("card");
         }
-        boolean needsSuit = c.id().equals("C4") || c.id().equals("C11") || c.id().equals("C25");
-        if (needsSuit && !(c.params().get("suit") instanceof Value.StrV s && SUITS.contains(s.v()))) {
-            throw new AbilityException(where + ": condition " + c.id() + " needs a param 'suit' (one of " + new java.util.TreeSet<>(SUITS) + ")");
+        if (Collections.disjoint(effectKinds, fits)) {
+            return Optional.of("target " + e.targetId() + " aims at " + new TreeSet<>(targetKinds) + ", but effect "
+                    + e.effectId() + " needs " + new TreeSet<>(effectKinds));
         }
-        if (c.id().equals("C4") && !(c.params().get("level") instanceof Value.IntV n && n.v() >= 1 && n.v() <= 5)) {
-            throw new AbilityException(where + ": condition C4 needs an integer param 'level' between 1 and 5");
+        String durationMode = effect.raw().get("duration_mode") instanceof Value.StrV m ? m.v() : "any";
+        boolean instant = e.duration().equals("D_Istantanea");
+        boolean immediate = e.cls() == ResClass.I;
+        if (durationMode.equals("instant_only") && !instant && !immediate) {
+            return Optional.of("effect " + e.effectId() + " happens at once: its duration must be D_Istantanea, got "
+                    + e.duration());
         }
-    }
-
-    private static void checkParams(BoundExpansion expansion, String where, ParamRule rule) {
-        String what = where + ": effect " + expansion.effectId()
-                + expansion.stringParam("mode").map(m -> " mode " + m).orElse("");
-        for (String name : expansion.effectParams().keySet()) {
-            if (!name.equals("mode") && !rule.takes(name)) {
-                throw new AbilityException(what + " does not take param '" + name + "'");
+        if (durationMode.equals("sustained_only") && instant && !immediate) {
+            return Optional.of("effect " + e.effectId() + " lasts: its duration cannot be D_Istantanea");
+        }
+        if (e.cls() == ResClass.T && target.raw().get("requires_context") instanceof Value.StrV ctx) {
+            VocabEntry trigger = vocab.triggers().get(e.triggerId());
+            if (trigger != null && !strings(trigger.raw().get("provides")).contains(ctx.v())) {
+                return Optional.of("target " + e.targetId() + " needs the context '" + ctx.v() + "', which trigger "
+                        + e.triggerId() + " does not provide");
             }
         }
-        for (Map.Entry<String, Set<String>> o : rule.optional().entrySet()) {
-            Value given = expansion.effectParams().get(o.getKey());
-            if (given != null && !(given instanceof Value.StrV s && o.getValue().contains(s.v()))) {
-                throw new AbilityException(what + ": param '" + o.getKey() + "' must be one of " + new java.util.TreeSet<>(o.getValue()));
+        boolean chosenBySpell = origin == Origin.SPELL && e.cls() == ResClass.C && Targets.find(e.targetId()).orElseThrow() instanceof RankedTarget;
+        if (creature && (e.cls() == ResClass.C || e.cls() == ResClass.T) && !chosenBySpell
+                && !strings(target.raw().get("reach_classes")).contains(e.cls().name())) {
+            return Optional.of("target " + e.targetId() + " is not found by a class " + e.cls() + " effect (it works in "
+                    + new TreeSet<>(strings(target.raw().get("reach_classes"))) + ")");
+        }
+        return Optional.empty();
+    }
+
+    /** The strings of a vocab field that is a text or a list of texts, empty if it is neither. */
+    private static Set<String> strings(Value v) {
+        Set<String> out = new HashSet<>();
+        if (v instanceof Value.StrV s) {
+            out.add(s.v());
+        } else if (v instanceof Value.ListV l) {
+            for (Value item : l.items()) {
+                if (item instanceof Value.StrV s) {
+                    out.add(s.v());
+                }
+            }
+        }
+        return out;
+    }
+
+    private static Optional<String> problem(Origin origin, String trigger, Map<String, Value> triggerParams, String effect,
+            Map<String, Value> effectParams, String target, Map<String, Value> targetParams, String duration,
+            ResClass cls, List<ConditionDef> conditions, boolean strict) {
+        Map<String, ParamRule> modes = PARAMS.get(effect);
+        if (modes == null) {
+            return Optional.of(notImplemented("effect " + effect));
+        }
+        if (trigger != null && !TRIGGERS.containsKey(trigger)) {
+            return Optional.of(notImplemented("trigger " + trigger));
+        }
+        if (Targets.find(target).isEmpty()) {
+            return Optional.of(notImplemented("target " + target));
+        }
+        if (!DURATIONS.contains(duration)) {
+            return Optional.of(notImplemented("duration " + duration));
+        }
+        Optional<String> tp = triggerParamsProblem(trigger, triggerParams);
+        if (tp.isPresent()) {
+            return tp;
+        }
+        Optional<String> gp = targetParamsProblem(target, targetParams);
+        if (gp.isPresent()) {
+            return gp;
+        }
+        for (ConditionDef c : conditions) {
+            Optional<String> cp = conditionProblem(c);
+            if (cp.isPresent()) {
+                return cp;
+            }
+        }
+        ResClass expected = trigger == null ? ResClass.I : TRIGGERS.get(trigger);
+        if (cls != expected) {
+            return Optional.of("class " + cls + " does not fit trigger " + (trigger == null ? "(none)" : trigger)
+                    + " (expected class " + expected + ")");
+        }
+        if (!CLASSES.get(effect).contains(cls)) {
+            return Optional.of("effect " + effect + " with class " + cls + " is not implemented by the engine yet"
+                    + " (supported: " + new TreeSet<>(CLASSES.get(effect).stream().map(Enum::name).toList()) + ")");
+        }
+        String mode = effectParams.get("mode") instanceof Value.StrV s ? s.v() : "";
+        ParamRule rule = modes.get(mode);
+        if (rule == null) {
+            return Optional.of(notImplemented("effect " + effect + " with mode " + (mode.isEmpty() ? "(none)" : mode)));
+        }
+        Optional<String> own = EffectDefinitions.find(effect).flatMap(x -> x.validate(new EffectDefinition.Shape(origin, cls, target, mode, effectParams)));
+        if (own.isPresent()) {
+            return own;
+        }
+        return paramsProblem(effect, mode, rule, effectParams, strict);
+    }
+
+    private static Optional<String> paramsProblem(String effect, String mode, ParamRule rule, Map<String, Value> params,
+            boolean strict) {
+        String what = "effect " + effect + (mode.isEmpty() ? "" : " mode " + mode);
+        Map<String, Value> flat = new LinkedHashMap<>();
+        flatten("", params, flat);
+        for (String name : flat.keySet()) {
+            if (!name.equals("mode") && !rule.takes(name)) {
+                return Optional.of(what + " does not take param '" + name + "'");
             }
         }
         for (Map.Entry<String, Set<String>> e : rule.strings().entrySet()) {
-            if (!(expansion.effectParams().get(e.getKey()) instanceof Value.StrV s)) {
-                throw new AbilityException(what + " needs a text param '" + e.getKey() + "'");
+            if (!(flat.get(e.getKey()) instanceof Value.StrV s)) {
+                return Optional.of(what + " needs a text param '" + e.getKey() + "'");
             }
             if (!e.getValue().isEmpty() && !e.getValue().contains(s.v())) {
-                throw new AbilityException(what + ": param '" + e.getKey() + "' must be one of " + new java.util.TreeSet<>(e.getValue()) + ", got " + s.v());
+                return Optional.of(what + ": param '" + e.getKey() + "' must be one of " + new TreeSet<>(e.getValue())
+                        + ", got " + s.v());
             }
         }
         for (Map.Entry<String, int[]> e : rule.ints().entrySet()) {
-            String name = e.getKey();
-            Value value = expansion.effectParams().get(name);
+            Value value = flat.get(e.getKey());
             if (value == null) {
-                throw new AbilityException(what + " needs param '" + name + "'");
+                return Optional.of(what + " needs param '" + e.getKey() + "'");
             }
-            if (!(value instanceof Value.IntV n)) {
-                throw new AbilityException(what + ": param '" + name + "' must be an integer");
+            Optional<String> p = intProblem(what, e.getKey(), value, e.getValue(), strict);
+            if (p.isPresent()) {
+                return p;
             }
-            int[] range = e.getValue();
-            if (n.v() < range[0] || n.v() > range[1]) {
-                throw new AbilityException(what + ": param '" + name + "' must be "
-                        + (range[1] == MAX ? range[0] + " or more" : "between " + range[0] + " and " + range[1])
-                        + ", got " + n.v());
+        }
+        for (Map.Entry<String, Value> e : flat.entrySet()) {
+            String name = e.getKey();
+            Value value = e.getValue();
+            boolean asString = rule.optionalStrings().containsKey(name);
+            boolean asInt = rule.optionalInts().containsKey(name);
+            if (asString && value instanceof Value.StrV s) {
+                Set<String> allowed = rule.optionalStrings().get(name);
+                if (!allowed.isEmpty() && !allowed.contains(s.v())) {
+                    return Optional.of(what + ": param '" + name + "' must be one of " + new TreeSet<>(allowed));
+                }
+            } else if (asInt && !(value instanceof Value.StrV)) {
+                Optional<String> p = intProblem(what, name, value, rule.optionalInts().get(name), strict);
+                if (p.isPresent()) {
+                    return p;
+                }
+            } else if (asString && !asInt && strict) {
+                return Optional.of(what + ": param '" + name + "' must be one of " + new TreeSet<>(rule.optionalStrings().get(name)));
+            } else if (rule.optionalBools().contains(name) && strict && !(value instanceof Value.BoolV)) {
+                return Optional.of(what + ": param '" + name + "' must be true or false");
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<String> intProblem(String what, String name, Value value, int[] range, boolean strict) {
+        if (!strict && value instanceof Value.Ref) {
+            return Optional.empty();
+        }
+        if (!(value instanceof Value.IntV n)) {
+            return Optional.of(what + ": param '" + name + "' must be an integer");
+        }
+        if (n.v() < range[0] || n.v() > range[1]) {
+            return Optional.of(what + ": param '" + name + "' must be "
+                    + (range[1] == MAX ? range[0] + " or more" : "between " + range[0] + " and " + range[1])
+                    + ", got " + n.v());
+        }
+        return Optional.empty();
+    }
+
+    private static void flatten(String prefix, Map<String, Value> params, Map<String, Value> out) {
+        for (Map.Entry<String, Value> e : params.entrySet()) {
+            if (e.getValue() instanceof Value.MapV m) {
+                flatten(prefix + e.getKey() + ".", m.fields(), out);
+            } else {
+                out.put(prefix + e.getKey(), e.getValue());
             }
         }
     }
 
-    private static String supported(String effectId) {
-        List<String> out = SHAPES.stream()
-                .filter(s -> s.effectId().equals(effectId))
-                .map(s -> (s.triggerId() == null ? "no trigger" : s.triggerId()) + "/" + s.cls() + "/" + s.duration())
-                .sorted()
-                .toList();
-        return String.join(", ", out);
+    private static Optional<String> triggerParamsProblem(String trigger, Map<String, Value> params) {
+        if (trigger == null) {
+            return params.isEmpty() ? Optional.empty() : Optional.of("an expansion with no trigger has no trigger params");
+        }
+        String bad = notImplemented("trigger " + trigger + " with params " + params);
+        return switch (trigger) {
+            case "T2" -> params.size() == 1 && params.get("phase") instanceof Value.StrV p && PHASES.contains(p.v())
+                    ? Optional.empty() : Optional.of(bad);
+            case "T5" -> params.size() == 2 && params.get("suit") instanceof Value.StrV s && SUITS.contains(s.v())
+                    && params.get("level") instanceof Value.IntV n && n.v() >= 3 && n.v() <= 5
+                    ? Optional.empty() : Optional.of(bad);
+            case "T8" -> onlyStrings(params, Map.of("attacker", Set.of("opponent", "own", "any"),
+                    "target_scope", Set.of("any", "self", "self_or_adjacent"))) ? Optional.empty() : Optional.of(bad);
+            case "T13" -> onlyStrings(params, Map.of("source", Set.of("combattimento", "effetto", "qualsiasi")))
+                    ? Optional.empty() : Optional.of(bad);
+            case "T15" -> onlyStrings(params, Map.of("source", Set.of("self", "ally"))) ? Optional.empty() : Optional.of(bad);
+            case "T18" -> onlyStrings(params, Map.of("controller", Set.of("own", "opponent", "any"), "spell_id", Set.of()))
+                    ? Optional.empty() : Optional.of(bad);
+            default -> params.isEmpty() ? Optional.empty() : Optional.of(bad);
+        };
     }
 
-    private static AbilityException notImplemented(String where, String what) {
-        return new AbilityException(where + ": " + what + " is not implemented by the engine yet");
+    private static boolean onlyStrings(Map<String, Value> params, Map<String, Set<String>> allowed) {
+        for (Map.Entry<String, Value> e : params.entrySet()) {
+            Set<String> values = allowed.get(e.getKey());
+            if (values == null || !(e.getValue() instanceof Value.StrV s) || (!values.isEmpty() && !values.contains(s.v()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static Optional<String> targetParamsProblem(String target, Map<String, Value> params) {
+        if (Targets.find(target).orElseThrow().acceptsParams(params)) {
+            return Optional.empty();
+        }
+        return Optional.of(notImplemented("target " + target + " with params " + params.keySet()));
+    }
+
+    private static Optional<String> conditionProblem(ConditionDef c) {
+        Optional<Condition> condition = Conditions.find(c.id());
+        if (condition.isEmpty()) {
+            return Optional.of(notImplemented("condition " + c.id()));
+        }
+        return condition.get().validate(c);
+    }
+
+    private static String notImplemented(String what) {
+        return what + " is not implemented by the engine yet";
     }
 }
