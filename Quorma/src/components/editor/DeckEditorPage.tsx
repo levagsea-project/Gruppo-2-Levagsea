@@ -6,6 +6,7 @@ import { CREATURE_LIMITS, DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankArtic
 import { deckErrorMessages, getDeck, saveDeck } from '../../lib/decks'
 import PageTitle from '../layout/PageTitle'
 import EditorCard, { type CardState } from './EditorCard'
+import CardZoom from './CardZoom'
 import '../../styles/editor.css'
 
 type Props = {
@@ -56,6 +57,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
   const [chosen, setChosen] = useState<Record<string, string>>({}) // cardId → copia scelta
   const [type, setType] = useState<CardKind>('CREATURE')
   const [suit, setSuit] = useState<SuitId | 'tutti'>('tutti')
+  const [zoom, setZoom] = useState<Option | null>(null) // carta ingrandita (CardZoom)
 
   const [saving, setSaving] = useState(false)
   const [nameError, setNameError] = useState('')
@@ -280,7 +282,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
             <div className="editor-griglia">
               {list.map((o) => {
                 const { state, reason } = stateOf(o)
-                return <EditorCard key={o.card.cardId} card={o.card} state={state} reason={reason} onToggle={() => toggle(o)} />
+                return <EditorCard key={o.card.cardId} card={o.card} state={state} reason={reason} onToggle={() => toggle(o)} onZoom={() => setZoom(o)} />
               })}
             </div>
           </div>
@@ -326,6 +328,12 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
           </div>
         </section>
       </div>
+
+      {/* Carta ingrandita: lo stato si ricalcola a ogni modifica, così dopo "Aggiungi" la finestra mostra "Togli" */}
+      {zoom && (() => {
+        const { state, reason } = stateOf(zoom)
+        return <CardZoom card={zoom.card} state={state} reason={reason} onToggle={() => toggle(zoom)} onClose={() => setZoom(null)} />
+      })()}
     </main>
   )
 }

@@ -55,28 +55,86 @@
 .editor-filtri__seme { width: 14px; height: 14px; }
 .info-chip[aria-pressed="true"] .editor-filtri__seme { background: var(--petrol-900); }
 .editor-lista { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 6px 6px 2px; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
-.editor-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 16px 14px; align-content: start; }
+.editor-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px 14px; align-content: start; }
 
 /* Carta della collezione: libera (+), nel mazzo (spunta, accesa) o bloccata (spenta, con il motivo) */
 .e-carta { position: relative; display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: center; cursor: pointer; font: inherit; }
-.e-carta .q-cg { width: 100%; aspect-ratio: 2 / 3; transition: transform .15s ease, filter .15s ease; }
-.e-carta:hover .q-cg { transform: translateY(-2px); }
+/* e-faccia = la carta disegnata: con cornice (creature, card-frame.css) o mini (magie ed equipaggiamenti) */
+.e-carta .e-faccia { width: 100%; aspect-ratio: 2 / 3; transition: transform .15s ease, filter .15s ease; }
+.e-carta:hover .e-faccia { transform: translateY(-2px); }
 .e-carta:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 4px; }
 .e-carta--bloccata { cursor: default; }
-.e-carta--bloccata .q-cg { filter: grayscale(1) brightness(.45); }
-.e-carta--bloccata:hover .q-cg { transform: none; }
-.e-carta--dentro .q-cg { filter: drop-shadow(0 0 10px rgba(74,166,173,.65)); }
+.e-carta--bloccata .e-faccia { filter: grayscale(1) brightness(.45); }
+.e-carta--bloccata:hover .e-faccia { transform: none; }
+.e-carta--dentro .e-faccia { filter: drop-shadow(0 4px 12px rgba(74,166,173,.7)); }
 .e-arte { align-items: center; justify-content: center; gap: 2px; background: radial-gradient(circle at 50% 45%, #16353B, #0A1418 75%); }
-.e-arte__seme { width: 22px; height: 22px; }
 .e-arte__rango { font-family: var(--font-display); font-size: 34px; line-height: 1; font-weight: 700; color: var(--petrol-300); }
-.e-arte__valori { margin-top: 4px; font-size: 10.5px; font-weight: 600; letter-spacing: .04em; font-variant-numeric: tabular-nums; color: #A9BCC3; }
-.e-segno { position: absolute; right: 6px; top: 6px; z-index: 3; display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; color: #EEF4F5;
+/* il segno +/✓ sta nell'angolo della finestra dell'illustrazione, non sopra rango e seme della cornice
+   (cqw = larghezza della carta; la finestra inizia al 9,1% dell'altezza = 13,65% della larghezza) */
+.e-carta { container: e-carta / inline-size; }
+.e-segno { position: absolute; right: calc(2.6cqw + 6px); top: calc(13.65cqw + 6px); z-index: 3; display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; color: #EEF4F5;
   background: rgba(8,16,20,.85); box-shadow: inset 0 0 0 1px rgba(213,225,229,.45); }
 .e-carta--libera:hover .e-segno { color: var(--ground-950); background: #D5E1E5; }
 .e-carta--dentro .e-segno { color: var(--ground-950); background: var(--petrol-300); box-shadow: 0 0 10px rgba(143,214,219,.7); }
+/* cella della griglia: la carta (bottone) e la lente, che non può stare dentro il bottone */
+.e-cella { position: relative; container-type: inline-size; }
+.e-carta { -webkit-touch-callout: none; user-select: none; } /* la pressione lunga apre la carta, non il menu del browser */
+/* lente nell'angolo opposto al segno +/✓; area di tocco più grande del disegno */
+.e-lente { position: absolute; left: calc(2.6cqw + 6px); top: calc(13.65cqw + 6px); z-index: 3; display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; padding: 0; cursor: zoom-in; color: #EEF4F5; background: rgba(8,16,20,.85); box-shadow: inset 0 0 0 1px rgba(213,225,229,.45);
+  transition: color .15s ease, background-color .15s ease; }
+.e-lente::before { content: ""; position: absolute; inset: -8px; }
+.e-lente:hover { color: var(--ground-950); background: #D5E1E5; }
+.e-lente:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+/* col mouse la lente compare passando sulla carta; al tocco (niente hover) resta sempre visibile */
+@media (hover: hover) and (pointer: fine) {
+  .e-lente { opacity: 0; transition: opacity .15s ease, color .15s ease, background-color .15s ease; }
+  .e-cella:hover .e-lente, .e-lente:focus-visible { opacity: 1; }
+}
+
+/* ---------- Carta ingrandita (CardZoom) ---------- */
+.e-zoom { margin: auto; padding: 0; border: 0; overflow: visible; max-width: calc(100% - 32px); max-height: calc(100% - 32px); background: transparent; color: var(--silver-100); }
+.e-zoom[open] { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.e-zoom::backdrop { background: rgba(5,10,13,.84); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+/* la carta prende tutto lo spazio che resta sopra alle informazioni, senza superare 380px */
+.e-zoom__carta { width: min(82vw, calc((100dvh - 220px) * 2 / 3), 380px); filter: drop-shadow(0 18px 40px rgba(0,0,0,.6)); }
+.e-zoom__mini { width: 100%; aspect-ratio: 2 / 3; }
+.e-zoom__mini .e-arte__rango { font-size: 96px; }
+.e-zoom__info { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 380px; text-align: center; }
+.e-zoom__info h2 { margin: 0; font-family: var(--font-display); font-size: 20px; line-height: 1.2; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; text-wrap: balance; }
+.e-zoom__tipo { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--petrol-300); }
+.e-zoom__colore { margin: 4px 0 0; font-family: var(--font-serif); font-size: 15px; line-height: 1.45; font-style: italic; color: #C9D6DA; text-wrap: pretty; }
+.e-zoom__set { margin: 0; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+.e-zoom__motivo { margin: 6px 0 0; font-size: 14px; line-height: 1.4; color: #A9BCC3; }
+.e-zoom__info .q-btn { margin-top: 8px; }
+.e-zoom__chiudi { position: fixed; top: 12px; right: 12px; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; cursor: pointer;
+  border: 0; color: #EEF4F5; background: rgba(8,16,20,.7); box-shadow: inset 0 0 0 1px rgba(213,225,229,.35); }
+.e-zoom__chiudi:hover { background: rgba(213,225,229,.15); }
+.e-zoom__chiudi:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+/* entrata: la carta sale e si mette a fuoco (già visibile dal primo fotogramma, solo più piccola) */
+@media (prefers-reduced-motion: no-preference) {
+  .e-zoom[open] .e-zoom__carta { animation: e-zoom-in .26s cubic-bezier(.16, 1, .3, 1); }
+  .e-zoom[open]::backdrop { animation: e-zoom-velo .2s ease-out; }
+}
+@keyframes e-zoom-in { from { transform: translateY(14px) scale(.94); } }
+@keyframes e-zoom-velo { from { opacity: 0; } }
+
 .e-stato { min-height: 14px; font-size: 10.5px; font-weight: 600; line-height: 1.3; letter-spacing: .12em; text-transform: uppercase; color: var(--steel-300); }
 .e-carta--libera .e-stato { color: var(--silver-100); }
 .e-carta--dentro .e-stato { color: var(--petrol-300); }
+
+/* carta piccola (sotto i 140px, cioè su telefono): il nome esce dalla cornice e si legge sotto, su due righe al massimo.
+   "Aggiungi" / "Nel mazzo" spariscono perché li dice già il segno +/✓; resta solo il motivo delle carte bloccate */
+.e-nome { display: none; }
+@container e-carta (max-width: 139px) {
+  .e-nome { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+    margin-top: -2px; padding: 0 2px; font-family: var(--font-display); font-size: 11.5px; line-height: 1.25; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase; overflow-wrap: anywhere; color: #EEF4F5; }
+  .e-carta--dentro .e-nome { color: var(--petrol-300); }
+  .e-carta--bloccata .e-nome { color: var(--steel-300); }
+  .e-carta--libera .e-stato, .e-carta--dentro .e-stato { display: none; }
+  .e-carta--bloccata .e-stato { font-size: 10px; letter-spacing: .06em; text-transform: none; }
+}
 
 /* Il tuo mazzo */
 .editor-mazzo { min-height: 0; }
