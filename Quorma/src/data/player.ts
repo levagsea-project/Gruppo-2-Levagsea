@@ -1,4 +1,6 @@
 import { getSession } from '../lib/auth'
+import { loadProfile } from '../lib/profileStore'
+import { findAvatar } from './avatars'
 
 // Il giocatore. Il backend per ora restituisce solo il nome (all'accesso): livello, esperienza,
 // valute, partite e scambi non esistono ancora, quindi non li mostriamo come se fossero veri
@@ -11,10 +13,11 @@ function initialsOf(name: string) {
   return letters.toUpperCase()
 }
 
-/** Il giocatore che ha fatto l'accesso (nome dalla sessione). */
+/** Il giocatore che ha fatto l'accesso: nome e immagine scelti in "Modifica profilo", altrimenti il nome dell'account. */
 export function currentPlayer() {
-  const name = getSession()?.username?.trim() || 'Giocatore'
-  return { name, initials: initialsOf(name) }
+  const stored = loadProfile()
+  const name = stored.name?.trim() || getSession()?.username?.trim() || 'Giocatore'
+  return { name, initials: initialsOf(name), avatar: findAvatar(stored.avatar) }
 }
 
 // Le due valute: nomi provvisori, saldo non ancora disponibile dal backend (null = "in arrivo").

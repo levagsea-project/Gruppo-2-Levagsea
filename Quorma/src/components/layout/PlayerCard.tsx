@@ -15,7 +15,7 @@ export default function PlayerCard({ current, onNavigate }: Props) {
       className="q-profilo"
       title={player.name}
       aria-label={`Apri il profilo di ${player.name}`}
-      aria-current={current === 'profilo' ? 'page' : undefined}
+      aria-current={current === 'profilo' || current === 'modifica-profilo' ? 'page' : undefined}
       onClick={(e) => {
         e.preventDefault()
         onNavigate('profilo')

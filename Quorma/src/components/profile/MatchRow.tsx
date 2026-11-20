@@ -1,4 +1,5 @@
 import type { Match } from '../../data/profile'
+import { formatWhen } from '../../lib/matches'
 import ResultLabel from './ResultLabel'
 
 type Props = { match: Match; selected: boolean; onSelect: () => void }
@@ -12,7 +13,7 @@ export default function MatchRow({ match, selected, onSelect }: Props) {
         <b>Contro {match.opponent}</b>
         <small>{match.mode} · {match.deck} · {match.turns} turni</small>
       </span>
-      <time className="pf-match-when">{match.when}</time>
+      <time className="pf-match-when">{formatWhen(match.playedAt)}</time>
     </button>
   )
 }

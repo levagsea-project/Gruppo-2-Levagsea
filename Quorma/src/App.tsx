@@ -21,6 +21,7 @@ import GlossaryPage from './components/info/GlossaryPage'
 import ContactsPage from './components/info/ContactsPage'
 import LegalPage from './components/info/LegalPage'
 import ProfilePage from './components/profile/ProfilePage'
+import EditProfilePage from './components/profile/EditProfilePage'
 import './styles/layout.css'
 import './styles/sidebar.css'
 import './styles/home.css'
@@ -154,7 +155,8 @@ export default function App() {
       {page === 'cookie' && <LegalPage kind="cookie" onNavigate={open} />}
       {page === 'termini' && <LegalPage kind="termini" onNavigate={open} />}
 
-      {page === 'profilo' && <ProfilePage />}
+      {page === 'profilo' && <ProfilePage onNavigate={open} />}
+      {page === 'modifica-profilo' && <EditProfilePage onNavigate={open} />}
 
       {page === 'altro' && <MorePage onNavigate={open} />}
 

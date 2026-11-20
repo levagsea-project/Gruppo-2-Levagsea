@@ -2,6 +2,10 @@ import { useState, type CSSProperties } from 'react'
 import { factions } from '../../data/factions'
 import type { Page } from '../../data/navItems'
 import { playModes } from '../../data/play'
+import { resultLabel } from '../../data/profile'
+import type { Match } from '../../data/profile'
+import { recordMatch } from '../../lib/matches'
+import { simulateMatch } from '../../lib/simulateMatch'
 import type { Deck, PlayStatus } from '../../types/deck'
 import { playBlockReason } from '../../hooks/usePlayStatus'
 import CurrencyBar from '../layout/CurrencyBar'
@@ -32,10 +36,12 @@ type Props = { decks: Deck[]; playStatus: PlayStatus | null; onNavigate: (page: 
 
 // Pagina Gioca: 1) modalità, 2) mazzo, poi riepilogo e "Inizia partita".
 // Si gioca solo con un mazzo non obsoleto, e solo con un mazzo di difesa valido per entrambe le fazioni
-// (GET /decks/play-status). Per ora "Inizia partita" non fa nulla.
+// (GET /decks/play-status). Il gioco vero non esiste ancora: "Inizia partita" gioca una partita SIMULATA
+// contro il computer e la salva (lib/matches.ts): profilo, statistiche e cronologia si aggiornano.
 export default function PlayPage({ decks, playStatus, onNavigate }: Props) {
   const [modeId, setModeId] = useState(playModes[0].id)
   const [chosenDeckId, setChosenDeckId] = useState<string | null>(null)
+  const [last, setLast] = useState<Match | null>(null) // ultima partita giocata, per il messaggio
 
   // Il backend salva solo mazzi completi: un mazzo non si può usare solo se è diventato obsoleto.
   const isComplete = (d: Deck) => !d.outdated
@@ -43,6 +49,12 @@ export default function PlayPage({ decks, playStatus, onNavigate }: Props) {
   const mode = playModes.find((m) => m.id === modeId) ?? playModes[0]
   // Mazzo scelto: quello cliccato se è completo, altrimenti il primo completo.
   const deck = decks.find((d) => d.id === chosenDeckId && isComplete(d)) ?? decks.find(isComplete) ?? null
+
+  const start = () => {
+    if (!deck) return
+    const match = simulateMatch({ name: deck.name, faction: deck.faction }, mode.title)
+    if (recordMatch(match)) setLast(match)
+  }
 
   const summary = deck ? `${mode.title} · ${deck.name}` : mode.title
   const hint = !deck
@@ -153,13 +165,20 @@ export default function PlayPage({ decks, playStatus, onNavigate }: Props) {
           <div className="play-riepilogo" aria-live="polite">
             <span>{summary}</span>
             <small>{hint}</small>
+            {last && (
+              <small role="status">
+                Partita simulata: {resultLabel[last.result]} in {last.turns} turni.{' '}
+                <button type="button" className="play-gestisci" onClick={() => onNavigate('profilo')}>
+                  Vedi nel profilo
+                </button>
+              </small>
+            )}
           </div>
           <div className="play-bottoni">
             <button type="button" className="q-btn q-btn--acciaio play-gestisci-btn" onClick={() => onNavigate('mazzi')}>
               <span className="q-btn__in">Gestisci mazzi</span>
             </button>
-            {/* Per ora non fa nulla: la partita non esiste ancora */}
-            <button type="button" className="q-btn q-btn--sigillo" disabled={!deck || !!blocked}>
+            <button type="button" className="q-btn q-btn--sigillo" disabled={!deck || !!blocked} onClick={start}>
               <span className="q-btn__in">
                 <Star />
                 Inizia partita

@@ -1,4 +1,5 @@
 import type { Match } from '../../data/profile'
+import { formatWhen } from '../../lib/matches'
 import ResultLabel from './ResultLabel'
 
 type Props = { matches: Match[]; onAll: () => void }
@@ -18,7 +19,7 @@ export default function RecentMatches({ matches, onAll }: Props) {
                 <ResultLabel result={m.result} />
                 <span>
                   <b>contro {m.opponent}</b>
-                  <small>{m.mode} · {m.when}</small>
+                  <small>{m.mode} · {formatWhen(m.playedAt)}</small>
                 </span>
               </li>
             ))}

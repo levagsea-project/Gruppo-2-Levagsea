@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { currentPlayer } from '../../data/player'
+import { factions } from '../../data/factions'
+import { formatWhen } from '../../lib/matches'
 import type { Match } from '../../data/profile'
-import { turnRows } from '../../data/profile'
 import ResultLabel from './ResultLabel'
 
 // Pannello a destra dello storico: tutti i dettagli della partita scelta.
@@ -22,23 +23,23 @@ export default function MatchDetail({ match }: { match: Match }) {
   return (
     <section className="q-tela pf-detail" aria-label="Dettaglio partita">
       <div className="q-tela__in">
-        <span className="pf-label">Partita</span>
+        <span className="pf-label">Partita{match.simulated && <em className="pf-sim">Simulata</em>}</span>
         <div className="pf-detail-head">
           <ResultLabel result={match.result} className="pf-detail-result" />
-          <time>{match.when}</time>
+          <time>{formatWhen(match.playedAt)}</time>
         </div>
 
         <div className="pf-versus">
           <div>
             <b>{player.name}</b>
-            <span className="pf-link">{match.deck} · {match.myFaction}</span>
-            <small>Vita finale {match.lifeMine}</small>
+            <span className="pf-link">{match.deck} · {factions[match.myFaction].name}</span>
+            <small>Vita finale {match.lifeMine.toLocaleString('it-IT')}</small>
           </div>
           <em>Contro</em>
           <div className="is-right">
             <b>{match.opponent}</b>
-            <span className="pf-link">{match.oppFaction}</span>
-            <small>Vita finale {match.lifeOpp}</small>
+            <span className="pf-link">{factions[match.oppFaction].name}</span>
+            <small>Vita finale {match.lifeOpp.toLocaleString('it-IT')}</small>
           </div>
         </div>
 
@@ -55,7 +56,7 @@ export default function MatchDetail({ match }: { match: Match }) {
               <tr><th>Turno</th><th>Tua mano</th><th>Avversario</th></tr>
             </thead>
             <tbody>
-              {turnRows.map(([mine, theirs], i) => (
+              {match.turnHands.map(([mine, theirs], i) => (
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>{mine}</td>

@@ -150,3 +150,33 @@ button.mb-avatar { padding: 0; border: 0; background: none; cursor: pointer; }
   .pf-turns { max-height: 260px; }
   .pf-actions .q-btn { display: flex; }
 }
+
+/* ---------- avatar con immagine (Profilo e Modifica profilo) ---------- */
+.pf-avatar { display: block; padding: 0; font-size: 0; background: #0C171C; }
+.pf-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pf-sim { margin-left: 10px; font-style: normal; letter-spacing: .14em; color: var(--petrol-300); }
+.pf-nohands { margin: 0 0 26px; }
+
+/* ---------- Modifica profilo ---------- */
+.pe-body { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; }
+.pe-form { min-width: 0; max-width: 620px; display: flex; flex-direction: column; }
+.pe-input { width: 100%; max-width: 440px; height: 40px; padding: 0 14px; border: 1px solid rgba(213,225,229,.35); font-family: inherit; font-size: 14px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #EEF4F5; background: #0A1519; }
+.pe-input:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+.pe-input[aria-invalid="true"] { border-color: #E8A07A; }
+.pe-hint { margin: 8px 0 0; max-width: 440px; font-size: 12px; line-height: 17px; color: var(--steel-300); }
+.pe-error { min-height: 20px; margin: 4px 0 14px; font-size: 12.5px; color: #E8A07A; }
+.pe-picker { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+.pe-pick { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 84px; padding: 0; border: 0; color: var(--steel-300); background: none; }
+.pe-thumb { display: block; width: 76px; height: 96px; overflow: hidden; border: 1px solid rgba(213,225,229,.3); border-radius: 50% 50% 4px 4px / 34% 34% 4px 4px; opacity: .6; transition: opacity .15s ease; }
+.pe-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pe-pick-name { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.pe-pick:hover .pe-thumb { opacity: .9; }
+.pe-pick:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 4px; }
+.pe-pick[aria-checked="true"] .pe-thumb { opacity: 1; border: 2px solid var(--petrol-300); box-shadow: 0 0 16px rgba(74,166,173,.6); }
+.pe-pick[aria-checked="true"] { color: var(--silver-50); font-weight: 600; }
+.pe-preview { align-self: start; }
+.pe-actions { display: flex; gap: 14px; margin-top: auto; }
+
+@media (max-width: 1023px) {
+  .pe-body { display: flex; flex-direction: column; gap: 24px; }
+}

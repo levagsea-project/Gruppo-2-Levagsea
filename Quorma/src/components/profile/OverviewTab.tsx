@@ -4,13 +4,13 @@ import PlayerPanel from './PlayerPanel'
 import StatsPanel from './StatsPanel'
 import RecentMatches from './RecentMatches'
 
-type Props = { overview: Overview | null; matches: Match[]; onChangeTab: (tab: Tab) => void }
+type Props = { overview: Overview; matches: Match[]; onChangeTab: (tab: Tab) => void; onEditProfile: () => void }
 
 // Scheda "Panoramica": giocatore | statistiche | ultime partite.
-export default function OverviewTab({ overview, matches, onChangeTab }: Props) {
+export default function OverviewTab({ overview, matches, onChangeTab, onEditProfile }: Props) {
   return (
     <div className="pf-body pf-overview">
-      <PlayerPanel onEdit={() => onChangeTab('impostazioni')} />
+      <PlayerPanel onEdit={onEditProfile} />
       <StatsPanel overview={overview} />
       <RecentMatches matches={matches} onAll={() => onChangeTab('partite')} />
     </div>

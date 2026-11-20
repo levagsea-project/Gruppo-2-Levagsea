@@ -1,50 +1,56 @@
-import { handNames, statLabels } from '../../data/profile'
 import type { Overview } from '../../data/profile'
+import { factions } from '../../data/factions'
 
-const EMPTY = '—' // dato non ancora disponibile
+// Colonna centrale della panoramica. Tutti i numeri arrivano da `overview`, calcolato dalle partite giocate.
+export default function StatsPanel({ overview }: { overview: Overview }) {
+  const { total, wins, losses, draws, hands, bestHand, faction } = overview
+  const numbers = [
+    { label: 'Partite', value: total },
+    { label: 'Vittorie', value: wins, extra: total ? `${Math.round((wins / total) * 100)}%` : undefined },
+    { label: 'Sconfitte', value: losses },
+    { label: 'Pareggi', value: draws },
+  ]
 
-// Colonna centrale della panoramica: numeri, mani più giocate, mano migliore e fazione preferita.
-// overview = null → il backend non ha ancora i dati: si vedono i trattini.
-export default function StatsPanel({ overview }: { overview: Overview | null }) {
   return (
     <section className="pf-stats" aria-label="Statistiche">
       <h2 className="pf-heading">Statistiche</h2>
-      {!overview && <p className="pf-soon">Le statistiche appariranno dopo le prime partite.</p>}
+      {total === 0 && <p className="pf-soon">Gioca la tua prima partita: qui compariranno le statistiche.</p>}
 
       <div className="pf-numbers">
-        {statLabels.map((label, i) => (
-          <div key={label}>
-            <b>{overview?.stats[i].value ?? EMPTY}</b>
-            <span>{label}</span>
-            {overview?.stats[i].extra && <small>{overview.stats[i].extra}</small>}
+        {numbers.map((n) => (
+          <div key={n.label}>
+            <b>{n.value}</b>
+            <span>{n.label}</span>
+            {n.extra && <small>{n.extra}</small>}
           </div>
         ))}
       </div>
 
       <span className="pf-label">Mani giocate più spesso</span>
-      <ul className="pf-bars">
-        {handNames.map((name) => {
-          const percent = overview?.hands.find((h) => h.name === name)?.percent
-          return (
-            <li key={name}>
-              <span>{name}</span>
-              <span className="pf-bar"><span style={{ width: `${percent ?? 0}%` }} /></span>
-              <span className="pf-pct">{percent === undefined ? EMPTY : `${percent}%`}</span>
+      {hands.length === 0 ? (
+        <p className="pf-empty pf-nohands">Nessuna mano ancora.</p>
+      ) : (
+        <ul className="pf-bars">
+          {hands.map((h) => (
+            <li key={h.name}>
+              <span>{h.name}</span>
+              <span className="pf-bar"><span style={{ width: `${h.percent}%` }} /></span>
+              <span className="pf-pct">{h.percent}%</span>
             </li>
-          )
-        })}
-      </ul>
+          ))}
+        </ul>
+      )}
 
       <div className="pf-highlights">
         <div>
           <span className="pf-label">Mano migliore</span>
-          <strong>{overview?.bestHand.name ?? EMPTY}</strong>
-          <small>{overview?.bestHand.detail ?? 'In arrivo'}</small>
+          <strong>{bestHand?.name ?? '—'}</strong>
+          <small>{bestHand ? `Ottenuta ${bestHand.times} ${bestHand.times === 1 ? 'volta' : 'volte'}` : 'Nessuna partita'}</small>
         </div>
         <div>
           <span className="pf-label">Fazione più giocata</span>
-          <strong>{overview?.faction.name ?? EMPTY}</strong>
-          <small>{overview?.faction.detail ?? 'In arrivo'}</small>
+          <strong>{faction ? factions[faction.id].name : '—'}</strong>
+          <small>{faction ? `${faction.percent}% delle partite · ${faction.deck}` : 'Nessuna partita'}</small>
         </div>
       </div>
     </section>
