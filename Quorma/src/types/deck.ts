@@ -32,6 +32,9 @@ export type GameCard = {
   atk: number | null
   def: number | null
   slot: string // posto nel mazzo: una creatura per seme e rango, una copia per magia o equipaggiamento
+  flavour: string | null // testo di colore, nella lingua textLocale
+  textLocale: string // lingua di name e flavour (es. "it"): quella chiesta se la carta ce l'ha, altrimenti l'italiano
+  sets: { code: string; name: string }[] // set della carta (es. BASE, "Set base")
 }
 
 // Una copia posseduta di una carta (GET /collection): nel mazzo si mette la copia, non la carta.

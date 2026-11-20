@@ -44,11 +44,15 @@ export class ApiError extends Error {
   }
 }
 
+// Lingua dei testi delle carte (nome, testo di colore, nome del set). L'interfaccia è in italiano, quindi chiediamo
+// l'italiano: il backend usa la prima lingua che la carta ha e ripiega sull'italiano carta per carta (textLocale).
+const TEXT_LANGUAGE = 'it'
+
 type RequestOptions = { body?: unknown; token?: string }
 
 /** Chiama il backend e restituisce il JSON; in caso di errore lancia ApiError con il messaggio già tradotto. */
 export async function request<T>(method: string, path: string, { body, token }: RequestOptions = {}): Promise<T> {
-  const headers: Record<string, string> = {}
+  const headers: Record<string, string> = { 'Accept-Language': TEXT_LANGUAGE }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
 
