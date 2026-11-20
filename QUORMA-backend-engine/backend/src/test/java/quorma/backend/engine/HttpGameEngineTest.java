@@ -109,6 +109,40 @@ class HttpGameEngineTest {
                 () -> engine(Duration.ofSeconds(5)).simulate(json("{}")));
     }
 
+    private void replyInfo(int status, String body) {
+        server.createContext("/engine/info", exchange -> {
+            byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().add("Content-Type", "application/json");
+            exchange.sendResponseHeaders(status, bytes.length == 0 ? -1 : bytes.length);
+            if (bytes.length > 0) {
+                exchange.getResponseBody().write(bytes);
+            }
+            exchange.close();
+        });
+    }
+
+    @Test
+    void infoReadsTheIdentityOfTheEngineAndIgnoresTheRest() {
+        replyInfo(200, "{\"status\":\"UP\",\"engineVersion\":\"1.2.3\",\"rulesetVersion\":\"1.0-alpha\",\"rulesetHash\":\"" + "ab".repeat(32) + "\"}");
+
+        EngineInfo info = engine(Duration.ofSeconds(5)).info();
+
+        assertEquals(new EngineInfo("1.2.3", "1.0-alpha", "ab".repeat(32)), info);
+    }
+
+    @Test
+    void infoFromAnEngineThatFailsIsUnavailable() {
+        replyInfo(500, "{\"status\":500}");
+        assertThrows(EngineUnavailableException.class, () -> engine(Duration.ofSeconds(5)).info());
+    }
+
+    @Test
+    void infoWithAnEmptyBodyIsUnavailable() {
+        replyInfo(200, "");
+        EngineUnavailableException e = assertThrows(EngineUnavailableException.class, () -> engine(Duration.ofSeconds(5)).info());
+        assertEquals("empty response from the engine service", e.getMessage());
+    }
+
     @Test
     void emptyBodyBecomesUnavailable() {
         reply(200, "", 0);

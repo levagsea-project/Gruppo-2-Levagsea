@@ -17,6 +17,14 @@ public class DeckValidator {
 
     public static final int DECK_SIZE = 32;
 
+    /** The fewest creatures a deck of the faction may have (the most is three more; the rest of the 32 are spells and equipment). */
+    public static int minCreatures(Faction faction) {
+        return switch (faction) {
+            case RESISTENZA_UMANA -> 20;
+            case POTENZE_ARTIFICIALI -> 24;
+        };
+    }
+
     /**
      * Returns one error per broken rule, all of them at once; an empty list means the deck is valid.
      * Rules: exactly {@value #DECK_SIZE} cards; Resistenza Umana 20-23 creatures, Potenze Artificiali 24-27; no two
@@ -30,10 +38,7 @@ public class DeckValidator {
             errors.add(DeckError.of(ErrorCodes.DECK_SIZE, "expected", DECK_SIZE, "found", cards.size()));
         }
 
-        int min = switch (faction) {
-            case RESISTENZA_UMANA -> 20;
-            case POTENZE_ARTIFICIALI -> 24;
-        };
+        int min = minCreatures(faction);
         int max = min + 3;
         long creatures = cards.stream().filter(c -> "CREATURE".equals(c.kind())).count();
         if (creatures < min || creatures > max) {

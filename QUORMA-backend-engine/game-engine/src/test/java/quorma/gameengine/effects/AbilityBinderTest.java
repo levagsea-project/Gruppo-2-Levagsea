@@ -134,9 +134,9 @@ class AbilityBinderTest {
 
     @Test
     void parkedOrUnknownAbilitiesAreRefused() {
-        String msg = refused(card(ref("K_LETALE")));
-        assertTrue(msg.contains("card RU-VIN-A K_LETALE: unknown ability"), msg);
-        assertTrue(refused(card(ref("EVO_FURIA"))).contains("unknown ability"), "a parked evolution is not loaded");
+        String msg = refused(card(ref("K_DOPPIO_COLPO")));
+        assertTrue(msg.contains("card RU-VIN-A K_DOPPIO_COLPO: unknown ability"), msg);
+        assertTrue(refused(card(ref("EVO_SACCHEGGIO"))).contains("unknown ability"), "a parked evolution is not loaded");
     }
 
     @Test
@@ -145,8 +145,8 @@ class AbilityBinderTest {
         assertTrue(refused(card(ref("K_SCUDO", "x", 25, "y", 1))).contains("unknown param 'y'"));
         assertTrue(refused(card(ref("K_SCUDO", "x", "25"))).contains("param 'x' must be an integer"));
         assertTrue(refused(card(ref("K_SCUDO", "x", 25, "kind", "half"))).contains("must be one of [pct, flat]"));
-        assertTrue(refused(card(ref("K_TRABOCCANTE", "factor", 1500))).contains("unknown param 'factor'"),
-                "only declared or tier-scaled params may be written on the card");
+        assertTrue(refused(card(ref("K_TRABOCCANTE", "multiplier", 1500))).contains("unknown param 'multiplier'"),
+                "only declared params and the numbers of the balance entry may be written on the card");
         assertTrue(refused(card(ref("K_INSAZIABILE", "permille", "lots"))).contains("must be an integer"));
     }
 
@@ -154,7 +154,7 @@ class AbilityBinderTest {
     void keywordValuesOutOfRangeAreRefused() {
         assertTrue(refused(card(ref("K_SCUDO", "x", 150))).contains("param 'pct' must be between 0 and 100, got 150"));
         assertTrue(refused(card(ref("K_PERFORANTE", "x", -5))).contains("param 'pct' must be between 0 and 100"));
-        assertTrue(refused(card(ref("K_INSAZIABILE", "permille", -1))).contains("param 'permille' must be 0 or more"));
+        assertTrue(refused(card(ref("K_TRABOCCANTE", "factor", -1))).contains("param 'factor' must be 0 or more"));
     }
 
     // ---- abilities written on the card (trigger, effect, target, no keyword) ----
@@ -198,13 +198,12 @@ class AbilityBinderTest {
 
     @Test
     void inlineAbilitiesAreCheckedLikeKeywords() {
-        assertTrue(refusedInline(expansion("T0", "E26", ResClass.C, "D_Permanente"))
-                .contains("card RU-VIN-A INLINE_1: effect E26 is not implemented"));
-        assertTrue(refusedInline(expansion("T0", "E1", ResClass.C, "D_Permanente", "mode", "pct_base_atk", "permille", 100))
-                .contains("effect E1 with trigger T0, class C and duration D_Permanente is not implemented by the engine yet "
-                        + "(supported: T0/C/D_FincheSorgenteInGioco, T12/T/D_Permanente, T19/T/D_Permanente, T29/T/D_FinoAUccisione, no trigger/I/D_Permanente)"));
+        assertTrue(refusedInline(expansion("T0", "E40", ResClass.C, "D_Permanente"))
+                .contains("card RU-VIN-A INLINE_1: effect E40 is not implemented"));
+        assertTrue(refusedInline(expansion("T19", "E26", ResClass.T, "D_Permanente"))
+                .contains("effect E26 with class T is not implemented by the engine yet (supported: [C])"));
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.T, "D_Permanente", "mode", "reduction_pct", "pct", 10))
-                .contains("class T"), "the class must match the shape");
+                .contains("class T does not fit trigger T0"), "the class must match the trigger");
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.C, "D_Permanente", "mode", "reduction_pct"))
                 .contains("effect E28 mode reduction_pct needs param 'pct'"));
         assertTrue(refusedInline(expansion("T0", "E28", ResClass.C, "D_Permanente", "mode", "reduction_pct", "pct", 10, "amount", 5))
@@ -243,25 +242,25 @@ class AbilityBinderTest {
 
     @Test
     void vocabularyTheEngineDoesNotImplementIsRefused() {
-        ExpansionDef destroy = new ExpansionDef(
-                "T0", Map.of(), "E26", Map.of(), "S1", Map.of(), "D_Permanente", List.of(), ResClass.C);
-        String msg = refusedKeyword(destroy);
-        assertTrue(msg.contains("card RU-VIN-A K_TEST: effect E26 is not implemented"), msg);
+        ExpansionDef unknownEffect = new ExpansionDef(
+                "T0", Map.of(), "E40", Map.of(), "S1", Map.of(), "D_Permanente", List.of(), ResClass.C);
+        String msg = refusedKeyword(unknownEffect);
+        assertTrue(msg.contains("card RU-VIN-A K_TEST: effect E40 is not implemented"), msg);
 
-        ExpansionDef otherTrigger = new ExpansionDef("T13", Map.of(), "E1",
+        ExpansionDef otherTrigger = new ExpansionDef("T14", Map.of(), "E1",
                 Map.of("mode", new Value.StrV("pct_base_atk"), "permille", new Value.IntV(100)),
                 "S1", Map.of(), "D_Permanente", List.of(), ResClass.T);
-        assertTrue(refusedKeyword(otherTrigger).contains("trigger T13 is not implemented"));
+        assertTrue(refusedKeyword(otherTrigger).contains("trigger T14 is not implemented"));
 
         ExpansionDef otherMode = new ExpansionDef("T0", Map.of(), "E28",
                 Map.of("mode", new Value.StrV("permille"), "permille", new Value.IntV(800)),
                 "S1", Map.of(), "D_Permanente", List.of(), ResClass.C);
         assertTrue(refusedKeyword(otherMode).contains("effect E28 with mode permille is not implemented"));
 
-        ExpansionDef onceATurn = new ExpansionDef("T19", Map.of(), "E1",
+        ExpansionDef badOnce = new ExpansionDef("T19", Map.of(), "E1",
                 Map.of("mode", new Value.StrV("pct_base_atk"), "permille", new Value.IntV(100)),
-                "S1", Map.of(), "D_Permanente", List.of(), ResClass.T, Map.of("once_per_turn", new Value.BoolV(true)));
-        assertTrue(refusedKeyword(onceATurn).contains("once_per_turn is not implemented"));
+                "S1", Map.of(), "D_Permanente", List.of(), ResClass.T, Map.of("once_per_turn", new Value.IntV(1)));
+        assertTrue(refusedKeyword(badOnce).contains("once_per_turn must be true or false"));
     }
 
     @Test

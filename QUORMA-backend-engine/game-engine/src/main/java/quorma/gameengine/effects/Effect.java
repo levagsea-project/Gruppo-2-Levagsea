@@ -1,0 +1,45 @@
+package quorma.gameengine.effects;
+
+import quorma.gameengine.model.Creature;
+import quorma.gameengine.model.Lasting;
+import quorma.gameengine.model.Side;
+
+/**
+ * What one effect of the vocabulary does to a creature. One class per effect ID (modes are branches inside the
+ * class), found by ID through {@link Effects}. The trigger side is not here: the stack decides when an effect
+ * resolves, and the turn code (through {@link EffectContext}) turns an {@link Outcome} into log events.
+ */
+public interface Effect extends EffectDefinition {
+
+    /**
+     * True if a static (T0) copy of this effect on an equipment is applied once, at once, and stays, instead of
+     * staying in force: the effects that change a current stat, which has no static layer (E2). The default is false.
+     */
+    default boolean appliedOnceWhenStatic() {
+        return false;
+    }
+
+    /**
+     * Applies the effect to {@code target}, a living creature.
+     *
+     * @param ctx    what the turn offers to an effect
+     * @param use    how this resolution was started
+     * @param target the creature it affects
+     */
+    Outcome apply(EffectContext ctx, Use use, Creature target);
+
+    /**
+     * How an effect resolution was started: by an ability on the stack, or at once (a spell, an equipment or an
+     * effect waiting on a lane).
+     *
+     * @param expansion  the effect's expansion, already scaled by E19 when it is triggered
+     * @param ownerSide  the side that owns the effect (the side of the source creature, or of the card)
+     * @param targetSide the side of the creature it affects
+     * @param source     the creature whose ability it is, null for an immediate effect
+     * @param lasting    how long what it does lasts
+     * @param context    what the trigger provides, {@link TriggerContext#NONE} for an immediate effect
+     * @param after      where destruction and other follow-ups of the effect are collected
+     */
+    record Use(BoundExpansion expansion, Side ownerSide, Side targetSide, Creature source, Lasting lasting,
+            TriggerContext context, Followups after) {}
+}

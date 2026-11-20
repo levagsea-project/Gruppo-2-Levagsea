@@ -41,12 +41,20 @@ public sealed interface Value {
 
     enum RefKind { PARAM, TUNE }
 
-    /** {@code $param.x} or {@code $tune.K_SCUDO.x}; {@code path} is what follows the first dot. */
-    record Ref(RefKind kind, String path) implements Value {
+    /**
+     * {@code $param.x} or {@code $tune.K_SCUDO.x}; {@code path} is what follows the first dot. {@code negated} is
+     * true for {@code -$param.x}: the resolved integer is negated (a malus written with the number of a bonus).
+     */
+    record Ref(RefKind kind, String path, boolean negated) implements Value {
+
+        public Ref(RefKind kind, String path) {
+            this(kind, path, false);
+        }
 
         /** The reference as written in JSON, for example {@code $tune.K_SCUDO.x}. */
         public String text() {
-            return "$" + kind.name().toLowerCase(java.util.Locale.ROOT) + (path.isEmpty() ? "" : "." + path);
+            return (negated ? "-" : "") + "$" + kind.name().toLowerCase(java.util.Locale.ROOT)
+                    + (path.isEmpty() ? "" : "." + path);
         }
     }
 

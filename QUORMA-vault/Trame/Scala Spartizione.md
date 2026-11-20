@@ -38,8 +38,8 @@ Indice e regole: [[🪜 Scale delle trame]].
 | Gradino | Carte | Che cosa vede il giocatore |
 |---|---|---|
 | 1 | [[Recitanti del Campo di Lancio]] (6), [[Scartati dell'Imbarco]] (4), [[Figli del Nome in Prestito]] (5), [[Scassinatori della Rotta]] (3) | Qualcuno è partito e non è tornato; a terra se ne tiene il posto |
-| 2 | [[Anagrafe in Transito]] (6), [[YLM-31 «Chiglia»]] (8), [[SEK-73 «Campana Muta»]] (7) | Le macchine li contano ancora; gli alloggi si chiudevano da fuori; dall'alto arriva una portante |
-| 3 | [[«Zenit», Incisora del Cielo]] (8), [[MER-2C-N05-004-61 «Attesa»]] (7) | Una luce si è fermata; qualcosa chiede di rientrare |
+| 2 | [[Anagrafe in Transito]] (6), [[YLM-31 «Chiglia»]] (8), [[SEK-73 «Campana Muta»]] (7), [[Ordito, Capocantiere di Gorra]] (K) | Le macchine li contano ancora; gli alloggi si chiudevano da fuori; dall'alto arriva una portante; il cantiere di Gorra ha un capocantiere che tiene lo scafo |
+| 3 | [[«Zenit», Incisora del Cielo]] (8), [[MER-2C-N05-004-61 «Attesa»]] (7), [[Lacuna «Posto Aperto»]] (A) | Una luce si è fermata; qualcosa chiede di rientrare; il nodo conta presenti i frammenti partiti e ne tiene i posti |
 | 4 | [[Sinodo dei Due Conti]] (K) | Due Potenze contano le stesse voci, 67 contro 61, e nessuna cede; la voce dell'offensiva è già passata da un nodo, ma nei rifugi non è ancora arrivata |
 | 5 | espansione |  |
 

@@ -35,6 +35,8 @@ public class PackOpening {
 
     private String packType;
 
+    private UUID setId;
+
     private String faction;
 
     private UUID snapshotId;
@@ -47,11 +49,12 @@ public class PackOpening {
     @Column(insertable = false, updatable = false)
     private Instant createdAt;
 
-    public PackOpening(UUID userId, UUID idempotencyKey, String packType, String faction, UUID snapshotId, long price,
-                       long creditsAfter) {
+    public PackOpening(UUID userId, UUID idempotencyKey, String packType, UUID setId, String faction,
+                       UUID snapshotId, long price, long creditsAfter) {
         this.userId = userId;
         this.idempotencyKey = idempotencyKey;
         this.packType = packType;
+        this.setId = setId;
         this.faction = faction;
         this.snapshotId = snapshotId;
         this.price = price;

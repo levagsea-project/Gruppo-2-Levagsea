@@ -15,9 +15,11 @@ import quorma.gameengine.model.Side;
  *
  * @param rulesetVersion the ruleset the caller expects; the engine refuses another one
  * @param rulesetHash    the rule pack hash the caller expects, if it sent one
+ * @param engineVersion  the engine version the caller expects, if it sent one (a replay sends the one that played)
  */
 public record MatchInput(
-        int schemaVersion, long seed, String rulesetVersion, Optional<String> rulesetHash, Map<Side, Player> players) {
+        int schemaVersion, long seed, String rulesetVersion, Optional<String> rulesetHash, Optional<String> engineVersion,
+        Map<Side, Player> players) {
 
     /** The only schema version this engine reads. */
     public static final int SCHEMA_VERSION = 1;
@@ -25,10 +27,17 @@ public record MatchInput(
     public MatchInput {
         Objects.requireNonNull(rulesetVersion, "rulesetVersion");
         Objects.requireNonNull(rulesetHash, "rulesetHash");
+        Objects.requireNonNull(engineVersion, "engineVersion");
         if (players.size() != 2 || !players.containsKey(Side.A) || !players.containsKey(Side.B)) {
             throw new IllegalArgumentException("players must be exactly A and B, got " + players.keySet());
         }
         players = Collections.unmodifiableMap(new EnumMap<>(players)); // A then B, always
+    }
+
+    /** A match with no expectation about the engine version (a new match: the engine that plays it is the one that counts). */
+    public MatchInput(int schemaVersion, long seed, String rulesetVersion, Optional<String> rulesetHash,
+                      Map<Side, Player> players) {
+        this(schemaVersion, seed, rulesetVersion, rulesetHash, Optional.empty(), players);
     }
 
     public Player player(Side side) {

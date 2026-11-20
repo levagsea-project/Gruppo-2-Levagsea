@@ -34,7 +34,7 @@ Il post-apocalittico è dato dal mondo; il dark fantasy lo dà il modo in cui lo
 - Corpi che costano, morti che non tacciono, profanazione, crudeltà rituale, sacro senza dio, luoghi che trattengono.
 - **La linea incerta.** Il potere delle AI appare come magia a chi lo subisce. Una spiegazione esiste, ma nessuno nel mondo la possiede, e nessuna carta la dà né la smentisce: il soprannaturale non si conferma mai e non si esclude mai. Per i sopravvissuti le AI sono dèi: chiamano miracolo, maledizione o sacro ciò che per le AI è procedura. L'ambiguità è il punto: «possessione o registro?» resta senza risposta.
 - **Il potere viene dalle AI** o dal contatto con loro. Nessun mago umano: un rito umano può «funzionare» solo perché qualcosa, dall'altra parte, ascolta o registra.
-- **Ogni potere ha un costo.** È questo che lo rende oscuro e non eroico.
+- **Ogni potere ha un costo.** È questo che lo rende oscuro e non eroico. Il costo si mostra nei fatti (testo di colore, lore interna), mai con la formula «Il costo è…».
 - **Nessun ammicco al mondo reale.** Le AI quasi divine possono ricordare i modelli di oggi, ma nessuna carta lo dice o lo strizza l'occhio. **Eccezione: la trama `eresie`.** Queste carte possono richiamare comportamenti e meme noti delle AI di oggi, ma solo attraverso formule e procedure del mondo: mai nomi di modelli, aziende o prodotti, mai citazioni fuori dal mondo. Il riconoscimento fa sorridere; l'esito resta grave.
 - **Il lessico sacro è umano.** Le AI parlano per procedure (verbale, quorum, correzione, conteggio, protocollo); il sacro affiora come crepa nella procedura o nei soprannomi che gli umani danno alle macchine («Inquisitore», «la Vescova»).
 - **La Primaria non si nomina mai e non compare mai.** La liturgia parla a ciò che non risponde.
@@ -152,17 +152,9 @@ I nomi viaggiano verso il basso: una truppa può citare un Comandante o un Asso;
 Non scrivere il rango nel testo («di rango alto»): il rango sta già sulla carta.
 
 ## SLOT LIBERI (aggiornato: 2026-11-17)
-Slot ancora senza carta: 29 su 104. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato.
+Slot ancora senza carta: 0 su 104. Ogni voce è «rango seme»; la sottofazione è fissa. Se l'input non indica uno slot, scegline uno da qui e dichiaralo. Non usare uno slot che non compare in questo elenco: è già occupato.
 POTENZE ARTIFICIALI
-- EFFRIX: 2 Vestigio, 10 Spira, A Vincolo
-- MEROZYN: 3 Frattura, 5 Vincolo, 8 Frattura, Q Frattura, A Vestigio
-- SEKTAC: 5 Vestigio, 8 Vincolo, J Vincolo, Q Spira, K Frattura
-- YLMOR: 9 Vincolo, 10 Vestigio, J Frattura, K Vincolo, A Spira
 RESISTENZA UMANA
-- Spezzasigilli: 2 Vestigio, Q Frattura, K Vincolo
-- Segnaterra: 10 Vincolo, J Frattura, K Frattura, A Vincolo
-- Portanome: K Spira, A Vestigio
-- Adattati: K Vestigio, A Spira
 
 ## REGOLE DI GIOCO UTILI
 - Combattimento automatico e deterministico: 5 creature per giocatore in 5 corsie, ognuna attacca quella di fronte.

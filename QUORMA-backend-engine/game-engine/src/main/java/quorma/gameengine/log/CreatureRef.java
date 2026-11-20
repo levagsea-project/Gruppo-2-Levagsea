@@ -5,7 +5,7 @@ import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Side;
 
 /** A creature in play, by owner, lane and card: how events name a creature without holding the state object. */
-public record CreatureRef(Side side, int lane, String cardId) {
+public record CreatureRef(Side side, int lane, String cardId) implements TargetRef {
 
     public CreatureRef {
         Objects.requireNonNull(side, "side");

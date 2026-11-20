@@ -119,7 +119,7 @@ class RefillTest {
     void drawingACreatureWithAnAbilityTheEngineCannotPlayFails() {
         PlayerState a = Boards.side(Subfaction.ADATTATI, 12000, board(2));
         a.deck().add(new CreatureCard("KV", 13, Suit.VINCOLO, Subfaction.ADATTATI, 4000, 6000,
-                List.of(new AbilityRef("K_LETALE"))));
+                List.of(new AbilityRef("K_DOPPIO_COLPO"))));
         PlayerState b = Boards.side(Subfaction.SEKTAC, 12000, board());
 
         assertThrows(AbilityException.class, () -> refill(match(a, b)));

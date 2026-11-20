@@ -65,9 +65,17 @@ def rule_matches(rule, x):
         want = rule.get(field)
         if want is not None and x.get(field) not in as_list(want):
             return False
+    if "with_param" in rule and rule["with_param"] not in x.get("effect_params", {}):
+        return False
     if "allowed_triggers" in rule:
         # whitelist rule: matches (= invalid) when effect matches and trigger not allowed
         return x.get("trigger_id") not in rule["allowed_triggers"] and x["effect_id"] in as_list(rule["effect_id"])
+    if "allowed_classes" in rule:
+        # whitelist rule: matches (= invalid) when the other fields match and the class is not allowed
+        return x.get("class") not in rule["allowed_classes"]
+    if "allowed_targets" in rule:
+        # whitelist rule: matches (= invalid) when the other fields match and the target is not allowed
+        return x.get("target_id") not in rule["allowed_targets"]
     return True
 
 
@@ -117,14 +125,24 @@ def check_expansion(where, x, origin, card_kind=None):
     # 4 trigger context
     ctx = S[s].get("requires_context")
     provided = card_contexts(card_kind) if t is None else provides_of(t, tp)
-    if ctx and ctx not in provided:
+    # an ability written on a card is checked like the engine does: the context only for class T (a spell or equipment
+    # takes the context of its targets from the card; a replacement reads the context its trigger implies)
+    if ctx and ctx not in provided and (origin is not None and origin in kw or origin in evo or origin in syn or cls == "T"):
         err(where, f"target {s} needs context '{ctx}' not provided by " + (f"a {card_kind}" if t is None else t))
     # 5 duration
     mode = E[e]["duration_mode"]
+    if cls == "I":
+        mode = "any"  # the engine ignores the duration of an immediate effect: it applies for good
     if mode == "instant_only" and d != "D_Istantanea":
         err(where, f"effect {e} is instant_only, got {d}")
     if mode == "sustained_only" and d == "D_Istantanea":
         err(where, f"effect {e} is sustained_only, got {d}")
+    # 11 reach: a creature target must be found in the class of the expansion (a continuous effect reaches it, a
+    # triggered effect chooses it when it resolves); the other classes are checked elsewhere
+    # (a continuous effect of a spell may aim at a selection, S33-S40, which the engine resolves when the spell is cast)
+    chosen_by_spell = card_kind == "spell" and cls == "C" and s in {f"S{n}" for n in range(33, 41)}
+    if cls in ("C", "T") and "creature" in S[s]["kind"] and not chosen_by_spell and cls not in S[s].get("reach_classes", []):
+        err(where, f"target {s} is not found by a class {cls} effect (reach_classes {S[s].get('reach_classes', [])})")
     # 6 class I only
     if card_kind is None and set(E[e]["class"]) == {"I"}:
         err(where, f"class-I-only effect {e} in a creature ability")
@@ -140,11 +158,13 @@ def check_expansion(where, x, origin, card_kind=None):
             err(where, "E14 grants " + unknown("keyword", p.get("keyword")))
         else:
             schema, given = k.get("params", {}), p.get("keyword_params", {})
+            b_ = bal["keywords"].get(k.get("balance_ref"), {})
+            scaled = list(b_.get("tier_scaled", [])) + list(b_.get("params", {}))  # as the engine allows them
             for n, spec in schema.items():
                 if spec.get("required") and n not in given:
                     err(where, f"E14 missing required keyword param {n}")
             for n in given:
-                if n not in schema:
+                if n not in schema and n not in scaled:
                     err(where, f"E14 unknown keyword param {n}")
     # 9 references
     for ref in re.findall(r"\$tune\.([A-Za-z0-9_.]+)", json.dumps(x)):
@@ -397,6 +417,231 @@ for prefix, sections in (("E", ("effects",)), ("T", ("triggers",)), ("S", ("targ
     nums = [int(i[1:]) for s in sections for i in list(vocab[s]) + list(p_vocab.get(s, {}))
             if i[1:].isdigit() and i.startswith(prefix)]
     print(f"INFO  next free {prefix} id: {prefix}{max(nums) + 1 if nums else 0} (live and parked counted)")
+
+# Set files (sets/<CODE>.json, checks 12 and 13): one self-contained batch per set, in the format the catalogue imports:
+# the set it defines, its cards as the engine reads them plus "sets", and the card text of every language. The files are
+# not bundled into anything: an admin imports them, or a deployment bootstraps from them (initial release, or rebuilding
+# the database from zero); after that the database is the only truth. Every ability is checked like a keyword or
+# evolution of the same shape; ids, params, slots and rank eligibility are checked here.
+set_files = sorted((root / "sets").glob("*.json")) if (root / "sets").is_dir() else []
+all_card_defs, all_names, referenced_sets, all_defined_sets, all_pack_codes = {}, {}, set(), set(), {}
+for set_path in set_files:
+    file_label = f"sets/{set_path.name}"
+    cards_doc = json.loads(set_path.read_text(encoding="utf-8"))
+    # set_definitions: the sets the file creates when they do not exist yet (code, optional status and dates)
+    defined_sets = set()
+    for sd in cards_doc.get("set_definitions", []):
+        sw = f"{file_label} set_definitions {sd.get('code', '?')}"
+        if set(sd) - {"code", "status", "release_date", "close_date"}:
+            err(sw, f"unknown fields {sorted(set(sd) - {'code', 'status', 'release_date', 'close_date'})}")
+        if not isinstance(sd.get("code"), str) or not re.fullmatch(r"[A-Z0-9_]{1,32}", sd["code"]):
+            err(sw, "code must be A-Z, 0-9, _ (1 to 32 characters)")
+        elif sd["code"] in defined_sets:
+            err(sw, "duplicate code")
+        else:
+            defined_sets.add(sd["code"])
+        if sd.get("status", "BOZZA") not in ("BOZZA", "IN_VENDITA", "CHIUSA"):
+            err(sw, "status must be BOZZA, IN_VENDITA or CHIUSA")
+    if defined_sets != {set_path.stem}:
+        err(file_label, f"a set file defines exactly its own set: set_definitions must be the one code {set_path.stem} (the file name)")
+    all_defined_sets |= defined_sets
+    # pack_types: the packs of this set (created with it when they do not exist yet): code, the file's own set, price, slots
+    # per Tier, support slots. Every Tier with slots needs a creature of that Tier in the file, and support slots need a
+    # spell or an equipment (a pack draws with repetition, so one card is enough): the same check the engine makes.
+    tier_of_rank = lambda r_: 4 if r_ == 1 else 3 if r_ >= 11 else 2 if r_ >= 7 else 1
+    file_tiers = {tier_of_rank(c_["rank"]) for c_ in cards_doc.get("cards", []) if c_.get("kind") == "CREATURE" and isinstance(c_.get("rank"), int)}
+    file_has_support = any(c_.get("kind") in ("SPELL", "EQUIPMENT") for c_ in cards_doc.get("cards", []))
+    for pt in cards_doc.get("pack_types", []):
+        pw = f"{file_label} pack_types {pt.get('code', '?')}"
+        if set(pt) - {"code", "set", "price", "slots", "support_slots", "featured"}:
+            err(pw, f"unknown fields {sorted(set(pt) - {'code', 'set', 'price', 'slots', 'support_slots', 'featured'})}")
+        if not isinstance(pt.get("code"), str) or not re.fullmatch(r"[a-z0-9_]{1,32}", pt["code"]):
+            err(pw, "code must be a-z, 0-9, _ (1 to 32 characters)")
+        elif pt["code"] in all_pack_codes:
+            err(pw, f"duplicate code (also in {all_pack_codes[pt['code']]})")
+        else:
+            all_pack_codes[pt["code"]] = file_label
+        if pt.get("set") != set_path.stem:
+            err(pw, f"a pack type of {file_label} belongs to the set {set_path.stem}")
+        if not isinstance(pt.get("price"), int) or isinstance(pt.get("price"), bool) or pt["price"] <= 0:
+            err(pw, "price must be a whole number above 0")
+        slots_ = pt.get("slots", {})
+        total_ = 0
+        if not isinstance(slots_, dict):
+            err(pw, "slots must be an object of TIER_1..TIER_4")
+            slots_ = {}
+        for tier_name, n_ in slots_.items():
+            if tier_name not in ("TIER_1", "TIER_2", "TIER_3", "TIER_4") or not isinstance(n_, int) or isinstance(n_, bool) or not 0 <= n_ <= 1000:
+                err(pw, f"slots.{tier_name} must be TIER_1..TIER_4 with a whole number from 0 to 1000")
+                continue
+            total_ += n_
+            if n_ > 0 and int(tier_name[-1]) not in file_tiers:
+                err(pw, f"{n_} {tier_name} slots and no creature of that Tier in the file: the pack cannot be filled")
+        sup_ = pt.get("support_slots", 0)
+        if not isinstance(sup_, int) or isinstance(sup_, bool) or not 0 <= sup_ <= 1000:
+            err(pw, "support_slots must be a whole number from 0 to 1000")
+        else:
+            total_ += sup_
+            if sup_ > 0 and not file_has_support:
+                err(pw, "support slots and no spell or equipment in the file: the pack cannot be filled")
+        if total_ < 1:
+            err(pw, "a pack holds at least one card")
+        if "featured" in pt and not isinstance(pt["featured"], bool):
+            err(pw, "featured must be true or false")
+    consts = vocab["constants"]
+    rank_code = {1: "A", 11: "J", 12: "Q", 13: "K"}
+    suit_codes = {x.upper(): x for x in consts["suits"]}
+    sub_faction = {x.upper(): f for f, names in consts["subfactions"].items() for x in names}
+    faction_codes = {f.upper().replace(" ", "_"): f for f in consts["factions"]}
+    slots = bal["globals"].get("card_ability_slots", {})
+    seen_ids, counts = set(), {}
+    for card in cards_doc.get("cards", []):
+        cid = card.get("id", "?")
+        where = f"{file_label} {cid}"
+        if cid in seen_ids:
+            err(where, "duplicate id")
+        seen_ids.add(cid)
+        # a card may be written in two set files (a reprint) only with the same definition
+        canon = json.dumps({k_: v_ for k_, v_ in card.items() if k_ != "sets"}, sort_keys=True)
+        first = all_card_defs.setdefault(cid, (file_label, canon))
+        if first[1] != canon:
+            err(where, f"also in {first[0]} with a different definition")
+        card_sets = card.get("sets")
+        if not isinstance(card_sets, list) or not card_sets or len(set(card_sets)) != len(card_sets) or not all(
+                isinstance(e_, str) and re.fullmatch(r"[A-Z0-9_]+", e_) for e_ in card_sets):
+            err(where, "sets must be a non-empty list of distinct codes (A-Z, 0-9, _)")
+        else:
+            referenced_sets.update(card_sets)
+            if set_path.stem not in card_sets:
+                err(where, f"a card of {file_label} is in the set {set_path.stem}")
+        kind = card.get("kind")
+        card_kind = {"CREATURE": None, "SPELL": "spell", "EQUIPMENT": "equipment"}.get(kind, "?")
+        if card_kind == "?":
+            err(where, f"unknown kind '{kind}'")
+            continue
+        if kind == "CREATURE":
+            extra = set(card) - {"id", "sets", "kind", "rank", "suit", "subfaction", "atk", "def", "abilities"}
+            if extra:
+                err(where, f"unknown fields {sorted(extra)}")
+            if card.get("rank") not in range(1, 14):
+                err(where, f"rank {card.get('rank')!r} must be 1..13 (Ace 1, Jack 11, Queen 12, King 13)")
+            if card.get("suit") not in suit_codes:
+                err(where, f"unknown suit '{card.get('suit')}'")
+            if card.get("subfaction") not in sub_faction:
+                err(where, f"unknown subfaction '{card.get('subfaction')}'")
+            for f_ in ("atk", "def"):
+                if not isinstance(card.get(f_), int) or isinstance(card.get(f_), bool) or card[f_] < (1 if f_ == "def" else 0):
+                    err(where, f"{f_} must be an integer ({'>= 1' if f_ == 'def' else '>= 0'})")
+            faction = sub_faction.get(card.get("subfaction"))
+            # <SET>-RES-... or <SET>-AI-...: the code of the set the card was first printed in, then its faction
+            marker = {"Resistenza Umana": "RES", "Potenze Artificiali": "AI"}.get(faction)
+            if marker and not re.match(rf"^[A-Z0-9_]+-{marker}-", cid):
+                err(where, f"id should look like <SET>-{marker}-... for a {faction} subfaction")
+            rank_name = rank_code.get(card.get("rank"), str(card.get("rank")))
+        else:
+            extra = set(card) - {"id", "sets", "kind", "faction", "abilities"}
+            if extra:
+                err(where, f"unknown fields {sorted(extra)}")
+            faction = faction_codes.get(card.get("faction"))
+            if faction is None:
+                err(where, f"unknown faction '{card.get('faction')}'")
+            rank_name = None
+        counts[(faction, kind)] = counts.get((faction, kind), 0) + 1
+        abilities = card.get("abilities")
+        if not isinstance(abilities, list):
+            err(where, "abilities must be a list")
+            continue
+        if not abilities and kind != "CREATURE":
+            # only a creature may be vanilla (decision 2026-11-19-vanilla-creatures)
+            err(where, "a spell or an equipment needs at least one ability")
+            continue
+        n_kw = n_evo = 0
+        used = set()
+        for i, a in enumerate(abilities):
+            aw = f"{where} ability[{i}]"
+            if "expansions" in a:
+                if set(a) != {"expansions"} or not a["expansions"]:
+                    err(aw, "an inline ability has only a non-empty 'expansions' list")
+                    continue
+                for j, x in enumerate(a["expansions"]):
+                    if "$param" in json.dumps(x):
+                        err(f"{aw}[{j}]", "unresolved $param reference")
+                    check_expansion(f"{aw}[{j}]", x, None, card_kind)
+                continue
+            if card_kind is not None:
+                err(aw, "spells and equipment write their abilities as expansions")
+                continue
+            aid = a.get("id")
+            if set(a) - {"id", "params"}:
+                err(aw, f"unknown fields {sorted(set(a) - {'id', 'params'})}")
+            table, bal_table = (kw, bal["keywords"]) if aid in kw else (evo, bal["evolutions"]) if aid in evo else (None, None)
+            if table is None:
+                err(aw, unknown("keyword or evolution", aid))
+                continue
+            if aid in used:
+                err(aw, f"{aid} is listed twice")
+            used.add(aid)
+            if table is kw:
+                n_kw += 1
+            else:
+                n_evo += 1
+            schema, given = table[aid].get("params") or {}, a.get("params", {})
+            bal_entry = bal_table.get(table[aid]["balance_ref"], {})
+            for n_, spec in schema.items():
+                if spec.get("required") and n_ not in given:
+                    err(aw, f"{aid} missing required param {n_}")
+            for n_ in given:  # a card may also write a tier-scaled number or a number of the ability's balance.json entry
+                if n_ not in schema and n_ not in bal_entry.get("tier_scaled", []) and n_ not in bal_entry.get("params", {}):
+                    err(aw, f"{aid} unknown param {n_}")
+            allowed = bal_entry.get("allowed_ranks")
+            if allowed is not None and rank_name is not None and rank_name not in allowed:
+                err(aw, f"{aid} is not allowed on rank {rank_name} (allowed: {', '.join(allowed)})")
+        if slots and n_kw > slots.get("keyword", 99):
+            err(where, f"{n_kw} keywords, at most {slots['keyword']}")
+        if slots and n_evo > slots.get("evolution", 99):
+            err(where, f"{n_evo} evolutions, at most {slots['evolution']}")
+    for (f_, k_), n_ in sorted(counts.items(), key=str):
+        print(f"INFO  cards {f_} {k_}: {n_}")
+
+    # Card text of this file (check 13): names, flavour and set text, by language. Mutable, outside the snapshot hash.
+    # Italian is the fallback language, so texts.it must be complete: a name and a flavour for every card of the file, and
+    # a name and a description for its set. Any other language may be partial, but must not have unknown keys and must keep
+    # the same {placeholders}. A name is unique in its language across all the files (a deck list must tell two cards apart).
+    placeholders = lambda t_: set(re.findall(r"\{(\w+)\}", t_))
+    texts_doc = cards_doc.get("texts", {})
+    if not isinstance(texts_doc, dict):
+        err(file_label, "texts must be an object of languages")
+        texts_doc = {}
+    own_ids = [c_.get("id") for c_ in cards_doc.get("cards", [])]
+    allowed = {f"card.{i_}.{f_}" for i_ in own_ids for f_ in ("name", "flavour")}
+    allowed |= {f"set.{set_path.stem}.{f_}" for f_ in ("name", "description")}
+    base_ct = texts_doc.get("it")
+    if base_ct is None:
+        err(file_label, "texts.it is missing: Italian is the fallback language and must exist")
+    for loc, table in texts_doc.items():
+        where = f"{file_label} texts.{loc}"
+        if not re.fullmatch(r"[a-z]{2}(-[A-Z]{2})?", loc) or not isinstance(table, dict):
+            err(where, "a language is a tag such as it or pt-BR, and its texts an object")
+            continue
+        for k, v in table.items():
+            if not isinstance(v, str) or not v.strip():
+                err(where, f"'{k}' must be a non-empty string")
+                continue
+            if k not in allowed:
+                err(where, f"unknown key '{k}' (no such card in this file, or not its set)")
+            if k.endswith(".name"):
+                prev = all_names.setdefault((loc, v.strip().casefold()), (file_label, k))
+                if prev[1] != k:
+                    err(where, f"name '{v.strip()}' is also used by {prev[0]} {prev[1]}")
+            if base_ct is not None and loc != "it" and isinstance(base_ct.get(k), str) and placeholders(base_ct[k]) != placeholders(v):
+                err(where, f"'{k}' placeholders {sorted(placeholders(v))} differ from texts.it {sorted(placeholders(base_ct[k]))}")
+    if isinstance(base_ct, dict):
+        for k in sorted(allowed - base_ct.keys()):
+            err(f"{file_label} texts.it", f"missing key '{k}'")
+
+# every set a card names is defined by some set file (or it would only exist if an admin created it first)
+for undefined in sorted(referenced_sets - all_defined_sets):
+    err("sets/", f"a card is in the set {undefined}, which no file in sets/ defines")
 
 # Labels (labels/<locale>.json): same keys and same {placeholders} in every locale, and every vocab constant has a label.
 # Effect-related labels (keywords, evolutions, synergies) are deliberately not here yet: the MVP set is undecided.

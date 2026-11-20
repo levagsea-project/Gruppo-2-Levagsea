@@ -14,8 +14,6 @@ tags:
 
 # FRATTURA
 
-![[Frattura.png]]
-
 Rottura degli equilibri.
 
 - **Resistenza:** liberazione e ribellione

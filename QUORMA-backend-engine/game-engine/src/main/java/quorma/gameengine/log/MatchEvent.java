@@ -72,7 +72,7 @@ public sealed interface MatchEvent {
      * An effect of a spell or an equipment changed a creature (ruleset 10.5, 10.6). Logged after
      * {@code SpellResolved} or {@code EquipmentApplied}, one per effect and per creature it reached.
      */
-    record CardEffectResolved(Side side, String cardId, String abilityId, String effectId, CreatureRef target,
+    record CardEffectResolved(Side side, String cardId, String abilityId, String effectId, TargetRef target,
             List<StatChange> changes) implements MatchEvent {
 
         public CardEffectResolved {
@@ -95,7 +95,7 @@ public sealed interface MatchEvent {
      * empty if it has none; at {@code max_stacks} the effect resolves with no change.
      */
     record EffectResolved(
-            CreatureRef source, String abilityId, String effectId, CreatureRef target, List<StatChange> changes,
+            CreatureRef source, String abilityId, String effectId, TargetRef target, List<StatChange> changes,
             OptionalInt stacks)
             implements MatchEvent {
 
@@ -144,6 +144,23 @@ public sealed interface MatchEvent {
 
     /** Refill: the deck was empty and the lane stays empty (ruleset 10.8). */
     record LaneLeftEmpty(Side side, int lane) implements MatchEvent {}
+
+    /** An effect moved the top cards of a player's deck to the discard pile (E57), in deck order. */
+    record CardsMilled(Side side, String abilityId, List<String> cardIds) implements MatchEvent {
+
+        public CardsMilled {
+            cardIds = List.copyOf(cardIds);
+        }
+    }
+
+    /** An effect put a card of the deck on top or at the bottom (E49). */
+    record CardMoved(Side side, String cardId, String position) implements MatchEvent {}
+
+    /** An effect put a creature back into a lane from the discard pile (E36 with source discard). */
+    record CreatureReturned(Side side, int lane, String cardId) implements MatchEvent {}
+
+    /** A replacement effect (E47) left a lane empty in Refill. {@code cardId} is the card whose effect it is. */
+    record RefillPrevented(Side side, int lane, String cardId) implements MatchEvent {}
 
     /** End of turn: the match is over (ruleset 11). */
     record MatchEnded(int turn, MatchResult result) implements MatchEvent {}

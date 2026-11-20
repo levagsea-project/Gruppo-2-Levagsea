@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import quorma.backend.catalogue.PreferredLocales;
 
 @RestController
 @RequestMapping("/packs")
@@ -31,10 +32,10 @@ public class PackController {
     }
 
     @GetMapping
-    @Operation(summary = "List the pack types on sale", description = "Price and cards per Tier of each type."
+    @Operation(summary = "List the pack types on sale", description = "Only the types whose set is on sale. Price, cards per Tier and the set each draws from."
         + "The frontend shows names from its labels: `pack.type.<code>` for a type, `game.tier.<tier>` for a rarity.")
-    public List<PackTypeResponse> list() {
-        return packs.list();
+    public List<PackTypeResponse> list(@Parameter(description = "Language of the set name: the first language in the list that the set has, Italian as the fallback.") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return packs.list(PreferredLocales.parse(acceptLanguage));
     }
 
     @PostMapping("/open")
@@ -45,13 +46,15 @@ public class PackController {
     @ApiResponse(responseCode = "201", description = "Pack opened")
     @ApiResponse(responseCode = "400", description = "Body `code`: pack.unknown_type, pack.idempotency_key_invalid (missing or not a UUID), or validation.failed with `fieldErrors`")
     @ApiResponse(responseCode = "402", description = "Not enough credits. Body `code`: pack.insufficient_credits")
-    @ApiResponse(responseCode = "404", description = "No card pool for that faction yet. Body `code`: pack.no_pool")
+    @ApiResponse(responseCode = "404", description = "No card pool for that faction in the pack's set (or it cannot fill the pack). Body `code`: pack.no_pool")
+    @ApiResponse(responseCode = "409", description = "The pack's set is not on sale. Body `code`: pack.not_on_sale")
     @ApiResponse(responseCode = "422", description = "Idempotency-Key already used for a different pack type or faction. Body `code`: pack.idempotency_key_reused")
     public PackOpenResponse open(@AuthenticationPrincipal Jwt jwt,
                                  @Parameter(description = "A UUID made by the client, new for every purchase and "
                                          + "repeated on every retry of that purchase")
                                  @RequestHeader("Idempotency-Key") UUID idempotencyKey,
-                                 @Valid @RequestBody PackOpenRequest request) {
-        return packs.open(UUID.fromString(jwt.getSubject()), idempotencyKey, request);
+                                 @Valid @RequestBody PackOpenRequest request,
+                                 @Parameter(description = "Language of the card text (name, flavour, set names): the first language in the list that a card has, Italian as the fallback. The response says which language each text is in (`textLocale`).") @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage) {
+        return packs.open(UUID.fromString(jwt.getSubject()), idempotencyKey, request, PreferredLocales.parse(acceptLanguage));
     }
 }

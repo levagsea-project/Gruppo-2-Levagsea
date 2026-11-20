@@ -5,6 +5,24 @@
       "type": "java.lang.String",
       "description": "Base URL of the engine-service HTTP API.",
       "defaultValue": "http://localhost:8081"
+    },
+    {
+      "name": "engine.service.timeout",
+      "type": "java.time.Duration",
+      "description": "Read timeout of the calls to the engine-service.",
+      "defaultValue": "30s"
+    },
+    {
+      "name": "engine.service.connect-timeout",
+      "type": "java.time.Duration",
+      "description": "Connect timeout of the calls to the engine-service.",
+      "defaultValue": "2s"
+    },
+    {
+      "name": "cors.allowed-origins",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Origins the browser frontend may call the API from (comma separated).",
+      "defaultValue": "http://localhost:5173,http://127.0.0.1:5173"
     }
   ]
 }

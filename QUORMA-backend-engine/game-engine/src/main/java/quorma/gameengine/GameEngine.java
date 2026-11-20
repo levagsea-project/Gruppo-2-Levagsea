@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import quorma.gameengine.cards.CardCheckReport;
+import quorma.gameengine.cards.CardPoolChecker;
 import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.data.RulesetLoader;
 import quorma.gameengine.effects.AbilityBinder;
@@ -66,6 +68,20 @@ public final class GameEngine {
         return simulate(inputJson).toMatchLog();
     }
 
+    /**
+     * Checks a candidate card pool of one faction against this engine's rules and returns the canonical report JSON
+     * (see {@link CardPoolChecker}). A problem of a card is in the report; a broken request is a
+     * {@link MatchInputException}.
+     */
+    public String cardCheck(String requestJson) {
+        return checkCards(requestJson).toJson();
+    }
+
+    /** The same check as {@link #cardCheck}, as Java objects. */
+    public CardCheckReport checkCards(String requestJson) {
+        return new CardPoolChecker(rules, rulesetHash, EngineVersion.VERSION).check(requestJson);
+    }
+
     /** Reads the input JSON and plays it. */
     public Simulation simulate(String inputJson) {
         return simulate(MatchInputReader.read(inputJson));
@@ -106,6 +122,10 @@ public final class GameEngine {
         if (!input.rulesetVersion().equals(rules.rulesetVersion())) {
             throw new MatchInputException("input.ruleset_version: this engine plays " + rules.rulesetVersion()
                     + ", got " + input.rulesetVersion());
+        }
+        if (input.engineVersion().isPresent() && !input.engineVersion().get().equals(EngineVersion.VERSION)) {
+            throw new MatchInputException("input.engine_version: this engine is " + EngineVersion.VERSION + ", the match was played by "
+                    + input.engineVersion().get() + " (a replay needs the engine that played it: run that version)");
         }
         if (input.rulesetHash().isPresent() && !input.rulesetHash().get().equals(rulesetHash)) {
             throw new MatchInputException("input.ruleset_hash: this engine plays the rule pack " + rulesetHash
