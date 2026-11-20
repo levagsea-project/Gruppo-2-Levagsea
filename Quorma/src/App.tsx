@@ -2,6 +2,9 @@ import { useState } from 'react'
 import type { Page } from './data/navItems'
 import { useDecks } from './hooks/useDecks'
 import { usePlayStatus } from './hooks/usePlayStatus'
+import { useMatchNews } from './hooks/useMatchNews'
+import AwayResults from './components/layout/AwayResults'
+import type { Tab as ProfileTab } from './components/profile/ProfileTabs'
 import Sidebar from './components/layout/Sidebar'
 import MobileTopBar from './components/mobile/MobileTopBar'
 import MobileTabBar from './components/mobile/MobileTabBar'
@@ -38,6 +41,10 @@ export default function App() {
   // Stanno qui così non si perdono cambiando pagina. Entrambi letti dal backend.
   const { decks, state: decksState, error: decksError, reload: reloadDecks, selected, setSelectedId, deleteDeck } = useDecks()
   const { playStatus, playStatusFailed, reloadPlayStatus } = usePlayStatus()
+  // Novità sulle partite: risultati non letti (finestra "Mentre eri via") e ultima serie (home su telefono).
+  const { unread, latest, reload: reloadNews, markAllSeen } = useMatchNews()
+  const [awayOpen, setAwayOpen] = useState(true) // la finestra si mostra una volta per ingresso nell'app
+  const [profileTab, setProfileTab] = useState<ProfileTab>('panoramica') // scheda con cui si apre il profilo
   // Mazzo in lavorazione nell'editor (deckId null = nuovo) e mazzo mostrato in "Mazzo salvato".
   const [editing, setEditing] = useState<{ faction: FactionId; deckId: string | null }>({ faction: 'artificiali', deckId: null })
   const [saved, setSaved] = useState<{ id: string; deck: DeckDetail | null } | null>(null)
@@ -47,6 +54,19 @@ export default function App() {
     window.scrollTo({ top: 0 }) // su telefono scorre tutta la finestra: la nuova pagina parte dall'alto
     // Il backend chiede di rileggere "posso giocare?" quando si apre la home: lo facciamo anche per Gioca.
     if (next === 'home' || next === 'gioca') reloadPlayStatus()
+    if (next === 'home') reloadNews() // dopo una partita l'ultima serie della home cambia
+    if (next === 'profilo') setProfileTab('panoramica')
+  }
+
+  // Il profilo aperto direttamente sulla scheda Partite (da "Mentre eri via" e dall'ultima serie della home).
+  const openMatches = () => {
+    open('profilo')
+    setProfileTab('partite')
+  }
+
+  const closeAway = () => {
+    setAwayOpen(false)
+    markAllSeen()
   }
 
   const openEditor = (faction: FactionId, deckId: string | null) => {
@@ -96,6 +116,8 @@ export default function App() {
           playStatusFailed={playStatusFailed}
           onRetryPlayStatus={reloadPlayStatus}
           onNavigate={open}
+          latestSeries={latest}
+          onOpenMatches={openMatches}
         />
       )}
 
@@ -165,12 +187,23 @@ export default function App() {
       {page === 'cookie' && <LegalPage kind="cookie" onNavigate={open} />}
       {page === 'termini' && <LegalPage kind="termini" onNavigate={open} />}
 
-      {page === 'profilo' && <ProfilePage onNavigate={open} />}
+      {page === 'profilo' && <ProfilePage key={profileTab} initialTab={profileTab} onNavigate={open} />}
       {page === 'modifica-profilo' && <EditProfilePage onNavigate={open} />}
 
       {page === 'altro' && <MorePage onNavigate={open} />}
 
       <MobileTabBar current={page} onNavigate={open} />
+
+      {awayOpen && unread.length > 0 && (
+        <AwayResults
+          series={unread}
+          onClose={closeAway}
+          onOpenProfile={() => {
+            closeAway()
+            openMatches()
+          }}
+        />
+      )}
     </div>
   )
 }

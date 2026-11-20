@@ -5,6 +5,8 @@ import { comingSoon, currentPlayer } from '../../data/player'
 import type { LoadState } from '../../hooks/useDecks'
 import type { PlayNotice } from '../../hooks/usePlayStatus'
 import type { Deck } from '../../types/deck'
+import { resultLabel, type Series } from '../../data/profile'
+import { formatWhen } from '../../lib/matches'
 import NavIcon from '../layout/NavIcon'
 import Arch from './Arch'
 import MobileRow from './MobileRow'
@@ -32,12 +34,14 @@ type Props = {
   notice: PlayNotice // perché non si può ancora giocare (mostrato solo se non è "info")
   onNoticeAction: (action: NonNullable<PlayNotice['action']>) => void
   onNavigate: (page: Page) => void
+  latestSeries: Series | null // ultima serie giocata
+  onOpenMatches: () => void // profilo, scheda Partite
 }
 
 const ACTION_LABEL: Record<NonNullable<PlayNotice['action']>, string> = { mazzi: 'Vai ai mazzi', riprova: 'Riprova' }
 
 // Home su telefono: riprendi a giocare, sezioni in arrivo, partite, scorciatoie.
-export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNoticeAction, onNavigate }: Props) {
+export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNoticeAction, onNavigate, latestSeries, onOpenMatches }: Props) {
   const action = notice.action
   const player = currentPlayer()
   const faction = lastDeck ? factions[lastDeck.faction] : factions.artificiali
@@ -123,12 +127,26 @@ export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNo
       <section className="mbh-sezione" aria-labelledby="h-partite">
         <Marker id="h-partite" title="Partite" />
         <div className="q-tela">
-          <div className="q-tela__in mbh-partita">
-            <span className="mbh-avversario">
-              <span>Nessuna partita giocata</span>
-              <small>Qui vedrai l'esito delle tue ultime partite.</small>
-            </span>
-          </div>
+          {latestSeries ? (
+            // L'ultima serie: tocca per vederla nel profilo
+            <button type="button" className="q-tela__in mbh-partita mbh-partita--link" onClick={onOpenMatches}>
+              <span className={`mbh-esito is-${latestSeries.result}`}>{resultLabel[latestSeries.result]}</span>
+              <span className="mbh-avversario">
+                <span>contro {latestSeries.opponent}</span>
+                <small>{latestSeries.mode} · {latestSeries.won}–{latestSeries.lost} · {formatWhen(latestSeries.finishedAt)}</small>
+              </span>
+              <svg className="mbh-freccia" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </button>
+          ) : (
+            <div className="q-tela__in mbh-partita">
+              <span className="mbh-avversario">
+                <span>Nessuna partita giocata</span>
+                <small>Qui vedrai l'esito della tua ultima serie.</small>
+              </span>
+            </div>
+          )}
         </div>
       </section>
 

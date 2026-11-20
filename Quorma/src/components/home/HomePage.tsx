@@ -1,5 +1,6 @@
 import type { Page } from '../../data/navItems'
 import type { Deck, PlayStatus } from '../../types/deck'
+import type { Series } from '../../data/profile'
 import type { LoadState } from '../../hooks/useDecks'
 import { playNotice, type PlayNotice } from '../../hooks/usePlayStatus'
 import CurrencyBar from '../layout/CurrencyBar'
@@ -16,6 +17,8 @@ type Props = {
   playStatusFailed: boolean // il controllo "posso giocare?" non è riuscito (backend non raggiungibile)
   onRetryPlayStatus: () => void
   onNavigate: (page: Page) => void
+  latestSeries: Series | null // ultima serie giocata (home su telefono)
+  onOpenMatches: () => void // profilo, scheda Partite
 }
 
 // Rosone di QUORMA dietro al testo: solo decorazione, ruota lentissimo.
@@ -39,7 +42,7 @@ function Rose() {
 // "Pronto a giocare?" con il sigillo GIOCA e tre card ad arco in fondo (mazzi di difesa, scambi, news).
 // Su telefono si vede invece MobileHome (il cambio lo fa styles/mobile.css).
 export default function HomePage(props: Props) {
-  const { decks, lastDeck, decksState, onRetryDecks, playStatus, playStatusFailed, onRetryPlayStatus, onNavigate } = props
+  const { decks, lastDeck, decksState, onRetryDecks, playStatus, playStatusFailed, onRetryPlayStatus, onNavigate, latestSeries, onOpenMatches } = props
   // Frase accanto a GIOCA: cosa fare, perché non si può giocare, oppure che il controllo non è riuscito.
   const notice = playNotice(playStatus, playStatusFailed)
   const onNoticeAction = (action: NonNullable<PlayNotice['action']>) =>
@@ -66,6 +69,8 @@ export default function HomePage(props: Props) {
         notice={notice}
         onNoticeAction={onNoticeAction}
         onNavigate={onNavigate}
+        latestSeries={latestSeries}
+        onOpenMatches={onOpenMatches}
       />
     </main>
   )

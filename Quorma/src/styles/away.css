@@ -1,0 +1,33 @@
+/* "Mentre eri via" (components/layout/AwayResults.tsx): risultati non letti all'ingresso nell'app */
+.away { margin: auto; padding: 14px 0 0; width: 460px; max-width: calc(100% - 32px); max-height: calc(100% - 32px); overflow: visible;
+  border: 0; background: transparent; color: var(--silver-100); }
+.away::backdrop { background: rgba(5,10,13,.8); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.away > .q-tela { max-height: calc(100dvh - 48px); }
+.away .q-tela__in { display: flex; flex-direction: column; gap: 14px; padding: 40px 28px 24px; overflow-y: auto; }
+.away h2 { margin: 0; text-align: center; font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #EEF4F5; }
+.away__lead { margin: 0; text-align: center; font-size: 14px; line-height: 1.5; color: #A9BCC3; text-wrap: pretty; }
+
+/* un risultato per riga: esito a sinistra, avversario e punteggio a destra */
+.away__lista { margin: 4px 0 0; padding: 0; list-style: none; }
+.away__lista li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 4px;
+  box-shadow: inset 0 -1px 0 rgba(213,225,229,.08); }
+.away__lista li:last-child { box-shadow: none; }
+.away__lista b { display: block; font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #EEF4F5; overflow-wrap: anywhere; }
+.away__lista small { display: block; margin-top: 2px; font-size: 12px; color: var(--steel-300); }
+
+.away__azioni { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
+.away__azioni .q-btn { display: flex; width: 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .away[open] > .q-tela { animation: away-in .28s cubic-bezier(.16, 1, .3, 1); }
+  .away[open]::backdrop { animation: away-velo .2s ease-out; }
+}
+@keyframes away-in { from { transform: translateY(12px); opacity: .6; } }
+@keyframes away-velo { from { opacity: 0; } }
+
+@media (max-width: 767px) {
+  .away .q-tela__in { padding: 36px 18px 20px; }
+  .away__azioni { grid-template-columns: 1fr; }
+  .away__azioni .q-btn--argento { order: -1; } /* su telefono l'azione principale sta sopra */
+}
