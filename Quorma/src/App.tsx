@@ -20,6 +20,7 @@ import FaqPage from './components/info/FaqPage'
 import GlossaryPage from './components/info/GlossaryPage'
 import ContactsPage from './components/info/ContactsPage'
 import LegalPage from './components/info/LegalPage'
+import ProfilePage from './components/profile/ProfilePage'
 import './styles/layout.css'
 import './styles/sidebar.css'
 import './styles/home.css'
@@ -82,7 +83,7 @@ export default function App() {
   return (
     <div className="app">
       <Sidebar current={page} onNavigate={open} />
-      <MobileTopBar onHome={() => open('home')} />
+      <MobileTopBar onHome={() => open('home')} onProfile={() => open('profilo')} />
 
       {page === 'home' && (
         <HomePage
@@ -152,6 +153,8 @@ export default function App() {
       {page === 'privacy' && <LegalPage kind="privacy" onNavigate={open} />}
       {page === 'cookie' && <LegalPage kind="cookie" onNavigate={open} />}
       {page === 'termini' && <LegalPage kind="termini" onNavigate={open} />}
+
+      {page === 'profilo' && <ProfilePage />}
 
       {page === 'altro' && <MorePage onNavigate={open} />}
 

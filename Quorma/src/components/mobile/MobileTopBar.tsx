@@ -5,7 +5,7 @@ const show = (value: string | null) => value ?? '—'
 const speak = (label: string, value: string | null) => `${label}: ${value ?? 'saldo in arrivo'}`
 
 // Barra in alto su telefono: logo, valute, avatar del giocatore.
-export default function MobileTopBar({ onHome }: { onHome: () => void }) {
+export default function MobileTopBar({ onHome, onProfile }: { onHome: () => void; onProfile: () => void }) {
   const [v1, v2] = currencies
   const player = currentPlayer()
 
@@ -37,14 +37,13 @@ export default function MobileTopBar({ onHome }: { onHome: () => void }) {
           {show(v2.value)}
         </span>
       </div>
-      {/* Il profilo non esiste ancora: l'avatar per ora non porta da nessuna parte */}
-      <span className="mb-avatar" role="img" aria-label={player.name}>
+      <button type="button" className="mb-avatar" aria-label={`Profilo di ${player.name}`} onClick={onProfile}>
         <span className="q-ogiva">
           <span className="q-ogiva__in">
             <b>{player.initials}</b>
           </span>
         </span>
-      </span>
+      </button>
     </header>
   )
 }

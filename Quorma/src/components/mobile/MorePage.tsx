@@ -64,7 +64,7 @@ export default function MorePage({ onNavigate }: { onNavigate: (page: Page) => v
       </Group>
 
       <Group title="Account">
-        <MobileRow title="Profilo" detail={player.name} icon={<Arch><ProfileIcon /></Arch>} />
+        <MobileRow title="Profilo" detail={player.name} icon={<Arch><ProfileIcon /></Arch>} onClick={() => onNavigate('profilo')} />
         <MobileRow title="Impostazioni" detail="Account, partita, audio" icon={<Arch><SettingsIcon /></Arch>} />
       </Group>
 

@@ -13,7 +13,7 @@ export default function Sidebar({ current, onNavigate }: Props) {
     <aside className="q-navata">
       <Logo onHome={() => onNavigate('home')} />
       <NavMenu current={current} onNavigate={onNavigate} />
-      <PlayerCard />
+      <PlayerCard current={current} onNavigate={onNavigate} />
       <SidebarFooter onNavigate={onNavigate} />
     </aside>
   )

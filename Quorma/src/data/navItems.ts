@@ -5,6 +5,7 @@ import type { NavIconName } from '../components/layout/NavIcon'
 export type Page =
   | 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'editor-mazzo' | 'mazzo-salvato' | 'regole'
   | 'chi-siamo' | 'faq' | 'glossario' | 'contatti' | 'privacy' | 'cookie' | 'termini' // pagine "Informazioni"
+  | 'profilo' // si apre dal riquadro del giocatore
   | 'altro' // 'altro' esiste solo su telefono
 
 export type NavItemData = {
