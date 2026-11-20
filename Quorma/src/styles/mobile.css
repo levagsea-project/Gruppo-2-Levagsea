@@ -8,7 +8,9 @@
 
 @media (max-width: 767px) {
   /* ---------- Struttura ---------- */
-  .app { display: block; height: auto; min-height: 100dvh; overflow: visible; background: #081014; }
+  /* overflow-x: clip = la pagina non scorre mai di lato (scorrono solo le file fatte apposta, es. i mazzi).
+     clip e non hidden: non crea un contenitore di scorrimento, quindi la barra in alto resta sticky */
+  .app { display: block; height: auto; min-height: 100dvh; overflow: visible; overflow-x: clip; background: #081014; }
   .page, .home {
     overflow: visible; min-height: calc(100dvh - 56px); padding: 18px 16px 112px; display: flex; flex-direction: column; gap: 20px;
     background:
@@ -107,16 +109,20 @@
   /* La pagina segue la colonna del telefono: annulla margini e scorrimento interno del desktop (decks.css) */
   .page.decks-page { gap: 20px; padding: 18px 16px 112px; overflow: visible; }
   .decks-body { display: flex; flex-direction: column; gap: 22px; margin: 0; }
-  .decks-lista { gap: 12px; }
-  /* Carte in una fila che scorre di lato, una alla volta (scroll-snap) */
-  .deck-grid { display: flex; gap: 18px; margin: 0 -16px; padding: 4px 16px 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none; }
+  /* Carte in una fila che scorre di lato, una alla volta (scroll-snap). La fila tiene il gesto per sé:
+     arrivata in fondo non lo passa alla pagina (overscroll-behavior), e il dito può scorrerla in orizzontale
+     o la pagina in verticale (touch-action) */
+  .decks-lista { gap: 12px; min-width: 0; width: 100%; }
+  .deck-grid { display: flex; gap: 18px; margin: 0 -16px; padding: 4px 16px 10px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none;
+    overscroll-behavior-x: contain; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
   .deck-grid::-webkit-scrollbar { display: none; }
-  .deck-pick { flex: none; width: 156px; scroll-snap-align: start; }
+  /* .deck-grid davanti: vince su .pick { width: 100% } di play.css qualunque sia l'ordine dei fogli */
+  .deck-grid > .deck-pick { flex: none; width: 156px; scroll-snap-align: start; }
   .deck-pick .q-carta { --arte-h: 118px; }
   .deck-pick .q-carta__nome { font-size: 14px; }
   .deck-pick .q-carta__sotto { font-size: 10px; letter-spacing: .14em; }
   .deck-pick__stato { font-size: 12px; }
-  .deck-pick--nuovo { width: 156px; }
+  .deck-grid > .deck-pick--nuovo { width: 156px; }
   .deck-pick--nuovo .q-tela { min-height: 214px; }
   /* Niente pannello fermo su telefono; relative (non static) perché il filo d'argento della q-tela (::before) resti dentro il pannello */
   .deck-details { position: relative; }
