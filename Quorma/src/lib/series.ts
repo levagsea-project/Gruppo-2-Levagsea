@@ -58,6 +58,9 @@ export const playMatchmaking = (startingFaction: FactionId, decks: DeckPick) =>
 export const listSeries = (page: number, size: number, unread = false) =>
   authedRequest<SeriesResponse[]>('GET', `/matches?page=${page}&size=${size}${unread ? '&unread=true' : ''}`)
 
+/** Una serie dello storico, senza i log delle partite. */
+export const getSeries = (seriesId: string) => authedRequest<SeriesResponse>('GET', `/matches/${seriesId}`)
+
 /** Segna il risultato della serie come letto: non compare più tra i non letti. Si può ripetere. */
 export const markSeriesSeen = (seriesId: string) => authedRequest<SeriesResponse>('POST', `/matches/${seriesId}/seen`)
 

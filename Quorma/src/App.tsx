@@ -184,8 +184,11 @@ export default function App() {
       {page === 'gioca' && (
         <PlayPage
           decks={decks}
+          decksState={decksState}
           playStatus={playStatus}
+          playStatusFailed={playStatusFailed}
           onNavigate={open}
+          onOpenMatches={openMatches}
           onDecksChanged={() => {
             reloadDecks()
             reloadPlayStatus()

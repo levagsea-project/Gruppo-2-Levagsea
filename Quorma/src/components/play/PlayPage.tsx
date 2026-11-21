@@ -1,31 +1,22 @@
-import { useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { factions } from '../../data/factions'
 import type { Page } from '../../data/navItems'
-import { playModes } from '../../data/play'
+import { playModes, type PlayModeId } from '../../data/play'
 import { resultLabel } from '../../data/profile'
 import { ApiError, GENERIC } from '../../lib/api'
 import { isDemoSession } from '../../lib/auth'
+import { toFaction } from '../../lib/cards'
+import { cancelRoom, createChallenge, getMyRoom, joinRoom, listRooms, openRoom, timeLeft, type Room } from '../../lib/challenges'
 import { rememberSeries } from '../../lib/matches'
-import { playMatchmaking, seriesScore } from '../../lib/series'
+import { readPlayPrefs, writePlayPrefs } from '../../lib/playPrefs'
+import { getSeries, markSeriesSeen, playMatchmaking, seriesScore, type DeckPick, type SeriesResponse } from '../../lib/series'
 import type { Deck, FactionId, PlayStatus } from '../../types/deck'
+import type { LoadState } from '../../hooks/useDecks'
 import { playBlockReason } from '../../hooks/usePlayStatus'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
+import '../../styles/challenges.css'
 import '../../styles/play.css'
-
-// Titolo numerato di un passo ("1 · Scegli la modalità").
-function Step({ num, id, title, extra }: { num: string; id: string; title: string; extra?: React.ReactNode }) {
-  return (
-    <div className="q-marker">
-      <span className="q-marker__num">
-        <span>{num}</span>
-      </span>
-      <h2 id={id} className="q-marker__title">{title}</h2>
-      <span className="q-marker__line" />
-      {extra}
-    </div>
-  )
-}
 
 const Star = () => (
   <svg className="q-stella" aria-hidden="true" viewBox="0 0 20 28">
@@ -38,27 +29,112 @@ const FACTION_IDS: FactionId[] = ['artificiali', 'umani']
 // Errori dopo i quali la lista dei mazzi o "posso giocare?" non sono più aggiornati.
 const STALE_DECKS = new Set(['deck.outdated', 'deck.defense_required', 'deck.not_found'])
 
-type Played = { result: keyof typeof resultLabel; won: number; lost: number; opponent: string }
+const POLL_MS = 10_000 // il backend non manda notifiche: le stanze si rileggono a intervalli
+
+// Messaggio dopo un'azione, con l'eventuale collegamento a dove continuare.
+type Outcome = { text: string; link?: 'profilo' | 'sfide'; again?: boolean }
+
+// Errori passeggeri: ha senso riprovare la stessa azione.
+const RETRY_CODES = new Set(['engine.unavailable', 'matchmaking.no_opponent'])
+const canRetryError = (err: unknown) => err instanceof ApiError && (err.status === 0 || (!!err.code && RETRY_CODES.has(err.code)))
+
+// Punto unico in cui arriva ogni serie giocata: qui si collegherà la visualizzazione della battaglia.
+const playedOutcome = (series: SeriesResponse): Outcome => {
+  const s = seriesScore(series)
+  return { text: `${resultLabel[s.result]} ${s.won}–${s.lost} contro ${s.opponent}.`, link: 'profilo', again: true }
+}
 
 type Props = {
   decks: Deck[]
+  decksState: LoadState
   playStatus: PlayStatus | null
+  playStatusFailed: boolean
   onNavigate: (page: Page) => void
+  onOpenMatches: () => void
   onDecksChanged: () => void // rilegge mazzi e "posso giocare?"
 }
 
-// Pagina Gioca: 1) modalità, 2) un mazzo per fazione, 3) la fazione della prima partita, poi "Inizia partita".
+// Pagina Gioca: 1) modalità in alto, 2) i mazzi al centro, 3) a destra il leggìo per avviare la modalità scelta.
 // Una serie è al meglio delle 3 e le fazioni si scambiano a ogni partita, per questo serve un mazzo per fazione.
 // Si gioca solo con mazzi non obsoleti e con un mazzo di difesa valido per entrambe le fazioni (GET /decks/play-status).
-// "Partita libera" = POST /matchmaking: il server sceglie un avversario e gioca tutta la serie contro i suoi mazzi
-// di difesa. La serie finisce nello storico del backend (profilo); il browser ricorda turni e nomi dei mazzi (lib/matches.ts).
-export default function PlayPage({ decks, playStatus, onNavigate, onDecksChanged }: Props) {
-  const [modeId, setModeId] = useState(playModes.find((m) => m.available)?.id ?? playModes[0].id)
-  const [chosen, setChosen] = useState<Partial<Record<FactionId, string>>>({})
-  const [start, setStart] = useState<FactionId>('artificiali')
-  const [playing, setPlaying] = useState(false)
+// Le modalità sono i tre avvii del backend: POST /matchmaking, /rooms (apri o entra) e /challenges.
+// La serie finisce nello storico del backend (profilo); il browser ricorda turni e nomi dei mazzi (lib/matches.ts).
+// All'apertura ripropone l'ultima configurazione (lib/playPrefs.ts), così chi ha i mazzi pronti parte con un clic.
+export default function PlayPage({ decks, decksState, playStatus, playStatusFailed, onNavigate, onOpenMatches, onDecksChanged }: Props) {
+  const [prefs] = useState(readPlayPrefs)
+  const [modeId, setModeId] = useState<PlayModeId>(prefs.mode)
+  const [chosen, setChosen] = useState<Partial<Record<FactionId, string>>>(prefs.decks)
+  const [start, setStart] = useState<FactionId>(prefs.start)
+  const [busy, setBusy] = useState('') // azione in corso: 'avvio' o il codice della stanza
   const [error, setError] = useState('')
-  const [last, setLast] = useState<Played | null>(null) // ultima serie giocata, per il messaggio
+  const [canRetry, setCanRetry] = useState(false)
+  const [outcome, setOutcome] = useState<Outcome | null>(null)
+  const [rooms, setRooms] = useState<Room[] | null>(null)
+  const [myRoom, setMyRoom] = useState<Room | null>(null)
+  const [roomsError, setRoomsError] = useState('')
+  const [opponent, setOpponent] = useState('')
+  const loadSeq = useRef(0) // scarta le risposte arrivate dopo una lettura più recente
+  const waitingCode = useRef<string | null>(null) // la mia stanza che era aperta all'ultima lettura
+  const roomDeckNames = useRef<Record<FactionId, string> | null>(null) // i mazzi con cui ho aperto la stanza
+  const firstRoomsLoad = useRef(true)
+  const corpo = useRef<HTMLDivElement>(null)
+
+  const loadRooms = useCallback(async () => {
+    const seq = ++loadSeq.current
+    try {
+      const [open, mine] = await Promise.all([listRooms(), getMyRoom()])
+      if (seq !== loadSeq.current) return
+      setRooms(open)
+      setMyRoom(mine)
+      setRoomsError('')
+
+      // Tornando sulla pagina con una stanza ancora aperta si riparte da lì.
+      if (firstRoomsLoad.current) {
+        firstRoomsLoad.current = false
+        if (mine?.status === 'OPEN') setModeId('stanza')
+      }
+
+      // La mia stanza era aperta e ora non lo è più: chi aspetta scopre così com'è andata.
+      const waited = waitingCode.current
+      waitingCode.current = mine?.status === 'OPEN' ? mine.code : null
+      if (!mine || mine.code !== waited) return
+      if (mine.status === 'EXPIRED') setOutcome({ text: 'La tua stanza è scaduta senza avversari.' })
+      if (mine.status === 'MATCHED') {
+        setError('')
+        try {
+          if (!mine.seriesId) throw new Error('serie assente')
+          const series = await getSeries(mine.seriesId)
+          if (roomDeckNames.current) rememberSeries(series, roomDeckNames.current)
+          setOutcome(playedOutcome(series))
+          void markSeriesSeen(series.id).catch(() => {}) // il risultato è a schermo; se fallisce riapparirà tra i non letti
+        } catch {
+          setOutcome({ text: 'Qualcuno è entrato nella tua stanza e la serie è stata giocata.', link: 'profilo' })
+        }
+      }
+    } catch (err) {
+      if (seq === loadSeq.current) setRoomsError(err instanceof ApiError ? err.message : GENERIC)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isDemoSession()) return
+    void loadRooms()
+    const timer = window.setInterval(() => {
+      if (!document.hidden) void loadRooms()
+    }, POLL_MS)
+    return () => window.clearInterval(timer)
+  }, [loadRooms])
+
+  // Un mazzo ricordato può stare in fondo alla fila: la fila scorre fino a mostrarlo.
+  useEffect(() => {
+    corpo.current?.querySelectorAll('.play-mazzi').forEach((row) => {
+      const on = row.querySelector('[aria-checked="true"]')
+      if (!on) return
+      const r = row.getBoundingClientRect()
+      const b = on.getBoundingClientRect()
+      if (b.left < r.left || b.right > r.right) row.scrollLeft += b.left - r.left - 10
+    })
+  }, [decks.length])
 
   const demo = isDemoSession()
   const blocked = playBlockReason(playStatus)
@@ -74,96 +150,188 @@ export default function PlayPage({ decks, playStatus, onNavigate, onDecksChanged
   const picked = { artificiali: deckFor('artificiali'), umani: deckFor('umani') }
   const missing = FACTION_IDS.filter((f) => !picked[f])
 
-  const hint = demo
-    ? 'In modalità demo non si gioca: serve il backend.'
-    : !mode.available
-      ? mode.hint
-      : missing.length === 2
-        ? decks.length
-          ? 'I tuoi mazzi sono obsoleti: modificane uno per fazione per giocare.'
-          : 'Crea un mazzo per ogni fazione per giocare.'
-        : missing.length === 1
-          ? `Ti serve un mazzo valido ${missing[0] === 'umani' ? 'della' : 'delle'} ${factions[missing[0]].name}.`
-          : blocked || mode.hint
-  const canStart = !demo && mode.available && missing.length === 0 && !blocked && !playing
+  const roomOpen = myRoom?.status === 'OPEN' ? myRoom : null
+  const name = opponent.trim()
 
-  const play = async () => {
-    const a = picked.artificiali
-    const u = picked.umani
-    if (!canStart || !a || !u) return
-    setPlaying(true)
+  const decksLoading = decksState === 'loading' && decks.length === 0
+  const decksFailed = decksState === 'error' && decks.length === 0
+
+  const a = picked.artificiali
+  const u = picked.umani
+  const pick: DeckPick | null = a && u ? { artificiali: a.id, umani: u.id } : null
+  const deckNames = a && u ? { artificiali: a.name, umani: u.name } : null
+
+  // Se non si può giocare: il motivo e l'azione che lo risolve, al posto del pulsante di avvio.
+  const toDecks = () => onNavigate('mazzi')
+  const missingHasDecks = missing.some((f) => decks.some((d) => d.faction === f))
+  const fix: { text: string; label: string; action: () => void } | null =
+    demo || decksLoading
+      ? null
+      : decksFailed
+        ? { text: 'Non riesco a leggere i tuoi mazzi.', label: 'Riprova', action: onDecksChanged }
+        : missing.length
+          ? {
+              text:
+                missing.length === 2
+                  ? decks.length
+                    ? 'I tuoi mazzi sono obsoleti: modificane uno per fazione per giocare.'
+                    : 'Crea un mazzo per ogni fazione per giocare.'
+                  : `Ti serve un mazzo valido ${missing[0] === 'umani' ? 'della' : 'delle'} ${factions[missing[0]].name}.`,
+              label: missingHasDecks ? 'Sistema i mazzi' : 'Crea un mazzo',
+              action: missingHasDecks ? toDecks : () => onNavigate('nuovo-mazzo'),
+            }
+          : blocked
+            ? { text: blocked, label: playStatus?.missingDefense.length ? 'Scegli il mazzo di difesa' : 'Aggiorna il mazzo di difesa', action: toDecks }
+            : playStatusFailed
+              ? { text: 'Non riesco a controllare i tuoi mazzi di difesa.', label: 'Riprova', action: onDecksChanged }
+              : null
+
+  const otherFaction: FactionId = start === 'umani' ? 'artificiali' : 'umani'
+  const statusLine = demo
+    ? 'In modalità demo non si gioca: serve il backend.'
+    : decksLoading
+      ? 'Caricamento dei mazzi…'
+      : fix
+        ? fix.text
+        : modeId === 'stanza' && roomOpen
+          ? 'Stanza aperta: il risultato arriva qui appena entra qualcuno.'
+          : modeId === 'sfida' && !name
+            ? 'Scrivi il nome del giocatore che vuoi sfidare.'
+            : `${picked[start]?.name} e ${picked[otherFaction]?.name}, inizi con ${factions[start].name}.`
+
+  const canAct = !demo && !decksLoading && !fix && !busy
+  const canStart = canAct && (modeId === 'libera' || (modeId === 'stanza' && !roomOpen) || (modeId === 'sfida' && !!name))
+
+  // Dopo un avvio riuscito: alla prossima visita la pagina riparte da qui.
+  const remember = (m: PlayModeId) => {
+    if (pick) writePlayPrefs({ mode: m, start, decks: pick })
+  }
+
+  // Esegue un'azione, mostra esito o errore e rilegge le stanze.
+  const run = async (id: string, action: () => Promise<Outcome>) => {
+    setBusy(id)
     setError('')
-    setLast(null)
+    setCanRetry(false)
+    setOutcome(null)
     try {
-      const series = await playMatchmaking(start, { artificiali: a.id, umani: u.id })
-      rememberSeries(series, { artificiali: a.name, umani: u.name }) // la serie è già nello storico del backend: qui solo turni e nomi dei mazzi
-      setLast(seriesScore(series))
+      setOutcome(await action())
     } catch (err) {
       setError(err instanceof ApiError ? err.message : GENERIC)
+      setCanRetry(id === 'avvio' && canRetryError(err))
       if (err instanceof ApiError && err.code && STALE_DECKS.has(err.code)) onDecksChanged()
     } finally {
-      setPlaying(false)
+      setBusy('')
+      void loadRooms()
     }
   }
 
-  const summary = mode.title
+  // La serie è già nello storico del backend: il browser ricorda solo turni e nomi dei mazzi.
+  const finish = (series: SeriesResponse) => {
+    if (deckNames) rememberSeries(series, deckNames)
+    return playedOutcome(series)
+  }
+
+  const startMode = () => {
+    if (!canStart || !pick) return
+    if (modeId === 'libera')
+      void run('avvio', async () => {
+        const series = await playMatchmaking(start, pick)
+        remember('libera')
+        return finish(series)
+      })
+    if (modeId === 'stanza')
+      void run('avvio', async () => {
+        const room = await openRoom(start, pick)
+        remember('stanza')
+        roomDeckNames.current = deckNames
+        waitingCode.current = room.code
+        setMyRoom(room)
+        return { text: 'Stanza aperta: resta qui, il risultato arriva appena entra qualcuno.' }
+      })
+    if (modeId === 'sfida')
+      void run('avvio', async () => {
+        await createChallenge(name, start, pick)
+        remember('sfida')
+        setOpponent('')
+        return { text: `Sfida inviata a ${name}: ha 48 ore per rispondere.`, link: 'sfide' }
+      })
+  }
+
+  const join = (room: Room) => {
+    if (!canAct || !pick) return
+    void run(room.code, async () => {
+      const series = await joinRoom(room.code, pick)
+      remember('stanza')
+      return finish(series)
+    })
+  }
+
+  const closeRoom = (room: Room) =>
+    void run(room.code, async () => {
+      await cancelRoom(room.code)
+      waitingCode.current = null
+      return { text: 'Stanza chiusa.' }
+    })
+
+  const busyLabel = modeId === 'libera' ? 'In corso…' : modeId === 'stanza' ? 'Apertura…' : 'Invio…'
+  const actionLabel =
+    busy === 'avvio' ? busyLabel : modeId === 'stanza' && roomOpen ? 'Stanza aperta' : modeId === 'libera' && outcome?.again ? 'Gioca ancora' : mode.action
 
   return (
     <main className="page play-page">
       <CurrencyBar />
       <PageTitle title="GIOCA" subtitle="SCEGLI MODALITÀ E MAZZI" />
 
-      <section className="play-step" aria-labelledby="g-mod">
-        <Step num="1" id="g-mod" title="Scegli la modalità" />
-        <div role="radiogroup" aria-labelledby="g-mod" className="play-modi">
-          {playModes.map((m) => {
-            const on = m.id === modeId
-            return (
+      <div className="play-testa">
+        {/* Il filo di luce è l'asta a cui sono appesi gli stendardi delle modalità */}
+        <span className="q-divisorio play-testa__filo" aria-hidden="true">
+          <span className="q-borchia q-borchia--n" />
+        </span>
+        <section aria-labelledby="g-mod">
+          <h2 id="g-mod" className="sr-only">Scegli la modalità</h2>
+          <div role="radiogroup" aria-labelledby="g-mod" className="play-modi">
+            {playModes.map((m) => (
               <button
                 key={m.id}
                 type="button"
                 role="radio"
-                aria-checked={on}
-                aria-disabled={!m.available}
-                title={m.available ? undefined : 'In arrivo'}
-                className={m.available ? 'pick' : 'pick pick--off'}
-                onClick={() => m.available && setModeId(m.id)}
+                aria-checked={m.id === modeId}
+                className={`q-tela play-stendardo ${m.id === modeId ? 'q-acceso' : ''}`}
+                onClick={() => {
+                  setModeId(m.id)
+                  setError('')
+                }}
               >
-                <span className={`q-tela q-tela--arco play-modo ${on ? 'q-acceso' : ''}`}>
-                  <span className="q-tela__in">
-                    <span className="play-modo__testa">
-                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                        {m.paths.map((d) => (
-                          <path key={d} d={d} />
-                        ))}
-                      </svg>
-                      <span className="play-modo__titolo">{m.title}</span>
-                      <span className="play-modo__linea" aria-hidden="true" />
-                    </span>
-                    <span className="play-modo__desc">{m.desc}</span>
-                    <span className="play-modo__meta">{m.meta}</span>
+                <span className="q-tela__in">
+                  <span className="play-stendardo__orlo" aria-hidden="true" />
+                  <span className="play-stendardo__nome">{m.title}</span>
+                  <span className="play-stendardo__stemma" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      {m.paths.map((d) => (
+                        <path key={d} d={d} />
+                      ))}
+                    </svg>
                   </span>
-                  <span className="q-borchia q-borchia--n" />
                 </span>
+                <span className="q-borchia q-borchia--s" />
               </button>
-            )
-          })}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+        <button type="button" className="q-btn q-btn--acciaio play-gestisci" onClick={() => onNavigate('mazzi')}>
+          <span className="q-btn__in">Gestisci mazzi</span>
+        </button>
+      </div>
 
-      <section className="play-step" aria-labelledby="g-deck">
-        <Step
-          num="2"
-          id="g-deck"
-          title="Scegli i mazzi"
-          extra={
-            <button type="button" className="play-gestisci" onClick={() => onNavigate('mazzi')}>
-              Gestisci
-            </button>
-          }
-        />
+      <div className="play-corpo" ref={corpo}>
+      <section className="play-step play-step--mazzi" aria-labelledby="g-deck">
+        <h2 id="g-deck" className="sr-only">Scegli i mazzi</h2>
 
-        {decks.length === 0 ? (
+        {decksLoading ? (
+          <p className="play-nota" role="status">Caricamento dei mazzi…</p>
+        ) : decksFailed ? (
+          <p className="play-nota" role="alert">I mazzi non sono disponibili in questo momento.</p>
+        ) : decks.length === 0 ? (
           <div className="q-tela play-vuoto">
             <div className="q-tela__in">
               <p>Non hai ancora nessun mazzo.</p>
@@ -180,14 +348,18 @@ export default function PlayPage({ decks, playStatus, onNavigate, onDecksChanged
               const groupId = `g-deck-${f}`
               return (
                 <div key={f} className="play-fazione">
-                  <h3 id={groupId} className="play-fazione__nome">{faction.name}</h3>
+                  <div className="q-marker play-fazione__testa">
+                    <span className="play-rombo" aria-hidden="true" />
+                    <h3 id={groupId} className="play-fazione__nome">{faction.name}</h3>
+                    <span className="q-marker__line" />
+                  </div>
                   {own.length === 0 ? (
-                    <p className="play-fazione__vuoto">
-                      Nessun mazzo per questa fazione.{' '}
-                      <button type="button" className="play-link" onClick={() => onNavigate('nuovo-mazzo')}>
-                        Crea mazzo
+                    <div className="play-fazione__vuoto">
+                      <p>Nessun mazzo per questa fazione.</p>
+                      <button type="button" className="q-btn q-btn--acciaio" onClick={() => onNavigate('nuovo-mazzo')}>
+                        <span className="q-btn__in">Crea mazzo</span>
                       </button>
-                    </p>
+                    </div>
                   ) : (
                     <div role="radiogroup" aria-labelledby={groupId} className="play-mazzi">
                       {own.map((d) => {
@@ -213,7 +385,7 @@ export default function PlayPage({ decks, playStatus, onNavigate, onDecksChanged
                                   <span className="q-carta__targa">
                                     <span className="q-carta__nome">{d.name}</span>
                                     <span className={ok ? 'play-conta' : 'play-conta play-conta--off'}>
-                                      {ok ? `${d.cards} / ${d.maxCards} carte${d.defense ? ' · Difesa' : ''}` : `${d.cards} / ${d.maxCards} · Obsoleto`}
+                                      {ok ? (d.defense ? 'Difesa' : '') : 'Obsoleto'}
                                     </span>
                                   </span>
                                 </span>
@@ -232,51 +404,138 @@ export default function PlayPage({ decks, playStatus, onNavigate, onDecksChanged
         )}
       </section>
 
-      <div className="play-azione">
-        <span className="q-divisorio" />
-        <div className="play-azione__riga">
-          <div className="play-riepilogo" aria-live="polite">
-            <span>{summary}</span>
-            {playing ? (
-              <small>Partita in corso: il motore sta giocando la serie…</small>
-            ) : error ? (
-              <small className="play-errore" role="alert">{error}</small>
-            ) : last ? (
-              <small role="status">
-                {resultLabel[last.result]} {last.won}–{last.lost} contro {last.opponent}.{' '}
-                <button type="button" className="play-link" onClick={() => onNavigate('profilo')}>
-                  Vedi nel profilo
-                </button>
-              </small>
-            ) : (
-              <small>{hint}</small>
-            )}
-          </div>
-          <div className="play-bottoni">
-            {/* Fazione della prima partita: nella seconda le fazioni si scambiano */}
-            <div className="play-inizio">
-              <span id="g-start" className="play-inizio__etichetta">Prima partita con</span>
-              <div role="radiogroup" aria-labelledby="g-start" className="play-inizio__scelte">
-                {FACTION_IDS.map((f) => (
-                  <button key={f} type="button" role="radio" aria-checked={start === f} onClick={() => setStart(f)}>
-                    {factions[f].name}
-                  </button>
+      {/* Il leggìo: tutto ciò che serve per avviare la modalità scelta */}
+      <div className="play-lato">
+        <section className="play-step play-step--lato" aria-labelledby="g-avvio">
+          <div className="q-tela q-tela--arco play-leggio">
+            <div className="q-tela__in">
+              <h2 id="g-avvio" className="play-leggio__titolo">{mode.title}</h2>
+              <span className="q-divisorio" aria-hidden="true" />
+              <p className="play-leggio__desc">{mode.desc}</p>
+              <p className="play-leggio__meta">{mode.meta}</p>
+
+              {modeId === 'stanza' &&
+                (demo ? (
+                  <p className="play-nota">In modalità demo le stanze non sono disponibili.</p>
+                ) : roomsError && !rooms ? (
+                  <p className="play-nota" role="alert">
+                    {roomsError}{' '}
+                    <button type="button" className="play-link" onClick={() => void loadRooms()}>Riprova</button>
+                  </p>
+                ) : !rooms ? (
+                  <p className="play-nota" role="status">Caricamento delle stanze…</p>
+                ) : (
+                  <div className="play-stanze">
+                    {roomOpen && (
+                      <article className="play-stanza play-stanza--mia">
+                        <div>
+                          <h3>La tua stanza</h3>
+                          <p>{roomOpen.code} · {factions[toFaction(roomOpen.creatorFaction)].name} nella prima partita · scade tra {timeLeft(roomOpen.expiresAt)}</p>
+                        </div>
+                        <button type="button" className="q-btn q-btn--acciaio sfide-btn" disabled={!!busy} aria-busy={busy === roomOpen.code} onClick={() => closeRoom(roomOpen)}>
+                          <span className="q-btn__in">Chiudi</span>
+                        </button>
+                      </article>
+                    )}
+                    {rooms.map((r) => {
+                      // Chi entra gioca la prima partita con la fazione opposta a quella del creatore.
+                      const mine: FactionId = toFaction(r.creatorFaction) === 'umani' ? 'artificiali' : 'umani'
+                      return (
+                        <article key={r.id} className="play-stanza">
+                          <div>
+                            <h3>{r.creator.username}</h3>
+                            <p>Inizi con {factions[mine].name} · scade tra {timeLeft(r.expiresAt)}</p>
+                          </div>
+                          <button type="button" className="q-btn q-btn--argento sfide-btn" disabled={!canAct} aria-busy={busy === r.code} onClick={() => join(r)}>
+                            <span className="q-btn__in">{busy === r.code ? 'In corso…' : 'Entra'}</span>
+                          </button>
+                        </article>
+                      )
+                    })}
+                    {rooms.length === 0 && !roomOpen && <p className="play-nota">Nessuna stanza aperta. Aprine una dal bottone qui sotto.</p>}
+                  </div>
                 ))}
+
+              {modeId === 'sfida' && (
+                <div className="play-sfida">
+                  <label htmlFor="g-avversario">Nome del giocatore</label>
+                  <input
+                    id="g-avversario"
+                    className="sfide-campo"
+                    value={opponent}
+                    maxLength={32}
+                    autoComplete="off"
+                    onChange={(e) => setOpponent(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') startMode()
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Fazione della prima partita: nella seconda le fazioni si scambiano */}
+              <div className="play-inizio">
+                <span id="g-start" className="play-inizio__etichetta">Prima partita con</span>
+                {/* Bilancia: i due nomi ai lati di un filo, il rombo scivola verso la fazione scelta */}
+                <div role="radiogroup" aria-labelledby="g-start" className="play-bilancia" data-lato={start === FACTION_IDS[0] ? 'sinistra' : 'destra'}>
+                  {FACTION_IDS.map((f) => (
+                    <button key={f} type="button" role="radio" aria-checked={start === f} className="play-bilancia__lato" onClick={() => setStart(f)}>
+                      {factions[f].name}
+                    </button>
+                  ))}
+                  <span className="play-bilancia__asta" aria-hidden="true">
+                    <span className="play-bilancia__rombo" />
+                  </span>
+                </div>
               </div>
             </div>
-            <button type="button" className="q-btn q-btn--acciaio play-gestisci-btn" onClick={() => onNavigate('mazzi')}>
-              <span className="q-btn__in">Gestisci mazzi</span>
+            <span className="q-borchia q-borchia--n" />
+          </div>
+        </section>
+
+        <div className="play-azione">
+          <div className="play-riepilogo" aria-live="polite">
+            {busy && busy !== 'avvio' ? (
+              <small>Operazione in corso…</small>
+            ) : busy && modeId === 'libera' ? (
+              <small>Partita in corso: il motore sta giocando la serie…</small>
+            ) : error ? (
+              <small className="play-errore" role="alert">
+                {error}{' '}
+                {canRetry && !fix && (
+                  <button type="button" className="play-link" onClick={startMode}>Riprova</button>
+                )}
+              </small>
+            ) : outcome ? (
+              <small role="status">
+                {outcome.text}{' '}
+                {outcome.link === 'profilo' && (
+                  <button type="button" className="play-link" onClick={onOpenMatches}>Vedi nel profilo</button>
+                )}
+                {outcome.link === 'sfide' && (
+                  <button type="button" className="play-link" onClick={() => onNavigate('sfide')}>Vai a Sfide</button>
+                )}
+              </small>
+            ) : (
+              <small>{statusLine}</small>
+            )}
+          </div>
+          {fix ? (
+            <button type="button" className="q-btn q-btn--argento play-rimedio" onClick={fix.action}>
+              <span className="q-btn__in">{fix.label}</span>
             </button>
-            <button type="button" className="q-btn q-btn--sigillo" disabled={!canStart} aria-busy={playing} onClick={play}>
+          ) : (
+            <button type="button" className="q-btn q-btn--sigillo" disabled={!canStart} aria-busy={busy === 'avvio'} onClick={startMode}>
               <span className="q-btn__in">
                 <Star />
-                {playing ? 'In corso…' : 'Inizia partita'}
+                {actionLabel}
               </span>
               <span className="q-borchia q-borchia--w" />
               <span className="q-borchia q-borchia--e" />
             </button>
-          </div>
+          )}
         </div>
+      </div>
       </div>
     </main>
   )
