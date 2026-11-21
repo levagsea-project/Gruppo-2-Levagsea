@@ -1,4 +1,5 @@
 import { getSession } from '../lib/auth'
+import { formatCredits } from '../lib/balance'
 import { loadProfile } from '../lib/profileStore'
 import { findAvatar } from './avatars'
 
@@ -23,7 +24,7 @@ export function currentPlayer() {
 // Le due valute (nomi provvisori). I crediti del backend sono la Valuta 2; la Valuta 1 non esiste ancora (null = "in arrivo").
 export const currencies = (credits: number | null): { label: string; value: string | null }[] => [
   { label: 'Valuta 1', value: null },
-  { label: 'Valuta 2', value: credits === null ? null : credits.toLocaleString('it-IT') },
+  { label: 'Valuta 2', value: credits === null ? null : formatCredits(credits) },
 ]
 
 // Sezioni del gioco che non esistono ancora: le mostriamo come "in arrivo", senza numeri inventati.

@@ -1,18 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 import { factions } from '../../data/factions'
-import { ApiError, GENERIC } from '../../lib/api'
+import { ApiError, GENERIC, translate } from '../../lib/api'
 import { isDemoSession } from '../../lib/auth'
-import { setBalance, useBalance } from '../../lib/balance'
+import { formatCredits, setBalance, useBalance } from '../../lib/balance'
 import { getCollection } from '../../lib/cards'
 import { buyPack, isUncertain, listPacks, newPurchaseKey, packName, type OpenedPack, type PackType } from '../../lib/shop'
 import type { FactionId } from '../../types/deck'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
+import SealedPack from './SealedPack'
 import '../../styles/collection.css'
 
 const FACTION_IDS: FactionId[] = ['artificiali', 'umani']
 const QUANTITIES = [1, 5, 10]
-const fmt = (n: number) => n.toLocaleString('it-IT')
+const fmt = formatCredits
+
+// Il rombo della Valuta 2, lo stesso della barra in alto.
+const PriceIcon = () => (
+  <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="rgba(74,166,173,0.25)" stroke="var(--petrol-500)" strokeWidth="2" strokeLinejoin="round">
+    <path d="M12 2 21 12l-9 10-9-10z" />
+  </svg>
+)
 
 type Props = { onOpenPacks: (ids: string[]) => void }
 
@@ -95,14 +103,13 @@ export default function ShopPage({ onOpenPacks }: Props) {
 
       <div className="shop-corpo">
         <section aria-label="Articoli" className="shop-articoli">
-          <div className="coll-chips" role="group" aria-label="Sezione del negozio">
-            <span className="m-chip" data-on="true">Buste</span>
-            <span className="m-chip m-chip--off" title="In arrivo">Offerte · in arrivo</span>
-          </div>
-          <div className="q-marker">
-            <h2 className="q-marker__title">Buste</h2>
+          <div className="q-marker shop-testa">
+            <h2 className="sr-only">Buste</h2>
+            <div className="coll-chips" role="group" aria-label="Sezione del negozio">
+              <span className="m-chip" data-on="true">Buste</span>
+              <span className="m-chip m-chip--off" title="In arrivo">Offerte · in arrivo</span>
+            </div>
             <span className="q-marker__line" />
-            {pack && <span className="coll-nota">{pack.set.name}</span>}
           </div>
 
           {demo ? (
@@ -117,29 +124,39 @@ export default function ShopPage({ onOpenPacks }: Props) {
           ) : packs.length === 0 ? (
             <p className="coll-vuoto">Nessuna busta in vendita al momento.</p>
           ) : (
-            <div role="radiogroup" aria-label="Scegli una busta" className="shop-griglia">
-              {packs.map((p) => {
-                const on = p.code === code
-                return (
-                  <button key={p.code} type="button" role="radio" aria-checked={on} className="pick" onClick={() => pick(() => setCode(p.code))}>
-                    <span className={`q-tela q-tela--arco q-carta ${on ? 'q-acceso' : ''}`}>
-                      <span className="q-tela__in">
-                        <span className="q-carta__arte n-busta" style={{ backgroundImage: `url(${factions[faction].cover})`, backgroundPosition: factions[faction].coverFocus }}>
-                          <img className="n-logo" src="/images/ui/logo-quorma.png" alt="" />
-                          <span className="n-fascia">{p.featured ? 'In evidenza' : `${p.size} carte`}</span>
-                        </span>
-                        <span className="q-divisorio" />
-                        <span className="q-carta__targa shop-targa">
-                          <span className="q-carta__nome">{packName(p.code)}</span>
-                          <span className="q-carta__sotto">{p.size} carte</span>
-                          <span className="n-prezzo">{fmt(p.price)} <small>Valuta 2</small></span>
-                        </span>
-                      </span>
-                      <span className="q-borchia q-borchia--n" />
-                    </span>
-                  </button>
-                )
-              })}
+            <div className="shop-matrice">
+              <div role="radiogroup" aria-label="Scegli una busta" className="shop-fazioni">
+                {FACTION_IDS.map((f) => (
+                  <div key={f} className="shop-fazione">
+                    <h3 className="shop-fazione__nome">{factions[f].name}</h3>
+                    <div className="shop-griglia">
+                      {packs.map((p) => {
+                        const on = p.code === code && f === faction
+                        return (
+                          <button
+                            key={p.code}
+                            type="button"
+                            role="radio"
+                            aria-checked={on}
+                            aria-label={`${packName(p.code)}, ${factions[f].name}: ${p.size} carte, ${fmt(p.price)} Valuta 2${p.featured ? ', in evidenza' : ''}`}
+                            className="pick shop-busta"
+                            onClick={() =>
+                              pick(() => {
+                                setCode(p.code)
+                                setFaction(f)
+                              })
+                            }
+                          >
+                            <SealedPack code={p.code} faction={f} size={p.size} setName={p.set.name} featured={p.featured} />
+                            <span className="shop-busta__nome">{packName(p.code).replace(/^Pacchetto\s+/i, '')}</span>
+                            <span className="n-prezzo"><PriceIcon />{fmt(p.price)}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </section>
@@ -154,55 +171,56 @@ export default function ShopPage({ onOpenPacks }: Props) {
                   <small>{factions[faction].name}</small>
                 </span>
                 <span className="q-divisorio" />
-
-                <div className="q-elenco" role="radiogroup" aria-label="Fazione della busta">
-                  <span className="q-elenco__titolo">Fazione</span>
-                  {FACTION_IDS.map((f) => (
-                    <button key={f} type="button" role="radio" aria-checked={faction === f} className="q-elenco__voce" onClick={() => pick(() => setFaction(f))}>
-                      {factions[f].name}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="q-elenco" role="radiogroup" aria-label="Quantità">
-                  <span className="q-elenco__titolo">Quantità</span>
-                  <div className="shop-qta">
-                    {QUANTITIES.map((n) => (
-                      <button key={n} type="button" role="radio" aria-checked={qty === n} className="m-chip" onClick={() => pick(() => setQty(n))}>
-                        × {n}
-                      </button>
+                <div className="shop-blocco">
+                  <span className="q-elenco__titolo">Contiene {pack.size} carte</span>
+                  <ul className="shop-contenuto">
+                    {Object.entries(pack.slots).filter(([, n]) => n > 0).map(([tier, n]) => (
+                      <li key={tier}><span>{translate(`game.tier.${tier.toLowerCase()}`)}</span><b>{n}</b></li>
                     ))}
-                  </div>
+                    {pack.supportSlots > 0 && <li><span>Magie o equipaggiamenti</span><b>{pack.supportSlots}</b></li>}
+                  </ul>
                 </div>
 
-                <dl className="shop-conti">
-                  <div><dt>Saldo Valuta 2</dt><dd>{credits === null ? 'Noto dopo un acquisto' : fmt(credits)}</dd></div>
-                  <div><dt>Totale</dt><dd>− {fmt(total)}</dd></div>
-                  {credits !== null && <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{short ? '—' : fmt(credits - total)}</dd></div>}
-                </dl>
+                <div className="shop-cassa">
+                  <div className="shop-blocco shop-blocco--qta">
+                    <span className="q-elenco__titolo">Quantità</span>
+                    <div className="shop-qta" role="radiogroup" aria-label="Quantità">
+                      {QUANTITIES.map((n) => (
+                        <button key={n} type="button" role="radio" aria-checked={qty === n} className="m-chip" onClick={() => pick(() => setQty(n))}>
+                          × {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                {short && <p className="m-regola m-regola--errore">L'ultimo saldo noto non basta per questo acquisto.</p>}
-                {error && <p className="m-regola m-regola--errore" role="alert">{error}</p>}
+                  <dl className="shop-conti">
+                    <div><dt>Saldo</dt><dd>{credits === null ? 'Noto dopo un acquisto' : fmt(credits)}</dd></div>
+                    <div><dt>Totale</dt><dd>− {fmt(total)}</dd></div>
+                    {credits !== null && <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{short ? '—' : fmt(credits - total)}</dd></div>}
+                  </dl>
 
-                {bought.length > 0 && !(error && uncertain) ? (
-                  <div className="q-tela q-tela--arco q-braci shop-fatto">
-                    <div className="q-tela__in">
+                  {short && <p className="m-regola m-regola--errore">L'ultimo saldo noto non basta per questo acquisto.</p>}
+                  {error && <p className="m-regola m-regola--errore" role="alert">{error}</p>}
+
+                  {bought.length > 0 && !(error && uncertain) ? (
+                    <div className="shop-fatto">
                       <b>Acquisto completato</b>
                       <span>{bought.length === 1 ? 'La busta è pronta da aprire.' : `${bought.length} buste sono pronte da aprire.`}</span>
-                      <button type="button" className="q-btn q-btn--argento" onClick={() => onOpenPacks(bought.map((p) => p.id))}>
-                        <span className="q-btn__in">Apri ora</span>
-                      </button>
-                      <button type="button" className="q-btn q-btn--acciaio" onClick={() => setBought([])}>
-                        <span className="q-btn__in">Più tardi</span>
-                      </button>
+                      <div className="shop-fatto__azioni">
+                        <button type="button" className="q-btn q-btn--acciaio" onClick={() => setBought([])}>
+                          <span className="q-btn__in">Più tardi</span>
+                        </button>
+                        <button type="button" className="q-btn q-btn--argento" onClick={() => onOpenPacks(bought.map((p) => p.id))}>
+                          <span className="q-btn__in">Apri ora</span>
+                        </button>
+                      </div>
                     </div>
-                    <span className="q-borchia q-borchia--n" />
-                  </div>
-                ) : (
-                  <button type="button" className="q-btn q-btn--argento shop-compra" disabled={buying} aria-busy={buying} onClick={buy}>
-                    <span className="q-btn__in">{buying ? 'Acquisto…' : error && uncertain ? 'Riprova' : 'Acquista'}</span>
-                  </button>
-                )}
+                  ) : (
+                    <button type="button" className="q-btn q-btn--argento shop-compra" disabled={buying} aria-busy={buying} onClick={buy}>
+                      <span className="q-btn__in">{buying ? 'Acquisto…' : error && uncertain ? 'Riprova' : 'Acquista'}</span>
+                    </button>
+                  )}
+                </div>
               </>
             ) : (
               <p className="coll-nota-testo">Scegli una busta.</p>

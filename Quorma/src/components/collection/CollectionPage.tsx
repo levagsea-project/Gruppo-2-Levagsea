@@ -5,10 +5,11 @@ import { ApiError, GENERIC } from '../../lib/api'
 import { isDemoSession } from '../../lib/auth'
 import { SUITS, SUIT_NAMES, getCollection, rankLabel } from '../../lib/cards'
 import { packName, pendingPacks, type OpenedPack } from '../../lib/shop'
-import type { FactionId, OwnedCard, SuitId } from '../../types/deck'
+import type { CardKind, FactionId, OwnedCard, SuitId } from '../../types/deck'
 import CardFace from '../cards/CardFace'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
+import SealedPack from '../shop/SealedPack'
 import '../../styles/collection.css'
 
 export type CollectionTab = 'carte' | 'buste'
@@ -18,6 +19,7 @@ type View = 'tutte' | 'doppioni' | 'singole'
 const PAGE_SIZE = 12
 const KIND_ORDER = { CREATURE: 0, SPELL: 1, EQUIPMENT: 2 }
 const KIND_NAME = { CREATURE: 'Creatura', SPELL: 'Magia', EQUIPMENT: 'Equipaggiamento' }
+const KINDS: [CardKind | 'tutti', string][] = [['tutti', 'Tutti'], ['CREATURE', 'Creature'], ['SPELL', 'Magie'], ['EQUIPMENT', 'Equipaggiamenti']]
 const VIEWS: [View, string][] = [['tutte', 'Tutte'], ['doppioni', 'Doppioni'], ['singole', 'Copia singola']]
 const fmt = (n: number | null) => (n === null ? '–' : n.toLocaleString('it-IT'))
 // L'Asso è la carta più alta: in elenco viene dopo il King.
@@ -51,6 +53,7 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
   const [cards, setCards] = useState<OwnedCard[] | null>(null)
   const [error, setError] = useState('')
   const [faction, setFaction] = useState<FactionId | 'tutte'>('tutte')
+  const [kind, setKind] = useState<CardKind | 'tutti'>('tutti')
   const [suit, setSuit] = useState<SuitId | 'tutti'>('tutti')
   const [view, setView] = useState<View>('tutte')
   const [pageN, setPageN] = useState(0)
@@ -72,7 +75,9 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
   const passFaction = (e: Entry) => faction === 'tutte' || e.card.faction === faction
   const passSuit = (e: Entry) => suit === 'tutti' || e.card.suit === suit
   const passView = (e: Entry) => view === 'tutte' || (view === 'doppioni' ? e.copies > 1 : e.copies === 1)
-  const shown = entries.filter((e) => passFaction(e) && passSuit(e) && passView(e))
+  const passKind = (e: Entry) => kind === 'tutti' || e.card.kind === kind
+  const hasSuits = kind === 'tutti' || kind === 'CREATURE' // magie ed equipaggiamenti non hanno seme
+  const shown = entries.filter((e) => passFaction(e) && passKind(e) && passSuit(e) && passView(e))
   const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE))
   const current = Math.min(pageN, pages - 1)
   const visible = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
@@ -125,26 +130,49 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
               {(['tutte', 'umani', 'artificiali'] as const).map((f) => (
                 <button key={f} type="button" role="radio" aria-checked={faction === f} className="q-elenco__voce" onClick={() => filter(() => setFaction(f))}>
                   {f === 'tutte' ? 'Tutte' : factions[f].name}
-                  <span className="q-elenco__conta">{entries.filter((e) => (f === 'tutte' || e.card.faction === f) && passSuit(e) && passView(e)).length}</span>
+                  <span className="q-elenco__conta">{entries.filter((e) => (f === 'tutte' || e.card.faction === f) && passKind(e) && passSuit(e) && passView(e)).length}</span>
                 </button>
               ))}
             </div>
-            <div className="q-elenco" role="radiogroup" aria-label="Seme">
-              <span className="q-elenco__titolo">Seme</span>
-              {(['tutti', ...SUITS] as const).map((s) => (
-                <button key={s} type="button" role="radio" aria-checked={suit === s} className="q-elenco__voce" onClick={() => filter(() => setSuit(s))}>
-                  {s === 'tutti' ? <span className="q-elenco__ico" /> : <span className={`deck-seme deck-seme--${s.toLowerCase()} q-elenco__ico`} aria-hidden="true" />}
-                  {s === 'tutti' ? 'Tutti' : SUIT_NAMES[s]}
-                  <span className="q-elenco__conta">{entries.filter((e) => (s === 'tutti' || e.card.suit === s) && passFaction(e) && passView(e)).length}</span>
+            <div className="q-elenco" role="radiogroup" aria-label="Tipo di carta">
+              <span className="q-elenco__titolo">Tipo</span>
+              {KINDS.map(([k, label]) => (
+                <button
+                  key={k}
+                  type="button"
+                  role="radio"
+                  aria-checked={kind === k}
+                  className="q-elenco__voce"
+                  onClick={() =>
+                    filter(() => {
+                      setKind(k)
+                      if (k === 'SPELL' || k === 'EQUIPMENT') setSuit('tutti')
+                    })
+                  }
+                >
+                  {label}
+                  <span className="q-elenco__conta">{entries.filter((e) => (k === 'tutti' || e.card.kind === k) && passFaction(e) && (k === 'SPELL' || k === 'EQUIPMENT' || passSuit(e)) && passView(e)).length}</span>
                 </button>
               ))}
             </div>
+            {hasSuits && (
+              <div className="q-elenco" role="radiogroup" aria-label="Seme">
+                <span className="q-elenco__titolo">Seme</span>
+                {(['tutti', ...SUITS] as const).map((s) => (
+                  <button key={s} type="button" role="radio" aria-checked={suit === s} className="q-elenco__voce" onClick={() => filter(() => setSuit(s))}>
+                    {s === 'tutti' ? <span className="q-elenco__ico" /> : <span className={`deck-seme deck-seme--${s.toLowerCase()} q-elenco__ico`} aria-hidden="true" />}
+                    {s === 'tutti' ? 'Tutti' : SUIT_NAMES[s]}
+                    <span className="q-elenco__conta">{entries.filter((e) => (s === 'tutti' || e.card.suit === s) && passFaction(e) && passKind(e) && passView(e)).length}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="q-elenco" role="radiogroup" aria-label="Mostra">
               <span className="q-elenco__titolo">Mostra</span>
               {VIEWS.map(([v, label]) => (
                 <button key={v} type="button" role="radio" aria-checked={view === v} className="q-elenco__voce" onClick={() => filter(() => setView(v))}>
                   {label}
-                  <span className="q-elenco__conta">{entries.filter((e) => (v === 'tutte' || (v === 'doppioni' ? e.copies > 1 : e.copies === 1)) && passFaction(e) && passSuit(e)).length}</span>
+                  <span className="q-elenco__conta">{entries.filter((e) => (v === 'tutte' || (v === 'doppioni' ? e.copies > 1 : e.copies === 1)) && passFaction(e) && passKind(e) && passSuit(e)).length}</span>
                 </button>
               ))}
             </div>
@@ -223,12 +251,12 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
 // Le buste comprate e non ancora rivelate, raggruppate per tipo e fazione.
 function PacksTab({ packs, onOpen, onShop }: { packs: OpenedPack[]; onOpen: (ids: string[]) => void; onShop: () => void }) {
   const groups = useMemo(() => {
-    const map = new Map<string, { key: string; packType: string; faction: FactionId; ids: string[] }>()
+    const map = new Map<string, { key: string; packType: string; faction: FactionId; size: number; setName?: string; ids: string[] }>()
     for (const p of packs) {
       const key = `${p.packType}:${p.faction}`
       const g = map.get(key)
       if (g) g.ids.push(p.id)
-      else map.set(key, { key, packType: p.packType, faction: p.faction, ids: [p.id] })
+      else map.set(key, { key, packType: p.packType, faction: p.faction, size: p.cards.length, setName: p.cards[0]?.sets[0]?.name, ids: [p.id] })
     }
     return [...map.values()]
   }, [packs])
@@ -252,36 +280,15 @@ function PacksTab({ packs, onOpen, onShop }: { packs: OpenedPack[]; onOpen: (ids
           <span className="q-marker__line" />
           <span className="coll-nota">{packs.length} da aprire</span>
         </div>
-        <div role="radiogroup" aria-label="Scegli le buste da aprire" className="shop-griglia">
+        <div role="radiogroup" aria-label="Scegli le buste da aprire" className="buste-griglia">
           {groups.map((g) => {
             const on = g.key === sel.key
             const f = factions[g.faction]
-            const inner = (
-              <span className={`q-tela q-tela--arco q-carta ${on ? 'q-acceso' : ''}`}>
-                <span className="q-tela__in">
-                  <span className="q-carta__arte n-busta" style={{ backgroundImage: `url(${f.cover})`, backgroundPosition: f.coverFocus }}>
-                    <img className="n-logo" src="/images/ui/logo-quorma.png" alt="" />
-                    <span className="n-fascia">{f.name}</span>
-                  </span>
-                  <span className="q-divisorio" />
-                  <span className="q-carta__targa shop-targa">
-                    <span className="q-carta__nome">{packName(g.packType)}</span>
-                    <span className="q-carta__sotto">{f.name}</span>
-                    <span className="n-prezzo">× {g.ids.length}</span>
-                  </span>
-                </span>
-                <span className="q-borchia q-borchia--n" />
-              </span>
-            )
             return (
-              <button key={g.key} type="button" role="radio" aria-checked={on} aria-label={`${packName(g.packType)} ${f.name}: ${g.ids.length} da aprire`} className="pick" onClick={() => setSelKey(g.key)}>
-                {g.ids.length > 1 ? (
-                  <span className="q-mazzo">
-                    <span className="q-mazzo__strato" aria-hidden="true" />
-                    <span className="q-mazzo__strato" aria-hidden="true" />
-                    {inner}
-                  </span>
-                ) : inner}
+              <button key={g.key} type="button" role="radio" aria-checked={on} aria-label={`${packName(g.packType)} ${f.name}: ${g.size} carte, ${g.ids.length} da aprire`} className="pick shop-busta" onClick={() => setSelKey(g.key)}>
+                <SealedPack code={g.packType} faction={g.faction} size={g.size} setName={g.setName} count={g.ids.length} />
+                <span className="shop-busta__nome">{packName(g.packType).replace(/^Pacchetto\s+/i, '')}</span>
+                <span className="shop-busta__fazione">{f.name}</span>
               </button>
             )
           })}

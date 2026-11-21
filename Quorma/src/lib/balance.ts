@@ -7,6 +7,9 @@ import { getSession } from './auth'
 const KEY = () => `quorma.saldo.${getSession()?.username ?? 'ospite'}`
 const listeners = new Set<() => void>()
 
+/** "4.800": in italiano toLocaleString non separa le migliaia sotto 10.000, il design sì. */
+export const formatCredits = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
 function read(): number | null {
   try {
     const raw = localStorage.getItem(KEY())

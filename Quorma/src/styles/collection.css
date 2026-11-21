@@ -70,13 +70,17 @@
 /* ---------- Negozio e buste da aprire ---------- */
 .shop-corpo { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 28px; align-items: start; }
 .shop-articoli { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.shop-fazioni { display: flex; flex-direction: column; gap: 22px; }
+.shop-fazione { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.shop-fazione__nome { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--steel-300); }
 .shop-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 214px)); gap: 26px; padding: 12px 12px 4px 2px; }
 .shop-griglia .q-carta { --arte-h: 230px; }
 .shop-griglia .q-carta__arte { background-size: cover; }
 .shop-targa { gap: 6px; padding: 12px 10px 14px; }
 .shop-griglia .q-carta__nome { font-size: 15px; }
 .n-busta { position: relative; display: block; }
-.n-logo { position: absolute; left: 50%; top: 44%; width: 70%; transform: translate(-50%, -50%); filter: drop-shadow(0 2px 10px rgba(0,0,0,.9)); }
+/* logo in basso, sopra la fascia: al centro coprirebbe il soggetto della copertina */
+.n-logo { position: absolute; left: 50%; bottom: 34px; width: 58%; transform: translateX(-50%); filter: drop-shadow(0 2px 10px rgba(0,0,0,.9)); }
 .n-fascia { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 0; text-align: center; font-family: var(--font-sans); font-size: 10.5px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #EEF4F5; background: linear-gradient(90deg, rgba(8,16,20,0), rgba(8,16,20,.85) 20%, rgba(8,16,20,.85) 80%, rgba(8,16,20,0)); }
 .n-prezzo { display: inline-flex; align-items: baseline; gap: 5px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: #EEF4F5; }
 .n-prezzo small { font-size: 10.5px; font-weight: 500; letter-spacing: .08em; color: var(--steel-300); }
@@ -130,6 +134,74 @@
   .open-carte { grid-template-columns: repeat(3, minmax(0, 190px)); }
 }
 
+/* ---------- Negozio su desktop: tutto in una schermata, senza scorrere ----------
+   Le due file si dividono l'altezza libera e l'illustrazione della busta prende quello che resta. */
+.shop-testa .q-marker__line { flex: 1; }
+/* Buste piccole a forma di bustina sigillata: bordi dentellati in alto e in basso, fascia di chiusura, dati stampati sopra.
+   L'altezza segue la finestra, così le due file entrano sempre in una schermata. */
+.shop-page, .coll-page { --shop-col-gap: 18px; --busta-h: clamp(140px, calc(50vh - 190px), 200px); --dente: 4px; --sigillo: 10px; }
+/* Buste da aprire: le stesse bustine, solo quelle che possiedi */
+.buste-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 22px var(--shop-col-gap); padding: 10px 0 4px; }
+.coll-page .shop-corpo { grid-template-columns: minmax(0, 1fr) 300px; }
+.coll-page .shop-acquisto > .q-tela__in { padding: 18px; }
+.shop-busta__ombra--pila { position: relative; margin-right: 10px; }
+.shop-busta__ombra > .shop-busta__corpo:not(.shop-busta__strato) { z-index: 1; }
+.shop-busta__corpo.shop-busta__strato { position: absolute; left: 0; top: 0; z-index: 0; filter: brightness(.5); transform: translate(5px, -4px); }
+.shop-busta__corpo.shop-busta__strato--2 { filter: brightness(.3); transform: translate(10px, -8px); }
+.shop-busta__conta { position: absolute; z-index: 3; right: -8px; top: -10px; padding: 2px 7px; box-shadow: 0 2px 6px rgba(0,0,0,.7); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ground-950); background: linear-gradient(90deg, #E4ECEE, #C4D3D8); }
+.shop-busta__fazione { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--steel-300); }
+.shop-matrice { display: flex; flex-direction: column; width: 100%; max-width: 620px; min-width: 0; margin-inline: auto; }
+.shop-page .shop-griglia { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--shop-col-gap); padding: 6px 0 0; }
+.pick.shop-busta { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; text-align: center; }
+.shop-busta__ombra { display: block; margin-bottom: 4px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)); transition: filter .18s ease; }
+.pick.shop-busta:hover .shop-busta__ombra { filter: drop-shadow(0 6px 12px rgba(74,166,173,.4)); }
+.pick.shop-busta[aria-checked="true"] .shop-busta__ombra { filter: drop-shadow(0 0 2px var(--petrol-300)) drop-shadow(0 2px 12px rgba(74,166,173,.75)); }
+.shop-busta__corpo { position: relative; display: block; height: var(--busta-h); aspect-ratio: 5 / 7; overflow: hidden; background-color: var(--ground-950); background-repeat: no-repeat; background-size: cover;
+  -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(2 * var(--dente)) 51% repeat-x, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(2 * var(--dente)) 51% repeat-x;
+  mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(2 * var(--dente)) 51% repeat-x, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(2 * var(--dente)) 51% repeat-x; }
+/* le due fasce di chiusura, con le righe verticali della saldatura */
+.shop-busta__corpo::before, .shop-busta__corpo::after { content: ""; position: absolute; z-index: 2; left: 0; right: 0; height: var(--sigillo); background: repeating-linear-gradient(90deg, rgba(242,247,248,.3) 0 1px, rgba(8,16,20,.3) 1px 3px), linear-gradient(180deg, #5C707A, #26363D); }
+.shop-busta__corpo::before { top: 0; box-shadow: 0 1px 3px rgba(0,0,0,.7); }
+.shop-busta__corpo::after { bottom: 0; box-shadow: 0 -1px 3px rgba(0,0,0,.7); }
+.shop-busta__logo { position: absolute; z-index: 1; left: 50%; top: calc(var(--sigillo) + 7px); width: 66%; transform: translateX(-50%); filter: drop-shadow(0 1px 5px rgba(0,0,0,.95)); }
+.shop-busta__tag { position: absolute; z-index: 1; left: 0; right: 0; top: calc(var(--sigillo) + 36px); font-size: 9.5px; font-style: normal; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ember-200); text-shadow: 0 1px 4px #000; }
+.shop-busta__info { position: absolute; z-index: 1; left: 0; right: 0; bottom: var(--sigillo); display: flex; flex-direction: column; gap: 1px; padding: 26px 4px 7px; background: linear-gradient(0deg, rgba(8,16,20,.96) 30%, rgba(8,16,20,0)); }
+.shop-busta__info b { font-size: 11.5px; font-weight: 700; letter-spacing: .03em; color: #EEF4F5; }
+.shop-busta__info small { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--petrol-300); }
+.shop-busta__nome { font-family: var(--font-display); font-size: 14px; line-height: 18px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; }
+.pick.shop-busta[aria-checked="true"] .shop-busta__nome { color: var(--petrol-300); }
+.shop-busta .n-prezzo { align-items: center; font-size: 13px; }
+.shop-page .shop-fazione__nome { text-align: center; }
+/* acquisto fatto: quantità e conti riguarderebbero un acquisto nuovo, quindi spariscono finché non si sceglie */
+.shop-cassa:has(.shop-fatto) .shop-blocco--qta, .shop-cassa:has(.shop-fatto) .shop-conti { display: none; }
+
+/* Riquadro di acquisto: solo dati, alto quanto serve */
+.shop-blocco { display: flex; flex-direction: column; }
+.shop-blocco > .q-elenco__titolo { margin-bottom: 6px; }
+.shop-contenuto { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: #A9BCC3; }
+.shop-contenuto li { display: flex; justify-content: space-between; gap: 12px; }
+.shop-contenuto b { font-weight: 600; font-variant-numeric: tabular-nums; color: #EEF4F5; }
+.shop-cassa { display: flex; flex-direction: column; gap: 14px; }
+.shop-fatto { display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 19px; color: var(--silver-100); }
+.shop-fatto b { font-family: var(--font-display); font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-200); }
+.shop-fatto__azioni { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+.shop-fatto__azioni .q-btn { display: flex; width: 100%; }
+.shop-fatto__azioni .q-btn__in { min-width: 0; padding: 0 8px; }
+
+@media (min-width: 768px) {
+  .page.shop-page { gap: 12px; padding-bottom: 16px; overflow: hidden; }
+  .shop-page .shop-corpo { flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; }
+  .shop-page .shop-articoli { min-height: 0; gap: 12px; }
+  .shop-page .shop-fazioni { display: flex; flex-direction: column; gap: 12px; }
+  .shop-page .shop-fazione { gap: 2px; }
+  .shop-page .shop-acquisto { max-height: 100%; min-height: 0; }
+  .shop-page .shop-acquisto > .q-tela__in { min-height: 0; gap: 14px; padding: 18px; overflow-y: auto; scrollbar-width: thin; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .shop-page { --shop-col-gap: 8px; }
+  .shop-page .shop-corpo { grid-template-columns: minmax(0, 1fr) 240px; gap: 14px; }
+}
+
 /* ---------- Telefono ---------- */
 @media (max-width: 767px) {
   .page.coll-page, .page.shop-page, .page.open-page { overflow: visible; gap: 16px; }
@@ -152,6 +224,56 @@
 
   .shop-griglia { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 10px 8px 2px 0; }
   .shop-griglia .q-carta { --arte-h: 150px; }
+  /* Negozio: la stessa tabella 3 × 2, tutta visibile; il riquadro di acquisto si compatta sotto */
+  .shop-page { --shop-col-gap: 6px; --busta-h: clamp(96px, 13vh, 128px); --dente: 3px; --sigillo: 7px; }
+  .page.shop-page { gap: 8px; }
+  .shop-page .shop-corpo { gap: 10px; }
+  .shop-page .shop-articoli { gap: 6px; }
+  .shop-page .shop-fazioni { gap: 6px; }
+  .shop-page .shop-fazione { gap: 0; }
+  .shop-page .shop-fazione__nome { font-size: 11px; }
+  .shop-page .shop-griglia { padding: 3px 0 0; }
+  .shop-page .pick.shop-busta { display: grid; grid-template-columns: auto auto; justify-content: center; align-items: baseline; gap: 0 5px; }
+  .shop-page .shop-busta__ombra { grid-column: 1 / -1; justify-self: center; margin-bottom: 2px; }
+  .shop-page .shop-busta__da, .shop-page .shop-busta__tag { display: none; }
+  .shop-page .shop-busta__logo { top: calc(var(--sigillo) + 4px); width: 72%; }
+  .shop-page .shop-busta__info { padding: 14px 1px 3px; }
+  .shop-page .shop-busta__info b { font-size: 10.5px; }
+  .shop-page .shop-busta__info small { font-size: 8.5px; letter-spacing: .05em; }
+  .shop-page .shop-busta__nome { font-size: 11px; line-height: 15px; letter-spacing: .03em; }
+  .shop-page .shop-busta .n-prezzo { gap: 2px; font-size: 11.5px; }
+  .shop-page .shop-busta .n-prezzo svg { width: 9px; height: 9px; }
+  /* Buste da aprire su telefono: tre colonne come nel Negozio, riquadro compatto con i due tasti affiancati */
+  .coll-page { --busta-h: clamp(100px, 14vh, 128px); --shop-col-gap: 6px; --dente: 3px; --sigillo: 7px; }
+  .coll-page .shop-corpo { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .coll-page .shop-articoli { gap: 6px; }
+  .buste-griglia { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px var(--shop-col-gap); padding-top: 8px; }
+  .coll-page .shop-busta__da { display: none; }
+  .coll-page .shop-busta__logo { top: calc(var(--sigillo) + 4px); width: 72%; }
+  .coll-page .shop-busta__info { padding: 14px 1px 3px; }
+  .coll-page .shop-busta__info b { font-size: 10.5px; }
+  .coll-page .shop-busta__info small { font-size: 8.5px; letter-spacing: .05em; }
+  .coll-page .shop-busta__nome { font-size: 11px; line-height: 15px; letter-spacing: .03em; }
+  .coll-page .shop-busta__fazione { font-size: 10px; line-height: 13px; letter-spacing: 0; text-transform: none; }
+  .coll-page .shop-busta__conta { right: -6px; top: -8px; padding: 1px 5px; font-size: 11px; }
+  .coll-page .shop-acquisto > .q-tela__in { gap: 8px; padding: 10px 14px 12px; }
+  .coll-page .shop-acquisto .coll-totali, .coll-page .shop-acquisto .coll-nota-testo { display: none; }
+  .shop-azioni { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .shop-azioni .q-btn__in { min-width: 0; height: 44px; padding: 0 8px; }
+  /* acquisto fatto: restano solo l'esito e i due tasti, così il riquadro non cresce */
+  .shop-cassa:has(.shop-fatto) .shop-blocco--qta, .shop-cassa:has(.shop-fatto) .shop-conti, .shop-fatto > span { display: none; }
+  .shop-acquisto > .q-tela__in { gap: 7px; padding: 10px 14px; }
+  .shop-acquisto h2.q-elenco__titolo, .shop-blocco > .q-elenco__titolo { display: none; }
+  .shop-nome { flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 10px; }
+  .shop-nome b { font-size: 16px; line-height: 21px; }
+  .shop-nome small { font-size: 10.5px; letter-spacing: .1em; }
+  .shop-contenuto { flex-direction: row; flex-wrap: wrap; gap: 1px 10px; font-size: 11.5px; }
+  .shop-contenuto li { flex-direction: row-reverse; gap: 3px; }
+  .shop-cassa { gap: 7px; }
+  .shop-conti { flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; font-size: 12px; }
+  .shop-conti div { gap: 5px; }
+  .shop-conti__dopo { padding-top: 0; border-top: 0; }
+  .shop-compra .q-btn__in { height: 44px; }
   .n-fascia { font-size: 9.5px; letter-spacing: .12em; }
 
   .open-carte { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 4px 0 0; }
