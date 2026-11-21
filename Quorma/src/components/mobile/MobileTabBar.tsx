@@ -10,9 +10,9 @@ type Tab = { label: string; icon: NavIconName | 'altro'; page?: Page; alert?: st
 const TABS: Tab[] = [
   { label: 'Home', icon: 'home', page: 'home', section: ['home'] },
   { label: 'Gioca', icon: 'gioca', page: 'gioca', section: ['gioca'] },
-  { label: 'Collezione', icon: 'collezione', section: [] },
+  { label: 'Collezione', icon: 'collezione', page: 'collezione', section: ['collezione', 'apertura'] },
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi', section: ['mazzi', 'nuovo-mazzo', 'editor-mazzo', 'mazzo-salvato'] },
-  { label: 'Altro', icon: 'altro', page: 'altro', section: ['altro', 'regole'] },
+  { label: 'Altro', icon: 'altro', page: 'altro', section: ['altro', 'regole', 'sfide', 'negozio'] },
 ]
 
 // Icona "Altro": tre righe.
@@ -27,10 +27,12 @@ function MenuIcon() {
 }
 
 // Barra delle schede su telefono.
-export default function MobileTabBar({ current, onNavigate }: { current: Page; onNavigate: (page: Page) => void }) {
+// Le sfide stanno sotto "Altro": le braci delle sfide in attesa si accendono lì.
+export default function MobileTabBar({ current, onNavigate, challengeAlert }: { current: Page; onNavigate: (page: Page) => void; challengeAlert?: string }) {
   return (
     <nav className="mb-tab" aria-label="Navigazione principale">
-      {TABS.map((t) => {
+      {TABS.map((tab) => {
+        const t = tab.page === 'altro' && challengeAlert ? { ...tab, alert: challengeAlert } : tab
         const active = t.section.includes(current)
         const icon = (
           <Arch active={active} alert={!!t.alert}>

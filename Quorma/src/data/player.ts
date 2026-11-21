@@ -20,15 +20,13 @@ export function currentPlayer() {
   return { name, initials: initialsOf(name), avatar: findAvatar(stored.avatar) }
 }
 
-// Le due valute: nomi provvisori, saldo non ancora disponibile dal backend (null = "in arrivo").
-export const currencies: { label: string; value: string | null }[] = [
+// Le due valute (nomi provvisori). I crediti del backend sono la Valuta 2; la Valuta 1 non esiste ancora (null = "in arrivo").
+export const currencies = (credits: number | null): { label: string; value: string | null }[] => [
   { label: 'Valuta 1', value: null },
-  { label: 'Valuta 2', value: null },
+  { label: 'Valuta 2', value: credits === null ? null : credits.toLocaleString('it-IT') },
 ]
 
 // Sezioni del gioco che non esistono ancora: le mostriamo come "in arrivo", senza numeri inventati.
 export const comingSoon = [
-  { id: 'collezione', label: 'Collezione e buste', detail: 'Apri le buste e sfoglia le tue carte', icon: 'collezione' },
   { id: 'scambi', label: 'Scambi', detail: 'Scambia i doppioni con altri giocatori', icon: 'scambi' },
-  { id: 'sfide', label: 'Sfide', detail: 'Sfida gli altri giocatori e riscuoti le ricompense', icon: 'sfide' },
 ] as const

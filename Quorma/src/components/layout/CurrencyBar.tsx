@@ -1,4 +1,5 @@
 import { currencies } from '../../data/player'
+import { useBalance } from '../../lib/balance'
 
 // Icone delle due valute: anello per la Valuta 1, rombo petrolio per la Valuta 2.
 const ICONS = [
@@ -12,20 +13,21 @@ const ICONS = [
 ]
 
 // Le due valute in alto a destra, nel riquadro a guglia del design system.
-// Finché il backend non dà il saldo, al posto del numero c'è un trattino ("in arrivo").
+// La Valuta 2 mostra l'ultimo saldo noto (lib/balance.ts); dove il saldo non è noto c'è un trattino.
 export default function CurrencyBar() {
+  const credits = useBalance()
   return (
     <div className="currency-bar q-tela q-tela--guglia">
       <div className="q-tela__in">
-        {currencies.map((c, i) => (
-          <div className="q-valore" key={c.label} title={c.value === null ? `${c.label}: saldo in arrivo` : undefined}>
+        {currencies(credits).map((c, i) => (
+          <div className="q-valore" key={c.label} title={c.value === null ? `${c.label}: saldo non disponibile` : `${c.label}: saldo dopo l'ultimo acquisto`}>
             {ICONS[i]}
             <span className="q-valore__testo">
               <span className="q-valore__etichetta">{c.label}</span>
               {c.value === null ? (
                 <span className="q-valore__numero q-valore__numero--vuoto">
                   <span aria-hidden="true">—</span>
-                  <span className="sr-only">saldo in arrivo</span>
+                  <span className="sr-only">saldo non disponibile</span>
                 </span>
               ) : (
                 <span className="q-valore__numero">{c.value}</span>

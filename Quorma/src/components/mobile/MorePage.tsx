@@ -53,8 +53,8 @@ export default function MorePage({ onNavigate }: { onNavigate: (page: Page) => v
 
       <Group title="Gioco">
         <MobileRow title="Scambi" detail="Scambia i doppioni con altri giocatori" icon={<Arch><NavIcon name="scambi" /></Arch>} />
-        <MobileRow title="Sfide" detail="Sfida gli altri giocatori" icon={<Arch><NavIcon name="sfide" /></Arch>} />
-        <MobileRow title="Negozio" detail="Buste e offerte" icon={<Arch><NavIcon name="negozio" /></Arch>} />
+        <MobileRow title="Sfide" detail="Sfida gli altri giocatori" icon={<Arch><NavIcon name="sfide" /></Arch>} onClick={() => onNavigate('sfide')} />
+        <MobileRow title="Negozio" detail="Buste" icon={<Arch><NavIcon name="negozio" /></Arch>} onClick={() => onNavigate('negozio')} />
         <MobileRow
           title="Regole"
           detail="Regolamento base · v1.0-alpha"

@@ -5,6 +5,7 @@ import type { NavIconName } from '../components/layout/NavIcon'
 export type Page =
   | 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'editor-mazzo' | 'mazzo-salvato' | 'regole'
   | 'chi-siamo' | 'faq' | 'glossario' | 'contatti' | 'privacy' | 'cookie' | 'termini' // pagine "Informazioni"
+  | 'sfide' | 'collezione' | 'apertura' | 'negozio'
   | 'profilo' | 'modifica-profilo' // si apre dal riquadro del giocatore
   | 'altro' // 'altro' esiste solo su telefono
 
@@ -18,11 +19,11 @@ export type NavItemData = {
 export const navItems: NavItemData[] = [
   { label: 'Home', icon: 'home', page: 'home' },
   { label: 'Gioca', icon: 'gioca', page: 'gioca' },
-  { label: 'Sfide', icon: 'sfide' },
-  { label: 'Collezione', icon: 'collezione' },
+  { label: 'Sfide', icon: 'sfide', page: 'sfide' },
+  { label: 'Collezione', icon: 'collezione', page: 'collezione' },
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi' },
   { label: 'Scambi', icon: 'scambi' },
-  { label: 'Negozio', icon: 'negozio' },
+  { label: 'Negozio', icon: 'negozio', page: 'negozio' },
   { label: 'Regole', icon: 'regole', page: 'regole' },
 ]
 

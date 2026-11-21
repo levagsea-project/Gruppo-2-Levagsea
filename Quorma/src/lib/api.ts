@@ -48,11 +48,11 @@ export class ApiError extends Error {
 // l'italiano: il backend usa la prima lingua che la carta ha e ripiega sull'italiano carta per carta (textLocale).
 const TEXT_LANGUAGE = 'it'
 
-type RequestOptions = { body?: unknown; token?: string }
+type RequestOptions = { body?: unknown; token?: string; headers?: Record<string, string> }
 
 /** Chiama il backend e restituisce il JSON; in caso di errore lancia ApiError con il messaggio già tradotto. */
-export async function request<T>(method: string, path: string, { body, token }: RequestOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { 'Accept-Language': TEXT_LANGUAGE }
+export async function request<T>(method: string, path: string, { body, token, headers: extra }: RequestOptions = {}): Promise<T> {
+  const headers: Record<string, string> = { 'Accept-Language': TEXT_LANGUAGE, ...extra }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
 

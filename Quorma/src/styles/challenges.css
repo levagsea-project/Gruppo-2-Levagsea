@@ -1,0 +1,53 @@
+/* Sfide (design: Pagina-Sfide): elenco a sinistra, riquadri a destra. */
+.page.sfide-page { gap: 18px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+.sfide-corpo { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; align-items: start; }
+.sfide-lista { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.sfide-schede { display: flex; align-items: center; gap: 14px; }
+.sfide-schede .q-marker__line { flex: 1; }
+.sfide-righe { display: flex; flex-direction: column; gap: 12px; padding: 2px; }
+
+.x-sfida { display: grid; grid-template-columns: 44px minmax(0, 1fr) 130px; align-items: center; gap: 16px; padding: 16px 18px; }
+.x-sigillo { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; color: var(--petrol-300); transform: rotate(45deg); background: linear-gradient(180deg, #15242C, #0C161B); box-shadow: inset 0 0 0 1px rgba(213,225,229,.4); }
+.x-sigillo > * { transform: rotate(-45deg); }
+.x-sfida h3 { margin: 0; font-family: var(--font-display); font-size: 16px; line-height: 21px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; overflow-wrap: anywhere; }
+.x-sfida p { margin: 2px 0 0; font-size: 13px; line-height: 19px; color: #A9BCC3; }
+.x-premio { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.x-riscossa-card { opacity: .62; }
+.sfide-stato { display: block; margin-top: 4px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+.sfide-btn .q-btn__in { height: 36px; min-width: 0; padding: 0 20px; }
+.sfide-link { min-height: 32px; padding: 0 2px; cursor: pointer; font-size: 12px; color: var(--petrol-300); text-decoration: underline; text-underline-offset: 3px; }
+.sfide-link[disabled] { opacity: .5; cursor: default; }
+.sfide-esito { margin: 0; padding: 10px 14px; font-size: 14px; color: var(--silver-100); background: rgba(74,166,173,.1); box-shadow: inset 0 0 0 1px rgba(74,166,173,.4); }
+.sfide-esito--errore { color: #E8B49A; background: rgba(224,135,74,.08); box-shadow: inset 0 0 0 1px rgba(224,135,74,.45); }
+
+.sfide-lato { display: flex; flex-direction: column; gap: 18px; }
+.sfide-form { display: flex; flex-direction: column; gap: 8px; padding: 18px; }
+.q-tela--arco > .sfide-form { padding-top: 38px; }
+.sfide-form .q-elenco__titolo { margin: 0 0 4px; }
+.sfide-form label, .sfide-etichetta { font-size: 12px; color: var(--steel-300); }
+.sfide-form small { font-size: 12px; line-height: 17px; color: var(--steel-300); }
+.sfide-form .q-btn { display: flex; width: 100%; margin-top: 4px; }
+.sfide-form .q-btn[disabled] { opacity: .5; cursor: not-allowed; }
+.sfide-mazzo { display: flex; flex-direction: column; gap: 4px; }
+.sfide-campo { width: 100%; min-height: 44px; padding: 0 10px; box-sizing: border-box; border: 1px solid rgba(124,144,152,.45); border-radius: 0; font-family: var(--font-sans); font-size: 14px; color: #EEF4F5; background: rgba(10,20,24,.7); }
+.sfide-campo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 1px; }
+.sfide-campo option { color: #EEF4F5; background: #0C161B; }
+.sfide-inizio { display: grid; grid-template-columns: 1fr 1fr; }
+.sfide-inizio button { padding: 4px 6px; font-size: 10.5px; letter-spacing: .08em; }
+
+@media (max-width: 1279px) {
+  .sfide-corpo { grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
+}
+@media (max-width: 1023px) {
+  .sfide-corpo { grid-template-columns: minmax(0, 1fr); }
+  .sfide-lato { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+}
+@media (max-width: 767px) {
+  .page.sfide-page { overflow: visible; gap: 16px; }
+  .sfide-lato { display: flex; }
+  .sfide-schede .q-marker__line { display: none; }
+  .x-sfida { grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding: 14px; }
+  .x-premio { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: flex-end; gap: 14px; }
+  .sfide-link { min-height: 44px; }
+  .sfide-btn .q-btn__in { height: 44px; }
+}

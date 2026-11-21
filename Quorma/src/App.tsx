@@ -25,6 +25,11 @@ import ContactsPage from './components/info/ContactsPage'
 import LegalPage from './components/info/LegalPage'
 import ProfilePage from './components/profile/ProfilePage'
 import EditProfilePage from './components/profile/EditProfilePage'
+import ChallengesPage from './components/challenges/ChallengesPage'
+import CollectionPage, { type CollectionTab } from './components/collection/CollectionPage'
+import PackOpeningPage from './components/collection/PackOpeningPage'
+import ShopPage from './components/shop/ShopPage'
+import { useChallengeAlert } from './hooks/useChallengeAlert'
 import './styles/layout.css'
 import './styles/sidebar.css'
 import './styles/home.css'
@@ -48,14 +53,25 @@ export default function App() {
   // Mazzo in lavorazione nell'editor (deckId null = nuovo) e mazzo mostrato in "Mazzo salvato".
   const [editing, setEditing] = useState<{ faction: FactionId; deckId: string | null }>({ faction: 'artificiali', deckId: null })
   const [saved, setSaved] = useState<{ id: string; deck: DeckDetail | null } | null>(null)
+  const { pendingChallenges, reloadChallenges } = useChallengeAlert() // sfide ricevute in attesa (braci sul menu)
+  const challengeAlert = pendingChallenges > 0 ? `${pendingChallenges} ${pendingChallenges === 1 ? 'sfida' : 'sfide'} in attesa` : undefined
+  const [collectionTab, setCollectionTab] = useState<CollectionTab>('carte')
+  const [packQueue, setPackQueue] = useState<string[]>([]) // buste da rivelare nella pagina Apertura
 
   const open = (next: Page) => {
     setPage(next)
     window.scrollTo({ top: 0 }) // su telefono scorre tutta la finestra: la nuova pagina parte dall'alto
-    // Il backend chiede di rileggere "posso giocare?" quando si apre la home: lo facciamo anche per Gioca.
-    if (next === 'home' || next === 'gioca') reloadPlayStatus()
+    // Il backend chiede di rileggere "posso giocare?" quando si apre la home: lo facciamo anche per Gioca e Sfide.
+    if (next === 'home' || next === 'gioca' || next === 'sfide') reloadPlayStatus()
     if (next === 'home') reloadNews() // dopo una partita l'ultima serie della home cambia
+    if (next === 'home' || next === 'sfide') reloadChallenges()
     if (next === 'profilo') setProfileTab('panoramica')
+    if (next === 'collezione') setCollectionTab('carte')
+  }
+
+  const openPacks = (ids: string[]) => {
+    setPackQueue(ids)
+    open('apertura')
   }
 
   // Il profilo aperto direttamente sulla scheda Partite (da "Mentre eri via" e dall'ultima serie della home).
@@ -103,7 +119,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <Sidebar current={page} onNavigate={open} />
+      <Sidebar current={page} onNavigate={open} challengeAlert={challengeAlert} />
       <MobileTopBar onHome={() => open('home')} onProfile={() => open('profilo')} />
 
       {page === 'home' && (
@@ -177,6 +193,31 @@ export default function App() {
         />
       )}
 
+      {page === 'sfide' && (
+        <ChallengesPage
+          decks={decks}
+          playStatus={playStatus}
+          onNavigate={open}
+          onOpenMatches={openMatches}
+          onChanged={() => {
+            reloadDecks()
+            reloadPlayStatus()
+            reloadChallenges()
+          }}
+        />
+      )}
+
+      {page === 'collezione' && <CollectionPage key={collectionTab} initialTab={collectionTab} onNavigate={open} onOpenPacks={openPacks} />}
+      {page === 'apertura' && (
+        <PackOpeningPage
+          key={packQueue.join()}
+          queue={packQueue}
+          onCollection={() => open('collezione')}
+          onShop={() => open('negozio')}
+        />
+      )}
+      {page === 'negozio' && <ShopPage onOpenPacks={openPacks} />}
+
       {page === 'regole' && <RulesPage />}
 
       {page === 'chi-siamo' && <AboutPage onNavigate={open} />}
@@ -192,7 +233,7 @@ export default function App() {
 
       {page === 'altro' && <MorePage onNavigate={open} />}
 
-      <MobileTabBar current={page} onNavigate={open} />
+      <MobileTabBar current={page} onNavigate={open} challengeAlert={challengeAlert} />
 
       {awayOpen && unread.length > 0 && (
         <AwayResults

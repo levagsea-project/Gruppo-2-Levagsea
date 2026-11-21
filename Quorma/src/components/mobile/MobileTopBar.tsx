@@ -1,12 +1,13 @@
 import { currencies, currentPlayer } from '../../data/player'
+import { useBalance } from '../../lib/balance'
 
-// Saldo di una valuta: un trattino finché il backend non lo fornisce.
+// Saldo di una valuta: un trattino finché non è noto.
 const show = (value: string | null) => value ?? '—'
-const speak = (label: string, value: string | null) => `${label}: ${value ?? 'saldo in arrivo'}`
+const speak = (label: string, value: string | null) => `${label}: ${value ?? 'saldo non disponibile'}`
 
 // Barra in alto su telefono: logo, valute, avatar del giocatore.
 export default function MobileTopBar({ onHome, onProfile }: { onHome: () => void; onProfile: () => void }) {
-  const [v1, v2] = currencies
+  const [v1, v2] = currencies(useBalance())
   const player = currentPlayer()
 
   return (

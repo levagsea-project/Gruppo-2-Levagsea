@@ -117,14 +117,14 @@ export const isDemoSession = () => getSession()?.token === 'demo'
 // ---------- Chiamate con il token ----------
 // Per le chiamate che richiedono l'accesso (/decks, ...). Se il token non è più valido (scaduto, oppure
 // il backend è stato riavviato con un'altra chiave), il backend risponde 401: si torna alla finestra di accesso.
-export async function authedRequest<T>(method: string, path: string, body?: unknown): Promise<T> {
+export async function authedRequest<T>(method: string, path: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
   const session = getSession()
   if (!session) {
     window.location.replace('/accedi')
     throw new ApiError(401, null, 'Sessione scaduta: accedi di nuovo.')
   }
   try {
-    return await request<T>(method, path, { body, token: session.token })
+    return await request<T>(method, path, { body, token: session.token, headers })
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) {
       clearSession()
