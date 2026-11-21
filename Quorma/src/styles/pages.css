@@ -37,5 +37,8 @@
 .decks-page { --sfondo: url('/images/sfondi/sfondo-mazzi.webp'); }
 .newdeck-page { --sfondo: url('/images/sfondi/sfondo-nuovo-mazzo.webp'); }
 .rules-page { --sfondo: url('/images/sfondi/sfondo-regole.webp'); }
+.shop-page { --sfondo: url('/images/sfondi/sfondo-negozio.webp'); }
+.coll-page { --sfondo: url('/images/sfondi/sfondo-collezione.webp'); }
+.sfide-page { --sfondo: url('/images/sfondi/sfondo-sfide.webp'); }
 .hex-btn:disabled { opacity: .45; cursor: not-allowed; }
 .hex-btn:disabled:hover { background: var(--cyan-dim); }
