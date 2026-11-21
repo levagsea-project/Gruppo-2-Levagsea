@@ -231,7 +231,7 @@ export default function App() {
       {page === 'profilo' && <ProfilePage key={profileTab} initialTab={profileTab} onNavigate={open} />}
       {page === 'modifica-profilo' && <EditProfilePage onNavigate={open} />}
 
-      {page === 'altro' && <MorePage onNavigate={open} />}
+      {page === 'altro' && <MorePage onNavigate={open} challengeAlert={challengeAlert} />}
 
       <MobileTabBar current={page} onNavigate={open} challengeAlert={challengeAlert} />
 

@@ -26,7 +26,7 @@
 .q-ogiva-wrap.q-braci .q-navata__ico{color:var(--ember-200)}
 
 /* Voce attiva: il focolare */
-.q-navata__item[aria-current="page"] .q-ogiva-wrap{animation:q-alone 1.9s infinite}
+.q-navata__item[aria-current="page"] .q-ogiva-wrap:where(:not(.q-braci)){animation:q-alone 1.9s infinite}
 .q-navata__item[aria-current="page"] .q-ogiva{background:linear-gradient(160deg,var(--silver-50),var(--petrol-500) 45%,#BFE4E7)}
 .q-navata__item[aria-current="page"] .q-ogiva__in{background:radial-gradient(circle at 50% 75%,#2A6A70 0%,#12262D 75%)}
 @keyframes q-alone{0%,100%{filter:drop-shadow(0 0 7px rgba(74,166,173,.75))}35%{filter:drop-shadow(0 0 12px rgba(74,166,173,.95))}60%{filter:drop-shadow(0 0 6px rgba(74,166,173,.6))}80%{filter:drop-shadow(0 0 10px rgba(74,166,173,.85))}}

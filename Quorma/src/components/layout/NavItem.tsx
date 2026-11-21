@@ -9,7 +9,7 @@ type Props = NavItemData & {
 }
 
 // Una voce del menu: ogiva con icona + testo.
-// Attiva = fuoco azzurro nell'ogiva. Con una novità (alert) = braci arancioni e scintille.
+// Attiva = fuoco azzurro nell'ogiva. Con una novità (alert) = braci arancioni e scintille, anche se la voce è attiva.
 // Senza pagina = sezione "in arrivo": attenuata, non cliccabile e fuori dall'ordine del tasto Tab.
 // title = etichetta al passaggio del mouse, utile quando la barra è stretta e mostra solo le icone.
 export default function NavItem({ label, icon, page, active, alert, onClick }: Props) {
@@ -20,7 +20,7 @@ export default function NavItem({ label, icon, page, active, alert, onClick }: P
       <span className={alert ? 'q-ogiva-wrap q-braci' : 'q-ogiva-wrap'} aria-hidden="true">
         <span className="q-ogiva">
           <span className="q-ogiva__in">
-            {active && (
+            {active && !alert && (
               <Hearth
                 flames={[
                   { left: '38%' },
