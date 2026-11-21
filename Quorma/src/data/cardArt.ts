@@ -1,4 +1,8 @@
 // Grafica delle carte: cornici e illustrazioni. Il backend non ha immagini: tutto sta in public/images/carte/.
+import type { CSSProperties } from 'react'
+import type { FactionId } from '../types/deck'
+import { factions } from './factions'
+
 //
 // CORNICI (public/images/carte/cornici/): una per Tier di rarità, solo per le creature.
 //   creatura-tier<N>.webp (800×1200) e creatura-tier<N>-400.webp (400×600, per le carte piccole).
@@ -41,6 +45,15 @@ export const cardArt = (code: string): { src: string; srcSet: string } | null =>
   const base = `/images/carte/arte/${code}`
   return { src: `${base}.webp`, srcSet: `${base}-320.webp 320w, ${base}.webp 768w` }
 }
+
+// COPERTINE DELLE BUSTE (public/images/carte/buste/): busta-<tipo>-<ia|umani>.webp, 640×640.
+const PACK_COVERS = new Set(['standard', 'advanced', 'elite'])
+
+/** Sfondo della busta per tipo e fazione. Un tipo nuovo, senza copertina, usa l'illustrazione della fazione. */
+export const packCover = (code: string, faction: FactionId): CSSProperties =>
+  PACK_COVERS.has(code)
+    ? { backgroundImage: `url(/images/carte/buste/busta-${code}-${faction === 'umani' ? 'umani' : 'ia'}.webp)`, backgroundPosition: 'center' }
+    : { backgroundImage: `url(${factions[faction].cover})`, backgroundPosition: factions[faction].coverFocus }
 
 export type Tier = 1 | 2 | 3 | 4
 export const TIER_NAMES: Record<Tier, string> = { 1: 'Comune', 2: 'Non comune', 3: 'Rara', 4: 'Epica' }
