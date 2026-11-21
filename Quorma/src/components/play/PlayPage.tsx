@@ -13,6 +13,7 @@ import { getSeries, markSeriesSeen, playMatchmaking, seriesScore, type DeckPick,
 import type { Deck, FactionId, PlayStatus } from '../../types/deck'
 import type { LoadState } from '../../hooks/useDecks'
 import { playBlockReason } from '../../hooks/usePlayStatus'
+import BattleScreen from '../battle/BattleScreen'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import '../../styles/challenges.css'
@@ -38,7 +39,7 @@ type Outcome = { text: string; link?: 'profilo' | 'sfide'; again?: boolean }
 const RETRY_CODES = new Set(['engine.unavailable', 'matchmaking.no_opponent'])
 const canRetryError = (err: unknown) => err instanceof ApiError && (err.status === 0 || (!!err.code && RETRY_CODES.has(err.code)))
 
-// Punto unico in cui arriva ogni serie giocata: qui si collegherà la visualizzazione della battaglia.
+// Il messaggio che resta sulla pagina dopo la battaglia.
 const playedOutcome = (series: SeriesResponse): Outcome => {
   const s = seriesScore(series)
   return { text: `${resultLabel[s.result]} ${s.won}–${s.lost} contro ${s.opponent}.`, link: 'profilo', again: true }
@@ -73,6 +74,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
   const [myRoom, setMyRoom] = useState<Room | null>(null)
   const [roomsError, setRoomsError] = useState('')
   const [opponent, setOpponent] = useState('')
+  const [battle, setBattle] = useState<SeriesResponse | null>(null) // la serie da animare a tutto schermo
   const loadSeq = useRef(0) // scarta le risposte arrivate dopo una lettura più recente
   const waitingCode = useRef<string | null>(null) // la mia stanza che era aperta all'ultima lettura
   const roomDeckNames = useRef<Record<FactionId, string> | null>(null) // i mazzi con cui ho aperto la stanza
@@ -106,6 +108,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
           const series = await getSeries(mine.seriesId)
           if (roomDeckNames.current) rememberSeries(series, roomDeckNames.current)
           setOutcome(playedOutcome(series))
+          setBattle(series) // senza log: la battaglia li chiede al replay
           void markSeriesSeen(series.id).catch(() => {}) // il risultato è a schermo; se fallisce riapparirà tra i non letti
         } catch {
           setOutcome({ text: 'Qualcuno è entrato nella tua stanza e la serie è stata giocata.', link: 'profilo' })
@@ -228,6 +231,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
   // La serie è già nello storico del backend: il browser ricorda solo turni e nomi dei mazzi.
   const finish = (series: SeriesResponse) => {
     if (deckNames) rememberSeries(series, deckNames)
+    setBattle(series)
     return playedOutcome(series)
   }
 
@@ -537,6 +541,8 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         </div>
       </div>
       </div>
+
+      {battle && <BattleScreen key={battle.id} series={battle} onClose={() => setBattle(null)} onOpenMatches={onOpenMatches} />}
     </main>
   )
 }

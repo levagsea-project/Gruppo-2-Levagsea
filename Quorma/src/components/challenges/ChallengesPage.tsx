@@ -13,6 +13,7 @@ import {
 import { rememberSeries } from '../../lib/matches'
 import { seriesScore, type DeckPick, type SeriesResponse } from '../../lib/series'
 import type { Deck, FactionId, PlayStatus } from '../../types/deck'
+import BattleScreen from '../battle/BattleScreen'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import '../../styles/collection.css'
@@ -55,6 +56,7 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
   const [busy, setBusy] = useState('') // id dell'azione in corso
   const [error, setError] = useState('')
   const [played, setPlayed] = useState<Played | null>(null)
+  const [battle, setBattle] = useState<SeriesResponse | null>(null) // la serie da animare a tutto schermo
   const [opponent, setOpponent] = useState('')
   const [start, setStart] = useState<FactionId>('artificiali')
   const [chosen, setChosen] = useState<Partial<Record<FactionId, string>>>({})
@@ -102,6 +104,7 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
         const series = result as SeriesResponse
         rememberSeries(series, { artificiali: a.name, umani: u.name })
         setPlayed(seriesScore(series))
+        setBattle(series)
       }
       onChanged()
     } catch (err) {
@@ -312,6 +315,8 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
           </div>
         </aside>
       </div>
+
+      {battle && <BattleScreen key={battle.id} series={battle} onClose={() => setBattle(null)} onOpenMatches={onOpenMatches} />}
     </main>
   )
 }

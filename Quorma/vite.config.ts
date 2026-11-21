@@ -23,9 +23,9 @@ function backendProxy(backend: string): Record<string, ProxyOptions> {
   return Object.fromEntries(BACKEND_PATHS.map((p) => [p, options]))
 }
 
-// I messaggi d'errore vengono dal backend (src/lib/api.ts importa data/labels/it.json):
-// la cartella è fuori dal progetto, quindi va permessa esplicitamente al server di sviluppo.
-const LABELS_DIR = path.resolve(import.meta.dirname, '../QUORMA-backend-engine/data/labels')
+// I messaggi d'errore (src/lib/api.ts) e i nomi di carte e abilità nella battaglia (src/lib/battleNames.ts) vengono da
+// QUORMA-backend-engine/data: la cartella è fuori dal progetto, quindi va permessa esplicitamente al server di sviluppo.
+const GAME_DATA_DIR = path.resolve(import.meta.dirname, '../QUORMA-backend-engine/data')
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [reactRouter()],
-    server: { proxy, fs: { allow: [import.meta.dirname, LABELS_DIR] } },
+    server: { proxy, fs: { allow: [import.meta.dirname, GAME_DATA_DIR] } },
     preview: { proxy },
   }
 })
