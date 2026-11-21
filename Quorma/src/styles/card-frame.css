@@ -13,7 +13,7 @@
 /* illustrazione: sotto la cornice, un filo più grande della finestra così i bordi non mostrano fessure */
 .q-cf__arte { position: absolute; z-index: 0; left: 2.6%; top: 9.1%; width: 94.8%; height: 64.7%;
   background: radial-gradient(circle at 50% 42%, #16353B, #0A1418 72%) center / cover no-repeat; }
-.q-cf__arte[style] { background-color: #0A1418; background-position: center 30%; background-size: cover; }
+.q-cf__img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .q-cf__vuoto { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2cqw; }
 /* .q-cf davanti: deve vincere su .deck-seme (decks.css), che fissa 16px */
 .q-cf .q-cf__vuoto-seme { width: 18cqw; height: 18cqw; opacity: .85; }

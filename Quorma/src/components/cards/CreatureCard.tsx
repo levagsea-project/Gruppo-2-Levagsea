@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import { cardArt, creatureFrame, TIER_NAMES } from '../../data/cardArt'
 import { SUIT_NAMES, creatureTier, rankLabel } from '../../lib/cards'
 import type { GameCard } from '../../types/deck'
@@ -27,7 +26,8 @@ export default function CreatureCard({ card, className = '', sizes = '160px' }: 
 
   return (
     <span className={`q-cf q-cf--t${tier} ${className}`} title={`${card.name} · ${TIER_NAMES[tier]}`}>
-      <span className="q-cf__arte" style={art ? ({ backgroundImage: `url(${art})` } as CSSProperties) : undefined}>
+      <span className="q-cf__arte">
+        {art && <img className="q-cf__img" src={art.src} srcSet={art.srcSet} sizes={sizes} alt={`Illustrazione di ${card.name}`} draggable={false} decoding="async" loading="lazy" />}
         {!art && (
           <span className="q-cf__vuoto" aria-hidden="true">
             {suit && <span className={`deck-seme deck-seme--${suit} q-cf__vuoto-seme`} />}

@@ -5,17 +5,42 @@
 //   I sorgenti PNG sono in tools/cornici/: per rifare i WebP si parte da lì.
 //
 // ILLUSTRAZIONI (public/images/carte/arte/): un file per carta, chiamato col codice della carta.
-//   es. public/images/carte/arte/BASE-RES-2-FRA-ADA.webp, ritagliata per la finestra della cornice
-//   (proporzioni circa 1:1, es. 768×784). Quando aggiungi un file, aggiungi il codice a CARD_ART:
+//   es. BASE-AI-A-FRA-SEK.webp (768px) e BASE-AI-A-FRA-SEK-320.webp (320px, per le carte piccole), ritagliate per la
+//   finestra della cornice (753:770). Quando aggiungi i file, aggiungi il codice a CARD_ART:
 //   così il sito non chiede immagini che non esistono e le carte senza illustrazione mostrano rango e seme.
+
+// Fine del codice delle creature IA (seme-sottofazione), per rango.
+const AI_SUBFACTIONS: Record<string, string[]> = {
+  A: ['FRA-SEK', 'SPI-YLM', 'VES-MER', 'VIN-EFF'],
+  '2': ['FRA-YLM', 'SPI-SEK', 'VES-EFF', 'VIN-MER'],
+  '3': ['FRA-MER', 'SPI-EFF', 'VES-SEK', 'VIN-YLM'],
+  '4': ['FRA-EFF', 'SPI-MER', 'VES-YLM', 'VIN-SEK'],
+  '5': ['FRA-EFF', 'SPI-YLM', 'VES-SEK', 'VIN-MER'],
+  '6': ['FRA-SEK', 'SPI-EFF', 'VES-MER', 'VIN-YLM'],
+  '7': ['FRA-YLM', 'SPI-MER', 'VES-SEK', 'VIN-EFF'],
+  '8': ['FRA-MER', 'SPI-YLM', 'VES-EFF', 'VIN-SEK'],
+  '9': ['FRA-EFF', 'SPI-SEK', 'VES-MER', 'VIN-YLM'],
+  '10': ['FRA-SEK', 'SPI-EFF', 'VES-YLM', 'VIN-MER'],
+  J: ['FRA-YLM', 'SPI-MER', 'VES-EFF', 'VIN-SEK'],
+  Q: ['FRA-MER', 'SPI-SEK', 'VES-YLM', 'VIN-EFF'],
+  K: ['FRA-SEK', 'SPI-EFF', 'VES-MER', 'VIN-YLM'],
+}
 
 /** Codici delle carte che hanno un'illustrazione in public/images/carte/arte/. */
 export const CARD_ART = new Set<string>([
-  // 'BASE-RES-2-FRA-ADA',
+  // Potenze Artificiali: tutte le 52 creature
+  ...['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'].flatMap((rank) => AI_SUBFACTIONS[rank].map((end) => `BASE-AI-${rank}-${end}`)),
+  // Resistenza Umana
+  'BASE-RES-2-VIN-POR',
+  'BASE-RES-A-VIN-SEG',
 ])
 
-/** Illustrazione della carta, o null se non c'è ancora. */
-export const cardArt = (code: string): string | null => (CARD_ART.has(code) ? `/images/carte/arte/${code}.webp` : null)
+/** Illustrazione della carta nelle due misure, o null se non c'è ancora. */
+export const cardArt = (code: string): { src: string; srcSet: string } | null => {
+  if (!CARD_ART.has(code)) return null
+  const base = `/images/carte/arte/${code}`
+  return { src: `${base}.webp`, srcSet: `${base}-320.webp 320w, ${base}.webp 768w` }
+}
 
 export type Tier = 1 | 2 | 3 | 4
 export const TIER_NAMES: Record<Tier, string> = { 1: 'Comune', 2: 'Non comune', 3: 'Rara', 4: 'Epica' }
