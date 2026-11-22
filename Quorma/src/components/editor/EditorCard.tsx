@@ -1,6 +1,7 @@
 import { useRef, type PointerEvent } from 'react'
 import type { OwnedCard } from '../../types/deck'
 import { SUIT_NAMES, rankLabel } from '../../lib/cards'
+import CardStats from '../cards/CardStats'
 import CreatureCard from '../cards/CreatureCard'
 
 export type CardState = 'dentro' | 'libera' | 'bloccata'
@@ -20,7 +21,7 @@ export default function EditorCard({ card, state, reason, onToggle, onZoom }: Pr
   const creature = card.kind === 'CREATURE'
   const inDeck = state === 'dentro'
   const usable = state !== 'bloccata'
-  const what = creature ? `${card.name}, ${rankLabel(card.rank)} di ${SUIT_NAMES[card.suit!]}` : `${card.name}, ${KIND_NAME[card.kind as 'SPELL']}`
+  const what = creature ? `${card.name}, ${rankLabel(card.rank)} di ${SUIT_NAMES[card.suit!]}, ATK ${card.atk}, DEF ${card.def}` : `${card.name}, ${KIND_NAME[card.kind as 'SPELL']}`
   const action = inDeck ? 'nel mazzo, premi per togliere' : usable ? 'premi per aggiungere' : reason
 
   // ---------- Pressione lunga (solo tocco: col mouse c'è la lente) ----------
@@ -100,6 +101,7 @@ export default function EditorCard({ card, state, reason, onToggle, onZoom }: Pr
             {card.name}
           </span>
         )}
+        <CardStats card={card} />
         <span className="e-stato" aria-hidden="true">{inDeck ? 'Nel mazzo' : usable ? 'Aggiungi' : reason}</span>
       </button>
 

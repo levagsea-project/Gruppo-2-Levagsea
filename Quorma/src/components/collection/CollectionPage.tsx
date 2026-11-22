@@ -9,6 +9,7 @@ import type { CardKind, FactionId, OwnedCard, SuitId } from '../../types/deck'
 import AbilityList from '../cards/AbilityList'
 import CardBack from '../cards/CardBack'
 import CardFace from '../cards/CardFace'
+import CardStats from '../cards/CardStats'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import SealedPack from '../shop/SealedPack'
@@ -192,11 +193,15 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
               <div className="coll-griglia">
                 {visible.map((e) => {
                   const on = selected?.card.cardId === e.card.cardId
-                  const label = e.card.kind === 'CREATURE' ? `${e.card.name}, ${rankLabel(e.card.rank)} di ${SUIT_NAMES[e.card.suit!]}` : `${e.card.name}, ${KIND_NAME[e.card.kind]}`
+                  const label = e.card.kind === 'CREATURE' ? `${e.card.name}, ${rankLabel(e.card.rank)} di ${SUIT_NAMES[e.card.suit!]}, ATK ${e.card.atk}, DEF ${e.card.def}` : `${e.card.name}, ${KIND_NAME[e.card.kind]}`
                   return (
                     <button key={e.card.cardId} type="button" className={`g-cella ${on ? 'g-cella--on' : ''}`} aria-pressed={on} aria-label={`${label}, ${e.copies} ${e.copies === 1 ? 'copia' : 'copie'}`} onClick={() => select(e.card.cardId)}>
-                      <CardFace card={e.card} sizes="(max-width: 767px) 33vw, 180px" />
-                      {e.copies > 1 && <span className="g-copie">×{e.copies}</span>}
+                      <span className="g-faccia">
+                        <CardFace card={e.card} sizes="(max-width: 767px) 33vw, 180px" />
+                        {e.copies > 1 && <span className="g-copie">×{e.copies}</span>}
+                      </span>
+                      {e.card.kind === 'CREATURE' && <span className="g-nome" aria-hidden="true" lang={e.card.textLocale}>{e.card.name}</span>}
+                      <CardStats card={e.card} />
                     </button>
                   )
                 })}

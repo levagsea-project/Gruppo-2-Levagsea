@@ -65,6 +65,13 @@ export default function CreatureCard({ card, className = '', sizes = '160px', in
             : abilityFront(card.abilities)}
         </span>
       )}
+      {/* nelle griglie, sotto i 220px: solo il nome della prima abilità e quante altre ce ne sono */}
+      {!!card.abilities?.length && (
+        <span className="q-cf__abilita" aria-hidden="true">
+          <span>{card.abilities[0].free ? 'Effetto' : card.abilities[0].name}</span>
+          {card.abilities.length > 1 && <b>+{card.abilities.length - 1}</b>}
+        </span>
+      )}
       <span className="q-cf__valore q-cf__valore--atk">
         <small>ATK</small>
         {fmt(card.atk)}

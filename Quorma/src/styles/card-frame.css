@@ -52,6 +52,33 @@
   .q-cf .q-cf__sigillo { display: block; }
 }
 
+/* ---------- Carte piccole nelle griglie di Collezione ed editor ----------
+   Solo dentro .e-carta e .g-cella: carta ingrandita, dettaglio, battaglia e buste restano come sono.
+   I testi non scendono sotto una misura leggibile anche se la carta si rimpicciolisce. */
+.q-cf__abilita, .q-cf-valori { display: none; }
+@container q-cf (max-width: 219px) {
+  :is(.e-carta, .g-cella) .q-cf__abilita { position: absolute; z-index: 2; left: 4.4%; top: 79.6%; width: 91.2%; height: 9.7%; display: flex; align-items: center; justify-content: center; gap: 3px;
+    box-sizing: border-box; padding: 0 1.5cqw; font-family: var(--font-sans); font-size: max(3.9cqw, 10px); line-height: 1.1; font-weight: 600; color: #DCE7EA; }
+  :is(.e-carta, .g-cella) .q-cf__abilita span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  :is(.e-carta, .g-cella) .q-cf__abilita b { flex: none; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--petrol-300); }
+  :is(.e-carta, .g-cella) .q-cf__rango { font-size: max(7.4cqw, 10px); }
+  :is(.e-carta, .g-cella) .q-cf__nome { font-size: max(5.4cqw, 10px); letter-spacing: .02em; }
+  :is(.e-carta, .g-cella) .q-cf__tipo { font-size: max(3.6cqw, 8px); letter-spacing: .08em; }
+  :is(.e-carta, .g-cella) .q-cf__valore { font-size: max(6cqw, 11px); }
+  :is(.e-carta, .g-cella) .q-cf__valore small { font-size: max(3.2cqw, 8px); letter-spacing: .04em; }
+}
+/* sotto i 140px ATK e DEF escono dalla cornice (.q-cf-valori); la sottofazione resta nei dettagli della carta */
+@container q-cf (max-width: 139px) {
+  :is(.e-carta, .g-cella) .q-cf__valore, :is(.e-carta, .g-cella) .q-cf__tipo { display: none; }
+}
+@container e-carta (max-width: 139px) { .q-cf-valori { display: flex; } }
+@container g-cella (max-width: 139px) { .q-cf-valori { display: flex; } }
+.q-cf-valori { flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 4px; padding-top: 3px; font-family: var(--font-sans); font-size: 12px; line-height: 15px; font-weight: 600;
+  font-variant-numeric: tabular-nums; color: #EEF4F5; text-align: center; }
+.q-cf-valori > span { display: inline-flex; align-items: baseline; gap: 2px; white-space: nowrap; }
+.q-cf-valori small { font-size: 10px; font-weight: 600; color: var(--petrol-300); }
+.q-cf-valori > span + span small { color: var(--ember-200); }
+
 /* parole chiave premibili (AbilityButton): nell'elenco "Effetti" e sulla carta ingrandita */
 .q-abilita { align-self: flex-start; padding: 2px 0; border: 0; background: none; cursor: pointer; font: inherit; font-weight: 600; color: var(--petrol-300);
   text-decoration: underline dotted; text-underline-offset: 3px; }
