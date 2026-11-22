@@ -3,7 +3,6 @@ import type { Deck, PlayStatus } from '../../types/deck'
 import type { Series } from '../../data/profile'
 import type { LoadState } from '../../hooks/useDecks'
 import { playNotice, type PlayNotice } from '../../hooks/usePlayStatus'
-import CurrencyBar from '../layout/CurrencyBar'
 import MobileHome from '../mobile/MobileHome'
 import HeroText from './HeroText'
 import InfoCards from './InfoCards'
@@ -38,7 +37,7 @@ function Rose() {
   )
 }
 
-// La pagina Home, dal design "Home-Quorma": sfondo con velo e griglia, rosone, valute,
+// La pagina Home, dal design "Home-Quorma": sfondo con velo e griglia, rosone,
 // "Pronto a giocare?" con il sigillo GIOCA e tre card ad arco in fondo (mazzi di difesa, scambi, news).
 // Su telefono si vede invece MobileHome (il cambio lo fa styles/mobile.css).
 export default function HomePage(props: Props) {
@@ -56,7 +55,6 @@ export default function HomePage(props: Props) {
           <div className="home-griglia" />
           <Rose />
         </div>
-        <CurrencyBar />
         <section className="home-santuario">
           <HeroText onPlay={() => onNavigate('gioca')} notice={notice} onNoticeAction={onNoticeAction} />
         </section>

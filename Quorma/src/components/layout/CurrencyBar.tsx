@@ -13,9 +13,11 @@ const ICONS = [
 ]
 
 // Le due valute in alto a destra, nel riquadro a guglia del design system.
-// La Valuta 2 mostra l'ultimo saldo noto (lib/balance.ts); dove il saldo non è noto c'è un trattino.
-export default function CurrencyBar() {
+// La Valuta 2 mostra l'ultimo saldo noto (lib/balance.ts). Il backend non ha una lettura del saldo: finché non è noto
+// la barra si vede solo dove serve per comprare (always, nel Negozio), con un trattino al posto del numero.
+export default function CurrencyBar({ always = false }: { always?: boolean }) {
   const credits = useBalance()
+  if (credits === null && !always) return null
   return (
     <div className="currency-bar q-tela q-tela--guglia">
       <div className="q-tela__in">

@@ -8,6 +8,7 @@ import { buyPack, isUncertain, listPacks, newPurchaseKey, packName, type OpenedP
 import type { FactionId } from '../../types/deck'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
+import BuyConfirm from './BuyConfirm'
 import SealedPack from './SealedPack'
 import '../../styles/collection.css'
 
@@ -38,6 +39,8 @@ export default function ShopPage({ onOpenPacks }: Props) {
   const [bought, setBought] = useState<OpenedPack[]>([])
   const credits = useBalance() // ultimo saldo noto: può essere vecchio, quindi a decidere se basta è il backend
   const [uncertain, setUncertain] = useState(false) // l'ultimo acquisto può essere ripreso senza pagare due volte
+  const [retryWhat, setRetryWhat] = useState<string | null>(null) // quale acquisto si può riprendere
+  const [confirming, setConfirming] = useState(false) // conferma per ×5 e ×10
   const retry = useRef<{ what: string; key: string; left: number } | null>(null) // acquisto dall'esito incerto
 
   const load = () => {
@@ -56,6 +59,14 @@ export default function ShopPage({ onOpenPacks }: Props) {
   const pack = packs?.find((p) => p.code === code) ?? null
   const total = pack ? pack.price * qty : 0
   const short = credits !== null && total > credits
+  // Stessa busta, fazione e quantità di un acquisto dall'esito incerto: si riprende, senza pagare di nuovo ciò che è passato.
+  const resuming = !!pack && retryWhat === `${pack.code}:${faction}:${qty}`
+
+  const askToBuy = () => {
+    if (!pack || buying) return
+    if (qty > 1 && !resuming) setConfirming(true)
+    else void buy()
+  }
 
   const buy = async () => {
     if (!pack || buying) return
@@ -83,8 +94,10 @@ export default function ShopPage({ onOpenPacks }: Props) {
       if (isUncertain(err)) setUncertain(true)
       else retry.current = null
       const message = err instanceof ApiError ? err.message : GENERIC
-      setError(done.length ? `Acquistate ${done.length} buste su ${count}. ${message}` : message)
+      const partial = done.length === 1 ? `Acquistata 1 busta su ${count}.` : `Acquistate ${done.length} buste su ${count}.`
+      setError(done.length ? `${partial} ${message}` : message)
     } finally {
+      setRetryWhat(retry.current?.what ?? null)
       setBought(done)
       setBuying(false)
     }
@@ -98,7 +111,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
 
   return (
     <main className="page shop-page">
-      <CurrencyBar />
+      <CurrencyBar always />
       <PageTitle title="NEGOZIO" subtitle="BUSTE" />
 
       <div className="shop-corpo">
@@ -193,7 +206,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
                   </div>
 
                   <dl className="shop-conti">
-                    <div><dt>Saldo</dt><dd>{credits === null ? 'Noto dopo un acquisto' : fmt(credits)}</dd></div>
+                    <div><dt>{credits === null ? 'Saldo' : 'Ultimo saldo noto'}</dt><dd>{credits === null ? 'Noto dopo un acquisto' : fmt(credits)}</dd></div>
                     <div><dt>Totale</dt><dd>− {fmt(total)}</dd></div>
                     {credits !== null && <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{short ? '—' : fmt(credits - total)}</dd></div>}
                   </dl>
@@ -215,8 +228,15 @@ export default function ShopPage({ onOpenPacks }: Props) {
                       </div>
                     </div>
                   ) : (
-                    <button type="button" className="q-btn q-btn--argento shop-compra" disabled={buying} aria-busy={buying} onClick={buy}>
-                      <span className="q-btn__in">{buying ? 'Acquisto…' : error && uncertain ? 'Riprova' : 'Acquista'}</span>
+                    <button
+                      type="button"
+                      className="q-btn q-btn--argento shop-compra"
+                      disabled={buying}
+                      aria-busy={buying}
+                      aria-label={buying || resuming ? undefined : `Acquista ${qty === 1 ? '1 busta' : `${qty} buste`} per ${fmt(total)} Valuta 2`}
+                      onClick={askToBuy}
+                    >
+                      <span className="q-btn__in">{buying ? 'Acquisto…' : resuming ? 'Riprova l’acquisto' : `Acquista · ${fmt(total)}`}</span>
                     </button>
                   )}
                 </div>
@@ -227,6 +247,21 @@ export default function ShopPage({ onOpenPacks }: Props) {
           </div>
         </section>
       </div>
+
+      {confirming && pack && (
+        <BuyConfirm
+          qty={qty}
+          packLabel={packName(pack.code)}
+          factionName={factions[faction].name}
+          total={total}
+          credits={credits}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => {
+            setConfirming(false)
+            void buy()
+          }}
+        />
+      )}
     </main>
   )
 }

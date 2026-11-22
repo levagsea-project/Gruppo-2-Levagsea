@@ -147,7 +147,7 @@ export default function App() {
   return (
     <div className="app">
       <Sidebar current={page} onNavigate={go} challengeAlert={challengeAlert} packAlert={packAlert} />
-      <MobileTopBar onHome={() => go('home')} onProfile={() => go('profilo')} />
+      <MobileTopBar onHome={() => go('home')} onProfile={() => go('profilo')} balanceMode={page === 'negozio' ? 'always' : page === 'home' ? 'never' : 'known'} />
 
       {page === 'home' && (
         <HomePage

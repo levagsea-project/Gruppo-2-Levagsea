@@ -31,7 +31,8 @@
   .mb-logo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
   .mb-valute { display: flex; align-items: center; gap: 12px; margin-left: auto; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: #EEF4F5; }
   .mb-valute span { display: flex; align-items: center; gap: 5px; }
-  .mb-avatar { position: relative; display: flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; }
+  .mb-avatar { position: relative; display: flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; margin-left: auto; } /* a destra anche senza valute */
+  .mb-valute + .mb-avatar { margin-left: 0; }
   .mb-avatar .q-ogiva { width: 30px; height: 38px; background: linear-gradient(160deg, rgba(213,225,229,.6), rgba(124,144,152,.35) 50%, rgba(168,196,200,.55)); }
   .mb-avatar .q-ogiva__in { padding-bottom: 6px; font-family: var(--font-display); font-size: 11px; font-weight: 700; color: var(--silver-50); overflow: hidden; }
 

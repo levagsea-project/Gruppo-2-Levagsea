@@ -116,6 +116,8 @@
 .shop-conti dd { margin: 0; font-variant-numeric: tabular-nums; color: #EEF4F5; }
 .shop-conti__dopo { padding-top: 6px; border-top: 1px solid rgba(213,225,229,.12); }
 .shop-conti__dopo dd { font-weight: 600; }
+.shop-conferma .shop-conti { font-size: 14px; }
+.shop-conferma .q-btn__in { min-width: 0; padding: 0 10px; white-space: nowrap; }
 .shop-compra, .shop-azioni .q-btn, .shop-fatto .q-btn { display: flex; width: 100%; }
 .shop-azioni { display: flex; flex-direction: column; gap: 10px; }
 .shop-fatto { margin-top: 12px; }
