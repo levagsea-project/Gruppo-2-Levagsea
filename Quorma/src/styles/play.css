@@ -89,6 +89,8 @@
 .play-fazione__nome { margin: 0; font-family: var(--font-display); font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--silver-100); }
 .play-fazione__vuoto { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 6px; }
 .play-fazione__vuoto p { margin: 0; font-size: 14px; color: var(--q-testo-tenue, #A9BCC3); }
+/* la fila compatta del telefono (sotto, nel blocco Telefono) */
+.play-mini__vuoto { margin: 0; font-size: 13px; line-height: 18px; color: var(--q-testo-tenue, #A9BCC3); }
 /* il padding lascia spazio a strati del mazzo, sollevamento al passaggio e anello di focus, che overflow taglierebbe */
 .play-mazzi { display: flex; gap: 28px; margin: -6px -10px -10px; padding: 6px 10px 10px; overflow-x: auto;
   scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
@@ -106,7 +108,7 @@
 .play-mazzi .pick[aria-checked="false"]:not(.pick--off):is(:hover, :focus-visible) .q-carta__arte { filter: none; }
 .play-mazzi .pick[aria-checked="false"]:not(.pick--off):is(:hover, :focus-visible) .q-carta__targa { opacity: 1; }
 /* il nome sta in due righe al massimo; intero nel title */
-.play-mazzi .q-carta__nome { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; font-size: 15px; line-height: 20px; letter-spacing: .1em; overflow-wrap: anywhere; }
+.play-mazzi .q-carta__nome { display: block; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 15px; line-height: 20px; letter-spacing: .1em; }
 /* la firma del mazzo: creature per seme e composizione; lo spazio è riservato mentre i conteggi arrivano */
 .play-firma { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; min-height: 42px; margin-top: 7px; }
 .play-firma__semi { display: flex; justify-content: center; gap: 8px; }
@@ -124,7 +126,11 @@
 
 /* il leggìo: pannello ad arco con titolo, descrizione, ciò che serve alla modalità e la fazione d'inizio in fondo */
 .play-leggio { flex: 1; min-height: 0; }
-.play-leggio > .q-tela__in { display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 40px 20px 18px; }
+.play-leggio > .q-tela__in { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 40px 20px 18px; overflow: clip; }
+/* il rosone inciso nella pietra, in alto a destra e tagliato dal bordo: sta dietro a tutto il testo */
+.play-leggio__rosone { --r: 210px; --rosone-grande: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100' fill='none' stroke='%23000' stroke-width='.55'%3E%3Ccircle r='48'/%3E%3Ccircle r='45.6'/%3E%3Ccircle r='16.3'/%3E%3Ccircle r='5.8'/%3E%3Ccircle cx='5.8' r='5.8'/%3E%3Ccircle cy='5.8' r='5.8'/%3E%3Ccircle cx='-5.8' r='5.8'/%3E%3Ccircle cy='-5.8' r='5.8'/%3E%3Cg id='p'%3E%3Ccircle cx='30' r='8'/%3E%3Ccircle cx='30' r='3.4'/%3E%3C/g%3E%3Cuse href='%23p' transform='rotate(30)'/%3E%3Cuse href='%23p' transform='rotate(60)'/%3E%3Cuse href='%23p' transform='rotate(90)'/%3E%3Cuse href='%23p' transform='rotate(120)'/%3E%3Cuse href='%23p' transform='rotate(150)'/%3E%3Cuse href='%23p' transform='rotate(180)'/%3E%3Cuse href='%23p' transform='rotate(210)'/%3E%3Cuse href='%23p' transform='rotate(240)'/%3E%3Cuse href='%23p' transform='rotate(270)'/%3E%3Cuse href='%23p' transform='rotate(300)'/%3E%3Cuse href='%23p' transform='rotate(330)'/%3E%3Cpath d='M15.7 4.2 44 11.8M11.5 11.5 32.2 32.2M4.2 15.7 11.8 44M-4.2 15.7-11.8 44M-11.5 11.5-32.2 32.2M-15.7 4.2-44 11.8M-15.7-4.2-44-11.8M-11.5-11.5-32.2-32.2M-4.2-15.7-11.8-44M4.2-15.7 11.8-44M11.5-11.5 32.2-32.2M15.7-4.2 44-11.8'/%3E%3C/svg%3E");
+  position: absolute; z-index: -1; top: calc(130px - var(--r)); right: calc(var(--r) * -.58); width: calc(var(--r) * 2); height: calc(var(--r) * 2); pointer-events: none; background: var(--petrol-300); opacity: .16;
+  -webkit-mask: var(--rosone-grande) center / contain no-repeat; mask: var(--rosone-grande) center / contain no-repeat; }
 .play-leggio__titolo { margin: 0; font-family: var(--font-display); font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: .14em; text-align: center; text-transform: uppercase; color: #EEF4F5; }
 .play-leggio > .q-tela__in > .q-divisorio { flex: none; }
 .play-leggio__desc { margin: 0; font-size: 14px; line-height: 21px; color: var(--q-testo-tenue, #C4D2D7); text-wrap: pretty; }
@@ -207,6 +213,26 @@
   .play-stanze { height: auto; max-height: 240px; }
 }
 
+/* il numero di stanze aperte, sull'angolo dello stendardo Stanza */
+.play-stendardo__n { position: absolute; z-index: 2; top: 18px; right: 18px; min-width: 22px; padding: 0 5px; box-sizing: border-box; font-family: var(--font-sans); font-size: 13px; line-height: 22px; font-weight: 700;
+  font-variant-numeric: tabular-nums; text-align: center; color: var(--ground-950); background: var(--petrol-300); }
+
+/* mazzi scelti e spiegazione nel leggìo: compaiono solo dove c'è spazio */
+.play-scelta, .play-serie--leggio { display: none; }
+@media (min-width: 1600px) and (min-height: 900px) {
+  .play-page { --mazzo-w: min(14.4vw, 300px); }
+  .play-mazzi .q-carta { --arte-h: clamp(calc(var(--mazzo-w) * 1.02), calc(100vh - 530px), calc(var(--mazzo-w) * 1.75)); }
+  .play-serie--mazzi { display: none; }
+  .play-leggio__desc { font-size: 15px; line-height: 23px; }
+  .play-scelta { display: flex; flex-direction: column; flex: none; margin: auto 0 0; border-top: 1px solid rgba(124,144,152,.25); }
+  .play-scelta > div { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-bottom: 1px solid rgba(124,144,152,.25); }
+  .play-scelta dt { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+  .play-scelta dd { margin: 0; font-family: var(--font-display); font-size: 15px; line-height: 20px; font-weight: 700; letter-spacing: .06em; color: #EEF4F5; overflow-wrap: anywhere; }
+  .play-serie--leggio { flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 0; padding: 0; border: 0; }
+  .play-inizio { margin-top: 0; }
+  .play-stanze { min-height: 150px; }
+}
+
 /* ---------- Telefono: una colonna, tre stendardi uguali, avvio attaccato sopra le schede ---------- */
 @media (max-width: 767px) {
   .page.play-page { overflow: visible; gap: 20px; }
@@ -234,9 +260,75 @@
   .play-firma__semi { gap: 5px; }
 
   /* esito + avvio attaccati sopra le schede */
-  .play-azione { position: sticky; bottom: 78px; z-index: 15; gap: 8px; margin: auto -16px -20px; padding: 16px 16px 12px;
-    background: linear-gradient(0deg, rgba(8,16,20,.96) 70%, rgba(8,16,20,0)); }
+  .play-azione { position: sticky; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 15; gap: 6px; margin: auto -16px -36px; padding: 8px 16px 10px;
+    background: #081014; border-top: 1px solid rgba(213,225,229,.16); }
   .play-riepilogo { justify-content: center; min-height: 0; text-align: center; }
   .play-riepilogo small { font-size: 12px; line-height: 17px; }
-  .play-azione .q-btn--sigillo .q-btn__in { height: 54px; font-size: 16px; }
+  .play-azione .q-btn--sigillo .q-btn__in { height: 50px; font-size: 16px; }
+
+  /* modalità, due selettori e fazione stanno nella prima schermata, con l'avvio */
+  .page.play-page { gap: 12px; }
+  .play-page { --stendardo-h: 88px; --punta: 14px; }
+  .play-modi { height: calc(var(--stendardo-h) + 18px); }
+  .play-stendardo > .q-tela__in { padding-top: 15px; }
+  .play-stendardo__stemma { width: 20px; height: 20px; margin-bottom: 9px; }
+  .play-stendardo__stemma svg { width: 14px; height: 14px; }
+  .play-stendardo__n { top: 12px; right: 7px; min-width: 18px; padding: 0 3px; font-size: 11.5px; line-height: 18px; }
+  .play-fazioni { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .play-fazione { gap: 4px; }
+  .play-fazione__testa { gap: 6px; }
+  .play-fazione__testa .q-marker__line { display: none; }
+  .play-fazione__nome { font-size: 11px; line-height: 16px; letter-spacing: .05em; white-space: nowrap; }
+  /* una fila per fazione: si vede il mazzo scelto e il bordo del successivo, che invita a scorrere */
+  .play-mini { display: flex; gap: 8px; min-width: 0; padding: 10px 3px 5px; margin: -6px -3px -3px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding: 3px; scrollbar-width: none;
+    overscroll-behavior-x: contain; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+  .play-mini::-webkit-scrollbar { display: none; }
+  /* la forma è un arco a sesto acuto; il bagliore sta sul bottone perché clip-path taglierebbe un'ombra normale */
+  .play-mini__voce { --ogiva: polygon(0 100%, 0 26px, 5% 15.6px, 10% 11.6px, 17.5% 7.6px, 25% 4.8px, 32.5% 2.7px, 40% 1.2px, 45% .5px, 50% 0, 55% .5px, 60% 1.2px, 67.5% 2.7px, 75% 4.8px, 82.5% 7.6px, 90% 11.6px, 95% 15.6px, 100% 26px, 100% 100%);
+    position: relative; flex: 0 0 112px; display: block; min-width: 0; padding: 0; border: 0; cursor: pointer; text-align: left; color: #C4D2D7; background: none; scroll-snap-align: start; transition: filter .15s ease; }
+  .play-mini__voce:only-child { flex-basis: 100%; }
+  .play-mini__telaio { display: block; padding: 1px; clip-path: var(--ogiva); background: linear-gradient(160deg, rgba(242,247,248,.62), rgba(124,144,152,.42) 45%, rgba(168,196,200,.58)); transition: background .15s ease; }
+  .play-mini__dentro { display: block; clip-path: var(--ogiva); background: linear-gradient(180deg, #14232A, #0A1418); }
+  .play-mini__copertina { position: relative; display: block; height: 78px; background-color: var(--ground-950); background-size: cover; background-repeat: no-repeat; filter: saturate(.55) brightness(.68); transition: filter .15s ease; }
+  .play-mini__difesa { position: absolute; left: 4px; bottom: 4px; padding: 0 4px; font-size: 11px; line-height: 16px; font-weight: 600; color: #EEF4F5; background: rgba(8,16,20,.88); }
+  /* la targa: filo doppio sopra e un rosone appena inciso dietro il nome */
+  .play-mini__targa { position: relative; isolation: isolate; display: block; overflow: hidden; border-top: 1px solid rgba(213,225,229,.34); box-shadow: inset 0 2px 0 rgba(8,16,20,.9), inset 0 3px 0 rgba(143,214,219,.2); }
+  .play-mini__targa::before { --rosone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100' fill='none' stroke='%23000' stroke-width='1.5'%3E%3Ccircle r='48'/%3E%3Ccircle r='44.5'/%3E%3Ccircle r='16'/%3E%3Ccircle r='6'/%3E%3Ccircle cx='30' r='10.5'/%3E%3Ccircle cx='21.2' cy='21.2' r='10.5'/%3E%3Ccircle cy='30' r='10.5'/%3E%3Ccircle cx='-21.2' cy='21.2' r='10.5'/%3E%3Ccircle cx='-30' r='10.5'/%3E%3Ccircle cx='-21.2' cy='-21.2' r='10.5'/%3E%3Ccircle cy='-30' r='10.5'/%3E%3Ccircle cx='21.2' cy='-21.2' r='10.5'/%3E%3Cpath d='M14.8 6.1 41.6 17.2M6.1 14.8 17.2 41.6M-6.1 14.8-17.2 41.6M-14.8 6.1-41.6 17.2M-14.8-6.1-41.6-17.2M-6.1-14.8-17.2-41.6M6.1-14.8 17.2-41.6M14.8-6.1 41.6-17.2'/%3E%3C/svg%3E");
+    content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; width: 92px; height: 92px; transform: translate(-50%, -50%); background: var(--petrol-300); opacity: .2; -webkit-mask: var(--rosone) center / contain no-repeat; mask: var(--rosone) center / contain no-repeat; transition: opacity .15s ease; }
+  .play-mini__nome { display: block; padding: 8px 7px 7px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; font-size: 13px; line-height: 18px; font-weight: 600; text-shadow: 0 1px 3px #081014; }
+  .play-mini__voce > .q-borchia--n { opacity: .55; }
+  .play-mini__voce[aria-checked="true"] { color: #EEF4F5; filter: drop-shadow(0 0 5px rgba(74,166,173,.65)); }
+  .play-mini__voce[aria-checked="true"] .play-mini__telaio { background: linear-gradient(160deg, #F2F7F8, #4AA6AD 50%, #BFE4E7); }
+  .play-mini__voce[aria-checked="true"] .play-mini__dentro { background: linear-gradient(180deg, #17303A, #0D1C22); }
+  .play-mini__voce[aria-checked="true"] .play-mini__copertina { filter: none; }
+  .play-mini__voce[aria-checked="true"] .play-mini__targa::before { opacity: .42; }
+  .play-mini__voce[aria-checked="true"] > .q-borchia--n { opacity: 1; }
+  .play-mini__voce[aria-disabled="true"] { cursor: not-allowed; opacity: .62; }
+  /* il contorno seguirebbe il rettangolo: il fuoco accende il telaio ad arco */
+  .play-mini__voce:focus-visible { outline: 0; filter: drop-shadow(0 0 2px #EEF4F5) drop-shadow(0 0 6px var(--petrol-300)); }
+  .play-mini__voce:focus-visible .play-mini__telaio { background: #EEF4F5; }
+  .play-step--lato { flex: none; }
+  .play-fazione__vuoto { gap: 6px; margin-top: 0; }
+  .play-fazione__vuoto p { font-size: 13px; }
+  .play-leggio > .q-tela__in { gap: 8px; padding: 14px 14px 12px; }
+  .play-leggio.q-tela--arco > .q-tela__in { padding-top: 36px; }
+  .play-leggio__rosone { --r: 143px; top: calc(78px - var(--r)); }
+  .play-leggio__titolo, .play-leggio > .q-tela__in > .q-divisorio { display: none; }
+  .play-leggio__desc { font-size: 13.5px; line-height: 19px; }
+  .play-leggio__meta { margin-top: -4px; }
+  .play-bilancia__lato { min-height: 52px; padding: 2px 0 22px; font-size: 11px; line-height: 14px; }
+  .play-stanza { padding: 6px 0; }
+  .play-guida { border-top: 1px solid rgba(124,144,152,.25); }
+  .play-guida summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; cursor: pointer; list-style: none; font-size: 13.5px; font-weight: 600; color: #EEF4F5; }
+  .play-guida summary::-webkit-details-marker { display: none; }
+  .play-guida summary svg { flex: none; color: var(--petrol-300); transition: transform .18s ease; }
+  .play-guida[open] summary svg { transform: rotate(180deg); }
+  .play-guida summary:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+  .play-guida .play-serie { margin: 0; padding: 0 0 4px; border: 0; }
+}
+/* telefoni molto stretti: il nome della fazione va a capo invece di uscire dalla colonna */
+@media (max-width: 359px) {
+  .play-fazione__nome { white-space: normal; }
+  .play-fazione .play-rombo { display: none; }
+  .play-stendardo__n { top: auto; bottom: 26px; right: 8px; } /* accanto allo stemma: sul nome non c'è spazio */
 }

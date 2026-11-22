@@ -37,14 +37,15 @@ export default function FaqPage({ onNavigate }: { onNavigate: (page: Page) => vo
           onSelect={(i) => setTopic(topics[i])}
         />
       }
+      sideLabel={topic === ALL ? 'Tutti gli argomenti' : `Argomento: ${topic}`}
       aside={
         <>
           <div className="q-tela q-tela--arco info-aiuto">
             <div className="q-tela__in">
               <span className="info-aiuto__titolo">Non trovi la risposta?</span>
-              <p>Scrivici: ti risponderemo all’indirizzo email che ci lasci.</p>
-              <button type="button" className="q-btn q-btn--argento" onClick={() => onNavigate('contatti')}>
-                <span className="q-btn__in">Contattaci</span>
+              <p>Il glossario spiega i termini del gioco, il regolamento tutte le sue regole.</p>
+              <button type="button" className="q-btn q-btn--argento" onClick={() => onNavigate('glossario')}>
+                <span className="q-btn__in">Apri il glossario</span>
               </button>
             </div>
             <span className="q-borchia q-borchia--n" aria-hidden="true" />

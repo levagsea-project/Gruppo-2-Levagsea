@@ -23,6 +23,7 @@ export default function GlossaryPage({ onNavigate }: { onNavigate: (page: Page) 
       title="GLOSSARIO"
       subtitle="I TERMINI DEL GIOCO"
       sideTop={<LetterGrid available={available} active={letter} onPick={setLetter} />}
+      sideLabel={letter === ALL_LETTERS ? 'Scegli una lettera' : `Lettera ${letter}`}
       onNavigate={onNavigate}
     >
       <SearchBox value={query} onChange={setQuery} placeholder="Cerca un termine" label="Cerca nel glossario" />

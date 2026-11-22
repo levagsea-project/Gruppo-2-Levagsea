@@ -26,6 +26,11 @@
   .faction-body { padding: 18px; }
   .faction-name { font-size: 19px; }
 }
+/* schermi grandi: le due fazioni usano tutta la larghezza */
+@media (min-width: 1600px) {
+  .faction-list { max-width: none; }
+  .newdeck-intro { font-size: 16px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .faction-card { transition: none; }
   .faction-card:hover { transform: none; }

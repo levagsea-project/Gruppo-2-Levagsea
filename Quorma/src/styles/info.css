@@ -145,6 +145,11 @@ textarea.info-input { min-height: 130px; resize: vertical; line-height: 21px; }
 .info-avviso:empty { display: none; }
 .info-avviso b { color: #EEF4F5; font-weight: 600; }
 
+/* schermi grandi: il testo resta alla misura di lettura, al centro del riquadro */
+@media (min-width: 1600px) {
+  .info-tela > .q-tela__in { padding-inline: max(30px, calc((100% - 780px) / 2)); }
+}
+
 /* sotto i 1024px: tutto in una colonna, scorre la pagina intera */
 @media (max-width: 1023px) {
   .info-body, .info-body.has-aside { display: flex; flex-direction: column; gap: 20px; }
@@ -152,4 +157,25 @@ textarea.info-input { min-height: 130px; resize: vertical; line-height: 21px; }
   .info-tela { min-height: 260px; }
   .info-tela > .q-tela__in { padding: 20px 18px; }
   .info-hero { height: 150px; }
+}
+
+/* Telefono: l'indice è una voce che si apre, il testo arriva subito */
+@media (max-width: 767px) {
+  .info-page { gap: 14px; }
+  .info-body, .info-body.has-aside { gap: 14px; }
+  .info-side { gap: 0; }
+  .info-indice { background: #0F1B20; box-shadow: inset 0 0 0 1px rgba(143,214,219,.35); }
+  .info-indice summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; box-sizing: border-box; cursor: pointer; list-style: none;
+    font-size: 14px; font-weight: 600; color: #EEF4F5; }
+  .info-indice summary::-webkit-details-marker { display: none; }
+  .info-indice summary svg { flex: none; color: var(--petrol-300); transition: transform .18s ease; }
+  .info-indice[open] summary svg { transform: rotate(180deg); }
+  .info-indice summary:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
+  .info-indice > .info-list, .info-indice > .letter-grid, .info-indice > :not(summary) { padding: 2px 8px 10px; }
+  .info-indice .info-list-title { display: none; }
+  .info-indice .letter-grid, .letter-grid { max-width: none; }
+  .info-sez { scroll-margin-top: 72px; }
+  .info-cerca svg { top: 14px; }
+  .info-cerca input, .info-input { min-height: 44px; font-size: 16px; }
+  .info-invia .q-btn { min-width: 0; }
 }

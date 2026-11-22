@@ -15,6 +15,7 @@ export default function LegalPage({ kind, onNavigate }: { kind: keyof typeof leg
       subtitle={subtitle}
       note={LAST_UPDATE}
       sideTop={<SectionList title="In questa pagina" sections={sections} />}
+      sideLabel="In questa pagina"
       onNavigate={onNavigate}
     >
       <InfoSections sections={sections} onNavigate={onNavigate} />

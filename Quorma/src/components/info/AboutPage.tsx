@@ -34,6 +34,7 @@ export default function AboutPage({ onNavigate }: { onNavigate: (page: Page) => 
       title="CHI SIAMO"
       subtitle="LEVAGSEA E QUORMA"
       sideTop={<SectionList title="In questa pagina" sections={aboutSections} />}
+      sideLabel="In questa pagina"
       onNavigate={onNavigate}
     >
       <div className="info-hero" role="img" aria-label="Un viandante con una torcia davanti alle rovine di una cattedrale e a un colosso meccanico abbattuto">

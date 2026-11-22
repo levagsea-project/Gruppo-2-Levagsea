@@ -5,9 +5,10 @@ import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import FactionCard from './FactionCard'
 
-// Pagina "Nuovo mazzo": scegli la fazione. ANNULLA torna indietro, CREA MAZZO apre l'editor con quella fazione.
+// Pagina "Nuovo mazzo": scegli la fazione. ANNULLA torna indietro, il pulsante dice con quale fazione apre l'editor.
 export default function NewDeckPage({ onCancel, onCreate }: { onCancel: () => void; onCreate: (faction: FactionId) => void }) {
   const [chosen, setChosen] = useState<FactionId>('artificiali') // fazione scelta
+  const name = factions[chosen].name
 
   return (
     <main className="page newdeck-page">
@@ -34,8 +35,8 @@ export default function NewDeckPage({ onCancel, onCreate }: { onCancel: () => vo
         <button type="button" className="q-btn q-btn--acciaio" onClick={onCancel}>
           <span className="q-btn__in">Annulla</span>
         </button>
-        <button type="button" className="q-btn q-btn--argento" onClick={() => onCreate(chosen)}>
-          <span className="q-btn__in">Crea mazzo</span>
+        <button type="button" className="q-btn q-btn--argento" aria-label={`Crea mazzo: ${name}`} onClick={() => onCreate(chosen)}>
+          <span className="q-btn__in">Crea<span className="newdeck-parola"> mazzo</span> · {name}</span>
         </button>
       </div>
     </main>

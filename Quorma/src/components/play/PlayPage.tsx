@@ -13,6 +13,7 @@ import { onRadioKeyDown } from '../../lib/radioKeys'
 import { getSeries, markSeriesSeen, playMatchmaking, seriesScore, type DeckPick, type SeriesResponse } from '../../lib/series'
 import type { Deck, FactionId, PlayStatus } from '../../types/deck'
 import type { LoadState } from '../../hooks/useDecks'
+import { useIsPhone } from '../../hooks/useIsPhone'
 import { playBlockReason } from '../../hooks/usePlayStatus'
 import BattleScreen from '../battle/BattleScreen'
 import CurrencyBar from '../layout/CurrencyBar'
@@ -85,6 +86,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
   const roomDeckNames = useRef<Record<FactionId, string> | null>(null) // i mazzi con cui ho aperto la stanza
   const firstRoomsLoad = useRef(true)
   const corpo = useRef<HTMLDivElement>(null)
+  const phone = useIsPhone()
 
   const loadRooms = useCallback(async () => {
     const seq = ++loadSeq.current
@@ -146,14 +148,14 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
 
   // Un mazzo ricordato può stare in fondo alla fila: la fila scorre fino a mostrarlo.
   useEffect(() => {
-    corpo.current?.querySelectorAll('.play-mazzi').forEach((row) => {
+    corpo.current?.querySelectorAll('.play-mazzi, .play-mini').forEach((row) => {
       const on = row.querySelector('[aria-checked="true"]')
       if (!on) return
       const r = row.getBoundingClientRect()
       const b = on.getBoundingClientRect()
       if (b.left < r.left || b.right > r.right) row.scrollLeft += b.left - r.left - 10
     })
-  }, [decks.length])
+  }, [decks.length, phone])
 
   const demo = isDemoSession()
   const blocked = playBlockReason(playStatus)
@@ -305,6 +307,15 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
   const actionLabel =
     busy === 'avvio' ? busyLabel : modeId === 'libera' && outcome?.again ? 'Gioca ancora' : mode.action
 
+  // Perché servono due mazzi e che cos'è la Difesa: vale per tutte le modalità.
+  const seriesNote = (
+    <>
+      <p><b>Serie al meglio delle 3.</b> Scegli un mazzo per fazione: a ogni partita le fazioni si scambiano.</p>
+      <p><b>Difesa.</b> È il mazzo che ti rappresenta in Partita libera, anche quando non ci sei.</p>
+      <button type="button" className="play-link" onClick={() => onNavigate('regole')}>Leggi le regole</button>
+    </>
+  )
+
   return (
     <main className="page play-page">
       {/* Intestazione: titolo a sinistra, Gestisci mazzi e valute a destra */}
@@ -329,6 +340,13 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                 <span className="q-tela__in">
                   <span className="play-stendardo__orlo" aria-hidden="true" />
                   <span className="play-stendardo__nome">{m.title}</span>
+                  {/* le stanze aperte si vedono da qualsiasi modalità */}
+                  {m.id === 'stanza' && !!rooms?.length && (
+                    <span className="play-stendardo__n">
+                      <span aria-hidden="true">{rooms.length}</span>
+                      <span className="sr-only">{rooms.length === 1 ? ', 1 stanza aperta' : `, ${rooms.length} stanze aperte`}</span>
+                    </span>
+                  )}
                   <span className="play-stendardo__stemma" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                       {m.paths.map((d) => <path key={d} d={d} />)}
@@ -381,6 +399,45 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                         <span className="q-btn__in">Crea mazzo</span>
                       </button>
                     </div>
+                  ) : phone ? (
+                    /* su telefono una fila compatta con i soli mazzi utilizzabili: copertina e nome su una riga */
+                    own.some(usable) ? (
+                      <div role="radiogroup" aria-labelledby={groupId} className="play-mini" onKeyDown={onRadioKeyDown}>
+                        {own.filter(usable).map((d, i) => {
+                          const on = !waiting && d.id === picked[f]?.id
+                          const shortName = d.name.replace(` (${faction.name})`, '')
+                          return (
+                            <button
+                              key={d.id}
+                              type="button"
+                              role="radio"
+                              aria-checked={on}
+                              aria-disabled={waiting}
+                              aria-label={d.defense ? `${shortName}, mazzo di difesa` : shortName}
+                              title={shortName}
+                              tabIndex={(waiting ? i === 0 : on) ? 0 : -1}
+                              className="play-mini__voce"
+                              onClick={() => !waiting && setChosen((c) => ({ ...c, [f]: d.id }))}
+                            >
+                              {/* arco a sesto acuto: il telaio è il filo d'argento, dentro copertina e targa con il rosone */}
+                              <span className="play-mini__telaio">
+                                <span className="play-mini__dentro">
+                                  <span className="play-mini__copertina" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus } as CSSProperties}>
+                                    {d.defense && <span className="play-mini__difesa">Difesa</span>}
+                                  </span>
+                                  <span className="play-mini__targa">
+                                    <span className="play-mini__nome">{shortName}</span>
+                                  </span>
+                                </span>
+                              </span>
+                              <span className="q-borchia q-borchia--n" aria-hidden="true" />
+                            </button>
+                          )
+                        })}
+                      </div>
+                    ) : (
+                      <p className="play-mini__vuoto">Nessun mazzo utilizzabile</p>
+                    )
                   ) : (
                     <div role="radiogroup" aria-labelledby={groupId} className="play-mazzi" onKeyDown={onRadioKeyDown}>
                       {own.map((d) => {
@@ -431,12 +488,8 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
           </div>
         )}
 
-        {/* Perché servono due mazzi e che cos'è la Difesa: vale per tutte le modalità */}
-        <div className="play-serie">
-          <p><b>Serie al meglio delle 3.</b> Scegli un mazzo per fazione: a ogni partita le fazioni si scambiano.</p>
-          <p><b>Difesa.</b> È il mazzo che ti rappresenta in Partita libera, anche quando non ci sei.</p>
-          <button type="button" className="play-link" onClick={() => onNavigate('regole')}>Leggi le regole</button>
-        </div>
+        {/* su telefono e su schermi grandi la spiegazione sta nel leggìo */}
+        {!phone && <div className="play-serie play-serie--mazzi">{seriesNote}</div>}
       </section>
 
       {/* Il leggìo: tutto ciò che serve per avviare la modalità scelta */}
@@ -444,6 +497,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         <section className="play-step play-step--lato" aria-labelledby="g-avvio">
           <div className="q-tela q-tela--arco play-leggio">
             <div className="q-tela__in">
+              <span className="play-leggio__rosone" aria-hidden="true" />
               <h2 id="g-avvio" className="play-leggio__titolo">{mode.title}</h2>
               <span className="q-divisorio" aria-hidden="true" />
               {modeId === 'stanza' && !demo && (
@@ -531,6 +585,19 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                 </div>
               )}
 
+              {/* Schermi grandi: i mazzi con cui si parte e come funziona la serie riempiono il leggìo */}
+              {!phone && !waiting && (
+                <dl className="play-scelta">
+                  {FACTION_IDS.map((f) => (
+                    <div key={f}>
+                      <dt>{factions[f].name}</dt>
+                      <dd>{picked[f]?.name.replace(` (${factions[f].name})`, '') ?? 'Nessun mazzo valido'}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              {!phone && <div className="play-serie play-serie--leggio">{seriesNote}</div>}
+
               {/* Fazione della prima partita: nella seconda le fazioni si scambiano */}
               {!joining && !waiting && (
               <div className="play-inizio">
@@ -547,6 +614,18 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                   </span>
                 </div>
               </div>
+              )}
+
+              {phone && (
+                <details className="play-guida">
+                  <summary>
+                    Come funziona la serie
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </summary>
+                  <div className="play-serie">{seriesNote}</div>
+                </details>
               )}
             </div>
             <span className="q-borchia q-borchia--n" />
