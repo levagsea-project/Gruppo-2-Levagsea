@@ -1,15 +1,12 @@
 import type { CSSProperties } from 'react'
 import { factions } from '../../data/factions'
 import type { Page } from '../../data/navItems'
-import { comingSoon, currentPlayer } from '../../data/player'
+import { currentPlayer } from '../../data/player'
 import type { LoadState } from '../../hooks/useDecks'
 import type { PlayNotice } from '../../hooks/usePlayStatus'
 import type { Deck } from '../../types/deck'
 import { resultLabel, type Series } from '../../data/profile'
 import { formatWhen } from '../../lib/matches'
-import NavIcon from '../layout/NavIcon'
-import Arch from './Arch'
-import MobileRow from './MobileRow'
 
 const Star = () => (
   <svg className="q-stella" aria-hidden="true" viewBox="0 0 20 28">
@@ -40,7 +37,7 @@ type Props = {
 
 const ACTION_LABEL: Record<NonNullable<PlayNotice['action']>, string> = { mazzi: 'Vai ai mazzi', riprova: 'Riprova' }
 
-// Home su telefono: riprendi a giocare, sezioni in arrivo, partite, scorciatoie.
+// Home su telefono: riprendi a giocare, partite, scorciatoie.
 export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNoticeAction, onNavigate, latestSeries, onOpenMatches }: Props) {
   const action = notice.action
   const player = currentPlayer()
@@ -112,18 +109,6 @@ export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNo
         <span className="q-borchia q-borchia--n" aria-hidden="true" />
       </section>
 
-      {/* Sezioni del gioco che non esistono ancora: cosa saranno, senza numeri inventati */}
-      <section className="mbh-sezione" aria-labelledby="h-arrivo">
-        <Marker id="h-arrivo" title="In arrivo" />
-        <div className="q-tela">
-          <div className="q-tela__in mb-lista">
-            {comingSoon.map((p) => (
-              <MobileRow key={p.id} title={p.label} detail={p.detail} icon={<Arch><NavIcon name={p.icon} /></Arch>} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="mbh-sezione" aria-labelledby="h-partite">
         <Marker id="h-partite" title="Partite" />
         <div className="q-tela">
@@ -151,10 +136,8 @@ export default function MobileHome({ lastDeck, decksState, onRetry, notice, onNo
       </section>
 
       <section className="mbh-scorciatoie" aria-label="Scorciatoie">
-        <button type="button" className="q-btn q-btn--acciaio" aria-disabled="true" title="Negozio · in arrivo">
-          <span className="q-btn__in">
-            Negozio<span className="sr-only">, in arrivo</span>
-          </span>
+        <button type="button" className="q-btn q-btn--acciaio" onClick={() => onNavigate('negozio')}>
+          <span className="q-btn__in">Negozio</span>
         </button>
         <button type="button" className="q-btn q-btn--acciaio" onClick={() => onNavigate('regole')}>
           <span className="q-btn__in">Regole</span>

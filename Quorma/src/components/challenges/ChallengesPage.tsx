@@ -149,7 +149,6 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
                   {label} <span className="m-chip__n">{n}</span>
                 </button>
               ))}
-              <span className="m-chip m-chip--off" title="In arrivo">Missioni · in arrivo</span>
             </div>
             <span className="q-marker__line" />
           </div>

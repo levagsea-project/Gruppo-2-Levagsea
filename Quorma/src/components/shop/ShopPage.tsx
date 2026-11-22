@@ -99,7 +99,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
   return (
     <main className="page shop-page">
       <CurrencyBar />
-      <PageTitle title="NEGOZIO" subtitle="BUSTE E OFFERTE" />
+      <PageTitle title="NEGOZIO" subtitle="BUSTE" />
 
       <div className="shop-corpo">
         <section aria-label="Articoli" className="shop-articoli">
@@ -107,7 +107,6 @@ export default function ShopPage({ onOpenPacks }: Props) {
             <h2 className="sr-only">Buste</h2>
             <div className="coll-chips" role="group" aria-label="Sezione del negozio">
               <span className="m-chip" data-on="true">Buste</span>
-              <span className="m-chip m-chip--off" title="In arrivo">Offerte · in arrivo</span>
             </div>
             <span className="q-marker__line" />
           </div>

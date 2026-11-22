@@ -11,7 +11,7 @@ function formatDate(iso: string) {
 
 type Props = {
   items: NewsItem[] // dalla più recente; vuota finché il backend non fornisce le news
-  onOpenAll?: () => void // pagina "Tutte le news": senza, il pulsante resta "in arrivo"
+  onOpenAll?: () => void // pagina "Tutte le news": senza, il pulsante non c'è
 }
 
 // Card News della Home: le ultime news con data e titolo, oppure uno stato vuoto onesto (niente date inventate).
@@ -39,7 +39,7 @@ export default function NewsCard({ items, onOpenAll }: Props) {
           ))}
         </ul>
       )}
-      <CardButton onClick={onOpenAll}>Tutte le news</CardButton>
+      {onOpenAll && <CardButton onClick={onOpenAll}>Tutte le news</CardButton>}
     </InfoCard>
   )
 }

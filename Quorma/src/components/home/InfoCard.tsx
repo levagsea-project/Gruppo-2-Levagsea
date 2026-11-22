@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from 'react'
 
-// Card ad arco a sesto acuto del design system, con il pinnacolo in cima. TradesCard e NewsCard la riusano.
+// Card ad arco a sesto acuto del design system, con il pinnacolo in cima. DefenseCard, TradesCard e NewsCard la riusano.
 type Props = {
   seed: 'vincolo' | 'frattura' | 'spira' | 'vestigio' // icona del seme accanto al titolo (public/images/ui/semi)
   title: string
@@ -31,15 +31,12 @@ export default function InfoCard({ seed, title, meta, metaTone, lead, children }
 }
 
 // Pulsante d'acciaio con la freccia, in fondo a ogni card.
-// Senza onClick la sezione non esiste ancora: pulsante attenuato, "in arrivo" al passaggio del mouse e per i lettori di schermo.
+// Senza onClick il pulsante resta visibile, attenuato e non premibile.
 export function CardButton({ children, onClick }: { children: string; onClick?: () => void }) {
   if (!onClick) {
     return (
-      <button type="button" className="q-btn q-btn--acciaio info-card-btn" aria-disabled="true" title="In arrivo">
-        <span className="q-btn__in">
-          {children}
-          <span className="sr-only">, in arrivo</span>
-        </span>
+      <button type="button" className="q-btn q-btn--acciaio info-card-btn" aria-disabled="true">
+        <span className="q-btn__in">{children}</span>
       </button>
     )
   }

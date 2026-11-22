@@ -30,11 +30,11 @@ export default function SettingsTab() {
       <div className="pf-cards">
         <div className="pf-col">
           <SettingsCard title="Account">
-            {/* Email e password non si possono ancora leggere né cambiare dal backend */}
-            <SettingRow label="Email" hint="Modifica in arrivo">
+            {/* Email e password non si possono ancora leggere né cambiare dal backend: righe visibili, pulsanti disattivati */}
+            <SettingRow label="Email">
               <button type="button" className="pf-text-btn" disabled>Cambia</button>
             </SettingRow>
-            <SettingRow label="Password" hint="Modifica in arrivo">
+            <SettingRow label="Password">
               <button type="button" className="pf-text-btn" disabled>Cambia</button>
             </SettingRow>
             <SettingRow label="Lingua" hint="Lingua dell'interfaccia e delle carte">

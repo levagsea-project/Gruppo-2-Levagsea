@@ -12,7 +12,7 @@ export type Page =
 export type NavItemData = {
   label: string
   icon: NavIconName // icona dentro l'ogiva (components/layout/NavIcon.tsx)
-  page?: Page // pagina a cui porta. Se manca, la sezione è "in arrivo": voce attenuata e non cliccabile
+  page?: Page // pagina a cui porta. Se manca, la voce è attenuata e non cliccabile
   alert?: string // "braci" arancioni: c'è una novità vera (dal backend). Il testo è letto dagli screen reader
 }
 
@@ -22,7 +22,7 @@ export const navItems: NavItemData[] = [
   { label: 'Sfide', icon: 'sfide', page: 'sfide' },
   { label: 'Collezione', icon: 'collezione', page: 'collezione' },
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi' },
-  { label: 'Scambi', icon: 'scambi' },
+  { label: 'Scambi', icon: 'scambi' }, // senza pagina: visibile ma non premibile
   { label: 'Negozio', icon: 'negozio', page: 'negozio' },
   { label: 'Regole', icon: 'regole', page: 'regole' },
 ]

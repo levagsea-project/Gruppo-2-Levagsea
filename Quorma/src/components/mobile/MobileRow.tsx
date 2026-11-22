@@ -4,7 +4,7 @@ type Props = {
   title: string
   detail?: string // riga piccola sotto il titolo
   icon?: ReactNode // di solito un <Arch>; senza icona è una riga di solo testo
-  onClick?: () => void // senza onClick la pagina non esiste ancora: riga "in arrivo", non cliccabile
+  onClick?: () => void // senza onClick la riga non è cliccabile
 }
 
 function Arrow() {
@@ -16,7 +16,6 @@ function Arrow() {
 }
 
 // Una riga degli elenchi mobile (Home, pagina Altro): icona, testo, freccia.
-// Le sezioni che non esistono ancora non sono pulsanti: niente freccia, etichetta "In arrivo".
 export default function MobileRow({ title, detail, icon, onClick }: Props) {
   const className = icon ? 'mb-riga' : 'mb-riga mb-riga--testo'
   const text = icon ? (
@@ -33,7 +32,6 @@ export default function MobileRow({ title, detail, icon, onClick }: Props) {
       <div className={`${className} mb-riga--presto`}>
         {icon}
         {text}
-        <span className="mb-presto">In arrivo</span>
       </div>
     )
   }

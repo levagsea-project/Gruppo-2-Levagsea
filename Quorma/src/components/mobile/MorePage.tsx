@@ -34,8 +34,7 @@ const SettingsIcon = () => (
 )
 
 // Pagina "Altro" (solo telefono): tutte le sezioni che non stanno nella barra in basso.
-// Le righe senza onClick sono sezioni che non esistono ancora: MobileRow le mostra "in arrivo".
-export default function MorePage({ onNavigate, challengeAlert }: { onNavigate: (page: Page) => void; challengeAlert?: string }) {
+export default function MorePage({ onNavigate, onOpenSettings, challengeAlert }: { onNavigate: (page: Page) => void; onOpenSettings: () => void; challengeAlert?: string }) {
   const navigate = useNavigate()
   const player = currentPlayer()
 
@@ -65,7 +64,7 @@ export default function MorePage({ onNavigate, challengeAlert }: { onNavigate: (
 
       <Group title="Account">
         <MobileRow title="Profilo" detail={player.name} icon={<Arch><ProfileIcon /></Arch>} onClick={() => onNavigate('profilo')} />
-        <MobileRow title="Impostazioni" detail="Account, partita, audio" icon={<Arch><SettingsIcon /></Arch>} />
+        <MobileRow title="Impostazioni" detail="Account, partita, audio" icon={<Arch><SettingsIcon /></Arch>} onClick={onOpenSettings} />
       </Group>
 
       <Group title="Informazioni">

@@ -7,7 +7,7 @@ import TradesCard from './TradesCard'
 
 type Props = { decks: Deck[]; decksState: LoadState; onManageDecks: () => void }
 
-// Le tre card in fondo: lo stato reale dei mazzi di difesa, gli scambi (in arrivo) e le news.
+// Le tre card in fondo: lo stato reale dei mazzi di difesa, gli scambi (non premibili) e le news.
 export default function InfoCards({ decks, decksState, onManageDecks }: Props) {
   return (
     <div className="info-cards">

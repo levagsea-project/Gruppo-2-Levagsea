@@ -21,13 +21,8 @@ export function currentPlayer() {
   return { name, initials: initialsOf(name), avatar: findAvatar(stored.avatar) }
 }
 
-// Le due valute (nomi provvisori). I crediti del backend sono la Valuta 2; la Valuta 1 non esiste ancora (null = "in arrivo").
+// Le due valute (nomi provvisori). I crediti del backend sono la Valuta 2; la Valuta 1 non esiste ancora (null = trattino).
 export const currencies = (credits: number | null): { label: string; value: string | null }[] => [
   { label: 'Valuta 1', value: null },
   { label: 'Valuta 2', value: credits === null ? null : formatCredits(credits) },
 ]
-
-// Sezioni del gioco che non esistono ancora: le mostriamo come "in arrivo", senza numeri inventati.
-export const comingSoon = [
-  { id: 'scambi', label: 'Scambi', detail: 'Scambia i doppioni con altri giocatori', icon: 'scambi' },
-] as const

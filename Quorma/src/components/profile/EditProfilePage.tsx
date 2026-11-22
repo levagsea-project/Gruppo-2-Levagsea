@@ -50,7 +50,7 @@ export default function EditProfilePage({ onNavigate }: { onNavigate: (page: Pag
 
           <span className="pf-label">Immagine del profilo</span>
           <AvatarPicker value={avatarId} onChange={setAvatarId} />
-          <p className="pe-hint">Altre immagini arriveranno con la collezione. Per ora nome e immagine si vedono solo su questo browser.</p>
+          <p className="pe-hint">Nome e immagine si vedono solo su questo browser.</p>
         </div>
 
         <div className="pe-preview">

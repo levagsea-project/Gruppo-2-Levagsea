@@ -78,7 +78,7 @@ export const aboutSections: Section[] = [
         ul: [
           'Il mazzo è la partita: tutto ciò che aiuta a capire, costruire e confrontare i mazzi viene prima del resto.',
           'Le regole si capiscono: regolamento, numeri e vantaggi devono essere sempre raggiungibili e leggibili.',
-          'Niente dati finti: ciò che non esiste ancora lo mostriamo come in arrivo, non come se fosse vero.',
+          'Niente dati finti: mostriamo solo ciò che esiste davvero.',
           'Desktop e telefono alla pari: ogni schermata deve funzionare bene in entrambi.',
         ],
       },
@@ -210,7 +210,6 @@ export const contactTabs = ['Account', 'Pagamenti', 'Segnala un problema', 'Altr
 export const contactChannels = [
   { label: 'Email', value: CONTACT_EMAIL },
   { label: 'Tempi di risposta', value: '[Da definire]' },
-  { label: 'Community', value: 'In arrivo' },
 ]
 
 // ======================================================================
