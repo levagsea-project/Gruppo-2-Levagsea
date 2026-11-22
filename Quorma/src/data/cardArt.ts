@@ -34,9 +34,20 @@ const AI_SUBFACTIONS: Record<string, string[]> = {
 export const CARD_ART = new Set<string>([
   // Potenze Artificiali: tutte le 52 creature
   ...['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'].flatMap((rank) => AI_SUBFACTIONS[rank].map((end) => `BASE-AI-${rank}-${end}`)),
-  // Resistenza Umana
-  'BASE-RES-2-VIN-POR',
-  'BASE-RES-A-VIN-SEG',
+  // Resistenza Umana: Frattura, Vestigio e Vincolo complete; di Spira per ora c'è solo l'Asso
+  ...['A-SPE', '2-ADA', '3-POR', '4-SPE', '5-SEG', '6-POR', '7-ADA', '8-SPE', '9-ADA', '10-POR', 'J-SEG', 'Q-SPE', 'K-SEG'].map((c) => {
+    const [rank, sub] = c.split('-')
+    return `BASE-RES-${rank}-FRA-${sub}`
+  }),
+  ...['A-POR', '2-SPE', '3-SEG', '4-ADA', '5-SPE', '6-SEG', '7-POR', '8-ADA', '9-POR', '10-ADA', 'J-SPE', 'Q-SEG', 'K-ADA'].map((c) => {
+    const [rank, sub] = c.split('-')
+    return `BASE-RES-${rank}-VES-${sub}`
+  }),
+  ...['A-SEG', '2-POR', '3-ADA', '4-SEG', '5-ADA', '6-SPE', '7-SEG', '8-POR', '9-SPE', '10-SEG', 'J-POR', 'Q-ADA', 'K-SPE'].map((c) => {
+    const [rank, sub] = c.split('-')
+    return `BASE-RES-${rank}-VIN-${sub}`
+  }),
+  'BASE-RES-A-SPI-ADA',
 ])
 
 /** Illustrazione della carta nelle due misure, o null se non c'è ancora. */
@@ -61,5 +72,11 @@ export const TIER_NAMES: Record<Tier, string> = { 1: 'Comune', 2: 'Non comune', 
 /** Cornice della creatura per Tier: le due misure, per srcSet. */
 export const creatureFrame = (tier: Tier) => {
   const base = `/images/carte/cornici/creatura-tier${tier}`
+  return { src: `${base}.webp`, srcSet: `${base}-400.webp 400w, ${base}.webp 800w` }
+}
+
+/** Retro con la lore (public/images/carte/retro/), uno per Tier: le due misure, per srcSet. */
+export const cardBackFrame = (tier: Tier) => {
+  const base = `/images/carte/retro/retro-tier${tier}`
   return { src: `${base}.webp`, srcSet: `${base}-400.webp 400w, ${base}.webp 800w` }
 }

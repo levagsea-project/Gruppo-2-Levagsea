@@ -7,6 +7,7 @@ import { SUITS, SUIT_NAMES, getCollection, rankLabel } from '../../lib/cards'
 import { packName, pendingPacks, type OpenedPack } from '../../lib/shop'
 import type { CardKind, FactionId, OwnedCard, SuitId } from '../../types/deck'
 import AbilityList from '../cards/AbilityList'
+import CardBack from '../cards/CardBack'
 import CardFace from '../cards/CardFace'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
@@ -219,16 +220,7 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
               <button type="button" className="q-giro coll-giro" aria-pressed={flipped} aria-label={flipped ? `Torna al fronte di ${selected.card.name}` : `Gira ${selected.card.name} per leggere la lore`} onClick={() => setFlipped((v) => !v)}>
                 <span className="q-giro__dentro">
                   <span className="q-giro__faccia"><CardFace card={selected.card} sizes="300px" /></span>
-                  <span className="q-giro__faccia q-giro__retro q-cg">
-                    <span className="q-cg__campo q-cg__targa coll-retro__nome">
-                      <span className="q-cg__nome" lang={selected.card.textLocale}>{selected.card.name}</span>
-                      <span className="q-cg__sotto">Lore</span>
-                    </span>
-                    <span className="q-cg__campo coll-retro__testo">
-                      <span className="g-lore" lang={selected.card.textLocale}>{selected.card.flavour ?? 'Questa carta non ha ancora un testo.'}</span>
-                    </span>
-                    <span className="q-cg__campo coll-retro__logo"><img src="/images/ui/logo-quorma.png" alt="" /></span>
-                  </span>
+                  <span className="q-giro__faccia q-giro__retro"><CardBack card={selected.card} /></span>
                 </span>
               </button>
               <span className="coll-suggerimento">{flipped ? 'Premi per tornare al fronte' : 'Premi la carta per leggere la lore'}</span>
