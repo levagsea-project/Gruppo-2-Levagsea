@@ -1,0 +1,16 @@
+/* Impostazioni di accessibilità applicate dall'area di gioco su :root (lib/settings.ts) */
+
+/* Riduci il movimento: animazioni e transizioni arrivano subito allo stato finale */
+:root[data-motion="reduced"] { scroll-behavior: auto; }
+:root[data-motion="reduced"] *, :root[data-motion="reduced"] *::before, :root[data-motion="reduced"] *::after, :root[data-motion="reduced"] *::backdrop {
+  animation-delay: 0s !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+  transition-delay: 0s !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+
+/* Contrasto elevato: testi secondari più chiari, bordi dei controlli pieni, fuoco ben visibile */
+:root[data-contrast="high"] { --steel-300: #D3DFE3; --steel-500: #A9BBC2; --petrol-300: #BDF5F8; --silver-100: #F1F6F7; --ember-200: #FFE6CF; --q-testo-tenue: #E8F0F2; }
+:root[data-contrast="high"] :is(.info-input, .editor-nome__input, .sfide-campo, .card-tools__cerca input, .card-tools__ordine, .card-tools__filtri, .card-tools__attivi button, .editor-pezzo, .editor-annulla, .editor-dock__mazzo, .info-chip, .m-chip, .pf-seg button):not(:focus):not([aria-pressed="true"]):not([aria-checked="true"]) {
+  box-shadow: inset 0 0 0 1px #E8F0F2; }
+:root[data-contrast="high"] .pe-input { border-color: #E8F0F2; }
+:root[data-contrast="high"] .pf-toggle { box-shadow: inset 0 0 0 1px #E8F0F2; }
+:root[data-contrast="high"] .pf-toggle span { background: #E8F0F2; }
+:root[data-contrast="high"] :focus-visible { outline: 3px solid #FFFFFF !important; outline-offset: 2px; }

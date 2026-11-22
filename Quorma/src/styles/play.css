@@ -73,7 +73,7 @@
 .play-step--mazzi { min-width: 0; }
 /* come funziona la serie: in fondo alla colonna dei mazzi, allineata al pulsante di avvio */
 .play-serie { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: start; gap: 8px 28px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(124,144,152,.25); }
-.play-serie p { margin: 0; font-size: 13px; line-height: 19px; color: #C4D2D7; text-wrap: pretty; }
+.play-serie p { margin: 0; font-size: 13px; line-height: 19px; color: var(--q-testo-tenue, #C4D2D7); text-wrap: pretty; }
 .play-serie b { font-weight: 600; color: #EEF4F5; }
 .play-serie .play-link { min-height: 24px; font-size: 13px; line-height: 19px; font-weight: 600; white-space: nowrap; }
 @media (max-width: 1279px) { .play-serie { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .play-serie .play-link { grid-column: 1 / -1; justify-self: start; } }
@@ -88,7 +88,7 @@
 .play-rombo { flex: none; width: 9px; height: 9px; transform: rotate(45deg); background: linear-gradient(180deg, #15242C, #0C161B); box-shadow: 0 0 0 1px rgba(213,225,229,.6), 0 0 6px rgba(74,166,173,.45); }
 .play-fazione__nome { margin: 0; font-family: var(--font-display); font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--silver-100); }
 .play-fazione__vuoto { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 6px; }
-.play-fazione__vuoto p { margin: 0; font-size: 14px; color: #A9BCC3; }
+.play-fazione__vuoto p { margin: 0; font-size: 14px; color: var(--q-testo-tenue, #A9BCC3); }
 /* il padding lascia spazio a strati del mazzo, sollevamento al passaggio e anello di focus, che overflow taglierebbe */
 .play-mazzi { display: flex; gap: 28px; margin: -6px -10px -10px; padding: 6px 10px 10px; overflow-x: auto;
   scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
@@ -112,7 +112,7 @@
 .play-firma__semi { display: flex; justify-content: center; gap: 8px; }
 .play-firma__seme { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; line-height: 20px; font-weight: 600; font-variant-numeric: tabular-nums; color: #EEF4F5; }
 .play-firma__seme .deck-seme { flex: none; width: 18px; height: 18px; background: #BFE4E7; }
-.play-firma__tipi { font-size: 12px; line-height: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: #A9BCC3; white-space: nowrap; }
+.play-firma__tipi { font-size: 12px; line-height: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--q-testo-tenue, #A9BCC3); white-space: nowrap; }
 .play-conta { min-height: 18px; margin-top: 2px; font-size: 12px; line-height: 18px; font-weight: 500; color: var(--petrol-300); }
 .play-conta--off { color: var(--steel-300); }
 .q-mazzo { position: relative; isolation: isolate; display: block; margin: 12px 12px 0 0; filter: drop-shadow(-3px 6px 10px rgba(0,0,0,.5)); }
@@ -127,9 +127,9 @@
 .play-leggio > .q-tela__in { display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: 40px 20px 18px; }
 .play-leggio__titolo { margin: 0; font-family: var(--font-display); font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: .14em; text-align: center; text-transform: uppercase; color: #EEF4F5; }
 .play-leggio > .q-tela__in > .q-divisorio { flex: none; }
-.play-leggio__desc { margin: 0; font-size: 14px; line-height: 21px; color: #C4D2D7; text-wrap: pretty; }
+.play-leggio__desc { margin: 0; font-size: 14px; line-height: 21px; color: var(--q-testo-tenue, #C4D2D7); text-wrap: pretty; }
 .play-leggio__meta { margin: -8px 0 0; font-size: 12px; line-height: 18px; color: var(--steel-300); }
-.play-nota { margin: 0; font-size: 14px; line-height: 20px; color: #A9BCC3; }
+.play-nota { margin: 0; font-size: 14px; line-height: 20px; color: var(--q-testo-tenue, #A9BCC3); }
 .play-sfida { display: flex; flex-direction: column; gap: 6px; }
 .play-sfida label { font-size: 12px; color: var(--steel-300); }
 
@@ -137,7 +137,7 @@
 .play-stanze { flex: 1 1 auto; height: 0; min-height: 76px; margin-right: -8px; padding-right: 8px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 .play-stanza { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(124,144,152,.25); }
 .play-stanza h3 { margin: 0; font-family: var(--font-display); font-size: 14px; line-height: 19px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; overflow-wrap: anywhere; }
-.play-stanza p { margin: 2px 0 0; font-size: 12px; line-height: 17px; color: #A9BCC3; }
+.play-stanza p { margin: 2px 0 0; font-size: 12px; line-height: 17px; color: var(--q-testo-tenue, #A9BCC3); }
 .play-stanza--mia h3 { color: var(--petrol-300); }
 /* Stanza: le due strade (entrare o aprire) e i mazzi fermi mentre la propria stanza è aperta */
 .play-leggio .play-strade { flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -183,7 +183,7 @@
 /* nessun mazzo */
 .play-vuoto { max-width: 420px; }
 .play-vuoto > .q-tela__in { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px 22px; }
-.play-vuoto p { font-size: 14px; color: #A9BCC3; }
+.play-vuoto p { font-size: 14px; color: var(--q-testo-tenue, #A9BCC3); }
 
 /* esito e avvio, sotto il leggìo: il messaggio ha un'altezza fissa per non far saltare il bottone */
 .play-azione { flex: none; display: flex; flex-direction: column; gap: 10px; }

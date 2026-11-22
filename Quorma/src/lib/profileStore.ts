@@ -1,4 +1,4 @@
-import { getSession } from './auth'
+import { USERNAME_MAX, USERNAME_MIN, getSession } from './auth'
 
 // Nome e immagine scelti in "Modifica profilo". Il backend non ha ancora un modo per cambiarli,
 // quindi stanno nel browser (localStorage), uno per ogni account.
@@ -26,12 +26,14 @@ export function saveProfile(profile: StoredProfile): boolean {
   }
 }
 
-export const NAME_HINT = 'Da 3 a 20 caratteri: lettere, numeri, spazi, punto, trattino e underscore.'
+// Stessa lunghezza del nome scelto alla registrazione.
+export const NAME_MAX = USERNAME_MAX
+export const NAME_HINT = `Da ${USERNAME_MIN} a ${NAME_MAX} caratteri: lettere, numeri, spazi, punto, trattino e underscore.`
 
 /** Testo dell'errore se il nome non va bene, altrimenti stringa vuota. */
 export function validateName(name: string): string {
   const n = name.trim()
-  if (n.length < 3 || n.length > 20) return 'Il nome deve avere da 3 a 20 caratteri.'
+  if (n.length < USERNAME_MIN || n.length > NAME_MAX) return `Il nome deve avere da ${USERNAME_MIN} a ${NAME_MAX} caratteri.`
   if (!/^[A-Za-z0-9À-ÿ _.-]+$/.test(n)) return 'Usa solo lettere, numeri, spazi, punto, trattino e underscore.'
   return ''
 }

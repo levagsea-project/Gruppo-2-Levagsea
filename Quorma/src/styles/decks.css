@@ -79,6 +79,7 @@
 .deck-actions__riga { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .deck-actions__riga .q-btn__in { padding: 0 10px; }
 .deck-actions .q-btn[aria-disabled="true"] { cursor: default; }
+.deck-actions__motivo { margin: -4px 0 0; font-size: 13px; line-height: 18px; text-align: right; color: var(--q-testo-tenue, #A9BCC3); text-wrap: pretty; }
 
 /* Schermi abbastanza alti: il pannello resta fermo mentre l'elenco scorre */
 @media (min-height: 760px) {

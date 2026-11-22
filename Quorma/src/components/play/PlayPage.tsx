@@ -9,6 +9,7 @@ import { toFaction } from '../../lib/cards'
 import { cancelRoom, createChallenge, getMyRoom, joinRoom, listRooms, openRoom, timeLeft, type Room } from '../../lib/challenges'
 import { rememberSeries } from '../../lib/matches'
 import { readPlayPrefs, writePlayPrefs } from '../../lib/playPrefs'
+import { onRadioKeyDown } from '../../lib/radioKeys'
 import { getSeries, markSeriesSeen, playMatchmaking, seriesScore, type DeckPick, type SeriesResponse } from '../../lib/series'
 import type { Deck, FactionId, PlayStatus } from '../../types/deck'
 import type { LoadState } from '../../hooks/useDecks'
@@ -98,6 +99,17 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
       if (firstRoomsLoad.current) {
         firstRoomsLoad.current = false
         if (mine?.status === 'OPEN') setModeId('stanza')
+        // La stanza è stata giocata mentre non ero su questa pagina: se l'esito non è ancora stato letto, lo mostro qui.
+        if (mine?.status === 'MATCHED' && mine.seriesId) {
+          void getSeries(mine.seriesId)
+            .then((series) => {
+              if (!series.unread) return
+              const played = playedOutcome(series)
+              setOutcome((now) => now ?? { text: `Mentre eri via qualcuno è entrato nella tua stanza. ${played.text}`, link: 'profilo' })
+              void markSeriesSeen(series.id).catch(() => {}) // se fallisce riapparirà tra i non letti
+            })
+            .catch(() => {}) // è una novità in più: se non arriva, la serie resta comunque nel profilo
+        }
       }
 
       // La mia stanza era aperta e ora non lo è più: chi aspetta scopre così com'è andata.
@@ -311,9 +323,9 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
           <span className="q-borchia q-borchia--n" />
         </span>
         <section aria-label="Scegli la modalità">
-          <div role="radiogroup" aria-label="Modalità di gioco" className="play-modi">
+          <div role="radiogroup" aria-label="Modalità di gioco" className="play-modi" onKeyDown={onRadioKeyDown}>
             {playModes.map((m) => (
-              <button key={m.id} type="button" role="radio" aria-checked={m.id === modeId} className={`q-tela play-stendardo ${m.id === modeId ? 'q-acceso' : ''}`} onClick={() => { setModeId(m.id); setError('') }}>
+              <button key={m.id} type="button" role="radio" aria-checked={m.id === modeId} tabIndex={m.id === mode.id ? 0 : -1} className={`q-tela play-stendardo ${m.id === modeId ? 'q-acceso' : ''}`} onClick={() => { setModeId(m.id); setError('') }}>
                 <span className="q-tela__in">
                   <span className="play-stendardo__orlo" aria-hidden="true" />
                   <span className="play-stendardo__nome">{m.title}</span>
@@ -353,6 +365,8 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
               const faction = factions[f]
               const own = decks.filter((d) => d.faction === f)
               const groupId = `g-deck-${f}`
+              // una sola tappa del Tab per fila: il mazzo scelto, oppure il primo se nessuno è sceglibile
+              const tabStop = !waiting && picked[f] ? picked[f].id : own[0]?.id
               return (
                 <div key={f} className="play-fazione">
                   <div className="q-marker play-fazione__testa">
@@ -368,7 +382,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                       </button>
                     </div>
                   ) : (
-                    <div role="radiogroup" aria-labelledby={groupId} className="play-mazzi">
+                    <div role="radiogroup" aria-labelledby={groupId} className="play-mazzi" onKeyDown={onRadioKeyDown}>
                       {own.map((d) => {
                         const ok = usable(d) && !waiting
                         // a stanza aperta i mazzi in gioco sono quelli dell'apertura: nessuna carta risulta scelta qui
@@ -380,6 +394,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                             role="radio"
                             aria-checked={on}
                             aria-disabled={!ok}
+                            tabIndex={d.id === tabStop ? 0 : -1}
                             className={ok ? 'pick' : 'pick pick--off'}
                             onClick={() => ok && setChosen((c) => ({ ...c, [f]: d.id }))}
                           >
@@ -432,11 +447,11 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
               <h2 id="g-avvio" className="play-leggio__titolo">{mode.title}</h2>
               <span className="q-divisorio" aria-hidden="true" />
               {modeId === 'stanza' && !demo && (
-                <div className="coll-chips play-strade" role="radiogroup" aria-label="Cosa vuoi fare">
-                  <button type="button" role="radio" className="m-chip" aria-checked={roomView === 'entra'} onClick={() => setRoomTab('entra')}>
+                <div className="coll-chips play-strade" role="radiogroup" aria-label="Cosa vuoi fare" onKeyDown={onRadioKeyDown}>
+                  <button type="button" role="radio" className="m-chip" aria-checked={roomView === 'entra'} tabIndex={roomView === 'entra' ? 0 : -1} onClick={() => setRoomTab('entra')}>
                     Entra{rooms ? <span className="m-chip__n">{rooms.length}</span> : null}
                   </button>
-                  <button type="button" role="radio" className="m-chip" aria-checked={roomView === 'apri'} onClick={() => setRoomTab('apri')}>
+                  <button type="button" role="radio" className="m-chip" aria-checked={roomView === 'apri'} tabIndex={roomView === 'apri' ? 0 : -1} onClick={() => setRoomTab('apri')}>
                     {roomOpen ? 'La tua stanza' : 'Apri la tua'}
                   </button>
                 </div>
@@ -521,9 +536,9 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
               <div className="play-inizio">
                 <span id="g-start" className="play-inizio__etichetta">Prima partita con</span>
                 {/* Bilancia: i due nomi ai lati di un filo, il rombo scivola verso la fazione scelta */}
-                <div role="radiogroup" aria-labelledby="g-start" className="play-bilancia" data-lato={start === FACTION_IDS[0] ? 'sinistra' : 'destra'}>
+                <div role="radiogroup" aria-labelledby="g-start" className="play-bilancia" data-lato={start === FACTION_IDS[0] ? 'sinistra' : 'destra'} onKeyDown={onRadioKeyDown}>
                   {FACTION_IDS.map((f) => (
-                    <button key={f} type="button" role="radio" aria-checked={start === f} className="play-bilancia__lato" onClick={() => setStart(f)}>
+                    <button key={f} type="button" role="radio" aria-checked={start === f} tabIndex={start === f ? 0 : -1} className="play-bilancia__lato" onClick={() => setStart(f)}>
                       {factions[f].name}
                     </button>
                   ))}
@@ -539,20 +554,21 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         </section>
 
         <div className="play-azione">
-          <div className="play-riepilogo" aria-live="polite">
+          {/* un solo annuncio: la zona è viva, i messaggi dentro non hanno un ruolo proprio */}
+          <div className="play-riepilogo" role="status" aria-atomic="true">
             {busy && busy !== 'avvio' ? (
               <small>Operazione in corso…</small>
             ) : busy && modeId === 'libera' ? (
               <small>Partita in corso: il motore sta giocando la serie…</small>
             ) : error ? (
-              <small className="play-errore" role="alert">
+              <small className="play-errore">
                 {error}{' '}
                 {canRetry && !fix && (
                   <button type="button" className="play-link" onClick={startMode}>Riprova</button>
                 )}
               </small>
             ) : outcome ? (
-              <small role="status">
+              <small>
                 {outcome.text}{' '}
                 {outcome.link === 'profilo' && (
                   <button type="button" className="play-link" onClick={onOpenMatches}>Vedi nel profilo</button>

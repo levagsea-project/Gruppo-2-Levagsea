@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Settings } from '../../data/profile'
 import { defaultSettings, speeds } from '../../data/profile'
-import { loadSettings, saveSettings } from '../../lib/settings'
+import { applySettings, loadSettings, saveSettings } from '../../lib/settings'
 import SettingsCard from './SettingsCard'
 import SettingRow from './SettingRow'
 import Toggle from './Toggle'
@@ -9,12 +9,17 @@ import Segmented from './Segmented'
 import Slider from './Slider'
 
 // Scheda "Impostazioni": quattro riquadri + RIPRISTINA / SALVA.
-// SALVA tiene le impostazioni nel browser (il backend non le ha ancora). Per ora non cambiano audio o animazioni del gioco.
+// SALVA tiene le impostazioni nel browser (il backend non le ha ancora).
+// Funzionano davvero velocità, movimento e contrasto: si vedono subito e, senza Salva, uscendo tornano come prima.
+// Le opzioni senza una funzione dietro (audio, mani, conferma, altre lingue) restano visibili ma non premibili.
 export default function SettingsTab() {
   const [s, setS] = useState<Settings>(loadSettings)
   const [message, setMessage] = useState('')
 
-  // set('music', 50) cambia solo quel valore e tiene gli altri.
+  useEffect(() => applySettings(s), [s])
+  useEffect(() => () => applySettings(loadSettings()), [])
+
+  // set('speed', 'Veloce') cambia solo quel valore e tiene gli altri.
   const set = <K extends keyof Settings>(key: K, value: Settings[K]) => {
     setS((old) => ({ ...old, [key]: value }))
     setMessage('')
@@ -37,8 +42,8 @@ export default function SettingsTab() {
             <SettingRow label="Password">
               <button type="button" className="pf-text-btn" disabled>Cambia</button>
             </SettingRow>
-            <SettingRow label="Lingua" hint="Lingua dell'interfaccia e delle carte">
-              <button type="button" className="pf-chip">Italiano</button>
+            <SettingRow label="Lingua" hint="L'italiano è l'unica lingua disponibile">
+              <button type="button" className="pf-chip" disabled>Italiano</button>
             </SettingRow>
           </SettingsCard>
 
@@ -46,25 +51,25 @@ export default function SettingsTab() {
             <SettingRow label="Velocità delle animazioni" hint="Quanto velocemente si svolgono i turni">
               <Segmented options={speeds} value={s.speed} label="Velocità delle animazioni" onChange={(v) => set('speed', v)} />
             </SettingRow>
-            <SettingRow label="Mostra le mani di poker" hint="Evidenzia gli attaccanti scelti in ogni turno">
-              <Toggle checked={s.showHands} label="Mostra le mani di poker" onChange={(v) => set('showHands', v)} />
+            <SettingRow label="Mostra le mani di poker" hint="Opzione non disponibile">
+              <Toggle checked={false} label="Mostra le mani di poker" disabled />
             </SettingRow>
-            <SettingRow label="Conferma prima di giocare" hint="Chiedi conferma prima di cercare un avversario">
-              <Toggle checked={s.confirmPlay} label="Conferma prima di giocare" onChange={(v) => set('confirmPlay', v)} />
+            <SettingRow label="Conferma prima di giocare" hint="Opzione non disponibile">
+              <Toggle checked={false} label="Conferma prima di giocare" disabled />
             </SettingRow>
           </SettingsCard>
         </div>
 
         <div className="pf-col">
           <SettingsCard title="Audio">
-            <SettingRow label="Musica">
-              <Slider value={s.music} label="Volume della musica" onChange={(v) => set('music', v)} />
+            <SettingRow label="Musica" hint="Il gioco non ha audio">
+              <Slider value={0} label="Volume della musica" disabled />
             </SettingRow>
-            <SettingRow label="Effetti">
-              <Slider value={s.effects} label="Volume degli effetti" onChange={(v) => set('effects', v)} />
+            <SettingRow label="Effetti" hint="Il gioco non ha audio">
+              <Slider value={0} label="Volume degli effetti" disabled />
             </SettingRow>
-            <SettingRow label="Silenzia tutto" hint="Disattiva musica ed effetti">
-              <Toggle checked={s.muteAll} label="Silenzia tutto" onChange={(v) => set('muteAll', v)} />
+            <SettingRow label="Silenzia tutto" hint="Il gioco non ha audio">
+              <Toggle checked={false} label="Silenzia tutto" disabled />
             </SettingRow>
           </SettingsCard>
 

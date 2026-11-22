@@ -96,7 +96,7 @@
 .q-abilita-pop h2 { margin: 0; font-family: var(--font-display); font-size: 22px; line-height: 1.2; color: var(--petrol-300); }
 .q-abilita-pop h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--petrol-300); }
 .q-abilita-pop p { margin: 0; font-size: 15px; line-height: 22px; }
-.q-abilita-pop .q-abilita-pop__nota { font-size: 13px; line-height: 19px; color: #A9BCC3; }
+.q-abilita-pop .q-abilita-pop__nota { font-size: 13px; line-height: 19px; color: var(--q-testo-tenue, #A9BCC3); }
 .q-abilita-pop__collegata { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; border-top: 1px solid rgba(213,225,229,.14); }
 .q-abilita-pop__ok { align-self: flex-end; min-height: 44px; margin-top: 4px; padding: 0 18px; border: 1px solid rgba(213,225,229,.32); border-radius: 4px; background: transparent;
   cursor: pointer; font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: #DCE7EA; }

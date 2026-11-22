@@ -1,8 +1,8 @@
 // Testi delle pagine "Informazioni": Chi siamo, FAQ, Glossario, Contatti, Privacy, Cookie, Termini.
 // Tutti i testi stanno qui: per correggerli non serve toccare i componenti.
 //
-// Valori ancora da definire (cerca "[" in questo file): dati del titolare del trattamento, nomi della squadra,
-// email di contatto e tempi di risposta. Sono segnaposto evidenti, da sostituire prima della pubblicazione.
+// Prima di una pubblicazione vera mancano: titolare del trattamento, un canale di contatto e i nomi reali della squadra.
+// Finché non esistono, i testi lo dicono invece di mostrare dati inventati.
 import type { Page } from './navItems'
 
 // ---------- Formato dei testi ----------
@@ -13,10 +13,10 @@ export type Section = { id: string; title: string; blocks: Block[] }
 // Id dell'elemento di una sezione nella pagina: l'indice laterale ("In questa pagina") lo usa per scorrere fin lì.
 export const sectionAnchor = (id: string) => `info-${id}`
 
-// ---------- Segnaposto da sostituire (in un punto solo) ----------
-export const CONTACT_EMAIL = 'supporto@esempio.it'
-const PRIVACY_EMAIL = 'privacy@esempio.it'
-const OWNER = '[Ragione sociale], con sede in [indirizzo], P.IVA [numero]'
+// Chi offre il sito: finché non c'è un titolare indicato, resta scritto che cos'è il progetto.
+const PROJECT = 'QUORMA è un progetto di gruppo realizzato durante un corso ITS'
+const NO_OWNER = 'Il titolare del trattamento non è stato ancora indicato'
+const NO_CHANNEL = 'Il sito non ha un canale attivo per ricevere richieste'
 
 // ======================================================================
 // CHI SIAMO
@@ -92,7 +92,7 @@ export const aboutSections: Section[] = [
     title: 'Lavora con noi',
     blocks: [
       {
-        p: 'Ti piacerebbe collaborare a QUORMA come sviluppatore, artista o playtester? Scrivici raccontandoci chi sei, cosa sai fare e su quale parte del gioco vorresti lavorare.',
+        p: 'QUORMA nasce come lavoro di gruppo di un corso ITS: al momento non cerchiamo collaboratori e non abbiamo un canale per ricevere candidature.',
       },
     ],
   },
@@ -121,8 +121,7 @@ export const faq: FaqItem[] = [
   {
     topic: 'Account',
     q: 'Ho dimenticato la password: cosa faccio?',
-    a: 'Il recupero automatico della password non è ancora disponibile. Scrivici dalla pagina Contatti indicando il nome del giocatore e l’email con cui ti sei registrato: ti aiuteremo a rientrare.',
-    link: { label: 'Vai ai contatti', page: 'contatti' },
+    a: 'Il sito non ha una funzione per recuperare la password e nemmeno un canale di assistenza attivo: senza password non puoi rientrare nell’account. Conservala in un posto sicuro.',
   },
   // Partite
   {
@@ -207,23 +206,18 @@ export const glossaryLetters = 'ABCDEFGHILMNOPQRSTUVZ'.split('')
 
 export const contactTabs = ['Account', 'Pagamenti', 'Segnala un problema', 'Altro']
 
-export const contactChannels = [
-  { label: 'Email', value: CONTACT_EMAIL },
-  { label: 'Tempi di risposta', value: '[Da definire]' },
-]
-
 // ======================================================================
 // PAGINE LEGALI (Privacy, Cookie, Termini)
 // ======================================================================
 
-export const LAST_UPDATE = 'ULTIMO AGGIORNAMENTO · 19 NOVEMBRE 2026'
+export const LAST_UPDATE = 'ULTIMO AGGIORNAMENTO · 22 NOVEMBRE 2026'
 
 const privacy: Section[] = [
   {
     id: 'intro',
     title: 'Introduzione',
     blocks: [
-      { p: `Questa informativa spiega quali dati personali tratta QUORMA, perché li tratta e quali diritti hai. Titolare del trattamento è ${OWNER} (di seguito “noi”).` },
+      { p: `Questa informativa spiega quali dati personali tratta QUORMA, perché li tratta e quali diritti hai. ${PROJECT}. ${NO_OWNER}.` },
       { p: 'Trattiamo solo i dati che servono a farti giocare: non vendiamo i tuoi dati e non li usiamo per pubblicità profilata.' },
     ],
   },
@@ -237,7 +231,6 @@ const privacy: Section[] = [
           'Nome del giocatore e indirizzo email, che inserisci alla registrazione.',
           'La password, che conserviamo solo in forma cifrata (hash): nessuno, nemmeno noi, può leggerla.',
           'I dati di gioco legati al tuo account: collezione di carte, mazzi, buste aperte, movimenti delle valute e risultati delle partite.',
-          'I messaggi che ci invii dalla pagina Contatti, quando il servizio sarà attivo.',
         ],
       },
       { p: 'Non raccogliamo dati di pagamento, perché al momento il gioco non accetta pagamenti in denaro.' },
@@ -247,15 +240,15 @@ const privacy: Section[] = [
     id: 'uso',
     title: 'Come usiamo i dati',
     blocks: [
-      { p: 'Usiamo i tuoi dati per creare e gestire l’account, farti accedere, salvare collezione e mazzi, far funzionare le partite e rispondere alle tue richieste. La base giuridica è l’esecuzione del contratto di servizio che accetti registrandoti.' },
-      { p: 'Possiamo usare dati di gioco aggregati e non riconducibili a te per bilanciare le carte e migliorare il gioco. I tuoi dati sono conservati sui server del fornitore che ospita il servizio, [nome del fornitore di hosting], che li tratta per nostro conto.' },
+      { p: 'Usiamo i tuoi dati per creare e gestire l’account, farti accedere, salvare collezione e mazzi e far funzionare le partite. La base giuridica è l’esecuzione del contratto di servizio che accetti registrandoti.' },
+      { p: 'Possiamo usare dati di gioco aggregati e non riconducibili a te per bilanciare le carte e migliorare il gioco. I tuoi dati sono conservati nel database del servizio.' },
     ],
   },
   {
     id: 'diritti',
     title: 'I tuoi diritti',
     blocks: [
-      { p: 'In base al Regolamento europeo sulla protezione dei dati (GDPR) puoi chiederci in qualsiasi momento di:' },
+      { p: 'In base al Regolamento europeo sulla protezione dei dati (GDPR) hai il diritto di:' },
       {
         ul: [
           'accedere ai tuoi dati e riceverne una copia;',
@@ -272,15 +265,15 @@ const privacy: Section[] = [
     id: 'durata',
     title: 'Conservazione e sicurezza',
     blocks: [
-      { p: 'Conserviamo i dati dell’account finché l’account resta attivo. Se chiedi la cancellazione, eliminiamo i tuoi dati entro [30] giorni, salvo quelli che la legge ci obbliga a conservare più a lungo.' },
-      { p: 'Le comunicazioni con il servizio sono cifrate e l’accesso ai dati è limitato alle persone che ne hanno bisogno per far funzionare il gioco. Per usare QUORMA devi avere almeno 14 anni, l’età minima prevista in Italia per acconsentire da soli al trattamento dei dati nei servizi online.' },
+      { p: 'Conserviamo i dati dell’account finché l’account resta attivo. Il sito non ha una funzione per cancellare l’account e i tempi di cancellazione non sono stati ancora definiti.' },
+      { p: 'Le password non vengono mai salvate in chiaro. Per usare QUORMA devi avere almeno 14 anni, l’età minima prevista in Italia per acconsentire da soli al trattamento dei dati nei servizi online.' },
     ],
   },
   {
     id: 'contatti',
     title: 'Contatti',
     blocks: [
-      { p: `Per esercitare i tuoi diritti o per qualsiasi domanda sulla privacy scrivi a ${PRIVACY_EMAIL}, oppure usa la pagina Contatti.`, link: { label: 'Vai ai contatti', page: 'contatti' } },
+      { p: `${NO_CHANNEL} sulla privacy o per esercitare questi diritti. ${NO_OWNER}.` },
     ],
   },
 ]
@@ -290,7 +283,7 @@ const cookie: Section[] = [
     id: 'intro',
     title: 'Introduzione',
     blocks: [
-      { p: `Questa informativa spiega quali strumenti di memorizzazione usa il sito di QUORMA sul tuo dispositivo. Titolare è ${OWNER}.` },
+      { p: `Questa informativa spiega quali strumenti di memorizzazione usa il sito di QUORMA sul tuo dispositivo. ${PROJECT}. ${NO_OWNER}.` },
       { p: 'In breve: il sito non usa cookie di profilazione né cookie pubblicitari, e non ti mostra un banner perché non ce n’è bisogno.' },
     ],
   },
@@ -298,14 +291,16 @@ const cookie: Section[] = [
     id: 'archivio',
     title: 'Cookie e archiviazione locale',
     blocks: [
-      { p: 'Il sito non imposta cookie. Per tenerti collegato usa l’archiviazione del browser (localStorage o sessionStorage), dove salva solo:' },
+      { p: 'Il sito non imposta cookie. Usa l’archiviazione del browser (localStorage o sessionStorage), dove salva solo:' },
       {
         ul: [
-          'il codice di accesso della tua sessione, che scade al massimo dopo 24 ore;',
-          'il nome del giocatore, per mostrarlo nell’interfaccia.',
+          'il codice di accesso della tua sessione, che scade al massimo dopo 24 ore, e il nome del giocatore;',
+          'il nome e l’immagine scelti in Modifica profilo;',
+          'le impostazioni, la velocità della battaglia e le ultime scelte della pagina Gioca;',
+          'i dettagli delle partite giocate, le buste da rivelare e l’ultimo saldo visto.',
         ],
       },
-      { p: 'Se spunti “Ricordami su questo dispositivo” il codice resta salvato anche dopo la chiusura del browser; altrimenti viene cancellato quando chiudi la scheda. Quando esci dal gioco lo cancelliamo subito. Questi dati sono tecnici e necessari: senza di essi non potresti accedere.' },
+      { p: 'Se spunti “Ricordami su questo dispositivo” il codice di accesso resta salvato anche dopo la chiusura del browser; altrimenti viene cancellato quando chiudi la scheda. Quando esci dal gioco lo cancelliamo subito. Sono dati tecnici e funzionali, usati solo per far funzionare il sito.' },
     ],
   },
   {
@@ -327,8 +322,7 @@ const cookie: Section[] = [
     id: 'gestione',
     title: 'Gestione dei dati salvati',
     blocks: [
-      { p: 'Puoi cancellare in qualsiasi momento i dati salvati dal sito uscendo dal gioco, oppure dalle impostazioni del browser alla voce dedicata ai dati dei siti. Dopo la cancellazione dovrai accedere di nuovo.' },
-      { p: 'Per domande su questa informativa scrivici dalla pagina Contatti.', link: { label: 'Vai ai contatti', page: 'contatti' } },
+      { p: 'Uscendo dal gioco cancelli il codice di accesso. Tutti gli altri dati salvati si cancellano dalle impostazioni del browser, alla voce dedicata ai dati dei siti; dopo dovrai accedere di nuovo.' },
     ],
   },
 ]
@@ -338,7 +332,7 @@ const termini: Section[] = [
     id: 'intro',
     title: 'Introduzione',
     blocks: [
-      { p: `Questi termini regolano l’uso di QUORMA, il gioco di carte collezionabili digitale offerto da ${OWNER}. Creando un account e usando il gioco li accetti; se non sei d’accordo, non usare il servizio.` },
+      { p: `Questi termini regolano l’uso di QUORMA, il gioco di carte collezionabili digitale. ${PROJECT}. Creando un account e usando il gioco li accetti; se non sei d’accordo, non usare il servizio.` },
     ],
   },
   {
@@ -391,7 +385,7 @@ const termini: Section[] = [
     id: 'contatti',
     title: 'Contatti',
     blocks: [
-      { p: `Per domande su questi termini scrivi a ${CONTACT_EMAIL} oppure usa la pagina Contatti. Questi termini sono regolati dalla legge italiana.`, link: { label: 'Vai ai contatti', page: 'contatti' } },
+      { p: `${NO_CHANNEL} su questi termini. Questi termini sono regolati dalla legge italiana.` },
     ],
   },
 ]

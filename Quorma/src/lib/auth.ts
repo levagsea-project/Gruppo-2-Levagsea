@@ -19,6 +19,8 @@ export type FieldErrors = Partial<Record<'username' | 'email' | 'password' | 'te
 // Specchio di RegisterRequest e LoginRequest (backend/.../auth): controlliamo prima qui per non fare
 // una chiamata inutile, ma se qualcosa sfugge il backend risponde con l'errore sul campo giusto.
 // Una regola per campo, nello stesso ordine del backend: obbligatorio, poi formato, poi lunghezza.
+export const USERNAME_MIN = 3
+export const USERNAME_MAX = 32
 const USERNAME_RE = /^[A-Za-z0-9_.-]{3,32}$/
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s.]{2,}$/
 const EMAIL_MAX = 254

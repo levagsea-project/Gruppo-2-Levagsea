@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { findAvatar } from '../../data/avatars'
 import type { Page } from '../../data/navItems'
 import { currentPlayer } from '../../data/player'
-import { NAME_HINT, saveProfile, validateName } from '../../lib/profileStore'
+import { NAME_HINT, NAME_MAX, saveProfile, validateName } from '../../lib/profileStore'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import AvatarPicker from './AvatarPicker'
@@ -37,7 +37,7 @@ export default function EditProfilePage({ onNavigate }: { onNavigate: (page: Pag
             id="pe-name"
             className="pe-input"
             value={name}
-            maxLength={20}
+            maxLength={NAME_MAX}
             aria-invalid={!!error}
             aria-describedby="pe-hint"
             onChange={(e) => {

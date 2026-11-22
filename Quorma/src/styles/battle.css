@@ -101,7 +101,7 @@
 .bt-asse__testo { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 /* la frase di ciò che sta accadendo, con gli effetti particolari sotto: altezza fissa perché il campo non salti */
 .bt-racconto { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 58px; text-align: center; animation: bt-fase .32s ease-out; }
-.bt-racconto p { margin: 0; font-size: 15px; line-height: 21px; color: #C4D2D7; text-wrap: balance; }
+.bt-racconto p { margin: 0; font-size: 15px; line-height: 21px; color: var(--q-testo-tenue, #C4D2D7); text-wrap: balance; }
 .bt-nome--mio { font-weight: 600; color: var(--petrol-300); }
 .bt-nome--suo { font-weight: 600; color: var(--ember-200); }
 .bt-tag { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 6px; margin: 0; padding: 0; list-style: none; }
@@ -110,7 +110,7 @@
 /* ---------- Cronaca ---------- */
 .bt-cronaca { display: none; }
 .bt-asse__testo strong { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #EEF4F5; }
-.bt-asse__fase { font-size: 13px; color: #A9BCC3; animation: bt-fase .3s ease-out; }
+.bt-asse__fase { font-size: 13px; color: var(--q-testo-tenue, #A9BCC3); animation: bt-fase .3s ease-out; }
 @keyframes bt-fase { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 
 /* ---------- Attesa e intermezzo ---------- */
@@ -129,7 +129,7 @@
 .bt-verdetto h2 { margin: 6px 0 0; font-family: var(--font-display); font-size: clamp(38px, 6vw, 68px); line-height: 1.08; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #EEF4F5; text-wrap: balance; }
 .bt-verdetto--vittoria h2 { color: var(--petrol-300); text-shadow: 0 0 26px rgba(74,166,173,.55); }
 .bt-verdetto--sconfitta h2 { color: var(--ember-500); }
-.bt-verdetto p { margin: 0; font-size: 15px; color: #C4D2D7; font-variant-numeric: tabular-nums; }
+.bt-verdetto p { margin: 0; font-size: 15px; color: var(--q-testo-tenue, #C4D2D7); font-variant-numeric: tabular-nums; }
 .bt-verdetto b { font-family: var(--font-display); font-size: 18px; color: #EEF4F5; }
 .bt-nota { margin: 0; text-align: center; font-size: 14px; color: var(--ember-200); }
 .bt-esito__corpo { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 28px; align-items: start; }
@@ -139,7 +139,7 @@
 .bt-partita strong { font-family: var(--font-display); font-size: 20px; line-height: 26px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; text-align: center; color: #EEF4F5; }
 .bt-partita--vittoria strong { color: var(--petrol-300); }
 .bt-partita--sconfitta strong { color: var(--ember-500); }
-.bt-partita > .q-tela__in > p { margin: 0 0 8px; min-height: 18px; font-size: 12px; line-height: 18px; text-align: center; color: #A9BCC3; }
+.bt-partita > .q-tela__in > p { margin: 0 0 8px; min-height: 18px; font-size: 12px; line-height: 18px; text-align: center; color: var(--q-testo-tenue, #A9BCC3); }
 .bt-partita dl { display: flex; flex-direction: column; margin: 0; }
 .bt-partita dl > div { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-top: 1px solid rgba(124,144,152,.22); font-size: 12px; line-height: 16px; }
 .bt-partita dt { color: var(--steel-300); }
@@ -149,14 +149,14 @@
 .bt-totali table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .bt-totali th, .bt-totali td { padding: 7px 0; border-bottom: 1px solid rgba(124,144,152,.22); font-weight: 400; text-align: right; font-variant-numeric: tabular-nums; }
 .bt-totali thead th { max-width: 96px; font-size: 12px; font-weight: 600; color: var(--steel-300); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.bt-totali tbody th { text-align: left; color: #A9BCC3; }
+.bt-totali tbody th { text-align: left; color: var(--q-testo-tenue, #A9BCC3); }
 .bt-totali tbody td { width: 74px; color: #EEF4F5; }
 .bt-totali tbody td:nth-child(2) { color: var(--petrol-300); font-weight: 600; }
 .bt-mvp { display: flex; align-items: center; gap: 14px; }
 .bt-mvp__carta { flex: none; width: 88px; }
 .bt-mvp h4 { margin: 0; font-size: 12px; font-weight: 500; color: var(--steel-300); }
 .bt-mvp strong { font-family: var(--font-display); font-size: 16px; line-height: 21px; font-weight: 700; letter-spacing: .06em; color: #EEF4F5; }
-.bt-mvp p { margin: 2px 0 0; font-size: 13px; color: #A9BCC3; }
+.bt-mvp p { margin: 2px 0 0; font-size: 13px; color: var(--q-testo-tenue, #A9BCC3); }
 .bt-esito__azioni { flex: none; display: flex; justify-content: center; gap: 12px; margin-top: auto; padding-top: 4px; }
 .bt .bt-esito__azioni .q-btn__in { height: 46px; padding: 0 34px; }
 
@@ -168,7 +168,7 @@
   .bt-cronaca ol { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; margin: 0 -6px 0 0; padding: 0 6px 12px 0; list-style: none; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
   .bt-cronaca li { display: flex; flex-direction: column; gap: 2px; }
   .bt-cronaca li:first-child p { color: #EEF4F5; }
-  .bt-cronaca p { margin: 0; font-size: 13px; line-height: 18px; color: #A9BCC3; }
+  .bt-cronaca p { margin: 0; font-size: 13px; line-height: 18px; color: var(--q-testo-tenue, #A9BCC3); }
   .bt-cronaca small { font-size: 12px; line-height: 16px; color: var(--petrol-300); }
   .bt-cronaca__turno { order: 2; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(124,144,152,.25); font-size: 11px; font-weight: 600; color: var(--steel-300); }
 }

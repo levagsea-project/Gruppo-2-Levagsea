@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from 'react'
+import { useLayoutEffect, useState, useSyncExternalStore } from 'react'
 import type { Page } from './data/navItems'
 import { useDecks } from './hooks/useDecks'
 import { rememberDeckStats } from './hooks/useDeckStats'
@@ -16,6 +16,7 @@ import NewDeckPage from './components/newdeck/NewDeckPage'
 import DeckEditorPage from './components/editor/DeckEditorPage'
 import DeckSavedPage from './components/editor/DeckSavedPage'
 import { duplicateDeck, setDefenseDeck } from './lib/decks'
+import { applySettings, clearAppliedSettings, loadSettings } from './lib/settings'
 import { pendingCount, subscribePending } from './lib/shop'
 import type { DeckDetail, FactionId } from './types/deck'
 import RulesPage from './components/rules/RulesPage'
@@ -41,7 +42,8 @@ import './styles/ui.css'
 import './styles/pages.css'
 import './styles/decks.css'
 import './styles/newdeck.css'
-import './styles/mobile.css' // per ultimo: su telefono sovrascrive gli stili sopra
+import './styles/mobile.css' // su telefono sovrascrive gli stili sopra
+import './styles/preferences.css' // per ultimo: movimento ridotto e contrasto elevato vincono su tutto
 
 // Tutta l'app: sidebar a sinistra + la pagina scelta a destra.
 // Su telefono la sidebar sparisce e al suo posto ci sono la barra in alto e le schede in basso.
@@ -64,6 +66,12 @@ export default function App() {
   const [collectionTab, setCollectionTab] = useState<CollectionTab>('carte')
   const [packQueue, setPackQueue] = useState<string[]>([]) // buste da rivelare nella pagina Apertura
   const { reportEditor, leave, stay, confirmLeave, finishSave, askingToLeave } = useLeaveGuard() // modifiche non salvate dell'editor
+
+  // Movimento, contrasto e velocità salvati: prima del primo disegno, e solo finché si è nell'area di gioco.
+  useLayoutEffect(() => {
+    applySettings(loadSettings())
+    return clearAppliedSettings
+  }, [])
 
   const open = (next: Page) => {
     setPage(next)

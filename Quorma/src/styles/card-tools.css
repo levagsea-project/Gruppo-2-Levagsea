@@ -6,10 +6,10 @@
 .card-tools__cerca > svg { position: absolute; left: 11px; pointer-events: none; }
 .card-tools__cerca input { width: 100%; height: 40px; box-sizing: border-box; padding: 0 38px 0 35px; border: 0; outline: 0; appearance: none; font-family: var(--font-sans); font-size: 14px; color: #EEF4F5;
   background: linear-gradient(180deg, #0E1B21, #0A1418); box-shadow: inset 0 0 0 1px rgba(213,225,229,.28); }
-.card-tools__cerca input::placeholder { color: #93A7AE; opacity: 1; }
+.card-tools__cerca input::placeholder { color: var(--q-testo-tenue, #93A7AE); opacity: 1; }
 .card-tools__cerca input::-webkit-search-cancel-button { display: none; }
 .card-tools__cerca input:focus { box-shadow: inset 0 0 0 1px var(--petrol-500), 0 0 10px rgba(74,166,173,.45); }
-.card-tools__cerca button { position: absolute; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; width: 38px; padding: 0; border: 0; cursor: pointer; color: #C4D2D7; background: none; }
+.card-tools__cerca button { position: absolute; right: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; width: 38px; padding: 0; border: 0; cursor: pointer; color: var(--q-testo-tenue, #C4D2D7); background: none; }
 .card-tools__cerca button:hover { color: #EEF4F5; }
 .card-tools__cerca button:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
 
@@ -35,7 +35,7 @@
   background: rgba(74,166,173,.14); box-shadow: inset 0 0 0 1px rgba(74,166,173,.55); }
 .card-tools__attivi button:hover { background: rgba(74,166,173,.26); }
 .card-tools__attivi button:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
-.card-tools__attivi svg { flex: none; color: #C4D2D7; }
+.card-tools__attivi svg { flex: none; color: var(--q-testo-tenue, #C4D2D7); }
 .card-tools__attivo-ordine { display: none !important; }
 
 /* Pannello: di lato su desktop */
@@ -50,12 +50,12 @@ html:has(.card-tools__foglio[open]) { overflow: hidden; }
 .card-tools__chiudi:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
 .card-tools__corpo { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 18px; padding: 16px 20px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 .card-tools__gruppo { display: flex; flex-direction: column; gap: 2px; min-width: 0; margin: 0; padding: 0; border: 0; }
-.card-tools__gruppo legend { margin: 0 0 6px; padding: 0; font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: #A9BCC3; }
+.card-tools__gruppo legend { margin: 0 0 6px; padding: 0; font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--q-testo-tenue, #A9BCC3); }
 .card-tools__gruppo--ordine { display: none; }
-.card-tools__opzione { position: relative; display: flex; align-items: center; gap: 9px; min-height: 40px; padding: 4px 10px; box-sizing: border-box; cursor: pointer; font-size: 14px; line-height: 1.3; color: #C4D2D7; }
+.card-tools__opzione { position: relative; display: flex; align-items: center; gap: 9px; min-height: 40px; padding: 4px 10px; box-sizing: border-box; cursor: pointer; font-size: 14px; line-height: 1.3; color: var(--q-testo-tenue, #C4D2D7); }
 .card-tools__opzione input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
 .card-tools__opzione .deck-seme { flex: none; width: 15px; height: 15px; }
-.card-tools__opzione small { margin-left: auto; font-size: 12px; font-variant-numeric: tabular-nums; color: #A9BCC3; }
+.card-tools__opzione small { margin-left: auto; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--q-testo-tenue, #A9BCC3); }
 .card-tools__opzione:hover { color: #EEF4F5; background: rgba(213,225,229,.06); }
 .card-tools__opzione:has(input:checked) { color: #EEF4F5; font-weight: 600; background: rgba(74,166,173,.16); box-shadow: inset 0 0 0 1px rgba(74,166,173,.6); }
 .card-tools__opzione:has(input:focus-visible) { outline: 2px solid var(--petrol-300); outline-offset: 1px; }

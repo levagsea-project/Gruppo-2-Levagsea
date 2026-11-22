@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from 're
 import { buildBattle, type BattleGame } from '../../lib/battle'
 import { NO_NAMES, loadBattleNames } from '../../lib/battleNames'
 import { getReplay, type SeriesResponse } from '../../lib/series'
+import { battleRate } from '../../lib/settings'
 import BattleBoard, { Story } from './BattleBoard'
 import BattleResult from './BattleResult'
 import '../../styles/battle.css'
@@ -47,6 +48,8 @@ export default function BattleScreen({ series, startGame, onClose, onOpenMatches
   const [beatIndex, setBeatIndex] = useState(0)
   const [impactKey, setImpactKey] = useState('')
   const [speed, setSpeed] = useState(readSpeed)
+  const [baseRate] = useState(battleRate) // "Velocità delle animazioni" delle Impostazioni
+  const rate = speed * baseRate
   const me = series.mySeat
 
   useEffect(() => {
@@ -96,22 +99,22 @@ export default function BattleScreen({ series, startGame, onClose, onOpenMatches
   useEffect(() => {
     if (phase !== 'partita' || !game || !beat) return
     const hasStrikes = beat.strikes.length > 0
-    const impact = hasStrikes ? window.setTimeout(() => setImpactKey(key), (beat.ms * IMPACT_AT) / speed) : 0
+    const impact = hasStrikes ? window.setTimeout(() => setImpactKey(key), (beat.ms * IMPACT_AT) / rate) : 0
     const next = window.setTimeout(() => {
       if (beatIndex < game.beats.length - 1) setBeatIndex(beatIndex + 1)
       else setPhase(gameIndex < (games?.length ?? 0) - 1 ? 'intermezzo' : 'esito')
-    }, beat.ms / speed)
+    }, beat.ms / rate)
     return () => {
       window.clearTimeout(impact)
       window.clearTimeout(next)
     }
-  }, [phase, game, beat, beatIndex, gameIndex, games, key, speed])
+  }, [phase, game, beat, beatIndex, gameIndex, games, key, rate])
 
   useEffect(() => {
     if (phase !== 'intermezzo') return
-    const t = window.setTimeout(nextGame, INTERLUDE_MS / speed)
+    const t = window.setTimeout(nextGame, INTERLUDE_MS / rate)
     return () => window.clearTimeout(t)
-  }, [phase, speed, nextGame])
+  }, [phase, rate, nextGame])
 
   const changeSpeed = (s: number) => {
     setSpeed(s)
@@ -138,7 +141,7 @@ export default function BattleScreen({ series, startGame, onClose, onOpenMatches
       ref={dialog}
       className="bt"
       aria-label={`Battaglia contro ${opponent}`}
-      style={{ '--t': `${(beat?.ms ?? 900) / speed}ms`, '--v': speed } as CSSProperties}
+      style={{ '--t': `${(beat?.ms ?? 900) / rate}ms`, '--v': rate } as CSSProperties}
       onCancel={(e) => {
         e.preventDefault()
         if (phase === 'esito') onClose()

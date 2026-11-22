@@ -38,10 +38,12 @@ export default function DeckActions({ onPlay, onEdit, onDuplicate, onDelete, can
         <button type="button" className="q-btn q-btn--acciaio" onClick={onDuplicate} disabled={busy} aria-busy={duplicating}>
           <span className="q-btn__in">{duplicating ? 'Copia…' : 'Duplica'}</span>
         </button>
-        <button type="button" className="q-btn q-btn--acciaio" onClick={onDelete} disabled={!canDelete} title={deleteHint}>
+        <button type="button" className="q-btn q-btn--acciaio" onClick={onDelete} disabled={!canDelete} aria-describedby={deleteHint ? 'deck-elimina-motivo' : undefined}>
           <span className="q-btn__in">Elimina</span>
         </button>
       </div>
+      {/* scritto per esteso: un title non si vede al tocco */}
+      {deleteHint && <p id="deck-elimina-motivo" className="deck-actions__motivo">{deleteHint}</p>}
     </div>
   )
 }

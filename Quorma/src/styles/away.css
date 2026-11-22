@@ -5,7 +5,7 @@
 .away > .q-tela { max-height: calc(100dvh - 48px); }
 .away .q-tela__in { display: flex; flex-direction: column; gap: 14px; padding: 40px 28px 24px; overflow-y: auto; }
 .away h2 { margin: 0; text-align: center; font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #EEF4F5; }
-.away__lead { margin: 0; text-align: center; font-size: 14px; line-height: 1.5; color: #A9BCC3; text-wrap: pretty; }
+.away__lead { margin: 0; text-align: center; font-size: 14px; line-height: 1.5; color: var(--q-testo-tenue, #A9BCC3); text-wrap: pretty; }
 
 /* un risultato per riga: esito a sinistra, avversario e punteggio a destra */
 .away__lista { margin: 4px 0 0; padding: 0; list-style: none; }
