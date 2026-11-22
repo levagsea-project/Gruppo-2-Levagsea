@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { factions } from '../../data/factions'
+import { creatureTier } from '../../lib/cards'
 import { packName, pendingPacks, removePending } from '../../lib/shop'
 import CardFace from '../cards/CardFace'
 import PageTitle from '../layout/PageTitle'
@@ -51,16 +52,16 @@ export default function PackOpeningPage({ queue, onCollection, onShop }: Props) 
         {allRevealed ? 'Tutte le carte sono nella tua collezione.' : 'Premi una carta per girarla.'}
       </p>
 
-      <ul className="open-carte" aria-label="Carte della busta">
+      <ul key={pack.id} className="open-carte" aria-label="Carte della busta">
         {pack.cards.map((c, i) => {
           const on = revealed.has(i)
           const isNew = pack.isNew[i]
           const note = !on || isNew === null || isNew === undefined ? '' : isNew ? 'Nuova' : 'Doppione'
           return (
-            <li key={c.instanceId}>
+            <li key={c.instanceId} className="open-carta" style={{ '--i': i } as CSSProperties}>
               <button
                 type="button"
-                className={`q-giro b-carta ${on && isNew ? 'b-nuova' : ''}`}
+                className={`q-giro b-carta ${c.kind === 'CREATURE' ? `b-carta--t${creatureTier(c.rank)}` : ''} ${on && isNew ? 'b-nuova' : ''}`}
                 aria-pressed={on}
                 aria-label={on ? `${c.name}${note ? `, ${note.toLowerCase()}` : ''}` : `Carta coperta ${i + 1}, premi per girarla`}
                 onClick={() => setRevealed((r) => new Set(r).add(i))}

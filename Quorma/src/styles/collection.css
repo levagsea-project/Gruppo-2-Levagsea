@@ -217,6 +217,44 @@
   .shop-page .shop-corpo { grid-template-columns: minmax(0, 1fr) 240px; gap: 14px; }
 }
 
+/* ---------- Buste: il riflesso cresce con il valore ---------- */
+.shop-busta__riflesso { position: absolute; z-index: 1; inset: -20% -60%; pointer-events: none; opacity: 0; transform: translateX(-45%);
+  background: linear-gradient(105deg, transparent 38%, rgba(242,247,248,.08) 44%, rgba(242,247,248,.42) 50%, rgba(143,214,219,.12) 56%, transparent 62%); }
+.pick.shop-busta:is(:hover, :focus-visible) .shop-busta__riflesso { animation: busta-riflesso 1.1s cubic-bezier(.3, .7, .3, 1); }
+.pick.shop-busta { transition: transform .2s cubic-bezier(.22, 1, .36, 1); }
+.pick.shop-busta:is(:hover, :focus-visible) { transform: translateY(-4px) rotate(-.6deg); }
+@keyframes busta-riflesso { 0% { opacity: 0; transform: translateX(-45%); } 20%, 75% { opacity: 1; } 100% { opacity: 0; transform: translateX(45%); } }
+/* Avanzato: alone petrolio */
+.shop-busta__ombra--advanced { filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)) drop-shadow(0 0 7px rgba(74,166,173,.42)); }
+/* Élite: alone d'oro che respira e riflesso che passa da solo */
+.shop-busta__ombra--elite { animation: busta-elite 3.4s ease-in-out infinite; }
+.shop-busta__ombra--elite .shop-busta__corpo:not(.shop-busta__strato) .shop-busta__riflesso { animation: busta-riflesso 4.2s cubic-bezier(.3, .7, .3, 1) infinite; }
+@keyframes busta-elite { 0%, 100% { filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)) drop-shadow(0 0 6px rgba(226,199,136,.35)); } 50% { filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)) drop-shadow(0 0 15px rgba(226,199,136,.72)); } }
+.pick.shop-busta[aria-checked="true"] .shop-busta__ombra--elite { animation: none; }
+
+/* ---------- Apertura: le carte arrivano una alla volta, le rare si annunciano ---------- */
+.open-carta { animation: open-arriva .5s cubic-bezier(.22, 1, .36, 1) backwards; animation-delay: calc(var(--i) * 70ms); }
+@keyframes open-arriva { from { opacity: 0; transform: translateY(26px) rotate(-2deg) scale(.94); } to { opacity: 1; transform: none; } }
+.b-carta { position: relative; }
+.b-carta:not([aria-pressed="true"]):hover .q-giro__dentro { transform: translateY(-5px) rotateY(9deg); }
+.b-carta--t3::after, .b-carta--t4::after { content: ""; position: absolute; z-index: 3; inset: -14%; pointer-events: none; opacity: 0; }
+.b-carta--t3::after { background: radial-gradient(circle, rgba(191,212,232,.62), rgba(191,212,232,0) 66%); }
+.b-carta--t4::after { background: radial-gradient(circle, rgba(255,236,190,.9), rgba(226,199,136,.42) 38%, rgba(226,199,136,0) 68%); }
+.b-carta--t3[aria-pressed="true"]::after { animation: open-lampo .8s ease-out .22s; }
+.b-carta--t4[aria-pressed="true"]::after { animation: open-lampo 1.15s ease-out .22s; }
+@keyframes open-lampo { 0% { opacity: 0; transform: scale(.7); } 28% { opacity: 1; } 100% { opacity: 0; transform: scale(1.18); } }
+.b-carta--t3[aria-pressed="true"] { filter: drop-shadow(0 0 8px rgba(191,212,232,.6)); }
+.b-carta--t4[aria-pressed="true"] { filter: drop-shadow(0 0 13px rgba(226,199,136,.82)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pick.shop-busta { transition: none; }
+  .pick.shop-busta:is(:hover, :focus-visible) { transform: none; }
+  .shop-busta__ombra--elite, .shop-busta__riflesso, .pick.shop-busta:is(:hover, :focus-visible) .shop-busta__riflesso,
+  .shop-busta__ombra--elite .shop-busta__corpo:not(.shop-busta__strato) .shop-busta__riflesso, .open-carta,
+  .b-carta--t3[aria-pressed="true"]::after, .b-carta--t4[aria-pressed="true"]::after { animation: none; }
+  .b-carta:not([aria-pressed="true"]):hover .q-giro__dentro { transform: none; }
+}
+
 /* ---------- Telefono ---------- */
 @media (max-width: 767px) {
   .page.coll-page, .page.shop-page, .page.open-page { overflow: visible; gap: 16px; }

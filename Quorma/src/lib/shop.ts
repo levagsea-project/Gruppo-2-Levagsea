@@ -73,6 +73,18 @@ export function pendingPacks(): OpenedPack[] {
   }
 }
 
+const listeners = new Set<() => void>()
+
+/** Avvisa quando cambiano le buste da aprire (per il segnale sulla voce Collezione). */
+export function subscribePending(listener: () => void) {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
+  }
+}
+
+export const pendingCount = () => pendingPacks().length
+
 function savePending(list: OpenedPack[]) {
   const key = KEY()
   memory.set(key, list)
@@ -81,6 +93,7 @@ function savePending(list: OpenedPack[]) {
   } catch {
     /* browser pieno o senza salvataggio: restano in memoria finché la pagina è aperta */
   }
+  listeners.forEach((notify) => notify())
 }
 
 function addPending(pack: OpenedPack) {

@@ -6,7 +6,7 @@ type Tab = { label: string; icon: NavIconName | 'altro'; page?: Page; alert?: st
 
 // Le 5 schede in basso. "section" = le pagine in cui la scheda resta accesa.
 // Senza page la sezione non esiste ancora: scheda attenuata e non cliccabile.
-// alert = braci arancioni, solo per novità vere (oggi nessuna: il backend non le fornisce ancora).
+// alert = braci arancioni, solo per novità vere: buste da aprire (Collezione) e sfide in attesa (Altro).
 const TABS: Tab[] = [
   { label: 'Home', icon: 'home', page: 'home', section: ['home'] },
   { label: 'Gioca', icon: 'gioca', page: 'gioca', section: ['gioca'] },
@@ -28,11 +28,12 @@ function MenuIcon() {
 
 // Barra delle schede su telefono.
 // Le sfide stanno sotto "Altro": le braci delle sfide in attesa si accendono lì.
-export default function MobileTabBar({ current, onNavigate, challengeAlert }: { current: Page; onNavigate: (page: Page) => void; challengeAlert?: string }) {
+export default function MobileTabBar({ current, onNavigate, challengeAlert, packAlert }: { current: Page; onNavigate: (page: Page) => void; challengeAlert?: string; packAlert?: string }) {
   return (
     <nav className="mb-tab" aria-label="Navigazione principale">
       {TABS.map((tab) => {
-        const t = tab.page === 'altro' && challengeAlert ? { ...tab, alert: challengeAlert } : tab
+        const alert = tab.page === 'altro' ? challengeAlert : tab.page === 'collezione' ? packAlert : undefined
+        const t = alert ? { ...tab, alert } : tab
         const active = t.section.includes(current)
         const icon = (
           <Arch active={active} alert={!!t.alert}>
@@ -45,7 +46,6 @@ export default function MobileTabBar({ current, onNavigate, challengeAlert }: { 
             <a key={t.label} className="q-navata__item" role="link" aria-disabled="true">
               {icon}
               {t.label}
-              <span className="sr-only">, in arrivo</span>
             </a>
           )
         }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import type { Page } from './data/navItems'
 import { useDecks } from './hooks/useDecks'
 import { usePlayStatus } from './hooks/usePlayStatus'
@@ -15,6 +15,7 @@ import NewDeckPage from './components/newdeck/NewDeckPage'
 import DeckEditorPage from './components/editor/DeckEditorPage'
 import DeckSavedPage from './components/editor/DeckSavedPage'
 import { duplicateDeck, setDefenseDeck } from './lib/decks'
+import { pendingCount, subscribePending } from './lib/shop'
 import type { DeckDetail, FactionId } from './types/deck'
 import RulesPage from './components/rules/RulesPage'
 import PlayPage from './components/play/PlayPage'
@@ -55,6 +56,8 @@ export default function App() {
   const [saved, setSaved] = useState<{ id: string; deck: DeckDetail | null } | null>(null)
   const { pendingChallenges, reloadChallenges } = useChallengeAlert() // sfide ricevute in attesa (braci sul menu)
   const challengeAlert = pendingChallenges > 0 ? `${pendingChallenges} ${pendingChallenges === 1 ? 'sfida' : 'sfide'} in attesa` : undefined
+  const packsToOpen = useSyncExternalStore(subscribePending, pendingCount) // buste comprate e non ancora rivelate
+  const packAlert = packsToOpen > 0 ? `${packsToOpen} ${packsToOpen === 1 ? 'busta' : 'buste'} da aprire` : undefined
   const [collectionTab, setCollectionTab] = useState<CollectionTab>('carte')
   const [packQueue, setPackQueue] = useState<string[]>([]) // buste da rivelare nella pagina Apertura
 
@@ -66,7 +69,7 @@ export default function App() {
     if (next === 'home') reloadNews() // dopo una partita l'ultima serie della home cambia
     if (next === 'home' || next === 'sfide') reloadChallenges()
     if (next === 'profilo') setProfileTab('panoramica')
-    if (next === 'collezione') setCollectionTab('carte')
+    if (next === 'collezione') setCollectionTab(packsToOpen > 0 ? 'buste' : 'carte') // chi ha buste da aprire arriva lì
   }
 
   const openPacks = (ids: string[]) => {
@@ -127,7 +130,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <Sidebar current={page} onNavigate={open} challengeAlert={challengeAlert} />
+      <Sidebar current={page} onNavigate={open} challengeAlert={challengeAlert} packAlert={packAlert} />
       <MobileTopBar onHome={() => open('home')} onProfile={() => open('profilo')} />
 
       {page === 'home' && (
@@ -245,7 +248,7 @@ export default function App() {
 
       {page === 'altro' && <MorePage onNavigate={open} challengeAlert={challengeAlert} />}
 
-      <MobileTabBar current={page} onNavigate={open} challengeAlert={challengeAlert} />
+      <MobileTabBar current={page} onNavigate={open} challengeAlert={challengeAlert} packAlert={packAlert} />
 
       {awayOpen && unread.length > 0 && (
         <AwayResults
