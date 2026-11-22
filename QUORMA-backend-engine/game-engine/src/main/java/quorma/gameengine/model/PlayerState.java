@@ -32,6 +32,54 @@ public final class PlayerState {
     /** A lockout set by an effect (E12): ends when, after Refill, the player has fewer than {@code below} of {@code suit}. */
     private record Lock(Suit suit, int below) {}
 
+    private final List<Aura> auras = new ArrayList<>();
+    private final List<LaneEffect> laneEffects = new ArrayList<>();
+
+    /** The lasting effects of this player's spells still in force, oldest first. */
+    public List<Aura> auras() {
+        auras.removeIf(a -> !a.lasting().active());
+        return List.copyOf(auras);
+    }
+
+    public void addAura(Aura aura) {
+        auras.add(Objects.requireNonNull(aura, "aura"));
+    }
+
+    /** Ends the auras that last until {@code moment} in turn {@code now} (see {@link Lasting#endsAt}). */
+    public void expireAuras(String moment, int now) {
+        auras.removeIf(a -> a.lasting().endsAt(moment, now));
+    }
+
+    /** Effects waiting for the next creature placed in a lane (E64), oldest first. */
+    public void addLaneEffect(LaneEffect effect) {
+        laneEffects.add(Objects.requireNonNull(effect, "effect"));
+    }
+
+    /** Takes and returns the effects waiting on {@code lane}, oldest first. */
+    public List<LaneEffect> takeLaneEffects(int lane) {
+        List<LaneEffect> out = laneEffects.stream().filter(e -> e.lane() == lane).toList();
+        laneEffects.removeAll(out);
+        return out;
+    }
+
+    /** Raises life by {@code amount} (0 or more), for example E9. Life has no cap. */
+    public void gainLife(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("amount must be 0 or more, got " + amount);
+        }
+        life = Math.addExact(life, amount);
+    }
+
+    /** The lowest empty lane, if any. */
+    public java.util.OptionalInt lowestEmptyLane() {
+        for (int lane = 1; lane <= LANES; lane++) {
+            if (lanes[lane - 1] == null) {
+                return java.util.OptionalInt.of(lane);
+            }
+        }
+        return java.util.OptionalInt.empty();
+    }
+
     /** @param deck cards in draw order: index 0 is the top. The list is copied. */
     public PlayerState(Faction faction, int life, List<Card> deck) {
         this.faction = Objects.requireNonNull(faction, "faction");
@@ -168,6 +216,7 @@ public final class PlayerState {
             throw new IllegalStateException("lane " + lane + " is already empty");
         }
         lanes[i] = null;
+        c.markLeftPlay();
         return c;
     }
 

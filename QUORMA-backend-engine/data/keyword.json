@@ -158,5 +158,1030 @@
         "class": "C"
       }
     ]
+  },
+  "K_LETALE": {
+    "name": "Letale",
+    "class": "C",
+    "balance_ref": "K_LETALE",
+    "description": "Qualsiasi danno da combattimento inflitto da questa creatura distrugge la creatura danneggiata. Il suo spill tratta la DEF del bersaglio come il {spill_def_pct}% del suo valore.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E26",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      },
+      {
+        "trigger_id": "T34",
+        "trigger_params": {},
+        "effect_id": "E22",
+        "effect_params": {
+          "permille": "$tune.K_LETALE.spill_def_permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "R"
+      }
+    ]
+  },
+  "K_SOSTEGNO": {
+    "name": "Sostegno",
+    "class": "C",
+    "balance_ref": "K_SOSTEGNO",
+    "params": {
+      "x": {
+        "type": "int",
+        "required": true
+      }
+    },
+    "description": "Sostegno (X): se questa creatura non attacca, ogni attaccante adiacente guadagna +X% del suo ATK base.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "pct": "$param.x"
+        },
+        "target_id": "S41",
+        "target_params": {
+          "filters": [
+            "attacker"
+          ]
+        },
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "C2"
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "K_PROVOCAZIONE": {
+    "name": "Provocazione",
+    "class": "T",
+    "balance_ref": "K_PROVOCAZIONE",
+    "description": "Quando un attaccante dichiara come bersaglio una creatura alleata adiacente, l'attacco viene reindirizzato a questa creatura.",
+    "expands_to": [
+      {
+        "trigger_id": "T35",
+        "trigger_params": {},
+        "effect_id": "E24",
+        "effect_params": {
+          "new_target_id": "S1"
+        },
+        "target_id": "S2",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_CUSTODE": {
+    "name": "Custode",
+    "class": "R",
+    "balance_ref": "K_CUSTODE",
+    "description": "La prima volta che questa creatura sta per essere distrutta, non viene distrutta e rientra in gioco con DEF completa. Al prossimo Rifornimento, se è ancora nella sua corsia, viene distrutta.",
+    "expands_to": [
+      {
+        "trigger_id": "T20",
+        "trigger_params": {},
+        "effect_id": "E12",
+        "effect_params": {
+          "then": "destroy_at_next_refill"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "R",
+        "max_triggers": 1
+      }
+    ]
+  },
+  "K_RIGENERANTE": {
+    "name": "Rigenerante",
+    "class": "T",
+    "balance_ref": "K_RIGENERANTE",
+    "description": "All'inizio di ogni fase di Rifornimento, questa creatura cura il {heal_pct_base_def}% della sua DEF base, fino alla DEF base. Non cumulativo con Vestigio 4: si applica la cura maggiore.",
+    "stacking": {
+      "mode": "max_with",
+      "with": [
+        "SYNERGY:VESTIGIO_4"
+      ]
+    },
+    "expands_to": [
+      {
+        "trigger_id": "T2",
+        "trigger_params": {
+          "phase": "Rifornimento"
+        },
+        "effect_id": "E6",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.K_RIGENERANTE.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_FLESSIBILE": {
+    "name": "Flessibile",
+    "class": "C",
+    "balance_ref": "K_FLESSIBILE",
+    "description": "Per formare scale, questa creatura può contare come il rango adiacente (±1).",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E54",
+        "effect_params": {
+          "step": 1
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_PRIMO_COLPO": {
+    "name": "Primo Colpo",
+    "class": "R",
+    "balance_ref": "K_PRIMO_COLPO",
+    "description": "Nel Ciclo 1, se questa creatura distruggerebbe il suo bersaglio, il bersaglio non infligge danno da combattimento alla sorgente.",
+    "expands_to": [
+      {
+        "trigger_id": "T22",
+        "trigger_params": {},
+        "effect_id": "E23",
+        "effect_params": {},
+        "target_id": "S43",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelCombattimento",
+        "conditions": [
+          {
+            "id": "C6"
+          },
+          {
+            "id": "C21"
+          }
+        ],
+        "class": "R"
+      }
+    ]
+  },
+  "K_MURO": {
+    "name": "Muro",
+    "class": "C",
+    "balance_ref": "K_MURO",
+    "description": "Questa creatura riduce il danno subito del {reduction_pct}% e, quando un attaccante dichiara come bersaglio una creatura alleata adiacente, l'attacco viene reindirizzato a lei.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E28",
+        "effect_params": {
+          "mode": "reduction_pct",
+          "pct": "$tune.K_MURO.pct"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "C"
+      },
+      {
+        "trigger_id": "T35",
+        "trigger_params": {},
+        "effect_id": "E24",
+        "effect_params": {
+          "new_target_id": "S1"
+        },
+        "target_id": "S2",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_LASCITO_DIFESA": {
+    "name": "Lascito di difesa",
+    "class": "T",
+    "balance_ref": "K_LASCITO_DIFESA",
+    "params": {},
+    "description": "Quando questa creatura viene distrutta: le creature alleate adiacenti guadagnano +{bonus_pct}% della loro DEF base in modo permanente.",
+    "expands_to": [
+      {
+        "trigger_id": "T10",
+        "trigger_params": {},
+        "effect_id": "E2",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.K_LASCITO_DIFESA.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_NON_RISCRIVIBILE": {
+    "name": "Non riscrivibile",
+    "class": "C",
+    "balance_ref": "K_NON_RISCRIVIBILE",
+    "params": {
+      "scope": {
+        "type": "enum",
+        "values": [
+          "adjacent",
+          "self_adjacent"
+        ],
+        "default": "adjacent"
+      }
+    },
+    "description": "L'ATK di questa creatura (scope self_adjacent) e delle creature alleate adiacenti non puo' essere ridotto dagli effetti.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E52",
+        "effect_params": {},
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "scope",
+              "equals": "self_adjacent"
+            }
+          }
+        ],
+        "class": "C"
+      },
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E52",
+        "effect_params": {},
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_ACCUMULO": {
+    "name": "Accumulo",
+    "class": "T",
+    "balance_ref": "K_ACCUMULO",
+    "params": {},
+    "description": "Alla fine di ogni turno: questa creatura guadagna +{bonus_pct}% del suo ATK base in modo permanente, fino a {max_stacks} volte.",
+    "expands_to": [
+      {
+        "trigger_id": "T26",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_ACCUMULO.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T",
+        "max_stacks": "$tune.K_ACCUMULO.max_stacks",
+        "stack_key": "K_ACCUMULO"
+      }
+    ]
+  },
+  "K_ECO": {
+    "name": "Eco storpiato",
+    "class": "T",
+    "balance_ref": "K_ECO",
+    "params": {},
+    "description": "Quando questa creatura subisce danno da combattimento: la creatura che l'ha inflitto subisce il {pct}% di quel danno.",
+    "expands_to": [
+      {
+        "trigger_id": "T13",
+        "trigger_params": {
+          "source": "combattimento"
+        },
+        "effect_id": "E58",
+        "effect_params": {
+          "source": "damage_taken",
+          "permille": "$tune.K_ECO.permille"
+        },
+        "target_id": "S26",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_SCUDO_COMUNITA": {
+    "name": "Scudo di comunita'",
+    "class": "C",
+    "balance_ref": "K_SCUDO_COMUNITA",
+    "params": {},
+    "description": "Questa creatura riduce il danno subito di {x}% per ogni creatura alleata adiacente (massimo due).",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E28",
+        "effect_params": {
+          "mode": "reduction_pct",
+          "pct": "$tune.K_SCUDO_COMUNITA.x"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "C26",
+            "params": {
+              "min": 1
+            }
+          }
+        ],
+        "class": "C"
+      },
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E28",
+        "effect_params": {
+          "mode": "reduction_pct",
+          "pct": "$tune.K_SCUDO_COMUNITA.x"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "C26",
+            "params": {
+              "min": 2
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "K_LASCITO_CURA": {
+    "name": "Lascito di cura",
+    "class": "T",
+    "balance_ref": "K_LASCITO_CURA",
+    "params": {},
+    "description": "Quando questa creatura viene distrutta: le creature alleate adiacenti curano {heal_pct}% della loro DEF base.",
+    "expands_to": [
+      {
+        "trigger_id": "T10",
+        "trigger_params": {},
+        "effect_id": "E6",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.K_LASCITO_CURA.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_CATENA": {
+    "name": "Catena",
+    "class": "T",
+    "balance_ref": "K_CATENA",
+    "params": {
+      "on": {
+        "type": "enum",
+        "values": [
+          "hit",
+          "kill"
+        ],
+        "default": "hit"
+      }
+    },
+    "description": "Quando questa creatura infligge danno da combattimento (modo kill: quando uccide): le creature avversarie adiacenti al bersaglio subiscono il {pct}% di quel danno. Si ferma alla prima corsia vuota.",
+    "expands_to": [
+      {
+        "trigger_id": "T38",
+        "trigger_params": {},
+        "effect_id": "E58",
+        "effect_params": {
+          "source": "damage_dealt",
+          "permille": "$tune.K_CATENA.permille"
+        },
+        "target_id": "S44",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "on",
+              "equals": "hit"
+            }
+          }
+        ],
+        "class": "T"
+      },
+      {
+        "trigger_id": "T38",
+        "trigger_params": {},
+        "effect_id": "E58",
+        "effect_params": {
+          "source": "damage_dealt",
+          "permille": "$tune.K_CATENA.permille"
+        },
+        "target_id": "S44",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "on",
+              "equals": "kill"
+            }
+          },
+          {
+            "id": "C27"
+          }
+        ],
+        "class": "T"
+      }
+    ]
+  },
+  "K_CONFORMITA": {
+    "name": "Conformita'",
+    "class": "T",
+    "balance_ref": "K_CONFORMITA",
+    "params": {},
+    "description": "Quando questa creatura attacca: il bersaglio perde i modificatori positivi e le keyword concesse.",
+    "expands_to": [
+      {
+        "trigger_id": "T6",
+        "trigger_params": {},
+        "effect_id": "E59",
+        "effect_params": {},
+        "target_id": "S43",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_CONTA_COME": {
+    "name": "Conta come",
+    "class": "C",
+    "balance_ref": "K_CONTA_COME",
+    "params": {
+      "rank": {
+        "type": "enum",
+        "values": [
+          "A",
+          "K",
+          "Q",
+          "J",
+          "10",
+          "9",
+          "8",
+          "7",
+          "6",
+          "5",
+          "4",
+          "3",
+          "2"
+        ],
+        "default": "Q"
+      }
+    },
+    "description": "Per la mano di poker questa creatura conta anche come il rango {rank}, ma solo per coppia, doppia coppia, tris, full e poker. Si applica al massimo una sostituzione di rango per mano: se ce ne sono piu' d'una, vale quella che da' la mano migliore.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E30",
+        "effect_params": {
+          "rank": "$param.rank"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "C9",
+            "params": {
+              "hand_type": [
+                "Coppia",
+                "Doppia coppia",
+                "Tris",
+                "Full",
+                "Poker"
+              ]
+            }
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "K_ALLONTANA": {
+    "name": "Allontana",
+    "class": "T",
+    "balance_ref": "K_ALLONTANA",
+    "params": {
+      "on": {
+        "type": "enum",
+        "values": [
+          "attack",
+          "attacked"
+        ],
+        "default": "attack"
+      }
+    },
+    "description": "Quando questa creatura attacca (on=attack) o e' attaccata (on=attacked): le creature alleate adiacenti perdono {pct}% del loro ATK base fino alla fine del turno.",
+    "expands_to": [
+      {
+        "trigger_id": "T6",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "-$tune.K_ALLONTANA.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelTurno",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "on",
+              "equals": "attack"
+            }
+          }
+        ],
+        "class": "T"
+      },
+      {
+        "trigger_id": "T7",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "-$tune.K_ALLONTANA.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelTurno",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "on",
+              "equals": "attacked"
+            }
+          }
+        ],
+        "class": "T"
+      }
+    ]
+  },
+  "K_SCUDO_ADIACENTI": {
+    "name": "Voce che regge",
+    "class": "C",
+    "balance_ref": "K_SCUDO_ADIACENTI",
+    "params": {},
+    "description": "Le creature alleate adiacenti riducono il danno subito di {x}% finche' questa creatura e' in gioco.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E28",
+        "effect_params": {
+          "mode": "reduction_pct",
+          "pct": "$tune.K_SCUDO_ADIACENTI.x"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_CONFINE": {
+    "name": "Confine",
+    "class": "C",
+    "balance_ref": "K_CONFINE",
+    "params": {},
+    "description": "Le creature avversarie nella corsia di questa creatura e in quelle adiacenti non ricevono bonus di ATK o DEF.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E61",
+        "effect_params": {},
+        "target_id": "S45",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_ASSIMILA": {
+    "name": "Assimilazione",
+    "class": "T",
+    "balance_ref": "K_ASSIMILA",
+    "params": {
+      "scope": {
+        "type": "enum",
+        "values": [
+          "allies",
+          "any",
+          "adjacent"
+        ],
+        "default": "allies"
+      }
+    },
+    "description": "Quando una creatura alleata viene distrutta (scope any: o una creatura avversaria): questa creatura guadagna +{bonus_pct}% del suo ATK base in modo permanente, fino a {max_stacks} volte. Scope adjacent: solo quando cade una creatura alleata adiacente.",
+    "expands_to": [
+      {
+        "trigger_id": "T36",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_ASSIMILA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "scope",
+              "equals": "allies"
+            }
+          }
+        ],
+        "class": "T",
+        "max_stacks": "$tune.K_ASSIMILA.max_stacks",
+        "stack_key": "K_ASSIMILA"
+      },
+      {
+        "trigger_id": "T36",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_ASSIMILA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "scope",
+              "equals": "any"
+            }
+          }
+        ],
+        "class": "T",
+        "max_stacks": "$tune.K_ASSIMILA.max_stacks",
+        "stack_key": "K_ASSIMILA"
+      },
+      {
+        "trigger_id": "T37",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_ASSIMILA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "scope",
+              "equals": "any"
+            }
+          }
+        ],
+        "class": "T",
+        "max_stacks": "$tune.K_ASSIMILA.max_stacks",
+        "stack_key": "K_ASSIMILA"
+      },
+      {
+        "trigger_id": "T36",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_ASSIMILA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "K_PARAM",
+            "params": {
+              "name": "scope",
+              "equals": "adjacent"
+            }
+          },
+          {
+            "id": "C28"
+          }
+        ],
+        "class": "T",
+        "max_stacks": "$tune.K_ASSIMILA.max_stacks",
+        "stack_key": "K_ASSIMILA"
+      }
+    ]
+  },
+  "K_ULTIMO_GESTO": {
+    "name": "Ultimo gesto",
+    "class": "T",
+    "balance_ref": "K_ULTIMO_GESTO",
+    "params": {},
+    "description": "Quando questa creatura viene distrutta: la creatura avversaria nella sua corsia subisce il {pct}% dell'ATK di questa creatura.",
+    "expands_to": [
+      {
+        "trigger_id": "T10",
+        "trigger_params": {},
+        "effect_id": "E58",
+        "effect_params": {
+          "source": "own_atk",
+          "permille": "$tune.K_ULTIMO_GESTO.permille"
+        },
+        "target_id": "S6",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_INDURISCE": {
+    "name": "Indurimento",
+    "class": "T",
+    "balance_ref": "K_INDURISCE",
+    "params": {},
+    "description": "Quando una creatura alleata viene distrutta: questa creatura guadagna +{bonus_pct}% della sua DEF base in modo permanente, fino a 3 volte.",
+    "expands_to": [
+      {
+        "trigger_id": "T36",
+        "trigger_params": {},
+        "effect_id": "E2",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.K_INDURISCE.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T",
+        "max_stacks": 3,
+        "stack_key": "K_INDURISCE"
+      }
+    ]
+  },
+  "K_CAMPI_VUOTI": {
+    "name": "Campi vuoti",
+    "class": "C",
+    "balance_ref": "K_CAMPI_VUOTI",
+    "params": {},
+    "description": "Se questa creatura attacca: guadagna +{bonus_pct}% del suo ATK base per ogni tua creatura che non attacca.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_CAMPI_VUOTI.permille",
+          "scale_by": "non_attackers"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [
+          {
+            "id": "C1"
+          }
+        ],
+        "class": "C"
+      }
+    ]
+  },
+  "K_ISOLA": {
+    "name": "Isolamento",
+    "class": "C",
+    "balance_ref": "K_ISOLA",
+    "params": {},
+    "description": "La creatura avversaria nella corsia di questa creatura non e' considerata adiacente alle sue alleate.",
+    "expands_to": [
+      {
+        "trigger_id": "T0",
+        "trigger_params": {},
+        "effect_id": "E60",
+        "effect_params": {},
+        "target_id": "S6",
+        "target_params": {},
+        "duration": "D_FincheSorgenteInGioco",
+        "conditions": [],
+        "class": "C"
+      }
+    ]
+  },
+  "K_APRI_STRADA": {
+    "name": "Apri la strada",
+    "class": "T",
+    "balance_ref": "K_APRI_STRADA",
+    "params": {},
+    "description": "Quando questa creatura uccide una creatura: le creature alleate adiacenti guadagnano +{bonus_pct}% del loro ATK base fino alla fine del turno.",
+    "expands_to": [
+      {
+        "trigger_id": "T19",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_APRI_STRADA.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelTurno",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_PORTA_AVANTI": {
+    "name": "Porta avanti",
+    "class": "T",
+    "balance_ref": "K_PORTA_AVANTI",
+    "params": {},
+    "description": "Quando una creatura alleata viene distrutta: questa creatura cura {heal_pct}% della sua DEF base.",
+    "expands_to": [
+      {
+        "trigger_id": "T36",
+        "trigger_params": {},
+        "effect_id": "E6",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "$tune.K_PORTA_AVANTI.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Istantanea",
+        "conditions": [],
+        "class": "T"
+      }
+    ]
+  },
+  "K_SALITA": {
+    "name": "Salita",
+    "class": "T",
+    "balance_ref": "K_SALITA",
+    "params": {},
+    "description": "Alla fine di ogni turno: questa creatura guadagna +{bonus_pct}% del suo ATK base e perde {cost_pct}% della sua DEF base in modo permanente, fino a 4 volte.",
+    "expands_to": [
+      {
+        "trigger_id": "T26",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_SALITA.permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T",
+        "max_stacks": 4,
+        "stack_key": "K_SALITA"
+      },
+      {
+        "trigger_id": "T26",
+        "trigger_params": {},
+        "effect_id": "E2",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "-$tune.K_SALITA.cost_permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T",
+        "max_stacks": 4,
+        "stack_key": "K_SALITA"
+      }
+    ]
+  },
+  "K_SLANCIO": {
+    "name": "Slancio",
+    "class": "T",
+    "balance_ref": "K_SLANCIO",
+    "params": {},
+    "description": "Quando questa creatura attacca: le creature alleate adiacenti guadagnano +{bonus_pct}% del loro ATK base fino alla fine del turno; questa creatura perde {cost_pct}% della sua DEF base in modo permanente (massimo 3 volte).",
+    "expands_to": [
+      {
+        "trigger_id": "T6",
+        "trigger_params": {},
+        "effect_id": "E1",
+        "effect_params": {
+          "mode": "pct_base_atk",
+          "permille": "$tune.K_SLANCIO.permille"
+        },
+        "target_id": "S41",
+        "target_params": {},
+        "duration": "D_FinoAllaFineDelTurno",
+        "conditions": [],
+        "class": "T"
+      },
+      {
+        "trigger_id": "T6",
+        "trigger_params": {},
+        "effect_id": "E2",
+        "effect_params": {
+          "mode": "pct_base_def",
+          "permille": "-$tune.K_SLANCIO.cost_permille"
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "T",
+        "max_stacks": 3,
+        "stack_key": "K_SLANCIO"
+      }
+    ]
+  },
+  "K_GUSCIO": {
+    "name": "Guscio",
+    "class": "R",
+    "balance_ref": "K_GUSCIO",
+    "params": {},
+    "description": "Questa creatura non puo' essere curata.",
+    "expands_to": [
+      {
+        "trigger_id": "T23",
+        "trigger_params": {},
+        "effect_id": "E51",
+        "effect_params": {
+          "permille": 0
+        },
+        "target_id": "S1",
+        "target_params": {},
+        "duration": "D_Permanente",
+        "conditions": [],
+        "class": "R"
+      }
+    ]
   }
 }

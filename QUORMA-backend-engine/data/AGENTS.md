@@ -19,6 +19,7 @@ All game text is in Italian. IDs, field names and this guide are in English. Eve
 | `subfactions.json` | The subfaction matrix (ruleset 2.4, lore section 08): faction, cycle, who each subfaction is strong and weak against. Structure only: the x1.1 and x0.9 numbers are in `balance.json` → `subfaction_advantage_permille`. | The matrix changes. |
 | `ranks.json` | The rank ladder (Tier names, roles per rank and faction, naming rules) and `role_affinity`. Lore plus pool-generation hints, no rules. | You change the lore of the ranks. |
 | `invalid-combinations.json` | Class rules per trigger, a description of the derived rules, and the few hand-written exceptions. | You find a combination that should be illegal. |
+| `sets/<CODE>.json` | **One self-contained file per set**: the set it defines (`set_definitions`: exactly its own code, with its status; an import never changes an existing set), its `pack_types` (the packs sold for the set: code, price, slots per Tier, support slots, featured; created with the set, never changed by an import), its cards in the engine's card shape plus `sets` (the sets the card belongs to: its own, and any other set it is reprinted in; not to be confused with the `expansions` of an ability, which are (trigger, effect, target) tuples), and `texts`: the card text of every language (`card.<id>.name`, `card.<id>.flavour`, `set.<CODE>.name`, `set.<CODE>.description`; Italian is the fallback and must be complete, another language may be partial; names are unique per language across all files). **Not bundled into anything and not rules**: a set file is catalogue content that an admin imports (`POST /admin/catalogue/import`), or that a deployment loads once into an empty database (`catalogue.bootstrap.path`: initial release, or rebuilding the database from zero). After that the database is the only truth, and later sets are added by an admin through the API or by importing a file (the repo does not have to hold them). `BASE.json` is **generated**: `tools/base-set/export_cards.py` writes the set definition and the cards from `docs/cards/card-effects.json` (and keeps the texts), `tools/base-set/export_card_texts.py` writes `texts.it` from the vault notes; do not edit it by hand. English comes later, as a `texts.en` table in the file. Ability texts (`ability.<ID>.text`) do not exist yet. `validate.py` checks every file (checks 12 and 13). | The base set changes (edit `docs/cards/card-effects.json` or the vault, rerun the exporters), or you keep a new set in the repo for a deployment. |
 | `parked/*.json` | Abilities, vocab entries and rules kept out of the game until needed (section 13). Same shapes as the live files. Not loaded by the engine, not bundled in the jar. | You park or restore an ability. |
 | `labels/<locale>.json` | Player-facing text in Italian (`it`) and English (`en`): API error codes and base game vocabulary. Flat `"dotted.key": "text"`, `{name}` placeholders. Game terms use `game.<group>.<code in lower case>`, where the code is the language-neutral identifier the API and the MatchLog send (`game.faction.resistenza_umana`, `game.hand_type.high_card`). Effect text (keywords, evolutions, synergies) is not translated yet. | You add an error code or a game term, or a language. |
 
@@ -59,12 +60,13 @@ String values in params can point elsewhere. Resolve them before the engine uses
 | `$param.<name>` | The value written on the card instance, e.g. card has `{"id":"K_SCUDO","params":{"x":15}}` so `$param.x` = 15. |
 | `$tune.<KEY>.<name>` | `balance.json` → `keywords[KEY]` or `evolutions[KEY]`. Looks in the card instance's `params` first (values written at pool creation, e.g. tier scaling), then in `params` of the balance entry, then at its top level (e.g. `max_stacks`). |
 | `$tune.synergies.<TIER>.<name>` | `balance.json` → `synergies[TIER][name]`. |
+| `-$param.<name>`, `-$tune.<KEY>.<name>` | The resolved integer, negated: a malus written with the number of a bonus (Slancio's DEF cost). |
 
 Text placeholders such as `{reduction_pct}` or `{x}` in descriptions are filled from the keyword's card params or from `balance.json` → `display`.
 
 ## 4. Cards reference abilities
 
-There is no cards file yet. The intended card shape:
+The cards are in the set files (`sets/<CODE>.json`, see section 1). The ability part of a card looks like this:
 
 ```json
 {
@@ -113,16 +115,21 @@ Repeatable growth is **not** an evolution. Use a normal trigger plus `max_stacks
 2. **Class**: the expansion `class` is allowed by `invalid-combinations.class_rules.trigger_allowed_effect_classes[trigger]` and is listed in `vocab.effects[effect].class`. For `T_EVO`, the inner trigger must itself be class `T`.
 3. **Target kind**: some value of `effects[effect].target_kind` appears in `targets[target].kind` (`card` is also satisfied by `creature`).
 4. **Trigger context**: if `targets[target].requires_context` is set, it must appear in `triggers[trigger].provides` (for `T_EVO`, use the inner trigger's `provides`).
-5. **Duration**: `effects[effect].duration_mode` is `instant_only` (only `D_Istantanea`), `sustained_only` (anything except `D_Istantanea`) or `any`.
+5. **Duration**: `effects[effect].duration_mode` is `instant_only` (only `D_Istantanea`), `sustained_only` (anything except `D_Istantanea`) or `any`. Not checked for class `I`: the engine ignores the duration of an immediate effect, which applies for good (the base set writes `D_Istantanea` on an equipment's E2 and E3).
 6. **Class `I` only effects** never appear in creature abilities.
-7. **`combination_rules`**: a rule matches when all its non-null fields match (`null` means any, a list means any of). Rules with `allowed_triggers` are whitelists: the effect is legal only with those triggers. A match means the expansion is invalid.
+7. **`combination_rules`**: a rule matches when all its non-null fields match (`null` means any, a list means any of). Rules with `allowed_triggers` or `allowed_classes` are whitelists: the effect is legal only with those triggers or classes. `with_param` limits a rule to expansions that write that effect param (IC014: E1 `scale_by` only in class C). A match means the expansion is invalid.
 8. **Keyword grants**: an `E14` must name an existing keyword, include its required params, and not include unknown ones.
 9. **References**: every `$tune.*` resolves in `balance.json`, every `balance_ref` exists, every description placeholder can be filled.
 10. **No keyword uses `T_EVO`.**
+11. **Reach**: a creature target must be found in the class of the expansion, `targets[target].reach_classes`: `C` if a continuous effect reaches it, `T` if a triggered effect chooses it when it resolves. The engine checks the same at bind time, for the abilities cards write inline, and a test keeps `reach_classes` in step with the `Target` classes.
 
 An id that exists only in `parked/` fails check 1 with a message saying where to restore it from. The validator also checks that no id is both live and parked, and prints the next free id of each kind.
 
-The structure files are meant to pass all ten checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; with only four live keywords Vincolo misses the suit target and Vestigio Tier 3 the role target, see `2026-11-14-vincolo-no-themed-ability`), and prints theme-coverage warnings (section 10); warnings never fail the run.
+12. **Set files** (`sets/<CODE>.json`): a file defines exactly its own set (`set_definitions` is its file name) and every card of the file is in that set; every pack type is of that set, with a price above 0 and slots that the file's cards can fill (each Tier with slots has a creature of that Tier, support slots have a spell or an equipment); ids unique, and a card written in two files (a reprint) has the same definition in both; every set a card names is defined by some file; the card fields the engine schema knows plus `sets`, the id looks like `<SET>-RES-...` or `<SET>-AI-...` and agrees with the subfaction's faction, a creature may have no ability (a vanilla creature), a spell or an equipment needs at least one (`2026-11-19-vanilla-creatures`), every ability is a live keyword or evolution (required and allowed params, rank within `allowed_ranks`, no duplicates, within `card_ability_slots`) or a list of expansions that passes checks 1-9. For a spell or equipment, and for any ability written on a card, the target context is checked only for class `T` and a continuous spell effect may aim at a selection (S33-S40), as the engine does (`EffectRegistry`).
+
+13. **Card text** (`texts` of each set file): `texts.it` exists and has a name and a flavour for every card of the file and a name and description for its set; no language has unknown keys or empty strings; another language keeps the Italian `{placeholders}` and may be partial; a name is unique in its language across all the files.
+
+The structure files are meant to pass all the checks with zero errors. Run the validator after every change. It also checks the cap model and `ranks.json`, checks that the expected suit and role match of the draw meets `pool_generation.fit_targets` (60% and 40%; with only four live keywords Vincolo misses the suit target and Vestigio Tier 3 the role target, see `2026-11-14-vincolo-no-themed-ability`), and prints theme-coverage warnings (section 10); warnings never fail the run.
 
 ## 8. How to add things
 
@@ -138,9 +145,9 @@ The structure files are meant to pass all ten checks with zero errors. Run the v
 3. Validate.
 
 **New vocab piece**
-- New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID printed by `make validate` (`next free E id`, currently `E58`); it counts parked IDs too. Never renumber or reuse IDs.
-- New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (next free `T` id from `make validate`, currently `T38`).
-- New target: give it `kind` and `requires_context` (use `null` if none).
+- New effect: give it `class` (list), `target_kind`, `duration_mode`, `params`, and a precise description. Use the next free ID printed by `make validate` (`next free E id`, currently `E65`); it counts parked IDs too. Never renumber or reuse IDs.
+- New trigger: give it `class`, `uses_stack`, `provides`, and add it to `class_rules` (next free `T` id from `make validate`, currently `T40`).
+- New target: give it `kind` and `requires_context` (use `null` if none), and for a creature target `reach_classes` (`C`, `T` or both, see check 11).
 - Replacement effects (`R`) must have a trigger that can express the moment ("sta per…"). If none exists, add one.
 
 **New illegal combination:** add to `invalid-combinations.json` → `combination_rules` only if it cannot be derived from the metadata (loops, cascades, timing).
@@ -186,7 +193,8 @@ Suits are narrative principles, not locked ability lists (lore v2.0, section 06)
 - **Names:** use the Italian faction and subfaction names exactly as in the ruleset (e.g. SEKTAC, MEROZYN, EFFRIX, YLMOR, Adattati, Spezzasigilli, Portanome, Segnaterra).
 - **Subfaction relations are reciprocal and only exist between the two factions.** Two subfactions of one faction are neutral (1000). `validate.py` checks reciprocity, the two rings of four, and that `balance.json` has `strong` above 1000 and `weak` below it. The cycle ids are `MONDO` and `IDENTITA`; display names follow the lore ("Il Mondo", "L'Identità").
 - **All cards write abilities the same way** (decision `2026-11-07-cards-share-abilities`). A creature, a spell and an equipment each have an ordered list of abilities. An ability is a reference to a keyword or evolution by id with the card's own params, or a whole effect written as expansions, and any card may have either. Spells and equipment differ only in when they fire (on draw, class `I`) and in which targets apply (none that need a trigger's context).
-- **No spell or equipment cards exist yet.** There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections. Their vocabulary (class `I` effects, `card_contexts`) is parked in `parked/vocab.json` so they can be added later; when they are, add the card file, the balance entries and the validator checks together.
+- **Spells and equipment are not in `data/` yet.** The base set's 46 are written in `docs/cards/card-effects.json` and the engine resolves their effects; their vocabulary (class `I` effects, `card_contexts`) is live. There is no `spells.json` and `balance.json` has no `spells` / `equipment` sections: when they move here, add the card file, the balance entries and the validator checks together.
+- **Abilities the form policy writes on the card** (`form: inline` in `docs/cards/card-effects.json`) have no entry here: a card writes their expansions with its own numbers, an Evolution keeps its `T_EVO` wrapper (`2026-11-17-base-set-engine`). `tools/base-set/export_cards.py` writes the base set as engine cards.
 - **No effect may depend on player input or information.** Players decide nothing during a match, so an effect that only reveals information or needs a choice does nothing. `E50` (reveal top card) was removed for this reason and replaced by `E57` (discard the top cards of a deck). Never reuse the `E50` ID.
 
 ## 13. Parked data

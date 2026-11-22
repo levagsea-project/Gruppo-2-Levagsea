@@ -17,9 +17,14 @@ services:
       retries: 30
 
   engine:
+    # Tagged with the engine version (make up sets ENGINE_VERSION from the pom): a replay needs the engine that played the
+    # match. The build refuses a tag that is not the version the engine reports. Without it the image is quorma-engine:dev.
+    image: quorma-engine:${ENGINE_VERSION:-dev}
     build:
       context: .
       dockerfile: engine-service/Dockerfile
+      args:
+        ENGINE_VERSION: ${ENGINE_VERSION:-}
     container_name: quorma-engine
     ports:
       - "8081:8081"
@@ -42,6 +47,9 @@ services:
       JWT_SECRET: ${JWT_SECRET:-quorma-dev-secret-change-in-production}
       JWT_EXPIRATION: 86400000
       SERVER_PORT: 8080
+      CATALOGUE_BOOTSTRAP_PATH: /catalogue/sets
+    volumes:
+      - ./data/sets:/catalogue/sets:ro
     depends_on:
       postgres:
         condition: service_healthy

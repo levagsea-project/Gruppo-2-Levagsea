@@ -36,24 +36,28 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     
-packs:
-  # Placeholders until balanced. slots = exact number of creatures per Tier; support-slots = extra cards that are a
-  # spell or an equipment (no Tier). The size of a pack is the sum. featured = the one the shop highlights.
-  # TIER_1 comune (ranks 2-6), TIER_2 non comune (7-10), TIER_3 rara (J/Q/K), TIER_4 epica (Ace).
-  types:
-    standard:
-      price: 200
-      slots: {TIER_1: 2, TIER_2: 2}
-      support-slots: 2
-    advanced:
-      price: 450
-      slots: {TIER_1: 2, TIER_2: 2, TIER_3: 1}
-      support-slots: 2
-      featured: true
-    elite:
-      price: 1000
-      slots: {TIER_2: 2, TIER_3: 2, TIER_4: 1}
-      support-slots: 3
+catalogue:
+  bootstrap:
+    # Off unless a folder is given. For an initial deployment, or to rebuild the database from zero: at startup, add what
+    # the set files in this folder (data/sets/*.json) have and the database lacks, add-only (a card that exists is never
+    # touched). Nothing is bundled into the jar, and once loaded the database is the only truth: later sets are added by
+    # an admin (API) or by importing a file. The engine service may still be starting: retry a few times.
+    path: ${CATALOGUE_BOOTSTRAP_PATH:}
+    retries: 10
+    retry-delay: 3s
+  starter:
+    # The set the starter decks of a new player are drawn from (one deck per faction, set as the defense deck).
+    set: BASE
+  # The most a batch import body may weigh (the base set is about 350 KB).
+  max-import-bytes: 5MB
+
+matches:
+  # How long a challenge by nickname waits for an answer (at most 7 days).
+  challenge-ttl: ${MATCHES_CHALLENGE_TTL:48h}
+  # How long an open room waits for someone to join.
+  room-ttl: ${MATCHES_ROOM_TTL:10m}
+  # Matchmaking skips players who have not logged in for longer than this (at most 7 days).
+  matchmaking-max-offline: ${MATCHES_MATCHMAKING_MAX_OFFLINE:7d}
 
 auth:
   # Registration bonus for new users

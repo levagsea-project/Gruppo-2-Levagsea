@@ -14,8 +14,6 @@ tags:
 
 # VINCOLO
 
-![[Vincolo.png]]
-
 Connessione, interdipendenza, ordine: ciò che unisce e mantiene legami.
 
 - **Resistenza:** alleanze e solidarietà

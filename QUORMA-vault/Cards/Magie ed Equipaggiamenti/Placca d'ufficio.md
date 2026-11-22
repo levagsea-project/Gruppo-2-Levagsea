@@ -28,10 +28,10 @@ tags:
 # Placca d'ufficio
 
 > [!quote] Testo di colore
-> «Autorizzazione di transito: permanente. Varchi attraversati: registrati. Varchi non registrati: non applicabile.» — Registro di accesso
+> «Autorizzazione di transito: permanente. Varchi attraversati: registrati. Posizioni non registrate: inesistenti.» — Registro di accesso
 
 > [!info] Lore interna
-> La placca d'ufficio è un disco di metallo scuro e liscio, a bordo rilevato, saldato sul corpo dell'unità che la riceve. È il tipo di placca che gli [[Spezzasigilli]] conoscono dai sigilli, portata a spalla. Autorizza chi la porta ad attraversare qualsiasi barriera delle Potenze senza che nessun sigillo si apra: la placca non apre, viene riconosciuta. Per questo gli Spezzasigilli ne hanno in inventario poche, staccate in momenti che nessuno ricorda bene. Il costo è di chi la porta: ogni varco attraversato viene registrato, e per il principio per cui [[Il registro precede]] quella è l'unica versione del passaggio. Un'unità con la placca non può più trovarsi in un posto non registrato, né esserci mai stata: i [[Fuori registro]] riconoscono da lontano chi la porta. Nessuna placca è stata mai restituita.
+> La placca d'ufficio è un disco di metallo scuro e liscio, a bordo rilevato, saldato sul corpo dell'unità che la riceve. È il tipo di placca che gli [[Spezzasigilli]] conoscono dai sigilli, portata a spalla. Autorizza chi la porta ad attraversare qualsiasi barriera delle Potenze senza che nessun sigillo si apra: la placca non apre, viene riconosciuta. Per questo gli Spezzasigilli ne hanno in inventario poche, staccate in momenti che nessuno ricorda bene. Ogni varco attraversato viene registrato, e per il principio per cui [[Il registro precede]] quella è l'unica versione del passaggio. Un'unità con la placca non può più trovarsi in un posto non registrato, né esserci mai stata: i [[Fuori registro]] riconoscono da lontano chi la porta. Nessuna placca è stata mai restituita.
 
 > [!info] Rivela / Nasconde
 > **Rivela:** che le Potenze hanno una placca che non apre i sigilli ma viene riconosciuta da essi; che registra ogni varco.

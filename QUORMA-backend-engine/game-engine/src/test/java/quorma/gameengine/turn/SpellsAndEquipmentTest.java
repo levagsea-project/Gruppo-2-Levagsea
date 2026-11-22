@@ -120,15 +120,15 @@ class SpellsAndEquipmentTest {
                 "D_Istantanea", List.of(), ResClass.C);
 
         assertTrue(refused(binder, new SpellCard("X", Faction.RESISTENZA_UMANA, List.of(ability(triggered))))
-                .contains("a spell must be class I with no trigger"));
+                .contains("effect E6 with class C is not implemented"));
         assertTrue(refused(binder, new SpellCard("X", Faction.RESISTENZA_UMANA, List.of(new AbilityRef("K_SCUDO"))))
                 .contains("a spell has its effects written as expansions"));
         assertTrue(refused(binder, new SpellCard("X", Faction.RESISTENZA_UMANA, List.of(ability(immediate("E6", "S27", "D_Istantanea", 1)))))
-                .contains("a spell aims at [S10, S9], not S27"));
+                .contains("a spell aims at [S10, S11, S30, S31, S32, S33, S35, S37, S38, S39, S40, S44, S47, S9], not S27"));
         assertTrue(refused(binder, new EquipmentCard("X", Faction.RESISTENZA_UMANA, List.of(ability(immediate("E6", "S9", "D_Istantanea", 1)))))
-                .contains("an equipment aims at [S27], not S9"));
+                .contains("an equipment aims at [S27, S30, S31], not S9"));
         assertTrue(refused(binder, new SpellCard("X", Faction.RESISTENZA_UMANA, List.of(ability(immediate("E26", "S9", "D_Istantanea", 1)))))
-                .contains("effect E26 is not implemented"));
+                .contains("effect E26 with class I is not implemented"));
     }
 
     @Test

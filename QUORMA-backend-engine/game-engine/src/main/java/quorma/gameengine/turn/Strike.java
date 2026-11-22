@@ -2,16 +2,22 @@ package quorma.gameengine.turn;
 
 import java.util.ArrayList;
 import java.util.List;
-import quorma.gameengine.data.Ruleset;
 import quorma.gameengine.data.RulesetException;
 import quorma.gameengine.data.Value;
+import quorma.gameengine.effects.AtkToBaseEffect;
+import quorma.gameengine.effects.DamageReductionEffect;
 import quorma.gameengine.effects.BoundExpansion;
+import quorma.gameengine.effects.IgnoreMitigationEffect;
+import quorma.gameengine.effects.LethalDamageEffect;
+import quorma.gameengine.effects.PreventCombatDamageEffect;
+import quorma.gameengine.effects.PreventDamageEffect;
+import quorma.gameengine.effects.SpillDefShareEffect;
+import quorma.gameengine.effects.SpillMultiplierEffect;
 import quorma.gameengine.log.CreatureRef;
 import quorma.gameengine.log.MatchEvent.AttackResolved;
 import quorma.gameengine.log.Modifier;
 import quorma.gameengine.model.Attack;
 import quorma.gameengine.model.Creature;
-import quorma.gameengine.model.MatchState;
 import quorma.gameengine.model.Side;
 
 /**
@@ -31,6 +37,7 @@ record Strike(
         int defBefore,
         int defAfter,
         boolean killed,
+        boolean lethal,
         int handMultiplierPermille,
         int spillMultiplierPermille,
         int spill,
@@ -42,52 +49,66 @@ record Strike(
         spillModifiers = List.copyOf(spillModifiers);
     }
 
-    static Strike of(Ruleset rules, MatchState state, Evaluation evaluation, CycleStart start, Side attackerSide,
-            Creature attacker, Side targetSide, Creature target) {
-        int handMultiplierPermille = evaluation.multiplier(attackerSide);
+    /**
+     * The blow of {@code attacker} on {@code target}. With {@code land} true the blow is about to land: a T21
+     * replacement of the target that prevents damage (E29) is used up; false only works the numbers out (C21).
+     */
+    static Strike of(Game g, Board b, CycleStart start, Side attackerSide, Creature attacker, Side targetSide,
+            Creature target, boolean land) {
+        int handMultiplierPermille = g.evaluation.multiplier(attackerSide);
         CreatureRef attackerRef = CreatureRef.of(attackerSide, attacker);
-        CreatureRef targetRef = CreatureRef.of(targetSide, target);
 
-        // ATK that static effects (suit synergies, abilities) add, worked out on the board as it is now.
-        List<Modifier> atkBonuses = StaticEffects.atkBonuses(state, evaluation, attackerSide, attacker, target, start);
-        int atk = attacker.currentAtk();
+        // ATK that static effects (suit synergies, abilities, spells) add, worked out on the board as it is now.
+        List<Modifier> atkBonuses = b.atkBonuses(attacker, target, start);
+        long atk = b.ownAtk(attacker);
         for (Modifier bonus : atkBonuses) {
-            atk = Math.addExact(atk, bonus.value());
+            atk += bonus.kind() == Modifier.Kind.ATK_MALUS ? -bonus.value() : bonus.value();
         }
-        int advantage = rules.advantagePermille(
+        atk = Math.max(0, atk);
+        List<Modifier> damageModifiers = new ArrayList<>(atkBonuses);
+        if (attacker.atkSetToBase()) {
+            atk = attacker.card().atk();
+            damageModifiers.add(new Modifier(attackerRef, attacker.atkSetToBaseBy(), AtkToBaseEffect.ID, Modifier.Kind.ATK_SET,
+                    attacker.card().atk()));
+        }
+        int advantage = g.rules.advantagePermille(
                 attacker.card().subfaction().dataName(), target.card().subfaction().dataName());
-        int effectiveAtk = Damage.effectiveAtk(atk, advantage);
+        int effectiveAtk = Damage.effectiveAtk(Math.toIntExact(atk), advantage);
 
         // The target's reductions, in card order.
         List<Modifier> reductions = new ArrayList<>();
         List<Integer> pcts = new ArrayList<>();
         int flat = 0;
         int minDamage = 0;
-        for (BoundExpansion e : effects(target, "T0", "E28")) {
-            if (e.stringParam("mode").orElseThrow().equals("flat")) {
-                flat = Math.addExact(flat, e.intParam("amount"));
-                minDamage = Math.max(minDamage, e.intParam("min_damage"));
-                reductions.add(new Modifier(targetRef, e.abilityId(), e.effectId(),
-                        Modifier.Kind.DAMAGE_REDUCTION_FLAT, e.intParam("amount")));
+        for (Board.Active a : b.reductions(target)) {
+            BoundExpansion e = a.e();
+            Creature from = a.sourceOr(target);
+            CreatureRef fromRef = CreatureRef.of(b.sideOf(from), from);
+            DamageReductionEffect.Reduction reduction = DamageReductionEffect.reduction(e);
+            if (reduction.flat()) {
+                flat = Math.addExact(flat, reduction.value());
+                minDamage = Math.max(minDamage, reduction.minDamage());
+                reductions.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
+                        Modifier.Kind.DAMAGE_REDUCTION_FLAT, reduction.value()));
             } else {
-                pcts.add(e.intParam("pct"));
-                reductions.add(new Modifier(targetRef, e.abilityId(), e.effectId(),
-                        Modifier.Kind.DAMAGE_REDUCTION_PCT, e.intParam("pct")));
+                pcts.add(reduction.value());
+                reductions.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
+                        Modifier.Kind.DAMAGE_REDUCTION_PCT, reduction.value()));
             }
         }
 
         // The attacker's pierce: several add up, at most 100.
         List<Modifier> piercing = new ArrayList<>();
         int pierce = 0;
-        for (BoundExpansion e : effects(attacker, "T0", "E56")) {
-            pierce = Math.min(100, pierce + e.intParam("pct"));
-            piercing.add(new Modifier(attackerRef, e.abilityId(), e.effectId(), Modifier.Kind.PIERCE_PCT, e.intParam("pct")));
+        for (Board.Active a : b.reaching(IgnoreMitigationEffect.ID, attacker, Board.Ctx.NONE)) {
+            pierce = Math.min(100, pierce + a.e().intParam("pct"));
+            piercing.add(new Modifier(attackerRef, a.e().abilityId(), a.e().effectId(), Modifier.Kind.PIERCE_PCT,
+                    a.e().intParam("pct")));
         }
 
-        int mitigation = Damage.mitigationPermille(pcts, pierce, mitigationFloor(rules));
+        int mitigation = Damage.mitigationPermille(pcts, pierce, mitigationFloor(g));
         int damage = Damage.damage(effectiveAtk, Damage.pierce(flat, pierce), mitigation, minDamage);
 
-        List<Modifier> damageModifiers = new ArrayList<>(atkBonuses);
         if (effectiveAtk > 0) {
             damageModifiers.addAll(reductions);
             if (!reductions.isEmpty()) {
@@ -95,27 +116,50 @@ record Strike(
             }
         }
 
+        // E23: an effect stops the attacker from damaging this target; E29: the target prevents the next damage.
+        String preventedBy = damage > 0 ? attacker.cannotDamageBy(target) : null;
+        if (preventedBy != null) {
+            damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), preventedBy, PreventCombatDamageEffect.ID,
+                    Modifier.Kind.DAMAGE_PREVENTED, damage));
+            damage = 0;
+        }
+        if (damage > 0 && land) {
+            Destruction.Prevention p = g.destruction.preventDamage(target, damage);
+            if (p.left() != damage) {
+                damageModifiers.add(new Modifier(CreatureRef.of(targetSide, target), p.abilityId(), PreventDamageEffect.ID,
+                        Modifier.Kind.DAMAGE_PREVENTED, damage - p.left()));
+                damage = p.left();
+            }
+        }
+
         int defBefore = target.currentDef();
         int defAfter = Math.subtractExact(defBefore, damage);
-        boolean killed = defAfter <= 0;
+        List<Board.Active> lethalOnes = damage > 0 && defAfter > 0
+                ? b.reaching(LethalDamageEffect.ID, attacker, Board.Ctx.NONE) : List.of();
+        boolean lethal = !lethalOnes.isEmpty();
+        if (lethal) {
+            damageModifiers.add(new Modifier(attackerRef, lethalOnes.get(0).e().abilityId(), LethalDamageEffect.ID,
+                    Modifier.Kind.LETHAL, 0));
+        }
+        boolean killed = defAfter <= 0 || lethal;
 
-        // The attacker's replacement effects when it is about to deal spill (T34), in ability order, only on a kill:
-        // E21 changes the hand multiplier (Traboccante, Frattura 4 and 5), E22 the DEF the spill uses (Frattura).
+        // The attacker's replacement effects when it is about to deal spill (T34), in ability order, then the spells'
+        // that reach it, only on a kill: E21 changes the hand multiplier, E22 the DEF the spill uses.
         List<Modifier> spillModifiers = new ArrayList<>();
         List<Integer> factors = new ArrayList<>();
         List<Integer> defShares = new ArrayList<>();
         if (killed) {
-            for (BoundExpansion e : attacker.abilities("T34")) {
-                if (!StaticEffects.holds(e, state, evaluation, attackerSide, attacker)) {
-                    continue;
-                }
-                if (e.effectId().equals("E21")) {
+            for (Board.Active a : b.replacements("T34", attacker)) {
+                BoundExpansion e = a.e();
+                Creature from = a.sourceOr(attacker);
+                CreatureRef fromRef = CreatureRef.of(b.sideOf(from), from);
+                if (e.effectId().equals(SpillMultiplierEffect.ID)) {
                     factors.add(e.intParam("factor"));
-                    spillModifiers.add(new Modifier(attackerRef, e.abilityId(), e.effectId(),
+                    spillModifiers.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
                             Modifier.Kind.SPILL_MULTIPLIER, e.intParam("factor")));
-                } else if (e.effectId().equals("E22")) {
+                } else if (e.effectId().equals(SpillDefShareEffect.ID)) {
                     defShares.add(e.intParam("permille"));
-                    spillModifiers.add(new Modifier(attackerRef, e.abilityId(), e.effectId(),
+                    spillModifiers.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
                             Modifier.Kind.SPILL_DEF_PERMILLE, e.intParam("permille")));
                 }
             }
@@ -123,23 +167,24 @@ record Strike(
         int spillMultiplier = Damage.spillMultiplier(handMultiplierPermille, factors);
         int spill = killed ? Damage.spill(damage, Damage.spillDef(defBefore, defShares), spillMultiplier) : 0;
 
-        return new Strike(atk, advantage, effectiveAtk, mitigation, damage, defBefore, defAfter, killed,
-                handMultiplierPermille, spillMultiplier, spill, damageModifiers, spillModifiers);
+        return new Strike(Math.toIntExact(atk), advantage, effectiveAtk, mitigation, damage, defBefore, defAfter, killed,
+                lethal, handMultiplierPermille, spillMultiplier, spill, damageModifiers, spillModifiers);
     }
 
     /**
-     * The blow when the target would have been destroyed but was saved with full DEF (E12): nothing is destroyed
-     * and the blow deals no spill.
+     * The blow when the target would have been destroyed but was saved (E12: full DEF; E11: {@code set_def}): nothing
+     * is destroyed, and the blow deals no spill unless {@code keepSpill}.
      */
-    Strike saved(int fullDef) {
-        return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, fullDef,
-                false, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of());
+    Strike saved(int defAfterSave, boolean keepSpill) {
+        return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, defAfterSave,
+                false, false, handMultiplierPermille, keepSpill ? spillMultiplierPermille : handMultiplierPermille,
+                keepSpill ? spill : 0, damageModifiers, keepSpill ? spillModifiers : List.of());
     }
 
     /** The blow of a Cycle 1 mutual kill (ruleset 9.7): no spill, so Traboccante does not apply either. */
     Strike withoutSpill() {
         return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, defAfter,
-                killed, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of());
+                killed, lethal, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of());
     }
 
     AttackResolved event(Attack attack, int cycle, boolean mutualKill) {
@@ -150,12 +195,8 @@ record Strike(
                 modifiers);
     }
 
-    private static List<BoundExpansion> effects(Creature creature, String triggerId, String effectId) {
-        return creature.abilities(triggerId).stream().filter(e -> e.effectId().equals(effectId)).toList();
-    }
-
-    private static int mitigationFloor(Ruleset rules) {
-        if (rules.global("mitigation_floor_permille").orElse(null) instanceof Value.IntV n) {
+    private static int mitigationFloor(Game g) {
+        if (g.rules.global("mitigation_floor_permille").orElse(null) instanceof Value.IntV n) {
             return Math.toIntExact(n.v());
         }
         throw new RulesetException("balance.json#globals.mitigation_floor_permille: missing or not an integer");

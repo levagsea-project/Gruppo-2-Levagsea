@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import quorma.gameengine.data.ResClass;
 import quorma.gameengine.log.CreatureRef;
-import quorma.gameengine.log.FizzleReason;
 import quorma.gameengine.log.MatchEvent;
-import quorma.gameengine.log.MatchEvent.EffectFizzled;
-import quorma.gameengine.log.MatchEvent.EffectResolved;
 import quorma.gameengine.log.MatchEvent.EffectTriggered;
 import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Side;
@@ -19,29 +16,93 @@ import quorma.gameengine.model.Side;
  *
  * <p>The caller pushes the effects triggered together, already in ruleset 4.3 order, then calls
  * {@link #resolveAll()}. Effects resolve last in, first out; one triggered while another resolves goes on top
- * and resolves next. An effect whose target is destroyed when it resolves fizzles. Every push, resolution and
- * fizzle is appended to the log. The stack only decides the order: what an effect does is
- * {@link EffectResolver}.</p>
+ * and resolves next. Every push, resolution and fizzle is appended to the log. The stack only decides the order:
+ * what an effect does, and whether it may fire, is up to its {@link Hooks}.</p>
  */
 public final class EffectStack {
 
     /** Safety net: a stack that needs more resolutions than this is a loop in the data, an engine error. */
     public static final int MAX_RESOLUTIONS = 1000;
 
-    private record Pending(Side side, Creature source, Creature target, BoundExpansion expansion, int scalePermille) {}
+    /**
+     * One triggered effect.
+     *
+     * @param side          the side of its source
+     * @param source        the creature whose ability it is (for a suit tier or a spell, the creature it affects)
+     * @param target        the creature it affects when fixed at the push, null when the effect finds its targets when
+     *                      it resolves
+     * @param triggerId     what the log shows (T5 for an Evolution forced by Spira 5)
+     * @param scalePermille multiplies the numbers of the effect when it resolves (E19, Spira 4)
+     * @param context       what the trigger provides
+     */
+    public record Item(Side side, Creature source, Creature target, BoundExpansion expansion, String triggerId,
+            int scalePermille, TriggerContext context) {
 
-    private final Deque<Pending> stack = new ArrayDeque<>();
-    private final List<MatchEvent> log;
-    private final int maxResolutions;
+        public Item {
+            Objects.requireNonNull(side, "side");
+            Objects.requireNonNull(source, "source");
+            Objects.requireNonNull(expansion, "expansion");
+            Objects.requireNonNull(context, "context");
+        }
 
-    /** @param log where the stack appends its events */
-    public EffectStack(List<MatchEvent> log) {
-        this(log, MAX_RESOLUTIONS);
+        /**
+         * An ability of {@code source} that fired on its own trigger. An effect aimed at the source itself (S1) has
+         * its target fixed now; any other finds its targets when it resolves.
+         */
+        public static Item triggered(Side side, Creature source, BoundExpansion expansion, int scalePermille,
+                TriggerContext context) {
+            return triggered(side, source, expansion, expansion.triggerId(), scalePermille, context);
+        }
+
+        /** Like {@link #triggered(Side, Creature, BoundExpansion, int, TriggerContext)} with another trigger shown in the log. */
+        public static Item triggered(Side side, Creature source, BoundExpansion expansion, String triggerId,
+                int scalePermille, TriggerContext context) {
+            Creature fixed = expansion.targetId().equals(TargetIds.SELF) ? source : null;
+            return new Item(side, source, fixed, expansion, triggerId, scalePermille, context);
+        }
+
+        /** An effect of the player or of a spell that affects {@code creature}, which is also its source (no scaling). */
+        public static Item onCreature(Side side, Creature creature, BoundExpansion expansion, String triggerId,
+                TriggerContext context) {
+            return new Item(side, creature, creature, expansion, triggerId, 1000, context);
+        }
     }
 
-    EffectStack(List<MatchEvent> log, int maxResolutions) {
+    /** What the turn code decides about the effects on the stack. */
+    public interface Hooks {
+
+        /** True if {@code item} may be pushed; it is then counted as fired. */
+        boolean allow(Item item);
+
+        /** Called once {@code item} is on the stack (an Evolution that fired triggers T15). */
+        default void pushed(Item item, EffectStack stack) {}
+
+        /** Resolves {@code item}, appending to {@code log}. Effects it triggers go on {@code stack}. */
+        void resolve(Item item, EffectStack stack, List<MatchEvent> log);
+    }
+
+    private final Deque<Item> stack = new ArrayDeque<>();
+    private final List<MatchEvent> log;
+    private final int maxResolutions;
+    private final Hooks hooks;
+
+    /**
+     * @param log   where the stack appends its events
+     * @param hooks what the caller decides: whether an effect may fire and what it does when it resolves
+     */
+    public EffectStack(List<MatchEvent> log, Hooks hooks) {
+        this(log, MAX_RESOLUTIONS, hooks);
+    }
+
+    EffectStack(List<MatchEvent> log, int maxResolutions, Hooks hooks) {
         this.log = Objects.requireNonNull(log, "log");
         this.maxResolutions = maxResolutions;
+        this.hooks = Objects.requireNonNull(hooks, "hooks");
+    }
+
+    /** The log the stack appends to. */
+    public List<MatchEvent> log() {
+        return log;
     }
 
     /** Puts a triggered (class T) expansion of {@code source}, owned by {@code side}, on top of the stack. */
@@ -58,25 +119,28 @@ public final class EffectStack {
     }
 
     /**
-     * The full form. An Evolution that already fired {@code maxTriggers} times on {@code source} is not pushed; one
-     * that is pushed is counted as fired. {@code triggerId} is what the log shows (T5 for an Evolution forced by
-     * Spira 5). {@code scalePermille} multiplies the numbers of the effect when it resolves (E19, Spira 4).
+     * The full form with a fixed target. An effect its hooks refuse (an Evolution that already fired) is not pushed.
+     * {@code triggerId} is what the log shows (T5 for an Evolution forced by Spira 5). {@code scalePermille}
+     * multiplies the numbers of the effect when it resolves (E19, Spira 4).
      */
     public void push(Side side, Creature source, Creature target, BoundExpansion expansion, String triggerId,
             int scalePermille) {
-        if (expansion.cls() != ResClass.T) {
-            throw new IllegalArgumentException("only class T effects use the stack, got " + expansion.cls()
-                    + " for " + expansion.abilityId() + " " + expansion.effectId());
+        push(new Item(side, source, target, expansion, triggerId, scalePermille, TriggerContext.NONE));
+    }
+
+    /** Pushes {@code item} if its hooks allow it. */
+    public void push(Item item) {
+        if (item.expansion().cls() != ResClass.T) {
+            throw new IllegalArgumentException("only class T effects use the stack, got " + item.expansion().cls()
+                    + " for " + item.expansion().abilityId() + " " + item.expansion().effectId());
         }
-        if (expansion.evolution()) {
-            if (!source.canTrigger(expansion)) {
-                return;
-            }
-            source.markTriggered(expansion);
+        if (!hooks.allow(item)) {
+            return;
         }
-        stack.push(new Pending(side, source, target, expansion, scalePermille));
-        log.add(new EffectTriggered(CreatureRef.of(side, source), expansion.abilityId(), triggerId,
-                expansion.effectId(), stack.size()));
+        stack.push(item);
+        log.add(new EffectTriggered(CreatureRef.of(item.side(), item.source()), item.expansion().abilityId(),
+                item.triggerId(), item.expansion().effectId(), stack.size()));
+        hooks.pushed(item, this);
     }
 
     public boolean isEmpty() {
@@ -99,20 +163,7 @@ public final class EffectStack {
                 throw new IllegalStateException(
                         "the effect stack did not empty after " + maxResolutions + " resolutions: a loop in the abilities");
             }
-            resolve(stack.pop());
+            hooks.resolve(stack.pop(), this, log);
         }
-    }
-
-    private void resolve(Pending top) {
-        BoundExpansion e = top.expansion();
-        CreatureRef source = CreatureRef.of(top.side(), top.source());
-        Creature target = top.target();
-        if (target.destroyed()) {
-            log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), FizzleReason.TARGET_DESTROYED));
-            return;
-        }
-        EffectResolver.Outcome outcome = EffectResolver.resolve(e.scaled(top.scalePermille()), target);
-        log.add(new EffectResolved(source, e.abilityId(), e.effectId(), CreatureRef.of(top.side(), target),
-                outcome.changes(), outcome.stacks()));
     }
 }

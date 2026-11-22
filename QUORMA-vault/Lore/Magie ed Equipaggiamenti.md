@@ -79,7 +79,7 @@ Le due magie e i due equipaggiamenti più generali sono pensati come i primi da 
 ## Voce e limiti per le carte
 
 - Il testo di colore è una **voce che li usa o li registra**, mai che li spiega: un taccuino, un inventario, un verbale, un modulo di assegnazione.
-- Il costo è nella lore interna e in *Rivela / Nasconde*. Mai ATK, DEF, percentuali, turni, corsie o altri termini di gioco, in nessun testo.
+- Il costo sta nella riga *Costo* di *Rivela / Nasconde*; la lore interna può mostrarne il lato negativo, senza dichiararlo. Mai ATK, DEF, percentuali, turni, corsie o altri termini di gioco, in nessun testo.
 - Niente effetti speciali nelle immagini: una magia si vede nelle sue conseguenze; un equipaggiamento è un oggetto con i segni di chi l'ha già usato.
 - Valgono tutti i vincoli di trama e di canone delle altre carte (la Primaria non si nomina, il [[Telaio]] non è infrastruttura, 67 e 61 con parsimonia).
 

@@ -10,12 +10,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
+import quorma.backend.catalogue.publish.CardChecker;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /** Calls the engine-service and returns its MatchLog without interpreting or recomputing it. */
 @Component
-public class HttpGameEngine {
+public class HttpGameEngine implements CardChecker, EngineInfoSource {
 
     private static final JsonMapper MAPPER = JsonMapper.builder().build();
 
@@ -36,11 +37,44 @@ public class HttpGameEngine {
     }
 
     public MatchLog simulate(JsonNode input) {
+        return simulate(input, timeout);
+    }
+
+    /** Same call with a shorter limit, for a caller that has a budget for several calls (never longer than the default). */
+    public MatchLog simulate(JsonNode input, Duration limit) {
+        Duration effective = limit.compareTo(timeout) < 0 ? limit : timeout;
         return client.post()
                 .uri("/v1/simulate")
                 .bodyValue(input)
                 .retrieve()
                 .bodyToMono(MatchLog.class)
+                .timeout(effective)
+                .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
+                .onErrorMap(HttpGameEngine::translate)
+                .block();
+    }
+
+    /** {@code GET /engine/info}: which engine build and rule pack the engine service is running. */
+    @Override
+    public EngineInfo info() {
+        return client.get()
+                .uri("/engine/info")
+                .retrieve()
+                .bodyToMono(EngineInfo.class)
+                .timeout(timeout)
+                .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
+                .onErrorMap(HttpGameEngine::translate)
+                .block();
+    }
+
+    /** {@code POST /v1/cards/check}: the engine's report on a candidate card pool, as the engine wrote it. */
+    @Override
+    public JsonNode check(JsonNode request) {
+        return client.post()
+                .uri("/v1/cards/check")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
                 .timeout(timeout)
                 .switchIfEmpty(Mono.error(() -> new EngineUnavailableException("empty response from the engine service")))
                 .onErrorMap(HttpGameEngine::translate)

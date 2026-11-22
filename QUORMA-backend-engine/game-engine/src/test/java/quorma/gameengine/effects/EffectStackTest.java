@@ -22,19 +22,51 @@ import quorma.gameengine.model.Ability;
 import quorma.gameengine.model.AbilityRef;
 import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.CreatureCard;
+import quorma.gameengine.model.Lasting;
 import quorma.gameengine.model.Side;
 import quorma.gameengine.model.Subfaction;
 
 /**
- * The stack's order and its log: LIFO, fizzling, what may go on it, and the safety net. What an effect does is
- * tested in {@link EffectResolverTest}. Insaziabile is +150 per mille of base ATK ({@code balance.json}).
+ * The stack's order and its log: LIFO, fizzling, what may go on it, and the safety net. The hooks here are a minimal
+ * stand-in for the turn's: an effect resolves on its fixed target through its {@link Effect} class and a
+ * {@link FakeContext}; what the effects do is tested in {@link EffectClassesTest}. Insaziabile is +150 per mille of
+ * base ATK ({@code balance.json}).
  */
 class EffectStackTest {
 
     private static final AbilityBinder BINDER = new AbilityBinder(RulesetLoader.fromClasspath());
 
     private final List<MatchEvent> log = new ArrayList<>();
-    private final EffectStack stack = new EffectStack(log);
+    private final EffectStack stack = new EffectStack(log, new TestHooks());
+
+    /** What the stack asks of the turn code, reduced to what these tests need. */
+    private static final class TestHooks implements EffectStack.Hooks {
+
+        @Override
+        public boolean allow(EffectStack.Item item) {
+            if (!item.source().canTrigger(item.expansion())) {
+                return false;
+            }
+            item.source().markTriggered(item.expansion());
+            return true;
+        }
+
+        @Override
+        public void resolve(EffectStack.Item item, EffectStack stack, List<MatchEvent> log) {
+            BoundExpansion e = item.expansion().scaled(item.scalePermille());
+            CreatureRef source = CreatureRef.of(item.side(), item.source());
+            Creature target = item.target() != null ? item.target() : item.source();
+            if (target.destroyed()) {
+                log.add(new EffectFizzled(source, e.abilityId(), e.effectId(), FizzleReason.TARGET_DESTROYED));
+                return;
+            }
+            Effect.Use use = new Effect.Use(e, item.side(), item.side(), item.source(), Lasting.permanent(),
+                    item.context(), new Followups());
+            Outcome outcome = Effects.find(e.effectId()).orElseThrow().apply(new FakeContext(), use, target);
+            log.add(new EffectResolved(source, e.abilityId(), e.effectId(), CreatureRef.of(item.side(), target),
+                    outcome.changes(), outcome.stacks()));
+        }
+    }
 
     private static Creature creature(String id, int lane, int atk, Ability... abilities) {
         CreatureCard card = new CreatureCard(id, 5, Suit.VINCOLO, Subfaction.ADATTATI, atk, 3000, List.of(abilities));
@@ -99,6 +131,25 @@ class EffectStackTest {
     }
 
     @Test
+    void aTriggeredItemIsAimedAtItsSourceOnlyForS1() {
+        Creature x = insaziabile("X", 1, 4000);
+        BoundExpansion e = onKill(x); // Insaziabile aims at S1
+        EffectStack.Item item = EffectStack.Item.triggered(Side.A, x, e, 1000, TriggerContext.NONE);
+        assertEquals(x, item.target());
+        assertEquals("T19", item.triggerId());
+        assertEquals("T5", EffectStack.Item.triggered(Side.A, x, e, "T5", 1000, TriggerContext.NONE).triggerId());
+    }
+
+    @Test
+    void anItemOnACreatureHasItAsSourceAndTarget() {
+        Creature x = insaziabile("X", 1, 4000);
+        EffectStack.Item item = EffectStack.Item.onCreature(Side.B, x, onKill(x), "T29", TriggerContext.NONE);
+        assertEquals(x, item.source());
+        assertEquals(x, item.target());
+        assertEquals(1000, item.scalePermille());
+    }
+
+    @Test
     void onlyTriggeredEffectsGoOnTheStack() {
         Creature x = creature("X", 1, 1000, new AbilityRef("K_TRABOCCANTE"));
         assertThrows(IllegalArgumentException.class, () -> stack.push(Side.A, x, x.abilities("T34").get(0)));
@@ -106,7 +157,7 @@ class EffectStackTest {
 
     @Test
     void tooManyResolutionsStopTheSimulation() {
-        EffectStack small = new EffectStack(log, 2);
+        EffectStack small = new EffectStack(log, 2, new TestHooks());
         Creature x = insaziabile("X", 1, 4000);
         for (int i = 0; i < 3; i++) {
             small.push(Side.A, x, onKill(x));

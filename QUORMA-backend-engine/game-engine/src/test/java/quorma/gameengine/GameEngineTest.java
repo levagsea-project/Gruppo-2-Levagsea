@@ -142,8 +142,8 @@ class GameEngineTest {
         assertTrue(refused(input(1, "1.0-alpha", ACE + ", " + KING, KING))
                 .contains("players.A.deck[1]: card PA-SPI-K is POTENZE_ARTIFICIALI, the player is RESISTENZA_UMANA"));
         assertTrue(refused(input(1, "1.0-alpha", ACE + ", " + ACE, KING)).contains("players.A.deck[1].id: RU-VIN-A is already in this deck"));
-        assertTrue(refused(input(1, "1.0-alpha", ACE, KING.replace("K_SCUDO\", \"params\": {\"x\": 25}", "K_LETALE\"")))
-                .contains("players.B.deck[0].abilities: card PA-SPI-K K_LETALE: unknown ability"));
+        assertTrue(refused(input(1, "1.0-alpha", ACE, KING.replace("K_SCUDO\", \"params\": {\"x\": 25}", "K_DOPPIO_COLPO\"")))
+                .contains("players.B.deck[0].abilities: card PA-SPI-K K_DOPPIO_COLPO: unknown ability"));
         String spell = "{\"id\": \"S\", \"kind\": \"SPELL\", \"faction\": \"POTENZE_ARTIFICIALI\", \"abilities\": [{\"id\": \"K_SCUDO\"}]}";
         assertTrue(refused(input(1, "1.0-alpha", ACE, KING + ", " + spell))
                 .contains("players.B.deck[1].abilities: card S K_SCUDO: a spell has its effects written as expansions"));

@@ -8,8 +8,8 @@ Segnala sempre:
   - CAN duplicati, categorie non ammesse
 Con --orfani elenca anche gli elementi di canone che nessuna nota collega, a parte la carta che li ha introdotti:
 sono i primi da riusare quando si scrive una carta nuova.
-Avvisa, senza contarlo come errore, delle carte con più di due elementi nuovi oltre alla carta stessa:
-la regola vale per le carte nuove, e le carte scritte prima possono superarla.
+Avvisa, senza contarlo come errore, delle carte nuove (data uguale o successiva a DATA_CARTE_NUOVE) con più di due
+elementi nuovi oltre alla carta stessa: le carte scritte prima possono superare il limite e non vengono segnalate.
 Esce con codice 1 se trova errori (avvisi e orfani non sono errori).
 """
 import re, sys
@@ -19,6 +19,7 @@ from pathlib import Path
 VAULT = Path(__file__).resolve().parent.parent
 CATEGORIE = {"Mondo", "Luogo", "Oggetto", "Entità", "Pratica", "Seme", "Sottofazione", "Carta"}
 MAX_NUOVI = 2
+DATA_CARTE_NUOVE = "2026-11-17"   # le carte con data precedente sono scritte prima della regola
 IGNORA = {"📄 Template Carta.md", "Prompt Carte.md", "Prompt Magie ed Equipaggiamenti.md", "Carta.md",
           "Magia.md", "Equipaggiamento.md", "Elemento di canone.md"}
 
@@ -69,7 +70,7 @@ for p, t in note.items():
         m = re.search(r"> \[!warning\][^\n]*\n((?:>.*\n?)*)", t)
         carte = {q.stem for q in note if "Cards" in q.parts}   # una carta citata nell'elenco non è un elemento nuovo
         nuovi = [n for n in re.findall(r"\*\*CAN-\d+\*\* \[\[([^\]|#]+)", m.group(1)) if n not in carte] if m else []
-        if len(nuovi) > MAX_NUOVI:
+        if len(nuovi) > MAX_NUOVI and campo(t, "data") >= DATA_CARTE_NUOVE:
             avvisi.append(f"{len(nuovi)} elementi nuovi (massimo {MAX_NUOVI} per le carte nuove): {p.stem}")
 
 orfani = []

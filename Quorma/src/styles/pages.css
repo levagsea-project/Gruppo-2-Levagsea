@@ -1,0 +1,44 @@
+/* Base comune delle pagine Mazzi e Nuovo mazzo */
+.page { position: relative; padding: 28px 30px 20px; overflow: hidden; display: flex; flex-direction: column;
+  /* velo come nel design: più chiaro al centro-destra (dove sta il soggetto), scuro ai bordi e in basso */
+  background:
+    radial-gradient(ellipse 80% 75% at 65% 40%, rgba(8, 16, 20, 0.6) 0%, rgba(8, 16, 20, 0.93) 100%),
+    linear-gradient(0deg, rgba(8, 16, 20, 0.95) 0%, rgba(8, 16, 20, 0) 40%),
+    var(--sfondo, url('/hero-bg.jpg')) 60% 40% / cover no-repeat, #050b0f; }
+.page .currency-bar { right: 30px; }
+
+/* Titolo di pagina (PageTitle), come la "targa" del design: Cinzel 40px (34px con la barra laterale a icone).
+   Su telefono le misure le dà styles/mobile.css */
+.page-title-line { display: block; width: 48px; height: 1px; margin-bottom: 10px; background: var(--petrol-500); box-shadow: 0 0 8px rgba(74,166,173,.8); }
+.page-title h1 { margin: 0; font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: #EEF4F5; }
+.page-title p { margin: 6px 0 0; font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol-300); }
+@media (max-width: 1279px) { .page-title h1 { font-size: 34px; line-height: 38px; } }
+
+/* Stat: numero + etichetta */
+.stat-value { font-family: var(--serif); font-size: 14px; font-weight: 700; }
+.stat-label { margin-top: 4px; font-size: 6.5px; letter-spacing: 1.5px; color: var(--muted); }
+
+/* bottoni esagonali */
+.hex-btn { --cut: 10px; padding: 1px; border: none; background: var(--cyan-dim); color: var(--text);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% 50%, calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 50%); }
+.hex-inner { display: flex; align-items: center; justify-content: center; height: 100%; padding: 8px 22px;
+  font-family: var(--serif); font-size: 8.5px; font-weight: 700; letter-spacing: 2px; background: #0b1d24;
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% 50%, calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 50%); }
+.hex-btn:hover { background: var(--cyan); }
+.hex-light { background: #cfe0e4; color: #0a141a; }
+.hex-light .hex-inner { background: linear-gradient(180deg, #f1f5f6, #a9b9be); }
+.hex-primary .hex-inner { background: linear-gradient(180deg, #17404a, #0d2830); font-size: 11px; letter-spacing: 3px; padding: 11px 22px; }
+.hex-icon { color: var(--cyan); margin-right: 6px; }
+
+/* Sfondo di ogni schermata (generati con ComfyUI, tools/comfy/runs/sfondo-*.json).
+   Le pagine senza --sfondo usano /hero-bg.jpg, come la Home. */
+.play-page { --sfondo: url('/images/sfondi/sfondo-gioca.webp'); }
+.decks-page { --sfondo: url('/images/sfondi/sfondo-mazzi.webp'); }
+.newdeck-page { --sfondo: url('/images/sfondi/sfondo-nuovo-mazzo.webp'); }
+.rules-page { --sfondo: url('/images/sfondi/sfondo-regole.webp'); }
+.shop-page { --sfondo: url('/images/sfondi/sfondo-negozio.webp'); }
+.coll-page { --sfondo: url('/images/sfondi/sfondo-collezione.webp'); }
+.sfide-page { --sfondo: url('/images/sfondi/sfondo-sfide.webp'); }
+.hex-btn:disabled { opacity: .45; cursor: not-allowed; }
+.hex-btn:disabled:hover { background: var(--cyan-dim); }

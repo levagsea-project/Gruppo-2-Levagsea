@@ -71,15 +71,18 @@ public final class JsonReader {
     }
 
     private static Value parseString(String s, String path) {
-        if (!s.startsWith("$")) {
+        // "-$param.x" / "-$tune.K.x": the resolved integer, negated (a malus written with the bonus's number)
+        boolean negated = s.startsWith("-$");
+        String text = negated ? s.substring(1) : s;
+        if (!text.startsWith("$")) {
             return new Value.StrV(s);
         }
-        int dot = s.indexOf('.');
-        String head = dot < 0 ? s : s.substring(0, dot);
-        String rest = dot < 0 ? "" : s.substring(dot + 1);
+        int dot = text.indexOf('.');
+        String head = dot < 0 ? text : text.substring(0, dot);
+        String rest = dot < 0 ? "" : text.substring(dot + 1);
         return switch (head) {
-            case "$param" -> new Value.Ref(Value.RefKind.PARAM, rest);
-            case "$tune" -> new Value.Ref(Value.RefKind.TUNE, rest);
+            case "$param" -> new Value.Ref(Value.RefKind.PARAM, rest, negated);
+            case "$tune" -> new Value.Ref(Value.RefKind.TUNE, rest, negated);
             default -> throw new RulesetException(path + ": unknown reference '" + s + "'");
         };
     }
