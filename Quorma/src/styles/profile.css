@@ -71,6 +71,7 @@ button.mb-avatar { padding: 0; border: 0; background: none; cursor: pointer; }
 .pf-match:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
 .pf-match[aria-current="true"] { border-left-color: var(--petrol-300); background: linear-gradient(90deg, rgba(74,166,173,.28), rgba(74,166,173,.06)); }
 .pf-match-main b { display: block; font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; }
+.pf-nuova { display: inline-block; margin-left: 8px; padding: 0 6px; font-family: var(--font-sans); font-size: 10.5px; line-height: 16px; font-style: normal; font-weight: 700; letter-spacing: .08em; color: var(--ground-950); background: var(--ember-500); vertical-align: 1px; }
 .pf-match-main small { display: block; margin-top: 2px; font-size: 12px; color: var(--steel-300); }
 .pf-match-when { font-size: 12px; color: var(--steel-300); white-space: nowrap; }
 .pf-empty { margin: 8px 14px; font-size: 13px; color: var(--steel-300); }

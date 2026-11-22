@@ -5,6 +5,8 @@ import { resultLabel } from '../../data/profile'
 import type { Game, Series } from '../../data/profile'
 import { ApiError, GENERIC } from '../../lib/api'
 import { formatWhen } from '../../lib/matches'
+import { getSeries, type SeriesResponse } from '../../lib/series'
+import BattleScreen from '../battle/BattleScreen'
 import ResultLabel from './ResultLabel'
 
 type Props = { series: Series; onLoadDetail: (s: Series, g: Game) => Promise<void> }
@@ -18,6 +20,9 @@ export default function MatchDetail({ series, onLoadDetail }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [attempt, setAttempt] = useState(0)
+  const [replay, setReplay] = useState<SeriesResponse | null>(null) // la serie da rivedere a tutto schermo
+  const [replayLoading, setReplayLoading] = useState(false)
+  const [replayError, setReplayError] = useState('')
   const player = currentPlayer()
   const game = series.games.find((g) => g.n === n) ?? series.games[0]
   const missing = !!game && !game.detail
@@ -48,6 +53,19 @@ export default function MatchDetail({ series, onLoadDetail }: Props) {
   }
 
   const detail = game?.detail
+
+  // La serie arriva senza log: la battaglia li chiede al replay, partita per partita.
+  const openReplay = async () => {
+    setReplayLoading(true)
+    setReplayError('')
+    try {
+      setReplay(await getSeries(series.id))
+    } catch (err) {
+      setReplayError(err instanceof ApiError ? err.message : GENERIC)
+    } finally {
+      setReplayLoading(false)
+    }
+  }
 
   return (
     <section className="q-tela pf-detail" aria-label="Dettaglio serie">
@@ -139,11 +157,12 @@ export default function MatchDetail({ series, onLoadDetail }: Props) {
           <code>{code}</code>
           <button type="button" onClick={copyCode}>{copied ? 'Copiato' : 'Copia codice'}</button>
         </div>
-        {/* Il replay animato non esiste ancora */}
-        <button type="button" className="q-btn q-btn--argento" disabled title="In arrivo">
-          <span className="q-btn__in">Guarda il replay · in arrivo</span>
+        {replayError && <p className="pf-avviso pf-avviso--errore" role="alert">{replayError}</p>}
+        <button type="button" className="q-btn q-btn--argento" disabled={replayLoading} aria-busy={replayLoading} onClick={() => void openReplay()}>
+          <span className="q-btn__in">{replayLoading ? 'Preparo il replay…' : `Guarda il replay · Partita ${game?.n ?? 1}`}</span>
         </button>
       </div>
+      {replay && <BattleScreen key={replay.id} series={replay} startGame={game?.n} onClose={() => setReplay(null)} onOpenMatches={() => {}} />}
     </section>
   )
 }

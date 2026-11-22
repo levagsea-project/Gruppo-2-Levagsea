@@ -10,7 +10,10 @@ export default function MatchRow({ series, selected, onSelect }: Props) {
     <button type="button" className="pf-match" aria-current={selected ? 'true' : undefined} onClick={onSelect}>
       <ResultLabel result={series.result} />
       <span className="pf-match-main">
-        <b>Contro {series.opponent}</b>
+        <b>
+          Contro {series.opponent}
+          {series.unread && <em className="pf-nuova">Nuova</em>}
+        </b>
         <small>{series.mode} · {series.won}–{series.lost}</small>
       </span>
       <time className="pf-match-when">{formatWhen(series.finishedAt)}</time>

@@ -216,7 +216,22 @@
   .bt .bt-esito__azioni .q-btn__in { height: 48px; padding: 0 18px; font-size: 11px; }
 }
 
+/* ---------- Peso dei colpi ---------- */
+/* onda d'urto attorno al bersaglio */
+.bt-carta--colpita::before { content: ""; position: absolute; z-index: 5; inset: -3px; pointer-events: none; box-shadow: 0 0 0 2px var(--ember-200), 0 0 18px 4px rgba(224,135,74,.75); animation: bt-onda calc(var(--t) * .42) ease-out both; }
+@keyframes bt-onda { from { opacity: 1; transform: scale(.94); } to { opacity: 0; transform: scale(1.2); } }
+/* la creatura distrutta cede: sprofonda e si spegne */
+.bt-carta--distrutta { animation: bt-crolla .62s cubic-bezier(.45, 0, .7, .4) both; }
+.bt-carta--colpita.bt-carta--distrutta { animation: bt-trema calc(var(--t) * .3) linear, bt-crolla .62s cubic-bezier(.45, 0, .7, .4) calc(var(--t) * .16) both; }
+@keyframes bt-crolla { 0% { opacity: 1; filter: brightness(1.7) saturate(.6); transform: none; } 45% { opacity: .85; filter: brightness(.9) grayscale(.5); transform: translateY(3px) rotate(-1.2deg) scale(.985); } 100% { opacity: .42; filter: grayscale(.9) brightness(.62); transform: translateY(5px) rotate(-1.2deg) scale(.96); } }
+/* un colpo alla vita scuote tutto il campo */
+.bt-campo--scossa { animation: bt-scossa-0 calc(var(--t) * .28) linear; }
+.bt-campo--scossa[data-ritmo="1"] { animation-name: bt-scossa-1; }
+@keyframes bt-scossa-0 { 0%, 100% { transform: none; } 25% { transform: translate(-3px, 2px); } 55% { transform: translate(3px, -2px); } 80% { transform: translate(-1px, 1px); } }
+@keyframes bt-scossa-1 { 0%, 100% { transform: none; } 25% { transform: translate(-3px, 2px); } 55% { transform: translate(3px, -2px); } 80% { transform: translate(-1px, 1px); } }
+
 @media (prefers-reduced-motion: reduce) {
+  .bt-carta--colpita::before, .bt-carta--distrutta, .bt-carta--colpita.bt-carta--distrutta, .bt-campo--scossa { animation: none; }
   .bt[open], .bt-carta, .bt-carta--attacca, .bt-carta--colpita, .bt-carta--effetto, .bt-carta--bersaglio::before, .bt-vita--colpita .bt-vita__num, .bt-asse__fase, .bt-racconto, .bt-intermezzo, .bt-esito { animation: none; }
   .bt-carta--attacca { filter: drop-shadow(0 0 9px rgba(74,166,173,.9)); }
   .bt-float { animation: none; }

@@ -108,8 +108,10 @@ function Plate({ game, beat, beatIndex, board, impacted, side, name }: Omit<Prop
 export default function BattleBoard(props: Props) {
   const { game, beat, names } = props
   const them = otherSeat(game.me)
+  // Un colpo che arriva alla vita scuote il campo; data-ritmo fa ripartire la scossa a ogni battuta.
+  const lifeHit = props.impacted && beat.strikes.some((s) => s.spill > 0)
   return (
-    <div className={`bt-campo ${beat.focus.length ? 'bt-campo--focus' : ''}`}>
+    <div className={`bt-campo ${beat.focus.length ? 'bt-campo--focus' : ''} ${lifeHit ? 'bt-campo--scossa' : ''}`} data-ritmo={props.beatIndex % 2}>
       <Plate {...props} side={them} name={names.them} />
       <Lanes {...props} side={them} />
       <div className="bt-asse">

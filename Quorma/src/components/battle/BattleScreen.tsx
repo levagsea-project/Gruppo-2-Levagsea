@@ -8,6 +8,7 @@ import '../../styles/battle.css'
 
 type Props = {
   series: SeriesResponse
+  startGame?: number // replay: la partita da cui partire (le altre restano nel punteggio e nel risultato)
   onClose: () => void
   onOpenMatches: () => void
 }
@@ -38,7 +39,7 @@ const NextIcon = ({ double }: { double?: boolean }) => (
 // La battaglia a tutto schermo: anima dal log del motore una serie già giocata. Le partite si susseguono da sole;
 // in alto a destra ci sono la velocità e i due salti. Esc porta al risultato e, dal risultato, chiude.
 // Una serie senza log (la stanza giocata mentre aspettavo) li richiede al replay; se non arrivano si va al risultato.
-export default function BattleScreen({ series, onClose, onOpenMatches }: Props) {
+export default function BattleScreen({ series, startGame, onClose, onOpenMatches }: Props) {
   const dialog = useRef<HTMLDialogElement>(null)
   const [games, setGames] = useState<BattleGame[] | null>(null)
   const [phase, setPhase] = useState<Phase>('partita')
@@ -71,12 +72,13 @@ export default function BattleScreen({ series, onClose, onOpenMatches }: Props) 
         }
       })
       setGames(built)
+      setGameIndex(Math.max(0, built.findIndex((g) => g.n === startGame)))
       if (!built.length) setPhase('esito')
     })
     return () => {
       current = false
     }
-  }, [series, me])
+  }, [series, me, startGame])
 
   const game = games?.[gameIndex] ?? null
   const beat = game?.beats[beatIndex] ?? null
