@@ -42,6 +42,7 @@ class OpenApiContractTest extends ApiTest {
             "GET /packs",
             "GET /rooms",
             "GET /rooms/mine",
+            "GET /wallet",
             "POST /admin/catalogue/drafts",
             "POST /admin/catalogue/drafts/{id}/publish",
             "POST /admin/catalogue/drafts/{id}/rebase",
