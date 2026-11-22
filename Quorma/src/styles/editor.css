@@ -49,12 +49,11 @@
 /* Due colonne: le tue carte (scorrono) e il mazzo (scorre per conto suo) */
 .editor-pannello { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 380px; grid-template-rows: minmax(0, 1fr); gap: 28px; }
 .editor-carte { display: flex; flex-direction: column; gap: 12px; min-width: 0; min-height: 0; }
-.editor-filtri { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+.editor-filtri { display: flex; flex-direction: column; gap: 8px; }
 .editor-filtri .info-chips { margin: 0; gap: 6px; }
 .editor-filtri .info-chip { gap: 6px; }
 .editor-filtri__n { opacity: .65; }
-.editor-filtri__seme { width: 14px; height: 14px; }
-.info-chip[aria-pressed="true"] .editor-filtri__seme { background: var(--petrol-900); }
+.editor-nessuna { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .editor-lista { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 6px 6px 2px; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 .editor-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px 14px; align-content: start; }
 

@@ -38,8 +38,7 @@
 @container q-carta-mini (min-width: 220px) { .card-face__effetto { display: block; } }
 
 /* ---------- Collezione ---------- */
-.coll-corpo { display: grid; grid-template-columns: 196px minmax(0, 1fr) 300px; gap: 32px; align-items: start; }
-.coll-filtri { display: flex; flex-direction: column; gap: 20px; }
+.coll-corpo { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; align-items: start; }
 .coll-totali { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .coll-carte { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .coll-griglia { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 18px; }
@@ -144,17 +143,17 @@
 }
 
 @media (max-width: 1279px) {
-  .coll-corpo { grid-template-columns: 180px minmax(0, 1fr) 250px; gap: 24px; }
+  .coll-corpo { grid-template-columns: minmax(0, 1fr) 250px; gap: 24px; }
   .coll-griglia { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .shop-corpo { grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; }
 }
 @media (min-width: 1600px) {
-  .coll-corpo { grid-template-columns: 220px minmax(0, 1fr) 340px; }
+  .coll-corpo { grid-template-columns: minmax(0, 1fr) 340px; }
   .coll-griglia { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 @media (max-width: 1023px) {
-  .coll-corpo { grid-template-columns: 160px minmax(0, 1fr); }
-  .coll-dettaglio { grid-column: 1 / -1; position: static; }
+  .coll-corpo { grid-template-columns: minmax(0, 1fr); }
+  .coll-dettaglio { position: static; }
   .open-carte { grid-template-columns: repeat(3, minmax(0, 190px)); }
 }
 
@@ -269,13 +268,6 @@
   .page.coll-page, .page.shop-page, .page.open-page { overflow: visible; gap: 16px; }
   .coll-corpo, .shop-corpo { grid-template-columns: minmax(0, 1fr); gap: 18px; }
 
-  /* filtri: righe di scelte che scorrono di lato */
-  .coll-filtri { gap: 10px; min-width: 0; }
-  .coll-filtri .q-elenco { flex-direction: row; gap: 6px; margin: 0 -16px; padding: 0 16px 2px; overflow-x: auto; scrollbar-width: none; }
-  .coll-filtri .q-elenco::-webkit-scrollbar { display: none; }
-  .coll-filtri .q-elenco__titolo { display: none; }
-  .coll-filtri .q-elenco__voce { flex: none; width: auto; min-height: 36px; padding: 4px 10px; white-space: nowrap; box-shadow: inset 0 0 0 1px rgba(213,225,229,.2); }
-  .coll-filtri .q-elenco__conta { margin-left: 2px; }
   .coll-griglia { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 
   /* dettaglio della carta: schermata a parte sopra le schede */

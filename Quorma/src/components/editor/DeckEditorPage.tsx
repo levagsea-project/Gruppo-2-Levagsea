@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 import type { CardKind, DeckDetail, FactionId, OwnedCard, SuitId } from '../../types/deck'
 import { factions } from '../../data/factions'
 import { ApiError } from '../../lib/api'
+import { matchesCard, sortCards, type CardSort } from '../../lib/cardFilters'
 import { CREATURE_LIMITS, DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankArticle, rankLabel, spellLimits, type Collection } from '../../lib/cards'
 import { deckErrorMessages, getDeck, saveDeck } from '../../lib/decks'
 import { EDITOR_CLEAN, type EditorStatus } from '../../hooks/useLeaveGuard'
+import CardToolbar, { type FilterGroup } from '../cards/CardToolbar'
 import PageTitle from '../layout/PageTitle'
 import EditorCard, { type CardState } from './EditorCard'
 import CardZoom from './CardZoom'
@@ -64,6 +66,8 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
   const [chosen, setChosen] = useState<Record<string, string>>({}) // cardId → copia scelta
   const [type, setType] = useState<CardKind>('CREATURE')
   const [suit, setSuit] = useState<SuitId | 'tutti'>('tutti')
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<CardSort>('base')
   const [zoom, setZoom] = useState<Option | null>(null) // carta ingrandita (CardZoom)
   const [deckOpen, setDeckOpen] = useState(false) // "Il tuo mazzo" nel pannello dal basso (solo telefono)
   const closeDeck = useCallback(() => setDeckOpen(false), [])
@@ -182,7 +186,28 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
     requestAnimationFrame(() => nameRef.current?.focus())
   }
 
-  const list = options.filter((o) => o.card.kind === type && (type !== 'CREATURE' || suit === 'tutti' || o.card.suit === suit))
+  const found = options.filter((o) => o.card.kind === type && matchesCard(o.card, query)) // tipo e ricerca, prima del seme
+  const list = sortCards(found.filter((o) => type !== 'CREATURE' || suit === 'tutti' || o.card.suit === suit), (o) => o.card, sort)
+  const filterGroups: FilterGroup[] =
+    type === 'CREATURE'
+      ? [{
+          id: 'seme',
+          label: 'Seme',
+          value: suit,
+          defaultValue: 'tutti',
+          onChange: (v) => setSuit(v as SuitId | 'tutti'),
+          options: (['tutti', ...SUITS] as const).map((s) => ({
+            value: s,
+            label: s === 'tutti' ? 'Tutti' : SUIT_NAMES[s],
+            suit: s === 'tutti' ? undefined : s,
+            count: found.filter((o) => s === 'tutti' || o.card.suit === s).length,
+          })),
+        }]
+      : []
+  const resetFilters = () => {
+    setSuit('tutti')
+    setSort('base')
+  }
   const countOf = (k: CardKind) => inDeck.filter((o) => o.card.kind === k).length
   const loading = !collection && !loadError
   const hasCards = options.length > 0
@@ -312,7 +337,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
           <div className="q-marker">
             <h2 id="e-tue" className="q-marker__title">Le tue carte</h2>
             <span className="q-marker__line" aria-hidden="true" />
-            <span className="decks-conta">Premi una carta per aggiungerla</span>
+            {total < DECK_SIZE && <span className="decks-conta">Premi una carta per aggiungerla</span>}
           </div>
 
           <div className="editor-filtri">
@@ -323,19 +348,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
                 </button>
               ))}
             </div>
-            {type === 'CREATURE' && (
-              <div className="info-chips" role="group" aria-label="Seme">
-                <button type="button" className="info-chip" aria-pressed={suit === 'tutti'} onClick={() => setSuit('tutti')}>
-                  Tutti
-                </button>
-                {SUITS.map((s) => (
-                  <button key={s} type="button" className="info-chip" aria-pressed={suit === s} onClick={() => setSuit(s)}>
-                    <span className={`deck-seme deck-seme--${s.toLowerCase()} editor-filtri__seme`} aria-hidden="true" />
-                    {SUIT_NAMES[s]}
-                  </button>
-                ))}
-              </div>
-            )}
+            <CardToolbar query={query} onQuery={setQuery} sort={sort} onSort={setSort} groups={filterGroups} resultCount={list.length} onReset={resetFilters} />
           </div>
 
           <div className="editor-lista">
@@ -351,7 +364,25 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
                 Non hai ancora carte della {factions[faction].name}. Le carte si ottengono aprendo le buste del Negozio.
               </p>
             )}
-            {collection && hasCards && list.length === 0 && <p className="deck-empty">Nessuna carta di questo tipo nella tua collezione.</p>}
+            {collection && hasCards && list.length === 0 && (
+              query.trim() || (type === 'CREATURE' && suit !== 'tutti') ? (
+                <div className="editor-nessuna">
+                  <p className="deck-empty">Nessuna carta corrisponde alla ricerca o ai filtri.</p>
+                  <button
+                    type="button"
+                    className="q-btn q-btn--acciaio"
+                    onClick={() => {
+                      setQuery('')
+                      resetFilters()
+                    }}
+                  >
+                    <span className="q-btn__in">Azzera ricerca e filtri</span>
+                  </button>
+                </div>
+              ) : (
+                <p className="deck-empty">Nessuna carta di questo tipo nella tua collezione.</p>
+              )
+            )}
             <div className="editor-griglia">
               {list.map((o) => {
                 const { state, reason } = stateOf(o)

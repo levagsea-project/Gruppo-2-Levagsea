@@ -3,6 +3,7 @@ import { factions } from '../../data/factions'
 import type { Page } from '../../data/navItems'
 import { ApiError, GENERIC } from '../../lib/api'
 import { isDemoSession } from '../../lib/auth'
+import { matchesCard, sortCards, type CardSort } from '../../lib/cardFilters'
 import { SUITS, SUIT_NAMES, getCollection, rankLabel } from '../../lib/cards'
 import { packName, pendingPacks, type OpenedPack } from '../../lib/shop'
 import type { CardKind, FactionId, OwnedCard, SuitId } from '../../types/deck'
@@ -10,6 +11,7 @@ import AbilityList from '../cards/AbilityList'
 import CardBack from '../cards/CardBack'
 import CardFace from '../cards/CardFace'
 import CardStats from '../cards/CardStats'
+import CardToolbar, { type FilterGroup } from '../cards/CardToolbar'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import SealedPack from '../shop/SealedPack'
@@ -59,6 +61,8 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
   const [kind, setKind] = useState<CardKind | 'tutti'>('tutti')
   const [suit, setSuit] = useState<SuitId | 'tutti'>('tutti')
   const [view, setView] = useState<View>('tutte')
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<CardSort>('base')
   const [pageN, setPageN] = useState(0)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [detailOpen, setDetailOpen] = useState(false) // su telefono il dettaglio è una schermata a parte
@@ -80,7 +84,8 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
   const passView = (e: Entry) => view === 'tutte' || (view === 'doppioni' ? e.copies > 1 : e.copies === 1)
   const passKind = (e: Entry) => kind === 'tutti' || e.card.kind === kind
   const hasSuits = kind === 'tutti' || kind === 'CREATURE' // magie ed equipaggiamenti non hanno seme
-  const shown = entries.filter((e) => passFaction(e) && passKind(e) && passSuit(e) && passView(e))
+  const found = useMemo(() => entries.filter((e) => matchesCard(e.card, query)), [entries, query]) // ricerca per nome e abilità
+  const shown = sortCards(found.filter((e) => passFaction(e) && passKind(e) && passSuit(e) && passView(e)), (e) => e.card, sort)
   const pages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE))
   const current = Math.min(pageN, pages - 1)
   const visible = shown.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
@@ -96,6 +101,74 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
     setFlipped(false)
     setDetailOpen(true)
   }
+
+  const resetFilters = () =>
+    filter(() => {
+      setFaction('tutte')
+      setKind('tutti')
+      setSuit('tutti')
+      setView('tutte')
+      setSort('base')
+    })
+
+  // Ogni numero dice quante carte resterebbero scegliendo quella voce, con gli altri filtri e la ricerca.
+  const filterGroups: FilterGroup[] = [
+    {
+      id: 'fazione',
+      label: 'Fazione',
+      value: faction,
+      defaultValue: 'tutte',
+      onChange: (v) => filter(() => setFaction(v as FactionId | 'tutte')),
+      options: (['tutte', 'umani', 'artificiali'] as const).map((f) => ({
+        value: f,
+        label: f === 'tutte' ? 'Tutte' : factions[f].name,
+        count: found.filter((e) => (f === 'tutte' || e.card.faction === f) && passKind(e) && passSuit(e) && passView(e)).length,
+      })),
+    },
+    {
+      id: 'tipo',
+      label: 'Tipo',
+      value: kind,
+      defaultValue: 'tutti',
+      onChange: (v) =>
+        filter(() => {
+          setKind(v as CardKind | 'tutti')
+          if (v === 'SPELL' || v === 'EQUIPMENT') setSuit('tutti')
+        }),
+      options: KINDS.map(([k, label]) => ({
+        value: k,
+        label,
+        count: found.filter((e) => (k === 'tutti' || e.card.kind === k) && passFaction(e) && (k === 'SPELL' || k === 'EQUIPMENT' || passSuit(e)) && passView(e)).length,
+      })),
+    },
+    ...(hasSuits
+      ? [{
+          id: 'seme',
+          label: 'Seme',
+          value: suit,
+          defaultValue: 'tutti',
+          onChange: (v: string) => filter(() => setSuit(v as SuitId | 'tutti')),
+          options: (['tutti', ...SUITS] as const).map((s) => ({
+            value: s,
+            label: s === 'tutti' ? 'Tutti' : SUIT_NAMES[s],
+            suit: s === 'tutti' ? undefined : s,
+            count: found.filter((e) => (s === 'tutti' || e.card.suit === s) && passFaction(e) && passKind(e) && passView(e)).length,
+          })),
+        }]
+      : []),
+    {
+      id: 'copie',
+      label: 'Copie',
+      value: view,
+      defaultValue: 'tutte',
+      onChange: (v) => filter(() => setView(v as View)),
+      options: VIEWS.map(([v, label]) => ({
+        value: v,
+        label,
+        count: found.filter((e) => (v === 'tutte' || (v === 'doppioni' ? e.copies > 1 : e.copies === 1)) && passFaction(e) && passKind(e) && passSuit(e)).length,
+      })),
+    },
+  ]
 
   const pending = pendingPacks()
 
@@ -123,72 +196,33 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
         <p className="coll-vuoto" role="status">Caricamento della collezione…</p>
       ) : (
         <div className="coll-corpo">
-          <aside className="coll-filtri" aria-label="Filtri della collezione">
-            <div className="coll-totali">
-              <span className="m-conta"><b>{fmt(entries.length)}</b><small>Carte diverse</small></span>
-              <span className="m-conta"><b>{fmt(cards.length)}</b><small>Copie</small></span>
-            </div>
-            <div className="q-elenco" role="radiogroup" aria-label="Fazione">
-              <span className="q-elenco__titolo">Fazione</span>
-              {(['tutte', 'umani', 'artificiali'] as const).map((f) => (
-                <button key={f} type="button" role="radio" aria-checked={faction === f} className="q-elenco__voce" onClick={() => filter(() => setFaction(f))}>
-                  {f === 'tutte' ? 'Tutte' : factions[f].name}
-                  <span className="q-elenco__conta">{entries.filter((e) => (f === 'tutte' || e.card.faction === f) && passKind(e) && passSuit(e) && passView(e)).length}</span>
-                </button>
-              ))}
-            </div>
-            <div className="q-elenco" role="radiogroup" aria-label="Tipo di carta">
-              <span className="q-elenco__titolo">Tipo</span>
-              {KINDS.map(([k, label]) => (
-                <button
-                  key={k}
-                  type="button"
-                  role="radio"
-                  aria-checked={kind === k}
-                  className="q-elenco__voce"
-                  onClick={() =>
-                    filter(() => {
-                      setKind(k)
-                      if (k === 'SPELL' || k === 'EQUIPMENT') setSuit('tutti')
-                    })
-                  }
-                >
-                  {label}
-                  <span className="q-elenco__conta">{entries.filter((e) => (k === 'tutti' || e.card.kind === k) && passFaction(e) && (k === 'SPELL' || k === 'EQUIPMENT' || passSuit(e)) && passView(e)).length}</span>
-                </button>
-              ))}
-            </div>
-            {hasSuits && (
-              <div className="q-elenco" role="radiogroup" aria-label="Seme">
-                <span className="q-elenco__titolo">Seme</span>
-                {(['tutti', ...SUITS] as const).map((s) => (
-                  <button key={s} type="button" role="radio" aria-checked={suit === s} className="q-elenco__voce" onClick={() => filter(() => setSuit(s))}>
-                    {s === 'tutti' ? <span className="q-elenco__ico" /> : <span className={`deck-seme deck-seme--${s.toLowerCase()} q-elenco__ico`} aria-hidden="true" />}
-                    {s === 'tutti' ? 'Tutti' : SUIT_NAMES[s]}
-                    <span className="q-elenco__conta">{entries.filter((e) => (s === 'tutti' || e.card.suit === s) && passFaction(e) && passKind(e) && passView(e)).length}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-            <div className="q-elenco" role="radiogroup" aria-label="Mostra">
-              <span className="q-elenco__titolo">Mostra</span>
-              {VIEWS.map(([v, label]) => (
-                <button key={v} type="button" role="radio" aria-checked={view === v} className="q-elenco__voce" onClick={() => filter(() => setView(v))}>
-                  {label}
-                  <span className="q-elenco__conta">{entries.filter((e) => (v === 'tutte' || (v === 'doppioni' ? e.copies > 1 : e.copies === 1)) && passFaction(e) && passKind(e) && passSuit(e)).length}</span>
-                </button>
-              ))}
-            </div>
-          </aside>
-
           <section className="coll-carte" aria-label="Carte">
             <div className="q-marker">
               <h2 className="q-marker__title">Carte</h2>
               <span className="q-marker__line" />
-              <span className="coll-nota">{shown.length} risultati</span>
+              <span className="coll-nota">{shown.length === entries.length ? `${fmt(entries.length)} diverse · ${fmt(cards.length)} copie` : `${fmt(shown.length)} di ${fmt(entries.length)} carte`}</span>
             </div>
+            {entries.length > 0 && (
+              <CardToolbar query={query} onQuery={(v) => filter(() => setQuery(v))} sort={sort} onSort={(v) => filter(() => setSort(v))} groups={filterGroups} resultCount={shown.length} onReset={resetFilters} />
+            )}
             {shown.length === 0 ? (
-              <p className="coll-nota-testo">{entries.length ? 'Nessuna carta con questi filtri.' : 'Non possiedi ancora nessuna carta.'}</p>
+              entries.length ? (
+                <div className="coll-vuoto">
+                  <p>Nessuna carta corrisponde alla ricerca o ai filtri.</p>
+                  <button
+                    type="button"
+                    className="q-btn q-btn--acciaio"
+                    onClick={() => {
+                      setQuery('')
+                      resetFilters()
+                    }}
+                  >
+                    <span className="q-btn__in">Azzera ricerca e filtri</span>
+                  </button>
+                </div>
+              ) : (
+                <p className="coll-nota-testo">Non possiedi ancora nessuna carta.</p>
+              )
             ) : (
               <div className="coll-griglia">
                 {visible.map((e) => {
