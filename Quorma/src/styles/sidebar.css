@@ -129,5 +129,5 @@
 /* Nome del giocatore: fino a 32 caratteri, si taglia con i puntini invece di allargare la barra */
 .q-profilo__testa,.q-profilo__dati{min-width:0}
 .q-profilo__nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.q-profilo__liv--vuoto{color:var(--steel-300);letter-spacing:.12em}
-.q-profilo__liv--vuoto::before{background:var(--steel-500);box-shadow:none}
+.q-profilo__avatar .q-ogiva__in{position:relative;padding:0;overflow:hidden}
+.q-profilo__foto{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
