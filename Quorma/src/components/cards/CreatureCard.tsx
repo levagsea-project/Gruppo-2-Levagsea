@@ -1,4 +1,5 @@
 import { cardArt, creatureFrame, TIER_NAMES } from '../../data/cardArt'
+import { abilityFront } from '../../lib/abilities'
 import { SUIT_NAMES, creatureTier, rankLabel } from '../../lib/cards'
 import type { GameCard } from '../../types/deck'
 import '../../styles/card-frame.css'
@@ -45,12 +46,9 @@ export default function CreatureCard({ card, className = '', sizes = '160px' }: 
         {suit && <span className={`deck-seme deck-seme--${suit}`} role="img" aria-label={SUIT_NAMES[card.suit!]} />}
       </span>
       <span className="q-cf__tipo">{card.subfaction ?? TIER_NAMES[tier]}</span>
-      {/* testo di colore nella casella grande: solo sulle carte larghe almeno 220px (card-frame.css), sotto non si legge */}
-      {card.flavour && (
-        <span className="q-cf__testo" lang={card.textLocale}>
-          {card.flavour}
-        </span>
-      )}
+      {/* gli effetti nella casella grande: solo sulle carte larghe almeno 220px (card-frame.css), sotto non si leggono.
+          La lore sta sul retro; la descrizione completa accanto alla carta (AbilityList) */}
+      {!!card.abilities?.length && <span className="q-cf__testo">{abilityFront(card.abilities)}</span>}
       <span className="q-cf__valore q-cf__valore--atk">
         <small>ATK</small>
         {fmt(card.atk)}

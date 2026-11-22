@@ -17,6 +17,8 @@ export default function CardFace({ card, sizes }: { card: GameCard; sizes?: stri
         <span className="q-cg__nome" lang={card.textLocale}>{card.name}</span>
         <span className="q-cg__sotto">{kind.name}</span>
       </span>
+      {/* l'effetto: solo sulle carte larghe almeno 220px (collection.css), sotto non si legge */}
+      {!!card.abilities?.length && <span className="q-cg__campo card-face__effetto">{card.abilities.map((a) => a.text).join(' ')}</span>}
     </span>
   )
 }

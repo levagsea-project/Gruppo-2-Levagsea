@@ -37,9 +37,9 @@
 .q-cf__valore--atk { left: 3.4%; width: 46%; }
 .q-cf__valore--def { left: 50.6%; width: 46%; }
 
-/* testo di colore nella casella grande (y 952–1076): solo sulle carte larghe, al massimo 3 righe */
+/* gli effetti nella casella grande (y 952–1076): solo sulle carte larghe, al massimo 3 righe */
 .q-cf__testo { position: absolute; z-index: 2; left: 4.4%; top: 79.6%; width: 91.2%; height: 9.7%; display: none; box-sizing: border-box; padding: 0 1cqw;
-  font-family: var(--font-serif); font-size: 3.4cqw; line-height: 1.3; font-style: italic; color: #C9D6DA; text-align: center; }
+  font-family: var(--font-sans); font-size: 3.9cqw; line-height: 1.3; font-weight: 600; color: #DCE7EA; text-align: center; }
 @container q-cf (min-width: 220px) {
   .q-cf__testo { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; align-content: center; }
 }

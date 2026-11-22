@@ -6,6 +6,7 @@ import { isDemoSession } from '../../lib/auth'
 import { SUITS, SUIT_NAMES, getCollection, rankLabel } from '../../lib/cards'
 import { packName, pendingPacks, type OpenedPack } from '../../lib/shop'
 import type { CardKind, FactionId, OwnedCard, SuitId } from '../../types/deck'
+import AbilityList from '../cards/AbilityList'
 import CardFace from '../cards/CardFace'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
@@ -231,6 +232,7 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
                 </span>
               </button>
               <span className="coll-suggerimento">{flipped ? 'Premi per tornare al fronte' : 'Premi la carta per leggere la lore'}</span>
+              <AbilityList card={selected.card} />
               <dl className="coll-info">
                 <div><dt>Fazione</dt><dd>{factions[selected.card.faction].name}</dd></div>
                 <div><dt>Tipo</dt><dd>{KIND_NAME[selected.card.kind]}</dd></div>

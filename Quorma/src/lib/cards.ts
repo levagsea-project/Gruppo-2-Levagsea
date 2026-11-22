@@ -1,5 +1,6 @@
 // Carte: conversione dalle risposte del backend, regole del mazzo e collezione (GET /collection).
 import type { CardKind, FactionId, OwnedCard, SuitId } from '../types/deck'
+import { abilityTexts } from './abilities'
 import { authedRequest } from './auth'
 
 // ---------- Fazioni: nomi del backend <-> nomi del frontend ----------
@@ -47,7 +48,7 @@ export type CardResponse = {
   rank: number | null
   atk: number | null
   def: number | null
-  abilities: unknown[] // abilità con i loro parametri: dati del motore, senza un testo da mostrare (per ora non usate)
+  abilities: unknown[] // abilità con i loro parametri: il testo si ricava in lib/abilities.ts
   originType?: string // solo in GET /collection: da dove viene la copia (es. STARTER = mazzo iniziale)
   acquiredAt?: string // solo in GET /collection
   deckSlot?: string // solo nei mazzi: il posto nel mazzo (lo calcoliamo anche noi, slotOf)
@@ -57,6 +58,7 @@ export type CardResponse = {
 const slotOf = (c: CardResponse) => (c.kind === 'CREATURE' ? `C:${c.suit}/${c.rank}` : `N:${c.cardCode}`)
 
 export function toOwnedCard(c: CardResponse, faction?: FactionId): OwnedCard {
+  const abilities = abilityTexts(c.abilities, c.kind)
   return {
     instanceId: c.cardInstanceId,
     cardId: c.cardId,
@@ -73,6 +75,8 @@ export function toOwnedCard(c: CardResponse, faction?: FactionId): OwnedCard {
     flavour: c.flavour ?? null,
     textLocale: c.textLocale ?? 'it',
     sets: c.sets ?? [],
+    abilities,
+    untextedAbilities: Array.isArray(c.abilities) ? Math.max(0, c.abilities.length - abilities.length) : 0,
   }
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, type MouseEvent, type PointerEvent } from 'react'
 import { TIER_NAMES } from '../../data/cardArt'
 import { SUIT_NAMES, creatureTier, rankLabel } from '../../lib/cards'
 import type { OwnedCard } from '../../types/deck'
+import AbilityList from '../cards/AbilityList'
 import CreatureCard from '../cards/CreatureCard'
 import type { CardState } from './EditorCard'
 
@@ -81,6 +82,7 @@ export default function CardZoom({ card, state, reason, onToggle, onClose }: Pro
           {kindLine}
           {creature && card.subfaction && <span> · {card.subfaction}</span>}
         </p>
+        <AbilityList card={card} />
         {card.flavour && (
           <blockquote className="e-zoom__colore" lang={card.textLocale}>
             {card.flavour}
