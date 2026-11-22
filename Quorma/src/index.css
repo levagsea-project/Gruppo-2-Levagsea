@@ -8,7 +8,7 @@
   --muted: #8fa3a8;
   --border: rgba(120, 170, 180, 0.28);
   --serif: 'Cinzel', serif;
-  --sans: 'Inter', system-ui, sans-serif;
+  --sans: 'Fira Sans', system-ui, sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body, #root { height: 100%; }

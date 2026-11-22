@@ -6,7 +6,7 @@
 --adattati-deep:#1E1512;--adattati:#C9785A;--spezzasigilli-deep:#17151F;--spezzasigilli:#A98BE6;--portanome-deep:#1B1A14;--portanome:#E3D3A1;--segnaterra-deep:#131A12;--segnaterra:#9DBF6E;--sektac-deep:#0A131B;--sektac:#6FA9E0;--merozyn-deep:#1A0F1A;--merozyn:#D16FB4;--effrix-deep:#1A1510;--effrix:#E2B254;--ylmor-deep:#0C1917;--ylmor:#4FD1B0;
 --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-16:64px;--radius-none:0;--radius-sm:3px;--radius-round:9999px;--notch-sm:6px;--notch-md:10px;--notch-lg:14px;
 --depth:0 10px 28px rgba(0,0,0,.6);--glow-petrol:0 0 18px rgba(74,166,173,.55);--glow-ember:0 0 16px rgba(224,135,74,.7);
---font-display:Cinzel,Georgia,serif;--font-sans:Inter,system-ui,sans-serif;--font-serif:Spectral,Georgia,serif}
+--font-display:Cinzel,Georgia,serif;--font-sans:'Fira Sans',system-ui,sans-serif;--font-serif:Spectral,Georgia,serif}
 
 /* QUORMA — classi dei componenti. Si appoggia alle variabili dei token.
    Materiali della homepage: filo d'argento brunito, pietra scura velata, luce petrolio. */
