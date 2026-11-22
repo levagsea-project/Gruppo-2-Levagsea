@@ -297,7 +297,7 @@ const cookie: Section[] = [
           'il codice di accesso della tua sessione, che scade al massimo dopo 24 ore, e il nome del giocatore;',
           'il nome e l’immagine scelti in Modifica profilo;',
           'le impostazioni, la velocità della battaglia e le ultime scelte della pagina Gioca;',
-          'i dettagli delle partite giocate, le buste da rivelare e l’ultimo saldo visto.',
+          'i dettagli delle partite giocate e le buste da rivelare.',
         ],
       },
       { p: 'Se spunti “Ricordami su questo dispositivo” il codice di accesso resta salvato anche dopo la chiusura del browser; altrimenti viene cancellato quando chiudi la scheda. Quando esci dal gioco lo cancelliamo subito. Sono dati tecnici e funzionali, usati solo per far funzionare il sito.' },

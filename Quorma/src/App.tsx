@@ -4,6 +4,7 @@ import { useDecks } from './hooks/useDecks'
 import { rememberDeckStats } from './hooks/useDeckStats'
 import { usePlayStatus } from './hooks/usePlayStatus'
 import { useMatchNews } from './hooks/useMatchNews'
+import { useWalletSync } from './lib/balance'
 import AwayResults from './components/layout/AwayResults'
 import type { Tab as ProfileTab } from './components/profile/ProfileTabs'
 import Sidebar from './components/layout/Sidebar'
@@ -50,6 +51,7 @@ import './styles/preferences.css' // per ultimo: movimento ridotto e contrasto e
 // Su telefono la sidebar sparisce e al suo posto ci sono la barra in alto e le schede in basso.
 export default function App() {
   const [page, setPage] = useState<Page>('home') // pagina aperta ora
+  useWalletSync(page)
   // Stanno qui così non si perdono cambiando pagina. Entrambi letti dal backend.
   const { decks, state: decksState, error: decksError, reload: reloadDecks, selected, setSelectedId, deleteDeck } = useDecks()
   const { playStatus, playStatusFailed, reloadPlayStatus } = usePlayStatus()

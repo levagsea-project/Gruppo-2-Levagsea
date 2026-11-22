@@ -13,7 +13,7 @@ const ICONS = [
 ]
 
 // Le due valute in alto a destra, nel riquadro a guglia del design system.
-// La Valuta 2 mostra l'ultimo saldo noto (lib/balance.ts). Il backend non ha una lettura del saldo: finché non è noto
+// La Valuta 2 mostra il saldo letto dal backend (lib/balance.ts). Se la lettura non riesce
 // la barra si vede solo dove serve per comprare (always, nel Negozio), con un trattino al posto del numero.
 export default function CurrencyBar({ always = false }: { always?: boolean }) {
   const credits = useBalance()
@@ -22,7 +22,7 @@ export default function CurrencyBar({ always = false }: { always?: boolean }) {
     <div className="currency-bar q-tela q-tela--guglia">
       <div className="q-tela__in">
         {currencies(credits).map((c, i) => (
-          <div className="q-valore" key={c.label} title={c.value === null ? `${c.label}: saldo non disponibile` : `${c.label}: saldo dopo l'ultimo acquisto`}>
+          <div className="q-valore" key={c.label} title={c.value === null ? `${c.label}: saldo non disponibile` : `${c.label}: saldo attuale`}>
             {ICONS[i]}
             <span className="q-valore__testo">
               <span className="q-valore__etichetta">{c.label}</span>

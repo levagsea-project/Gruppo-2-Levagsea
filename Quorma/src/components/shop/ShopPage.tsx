@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { factions } from '../../data/factions'
 import { ApiError, GENERIC, translate } from '../../lib/api'
 import { isDemoSession } from '../../lib/auth'
-import { formatCredits, setBalance, useBalance } from '../../lib/balance'
+import { formatCredits, refreshBalance, setBalance, useBalance } from '../../lib/balance'
 import { getCollection } from '../../lib/cards'
 import { buyPack, isUncertain, listPacks, newPurchaseKey, packName, type OpenedPack, type PackType } from '../../lib/shop'
 import type { FactionId } from '../../types/deck'
@@ -37,7 +37,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
   const [buying, setBuying] = useState(false)
   const [error, setError] = useState('')
   const [bought, setBought] = useState<OpenedPack[]>([])
-  const credits = useBalance() // ultimo saldo noto: può essere vecchio, quindi a decidere se basta è il backend
+  const credits = useBalance() // null = lettura non riuscita: in quel caso a dire se basta è il backend, all'acquisto
   const [uncertain, setUncertain] = useState(false) // l'ultimo acquisto può essere ripreso senza pagare due volte
   const [retryWhat, setRetryWhat] = useState<string | null>(null) // quale acquisto si può riprendere
   const [confirming, setConfirming] = useState(false) // conferma per ×5 e ×10
@@ -58,12 +58,13 @@ export default function ShopPage({ onOpenPacks }: Props) {
 
   const pack = packs?.find((p) => p.code === code) ?? null
   const total = pack ? pack.price * qty : 0
-  const short = credits !== null && total > credits
+  const missing = credits === null ? 0 : Math.max(0, total - credits)
   // Stessa busta, fazione e quantità di un acquisto dall'esito incerto: si riprende, senza pagare di nuovo ciò che è passato.
   const resuming = !!pack && retryWhat === `${pack.code}:${faction}:${qty}`
+  const short = missing > 0 && !resuming
 
   const askToBuy = () => {
-    if (!pack || buying) return
+    if (!pack || buying || short) return
     if (qty > 1 && !resuming) setConfirming(true)
     else void buy()
   }
@@ -93,6 +94,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
     } catch (err) {
       if (isUncertain(err)) setUncertain(true)
       else retry.current = null
+      void refreshBalance() // l'acquisto può essere passato anche se la risposta non è arrivata
       const message = err instanceof ApiError ? err.message : GENERIC
       const partial = done.length === 1 ? `Acquistata 1 busta su ${count}.` : `Acquistate ${done.length} buste su ${count}.`
       setError(done.length ? `${partial} ${message}` : message)
@@ -206,12 +208,12 @@ export default function ShopPage({ onOpenPacks }: Props) {
                   </div>
 
                   <dl className="shop-conti">
-                    <div><dt>{credits === null ? 'Saldo' : 'Ultimo saldo noto'}</dt><dd>{credits === null ? 'Noto dopo un acquisto' : fmt(credits)}</dd></div>
+                    <div><dt>Saldo</dt><dd>{credits === null ? 'Non disponibile' : fmt(credits)}</dd></div>
                     <div><dt>Totale</dt><dd>− {fmt(total)}</dd></div>
-                    {credits !== null && <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{short ? '—' : fmt(credits - total)}</dd></div>}
+                    {credits !== null && <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{missing > 0 ? '—' : fmt(credits - total)}</dd></div>}
                   </dl>
 
-                  {short && <p className="m-regola m-regola--errore">L'ultimo saldo noto non basta per questo acquisto.</p>}
+                  {short && bought.length === 0 && <p className="m-regola m-regola--errore">Ti mancano {fmt(missing)} Valuta 2 per questo acquisto.</p>}
                   {error && <p className="m-regola m-regola--errore" role="alert">{error}</p>}
 
                   {bought.length > 0 && !(error && uncertain) ? (
@@ -231,7 +233,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
                     <button
                       type="button"
                       className="q-btn q-btn--argento shop-compra"
-                      disabled={buying}
+                      disabled={buying || short}
                       aria-busy={buying}
                       aria-label={buying || resuming ? undefined : `Acquista ${qty === 1 ? '1 busta' : `${qty} buste`} per ${fmt(total)} Valuta 2`}
                       onClick={askToBuy}

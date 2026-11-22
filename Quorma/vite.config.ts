@@ -7,7 +7,7 @@ import { defineConfig, loadEnv, type ProxyOptions } from 'vite'
 // Togliendo Origin la richiesta diventa "stesso sito" e funziona su qualsiasi porta, anche con
 // "npm run preview" (4173). Per chiamare il backend direttamente, senza proxy, imposta VITE_API_URL.
 // Ogni nuovo percorso del backend usato dal frontend va aggiunto a questa lista, altrimenti Vite risponde 404.
-const BACKEND_PATHS = ['/auth', '/decks', '/collection', '/matchmaking', '/matches', '/challenges', '/rooms', '/packs']
+const BACKEND_PATHS = ['/auth', '/decks', '/collection', '/matchmaking', '/matches', '/challenges', '/rooms', '/packs', '/wallet']
 
 function backendProxy(backend: string): Record<string, ProxyOptions> {
   const options: ProxyOptions = {

@@ -7,7 +7,7 @@ type Props = {
   packLabel: string
   factionName: string
   total: number
-  credits: number | null // ultimo saldo noto; null = non si sa
+  credits: number | null // saldo attuale; null = lettura non riuscita
   onCancel: () => void
   onConfirm: () => void
 }
@@ -48,7 +48,7 @@ export default function BuyConfirm({ qty, packLabel, factionName, total, credits
           <dl className="shop-conti">
             <div><dt>Totale</dt><dd>{fmt(total)} Valuta 2</dd></div>
             {credits !== null && (
-              <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{short ? 'Saldo noto insufficiente' : `${fmt(credits - total)} Valuta 2`}</dd></div>
+              <div className="shop-conti__dopo"><dt>Dopo l'acquisto</dt><dd>{short ? 'Saldo insufficiente' : `${fmt(credits - total)} Valuta 2`}</dd></div>
             )}
           </dl>
           <div className="away__azioni">
