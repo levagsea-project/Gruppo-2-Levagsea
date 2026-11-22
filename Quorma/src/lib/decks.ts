@@ -62,6 +62,8 @@ export function statsOf(cards: Pick<OwnedCard, 'kind' | 'suit'>[]): DeckStats {
   return {
     creatures: creatures.length,
     spells: cards.length - creatures.length,
+    magic: cards.filter((c) => c.kind === 'SPELL').length,
+    equipment: cards.filter((c) => c.kind === 'EQUIPMENT').length,
     suits: SUITS.map((s) => ({ name: SUIT_NAMES[s], value: creatures.filter((c) => c.suit === s).length })),
   }
 }

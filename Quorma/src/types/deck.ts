@@ -49,6 +49,8 @@ export type DeckDetail = Deck & { snapshotId: string; cardList: OwnedCard[] }
 export type DeckStats = {
   creatures: number
   spells: number // magie / equipaggiamenti
+  magic: number // solo magie
+  equipment: number // solo equipaggiamenti
   suits: Suit[]
 }
 

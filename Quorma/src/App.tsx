@@ -1,6 +1,7 @@
 import { useState, useSyncExternalStore } from 'react'
 import type { Page } from './data/navItems'
 import { useDecks } from './hooks/useDecks'
+import { rememberDeckStats } from './hooks/useDeckStats'
 import { usePlayStatus } from './hooks/usePlayStatus'
 import { useMatchNews } from './hooks/useMatchNews'
 import AwayResults from './components/layout/AwayResults'
@@ -95,6 +96,7 @@ export default function App() {
 
   // Dopo il salvataggio: la lista dei mazzi e "posso giocare?" cambiano, il mazzo salvato diventa quello scelto.
   const onSaved = (deck: DeckDetail) => {
+    rememberDeckStats(deck)
     reloadDecks()
     reloadPlayStatus()
     setSelectedId(deck.id)

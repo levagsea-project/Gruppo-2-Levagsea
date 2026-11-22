@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
-import type { DeckStats } from '../types/deck'
-import { getDeckStats } from '../lib/decks'
+import type { DeckDetail, DeckStats } from '../types/deck'
+import { getDeckStats, statsOf } from '../lib/decks'
 
 // Conteggi del mazzo scelto (creature, magie, semi): la lista dei mazzi non li ha, quindi si legge
 // il mazzo intero (GET /decks/{id}). Ogni mazzo si legge una volta sola: le risposte restano qui.
 const cache = new Map<string, DeckStats>()
+
+/** Dopo un salvataggio: i conteggi del mazzo vengono dalle sue carte nuove, non dalla lettura precedente. */
+export const rememberDeckStats = (deck: DeckDetail) => cache.set(deck.id, statsOf(deck.cardList))
 
 export function useDeckStats(id: string | null) {
   // Ultima risposta arrivata: serve solo a ridisegnare e a sapere se la lettura è fallita.
