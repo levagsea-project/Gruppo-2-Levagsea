@@ -3,7 +3,6 @@ import type { FactionId } from '../../types/deck'
 import { factions } from '../../data/factions'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
-import HexButton from '../ui/HexButton'
 import FactionCard from './FactionCard'
 
 // Pagina "Nuovo mazzo": scegli la fazione. ANNULLA torna indietro, CREA MAZZO apre l'editor con quella fazione.
@@ -32,8 +31,12 @@ export default function NewDeckPage({ onCancel, onCreate }: { onCancel: () => vo
       </div>
 
       <div className="newdeck-buttons">
-        <HexButton onClick={onCancel}>ANNULLA</HexButton>
-        <HexButton variant="light" onClick={() => onCreate(chosen)}>CREA MAZZO</HexButton>
+        <button type="button" className="q-btn q-btn--acciaio" onClick={onCancel}>
+          <span className="q-btn__in">Annulla</span>
+        </button>
+        <button type="button" className="q-btn q-btn--argento" onClick={() => onCreate(chosen)}>
+          <span className="q-btn__in">Crea mazzo</span>
+        </button>
       </div>
     </main>
   )

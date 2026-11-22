@@ -3,7 +3,7 @@
 import type { Deck, DeckDetail, DeckStats, FactionId, OwnedCard, PlayStatus } from '../types/deck'
 import { ApiError, translate, type FieldError } from './api'
 import { authedRequest } from './auth'
-import { DECK_SIZE, SUITS, SUIT_NAMES, rankLabel, toBackendFaction, toFaction, toOwnedCard, type CardResponse } from './cards'
+import { DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankLabel, toBackendFaction, toFaction, toOwnedCard, type CardResponse } from './cards'
 
 export { DECK_SIZE }
 
@@ -124,6 +124,27 @@ export async function saveDeck({ id, name, faction, snapshotIds, instanceIds }: 
     }
   }
   throw lastError
+}
+
+const NAME_MAX = 64
+
+/** Il primo nome libero per la copia: "Nome (copia)", "Nome (copia 2)"… sempre entro la lunghezza massima. */
+function copyName(name: string, taken: string[]) {
+  const used = new Set(taken.map((n) => n.toLowerCase()))
+  for (let n = 1; ; n++) {
+    const suffix = n === 1 ? ' (copia)' : ` (copia ${n})`
+    const candidate = name.slice(0, NAME_MAX - suffix.length).trimEnd() + suffix
+    if (!used.has(candidate.toLowerCase())) return candidate
+  }
+}
+
+/** Duplica un mazzo (GET /decks/{id} + POST /decks), sul pool di carte attuale della sua fazione. */
+export async function duplicateDeck(id: string, takenNames: string[]): Promise<DeckDetail> {
+  const [deck, collection] = await Promise.all([getDeck(id), getCollection()])
+  const snapshotIds = [collection.snapshotFor[deck.faction], ...collection.snapshotIds, deck.snapshotId].filter(
+    (s, i, all): s is string => !!s && all.indexOf(s) === i,
+  )
+  return saveDeck({ name: copyName(deck.name, takenNames), faction: deck.faction, snapshotIds, instanceIds: deck.cardList.map((c) => c.instanceId) })
 }
 
 export async function getPlayStatus(): Promise<PlayStatus> {

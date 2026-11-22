@@ -3,6 +3,7 @@ import type { Deck } from '../../types/deck'
 import { factions } from '../../data/factions'
 import { useDeckStats } from '../../hooks/useDeckStats'
 import { GENERIC } from '../../lib/api'
+import { deckErrorMessages } from '../../lib/decks'
 import SuitList from './SuitList'
 import DeckActions from './DeckActions'
 
@@ -10,6 +11,7 @@ type Props = {
   deck: Deck | null
   onPlay: () => void
   onEdit: (deck: Deck) => void
+  onDuplicate: (deck: Deck) => Promise<void>
   onDelete: (id: string) => Promise<void>
   onSetDefense: (id: string) => Promise<void>
 }
@@ -22,9 +24,10 @@ function statusText(deck: Deck) {
 }
 
 // Pannello a destra con i dettagli del mazzo scelto (pannello q-tela del design system).
-export default function DeckDetails({ deck, onPlay, onEdit, onDelete, onSetDefense }: Props) {
+export default function DeckDetails({ deck, onPlay, onEdit, onDuplicate, onDelete, onSetDefense }: Props) {
   const { stats, failed } = useDeckStats(deck?.id ?? null)
   const [deleting, setDeleting] = useState(false)
+  const [duplicating, setDuplicating] = useState(false)
   const [error, setError] = useState('')
   const [shownFor, setShownFor] = useState(deck?.id)
 
@@ -55,6 +58,18 @@ export default function DeckDetails({ deck, onPlay, onEdit, onDelete, onSetDefen
       setError(err instanceof Error ? err.message : GENERIC)
     } finally {
       setDeleting(false)
+    }
+  }
+
+  async function duplicate(d: Deck) {
+    setDuplicating(true)
+    setError('')
+    try {
+      await onDuplicate(d)
+    } catch (err) {
+      setError(deckErrorMessages(err).join(' '))
+    } finally {
+      setDuplicating(false)
     }
   }
 
@@ -110,10 +125,13 @@ export default function DeckDetails({ deck, onPlay, onEdit, onDelete, onSetDefen
         <DeckActions
           onPlay={onPlay}
           onEdit={() => onEdit(deck)}
+          onDuplicate={() => duplicate(deck)}
           onDelete={() => remove(deck)}
           canPlay={!deck.outdated}
+          duplicating={duplicating}
+          busy={deleting || duplicating}
           // Il mazzo di difesa non si può eliminare (il backend risponde deck.defense_undeletable).
-          canDelete={!deck.defense && !deleting}
+          canDelete={!deck.defense && !deleting && !duplicating}
           deleteHint={deck.defense ? 'Il mazzo di difesa non può essere eliminato' : undefined}
         />
       </div>

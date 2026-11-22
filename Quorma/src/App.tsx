@@ -14,7 +14,7 @@ import DecksPage from './components/decks/DecksPage'
 import NewDeckPage from './components/newdeck/NewDeckPage'
 import DeckEditorPage from './components/editor/DeckEditorPage'
 import DeckSavedPage from './components/editor/DeckSavedPage'
-import { setDefenseDeck } from './lib/decks'
+import { duplicateDeck, setDefenseDeck } from './lib/decks'
 import type { DeckDetail, FactionId } from './types/deck'
 import RulesPage from './components/rules/RulesPage'
 import PlayPage from './components/play/PlayPage'
@@ -99,6 +99,14 @@ export default function App() {
     open('mazzo-salvato')
   }
 
+  // La copia diventa il mazzo scelto, così si vede subito nel pannello.
+  const copyDeck = async (deck: { id: string }) => {
+    const copy = await duplicateDeck(deck.id, decks.map((d) => d.name))
+    reloadDecks()
+    reloadPlayStatus()
+    setSelectedId(copy.id)
+  }
+
   const makeDefense = async (id: string) => {
     await setDefenseDeck(id)
     reloadDecks()
@@ -146,6 +154,7 @@ export default function App() {
           selected={selected}
           onSelect={setSelectedId}
           onEdit={(d) => openEditor(d.faction, d.id)}
+          onDuplicate={copyDeck}
           onDelete={removeDeck}
           onSetDefense={makeDefense}
           onNewDeck={() => open('nuovo-mazzo')}

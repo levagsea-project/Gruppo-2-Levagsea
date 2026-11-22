@@ -42,6 +42,7 @@
 .editor-barra__elenco { display: flex; flex-wrap: wrap; gap: 6px 26px; }
 .editor-barra__azioni { display: flex; align-items: center; gap: 14px; }
 .editor-barra__azioni .q-btn[aria-disabled="true"] { cursor: not-allowed; }
+.editor-barra__azioni .q-btn__in { height: 46px; padding: 0 36px; font-size: 14px; }
 .editor-errori { padding: 12px 16px; font-size: 13.5px; line-height: 1.5; color: #E8B49A; background: rgba(201,120,90,.1); box-shadow: inset 0 0 0 1px rgba(201,120,90,.45); }
 .editor-errori ul { margin: 6px 0 0; padding-left: 18px; }
 

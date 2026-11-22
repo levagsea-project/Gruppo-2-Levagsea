@@ -1,4 +1,14 @@
-type Props = { onPlay: () => void; onEdit: () => void; onDelete: () => void; canPlay: boolean; canDelete: boolean; deleteHint?: string }
+type Props = {
+  onPlay: () => void
+  onEdit: () => void
+  onDuplicate: () => void
+  onDelete: () => void
+  canPlay: boolean
+  canDelete: boolean
+  duplicating: boolean
+  busy: boolean // un'altra azione sul mazzo è in corso
+  deleteHint?: string
+}
 
 const Star = () => (
   <svg className="q-stella" aria-hidden="true" viewBox="0 0 20 28">
@@ -7,8 +17,8 @@ const Star = () => (
 )
 
 // I pulsanti in fondo al pannello, come nel design: sigillo GIOCA (solo se il mazzo è usabile),
-// Modifica (argento, apre l'editor), Duplica ed Elimina (acciaio). Duplica non esiste ancora: "in arrivo".
-export default function DeckActions({ onPlay, onEdit, onDelete, canPlay, canDelete, deleteHint }: Props) {
+// Modifica (argento, apre l'editor), Duplica ed Elimina (acciaio).
+export default function DeckActions({ onPlay, onEdit, onDuplicate, onDelete, canPlay, canDelete, duplicating, busy, deleteHint }: Props) {
   return (
     <div className="deck-actions">
       {canPlay && (
@@ -25,10 +35,8 @@ export default function DeckActions({ onPlay, onEdit, onDelete, canPlay, canDele
         <span className="q-btn__in">Modifica</span>
       </button>
       <div className="deck-actions__riga">
-        <button type="button" className="q-btn q-btn--acciaio" aria-disabled="true" title="Duplica · in arrivo">
-          <span className="q-btn__in">
-            Duplica<span className="sr-only">, in arrivo</span>
-          </span>
+        <button type="button" className="q-btn q-btn--acciaio" onClick={onDuplicate} disabled={busy} aria-busy={duplicating}>
+          <span className="q-btn__in">{duplicating ? 'Copia…' : 'Duplica'}</span>
         </button>
         <button type="button" className="q-btn q-btn--acciaio" onClick={onDelete} disabled={!canDelete} title={deleteHint}>
           <span className="q-btn__in">Elimina</span>
