@@ -1,4 +1,6 @@
 // I "tipi" descrivono la forma dei dati: così TypeScript ci avvisa se sbagliamo.
+import type { AbilityText } from '../lib/abilities'
+
 export type FactionId = 'umani' | 'artificiali'
 
 export type Suit = { name: string; value: number } // un seme e quante creature ha
@@ -35,7 +37,7 @@ export type GameCard = {
   flavour: string | null // testo di colore, nella lingua textLocale
   textLocale: string // lingua di name e flavour (es. "it"): quella chiesta se la carta ce l'ha, altrimenti l'italiano
   sets: { code: string; name: string }[] // set della carta (es. BASE, "Set base")
-  abilities?: { id: string; name: string; text: string; free?: boolean }[] // abilità con il loro testo (lib/abilities.ts)
+  abilities?: AbilityText[] // abilità con il loro testo (lib/abilities.ts)
   untextedAbilities?: number // effetti della carta che non si sanno descrivere
 }
 

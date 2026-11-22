@@ -31,7 +31,9 @@ import ChallengesPage from './components/challenges/ChallengesPage'
 import CollectionPage, { type CollectionTab } from './components/collection/CollectionPage'
 import PackOpeningPage from './components/collection/PackOpeningPage'
 import ShopPage from './components/shop/ShopPage'
+import LeaveDialog from './components/editor/LeaveDialog'
 import { useChallengeAlert } from './hooks/useChallengeAlert'
+import { useLeaveGuard } from './hooks/useLeaveGuard'
 import './styles/layout.css'
 import './styles/sidebar.css'
 import './styles/home.css'
@@ -61,6 +63,7 @@ export default function App() {
   const packAlert = packsToOpen > 0 ? `${packsToOpen} ${packsToOpen === 1 ? 'busta' : 'buste'} da aprire` : undefined
   const [collectionTab, setCollectionTab] = useState<CollectionTab>('carte')
   const [packQueue, setPackQueue] = useState<string[]>([]) // buste da rivelare nella pagina Apertura
+  const { reportEditor, leave, stay, confirmLeave, finishSave, askingToLeave } = useLeaveGuard() // modifiche non salvate dell'editor
 
   const open = (next: Page) => {
     setPage(next)
@@ -72,6 +75,9 @@ export default function App() {
     if (next === 'profilo') setProfileTab('panoramica')
     if (next === 'collezione') setCollectionTab(packsToOpen > 0 ? 'buste' : 'carte') // chi ha buste da aprire arriva lì
   }
+
+  // Per i comandi sempre visibili (menu, barra in alto, schede): dall'editor chiedono conferma se ci sono modifiche.
+  const go = (next: Page) => leave(() => open(next))
 
   const openPacks = (ids: string[]) => {
     setPackQueue(ids)
@@ -101,7 +107,7 @@ export default function App() {
     reloadPlayStatus()
     setSelectedId(deck.id)
     setSaved({ id: deck.id, deck })
-    open('mazzo-salvato')
+    finishSave(() => open('mazzo-salvato'))
   }
 
   // La copia diventa il mazzo scelto, così si vede subito nel pannello.
@@ -132,8 +138,8 @@ export default function App() {
 
   return (
     <div className="app">
-      <Sidebar current={page} onNavigate={open} challengeAlert={challengeAlert} packAlert={packAlert} />
-      <MobileTopBar onHome={() => open('home')} onProfile={() => open('profilo')} />
+      <Sidebar current={page} onNavigate={go} challengeAlert={challengeAlert} packAlert={packAlert} />
+      <MobileTopBar onHome={() => go('home')} onProfile={() => go('profilo')} />
 
       {page === 'home' && (
         <HomePage
@@ -175,8 +181,9 @@ export default function App() {
           faction={editing.faction}
           deckId={editing.deckId}
           defaultName={defaultName}
-          onCancel={() => open(editing.deckId ? 'mazzi' : 'nuovo-mazzo')}
+          onCancel={() => go(editing.deckId ? 'mazzi' : 'nuovo-mazzo')}
           onSaved={onSaved}
+          onStatusChange={reportEditor}
         />
       )}
 
@@ -259,7 +266,7 @@ export default function App() {
         />
       )}
 
-      <MobileTabBar current={page} onNavigate={open} challengeAlert={challengeAlert} packAlert={packAlert} />
+      <MobileTabBar current={page} onNavigate={go} challengeAlert={challengeAlert} packAlert={packAlert} />
 
       {awayOpen && unread.length > 0 && (
         <AwayResults
@@ -267,10 +274,12 @@ export default function App() {
           onClose={closeAway}
           onOpenProfile={() => {
             closeAway()
-            openMatches()
+            leave(openMatches)
           }}
         />
       )}
+
+      {askingToLeave && <LeaveDialog onStay={stay} onLeave={confirmLeave} />}
     </div>
   )
 }

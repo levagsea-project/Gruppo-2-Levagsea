@@ -4,6 +4,7 @@ import { factions } from '../../data/factions'
 import { ApiError } from '../../lib/api'
 import { CREATURE_LIMITS, DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankArticle, rankLabel, spellLimits, type Collection } from '../../lib/cards'
 import { deckErrorMessages, getDeck, saveDeck } from '../../lib/decks'
+import { EDITOR_CLEAN, type EditorStatus } from '../../hooks/useLeaveGuard'
 import PageTitle from '../layout/PageTitle'
 import EditorCard, { type CardState } from './EditorCard'
 import CardZoom from './CardZoom'
@@ -15,10 +16,15 @@ type Props = {
   defaultName: string // nome proposto per un mazzo nuovo (es. "Mazzo 03")
   onCancel: () => void
   onSaved: (deck: DeckDetail) => void
+  onStatusChange: (status: EditorStatus) => void // modifiche non salvate e salvataggio in corso, per proteggere le uscite
 }
 
 // Una carta scelta per il mazzo: la carta e la copia posseduta che finisce nel mazzo.
 type Option = { card: OwnedCard; instanceIds: string[] }
+
+// Cosa rende diverso un mazzo: nome e carte, in qualsiasi ordine e con qualsiasi copia della stessa carta.
+// Togliere e rimettere una carta non è una modifica.
+const deckSignature = (name: string, chosen: Record<string, string>) => JSON.stringify([name.trim(), Object.keys(chosen).sort()])
 
 const TYPES: { id: CardKind; label: string }[] = [
   { id: 'CREATURE', label: 'Creature' },
@@ -47,7 +53,7 @@ function toOptions(cards: OwnedCard[], faction: FactionId): Option[] {
 // Editor del mazzo, dal design "Pagina-Mazzi-Editor": le tue carte a sinistra, il mazzo a destra.
 // Le regole (32 carte, creature e magie per fazione, una creatura per rango e seme) si controllano mentre
 // componi il mazzo; il backend le ricontrolla al salvataggio.
-export default function DeckEditorPage({ faction, deckId, defaultName, onCancel, onSaved }: Props) {
+export default function DeckEditorPage({ faction, deckId, defaultName, onCancel, onSaved, onStatusChange }: Props) {
   const [collection, setCollection] = useState<Collection | null>(null)
   const [original, setOriginal] = useState<DeckDetail | null>(null)
   const [loadError, setLoadError] = useState('')
@@ -62,7 +68,9 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
   const [saving, setSaving] = useState(false)
   const [nameError, setNameError] = useState('')
   const [saveErrors, setSaveErrors] = useState<string[]>([])
-  const [initial, setInitial] = useState('') // stato iniziale, per chiedere conferma prima di uscire con modifiche non salvate
+  // Stato iniziale, per sapere se ci sono modifiche. Il nome proposto si fissa all'apertura: se la lista dei mazzi
+  // si aggiorna mentre lavori non deve risultare una modifica.
+  const [initial, setInitial] = useState(() => (deckId ? '' : deckSignature(defaultName, {})))
 
   // Carica collezione (e il mazzo, se lo stai modificando).
   useEffect(() => {
@@ -76,16 +84,14 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
           setName(deck.name)
           const picked = Object.fromEntries(deck.cardList.map((c) => [c.cardId, c.instanceId]))
           setChosen(picked)
-          setInitial(JSON.stringify([deck.name, picked]))
-        } else {
-          setInitial(JSON.stringify([defaultName, {}]))
+          setInitial(deckSignature(deck.name, picked))
         }
       })
       .catch((err: unknown) => current && setLoadError(err instanceof Error ? err.message : 'Impossibile caricare le carte.'))
     return () => {
       current = false
     }
-  }, [deckId, defaultName, attempt])
+  }, [deckId, attempt])
 
   // Carte disponibili: quelle della collezione, più quelle del mazzo (se una non fosse più tra le tue).
   const options = useMemo(() => {
@@ -108,7 +114,10 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
   const okSpells = nS >= sLim.min && nS <= sLim.max
   const valid = okTotal && okCreatures && okSpells && name.trim().length > 0
 
-  const dirty = initial !== '' && initial !== JSON.stringify([name, chosen])
+  const dirty = initial !== '' && initial !== deckSignature(name, chosen)
+
+  useEffect(() => onStatusChange({ dirty, saving }), [dirty, saving, onStatusChange])
+  useEffect(() => () => onStatusChange(EDITOR_CLEAN), [onStatusChange]) // uscendo dall'editor non resta nulla da proteggere
 
   function stateOf(o: Option): { state: CardState; reason: string } {
     const c = o.card
@@ -144,18 +153,13 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
     )
     try {
       const deck = await saveDeck({ id: deckId ?? undefined, name, faction, snapshotIds: candidates, instanceIds: inDeck.map((o) => chosen[o.card.cardId]) })
-      setInitial(JSON.stringify([name, chosen]))
+      setInitial(deckSignature(name, chosen))
       onSaved(deck)
     } catch (err) {
       if (err instanceof ApiError && err.code === 'deck.name_taken') setNameError(err.message)
       else setSaveErrors(deckErrorMessages(err))
       setSaving(false)
     }
-  }
-
-  const cancel = () => {
-    if (dirty && !window.confirm('Uscire senza salvare? Le modifiche al mazzo andranno perse.')) return
-    onCancel()
   }
 
   const list = options.filter((o) => o.card.kind === type && (type !== 'CREATURE' || suit === 'tutti' || o.card.suit === suit))
@@ -212,7 +216,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
             </div>
           </div>
           <div className="editor-barra__azioni">
-            <button type="button" className="q-btn q-btn--acciaio" onClick={cancel}>
+            <button type="button" className="q-btn q-btn--acciaio" onClick={onCancel}>
               <span className="q-btn__in">Annulla</span>
             </button>
             <button type="button" className="q-btn q-btn--argento" aria-disabled={!valid || saving} onClick={save}>
