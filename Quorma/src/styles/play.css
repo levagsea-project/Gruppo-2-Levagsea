@@ -71,6 +71,13 @@
 /* corpo: i mazzi prendono lo spazio, il leggìo ha una colonna fissa e arriva fino in fondo */
 .play-corpo { flex: 1 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; }
 .play-step--mazzi { min-width: 0; }
+/* come funziona la serie: in fondo alla colonna dei mazzi, allineata al pulsante di avvio */
+.play-serie { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: start; gap: 8px 28px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(124,144,152,.25); }
+.play-serie p { margin: 0; font-size: 13px; line-height: 19px; color: #C4D2D7; text-wrap: pretty; }
+.play-serie b { font-weight: 600; color: #EEF4F5; }
+.play-serie .play-link { min-height: 24px; font-size: 13px; line-height: 19px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 1279px) { .play-serie { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .play-serie .play-link { grid-column: 1 / -1; justify-self: start; } }
+@media (max-width: 767px) { .play-serie { grid-template-columns: minmax(0, 1fr); margin-top: 4px; } .play-serie .play-link { min-height: 44px; } }
 .play-lato { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .play-step--lato { flex: 1; }
 
@@ -89,7 +96,7 @@
    Larghezza e altezza crescono con la finestra; il fuoco del ritaglio è in data/factions.ts (coverFocus) */
 .play-mazzi > .pick { flex: none; width: var(--mazzo-w); }
 .play-page { --mazzo-w: clamp(156px, 26vh, 250px); }
-.play-page .q-carta { --arte-h: calc(var(--mazzo-w) * 1.2); }
+.play-page .q-carta { --arte-h: calc(var(--mazzo-w) * 1.02); }
 .play-page .q-carta__targa { padding: 10px 8px; }
 .play-page .q-carta__arte { background-size: cover; }
 /* la carta scelta si stacca anche per luce: le altre restano un filo più spente */
@@ -98,6 +105,14 @@
 .play-mazzi .pick[aria-checked="false"]:not(.pick--off) .q-carta__targa { opacity: .78; }
 .play-mazzi .pick[aria-checked="false"]:not(.pick--off):is(:hover, :focus-visible) .q-carta__arte { filter: none; }
 .play-mazzi .pick[aria-checked="false"]:not(.pick--off):is(:hover, :focus-visible) .q-carta__targa { opacity: 1; }
+/* il nome sta in due righe al massimo; intero nel title */
+.play-mazzi .q-carta__nome { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; font-size: 15px; line-height: 20px; letter-spacing: .1em; overflow-wrap: anywhere; }
+/* la firma del mazzo: creature per seme e composizione; lo spazio è riservato mentre i conteggi arrivano */
+.play-firma { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; min-height: 42px; margin-top: 7px; }
+.play-firma__semi { display: flex; justify-content: center; gap: 8px; }
+.play-firma__seme { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; line-height: 20px; font-weight: 600; font-variant-numeric: tabular-nums; color: #EEF4F5; }
+.play-firma__seme .deck-seme { flex: none; width: 18px; height: 18px; background: #BFE4E7; }
+.play-firma__tipi { font-size: 12px; line-height: 18px; font-weight: 500; font-variant-numeric: tabular-nums; color: #A9BCC3; white-space: nowrap; }
 .play-conta { min-height: 18px; margin-top: 2px; font-size: 12px; line-height: 18px; font-weight: 500; color: var(--petrol-300); }
 .play-conta--off { color: var(--steel-300); }
 .q-mazzo { position: relative; isolation: isolate; display: block; margin: 12px 12px 0 0; filter: drop-shadow(-3px 6px 10px rgba(0,0,0,.5)); }
@@ -119,11 +134,15 @@
 .play-sfida label { font-size: 12px; color: var(--steel-300); }
 
 /* stanze: righe nel leggìo, l'elenco occupa lo spazio libero e scorre */
-.play-stanze { flex: 1 1 auto; height: 0; min-height: 120px; margin-right: -8px; padding-right: 8px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+.play-stanze { flex: 1 1 auto; height: 0; min-height: 76px; margin-right: -8px; padding-right: 8px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 .play-stanza { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(124,144,152,.25); }
 .play-stanza h3 { margin: 0; font-family: var(--font-display); font-size: 14px; line-height: 19px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; overflow-wrap: anywhere; }
 .play-stanza p { margin: 2px 0 0; font-size: 12px; line-height: 17px; color: #A9BCC3; }
 .play-stanza--mia h3 { color: var(--petrol-300); }
+/* Stanza: le due strade (entrare o aprire) e i mazzi fermi mentre la propria stanza è aperta */
+.play-leggio .play-strade { flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.play-leggio .play-strade .m-chip { justify-content: center; min-height: 44px; padding: 0 8px; }
+.play-fazioni--ferme .pick--off { opacity: .62; filter: saturate(.55); }
 .play-stanza .sfide-btn .q-btn__in { padding: 0 14px; }
 
 /* fazione della prima partita: due scelte unite, come un interruttore */
@@ -149,7 +168,6 @@
   background: linear-gradient(135deg, #F2F7F8, #8FD6DB 55%, #4AA6AD); box-shadow: 0 0 10px rgba(74,166,173,.9); transition: left .32s cubic-bezier(.22, 1, .36, 1); }
 @media (prefers-reduced-motion: reduce) { .play-bilancia__asta::before, .play-bilancia__rombo { transition: none; } }
 /* finestre basse: con l'elenco delle stanze la descrizione lascia il posto alle righe */
-@media (min-width: 1180px) and (max-height: 860px) { .play-leggio__desc:has(~ .play-stanze) { display: none; } }
 .play-inizio__scelte { display: flex; }
 .play-inizio__scelte button { min-height: 44px; padding: 0 16px; cursor: pointer; border: 1px solid rgba(124,144,152,.45); background: rgba(10,20,24,.6);
   font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); transition: border-color .15s ease, color .15s ease; }
@@ -212,7 +230,8 @@
   .play-mazzi > .pick { flex: none; width: 172px; scroll-snap-align: start; }
   .play-page .q-carta { --arte-h: 150px; }
   .play-page .q-carta__targa { padding: 12px 10px; }
-  .play-page .q-carta__nome { font-size: 14px; }
+  .play-mazzi .q-carta__nome { font-size: 13px; letter-spacing: .06em; }
+  .play-firma__semi { gap: 5px; }
 
   /* esito + avvio attaccati sopra le schede */
   .play-azione { position: sticky; bottom: 78px; z-index: 15; gap: 8px; margin: auto -16px -20px; padding: 16px 16px 12px;

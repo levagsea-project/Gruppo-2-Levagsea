@@ -7,7 +7,7 @@ export const playModes: PlayMode[] = [
     id: 'libera',
     title: 'Partita libera',
     desc: 'Affronta un giocatore attivo negli ultimi 7 giorni, contro i suoi mazzi di difesa.',
-    meta: 'Subito · Al meglio delle 3',
+    meta: 'Si gioca subito',
     action: 'Inizia partita',
     paths: ['M12 2 22 12 12 22 2 12z', 'M8.5 8.5l7 7', 'M15.5 8.5l-7 7'],
   },

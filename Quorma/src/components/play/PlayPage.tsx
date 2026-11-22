@@ -16,6 +16,7 @@ import { playBlockReason } from '../../hooks/usePlayStatus'
 import BattleScreen from '../battle/BattleScreen'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
+import DeckSignature from './DeckSignature'
 import '../../styles/challenges.css'
 import '../../styles/play.css'
 
@@ -44,6 +45,8 @@ const playedOutcome = (series: SeriesResponse): Outcome => {
   const s = seriesScore(series)
   return { text: `${resultLabel[s.result]} ${s.won}–${s.lost} contro ${s.opponent}.`, link: 'profilo', again: true }
 }
+
+type RoomTab = 'entra' | 'apri'
 
 type Props = {
   decks: Deck[]
@@ -74,6 +77,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
   const [myRoom, setMyRoom] = useState<Room | null>(null)
   const [roomsError, setRoomsError] = useState('')
   const [opponent, setOpponent] = useState('')
+  const [roomTab, setRoomTab] = useState<RoomTab | null>(null) // scheda scelta in Stanza; null = la decide la situazione
   const [battle, setBattle] = useState<SeriesResponse | null>(null) // la serie da animare a tutto schermo
   const loadSeq = useRef(0) // scarta le risposte arrivate dopo una lettura più recente
   const waitingCode = useRef<string | null>(null) // la mia stanza che era aperta all'ultima lettura
@@ -154,6 +158,11 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
   const missing = FACTION_IDS.filter((f) => !picked[f])
 
   const roomOpen = myRoom?.status === 'OPEN' ? myRoom : null
+  // Stanza ha due strade: entrare in quella di un altro o aprire la propria. Senza una scelta si parte da quella utile ora.
+  const roomView: RoomTab = roomTab ?? (roomOpen || !rooms?.length ? 'apri' : 'entra')
+  const joining = modeId === 'stanza' && roomView === 'entra'
+  // Il backend blocca i mazzi all'apertura: finché la stanza è aperta, qui non si possono cambiare.
+  const waiting = modeId === 'stanza' && roomView === 'apri' && !!roomOpen
   const name = opponent.trim()
 
   const decksLoading = decksState === 'loading' && decks.length === 0
@@ -196,14 +205,16 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
       ? 'Caricamento dei mazzi…'
       : fix
         ? fix.text
-        : modeId === 'stanza' && roomOpen
-          ? 'Stanza aperta: il risultato arriva qui appena entra qualcuno.'
-          : modeId === 'sfida' && !name
-            ? 'Scrivi il nome del giocatore che vuoi sfidare.'
-            : `${picked[start]?.name} e ${picked[otherFaction]?.name}, inizi con ${factions[start].name}.`
+        : waiting
+          ? 'Puoi chiudere la stanza finché nessuno entra.'
+          : joining
+            ? `Entrando giochi subito con ${picked.artificiali?.name} e ${picked.umani?.name}.`
+            : modeId === 'sfida' && !name
+              ? 'Scrivi il nome del giocatore che vuoi sfidare.'
+              : `${picked[start]?.name} e ${picked[otherFaction]?.name}, inizi con ${factions[start].name}.`
 
   const canAct = !demo && !decksLoading && !fix && !busy
-  const canStart = canAct && (modeId === 'libera' || (modeId === 'stanza' && !roomOpen) || (modeId === 'sfida' && !!name))
+  const canStart = canAct && (modeId === 'libera' || (modeId === 'stanza' && roomView === 'apri' && !roomOpen) || (modeId === 'sfida' && !!name))
 
   // Dopo un avvio riuscito: alla prossima visita la pagina riparte da qui.
   const remember = (m: PlayModeId) => {
@@ -250,6 +261,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         roomDeckNames.current = deckNames
         waitingCode.current = room.code
         setMyRoom(room)
+        setRoomTab('apri')
         return { text: 'Stanza aperta: resta qui, il risultato arriva appena entra qualcuno.' }
       })
     if (modeId === 'sfida')
@@ -279,7 +291,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
 
   const busyLabel = modeId === 'libera' ? 'In corso…' : modeId === 'stanza' ? 'Apertura…' : 'Invio…'
   const actionLabel =
-    busy === 'avvio' ? busyLabel : modeId === 'stanza' && roomOpen ? 'Stanza aperta' : modeId === 'libera' && outcome?.again ? 'Gioca ancora' : mode.action
+    busy === 'avvio' ? busyLabel : modeId === 'libera' && outcome?.again ? 'Gioca ancora' : mode.action
 
   return (
     <main className="page play-page">
@@ -336,7 +348,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
             </div>
           </div>
         ) : (
-          <div className="play-fazioni">
+          <div className={`play-fazioni ${waiting ? 'play-fazioni--ferme' : ''}`}>
             {FACTION_IDS.map((f) => {
               const faction = factions[f]
               const own = decks.filter((d) => d.faction === f)
@@ -358,8 +370,9 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                   ) : (
                     <div role="radiogroup" aria-labelledby={groupId} className="play-mazzi">
                       {own.map((d) => {
-                        const ok = usable(d)
-                        const on = d.id === picked[f]?.id
+                        const ok = usable(d) && !waiting
+                        // a stanza aperta i mazzi in gioco sono quelli dell'apertura: nessuna carta risulta scelta qui
+                        const on = !waiting && d.id === picked[f]?.id
                         return (
                           <button
                             key={d.id}
@@ -378,9 +391,14 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                                   <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus } as CSSProperties} />
                                   <span className="q-divisorio" />
                                   <span className="q-carta__targa">
-                                    <span className="q-carta__nome">{d.name}</span>
-                                    <span className={ok ? 'play-conta' : 'play-conta play-conta--off'}>
-                                      {ok ? (d.defense ? 'Difesa' : '') : 'Obsoleto'}
+                                    {/* la fazione è già nel titolo della colonna: a schermo il nome non la ripete */}
+                                    <span className="q-carta__nome" title={d.name}>
+                                      <span aria-hidden="true">{d.name.replace(` (${faction.name})`, '')}</span>
+                                      <span className="sr-only">{d.name}</span>
+                                    </span>
+                                    <DeckSignature deckId={d.id} />
+                                    <span className={d.outdated ? 'play-conta play-conta--off' : 'play-conta'}>
+                                      {d.outdated ? 'Obsoleto' : d.defense ? 'Difesa' : ''}
                                     </span>
                                   </span>
                                 </span>
@@ -397,6 +415,13 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
             })}
           </div>
         )}
+
+        {/* Perché servono due mazzi e che cos'è la Difesa: vale per tutte le modalità */}
+        <div className="play-serie">
+          <p><b>Serie al meglio delle 3.</b> Scegli un mazzo per fazione: a ogni partita le fazioni si scambiano.</p>
+          <p><b>Difesa.</b> È il mazzo che ti rappresenta in Partita libera, anche quando non ci sei.</p>
+          <button type="button" className="play-link" onClick={() => onNavigate('regole')}>Leggi le regole</button>
+        </div>
       </section>
 
       {/* Il leggìo: tutto ciò che serve per avviare la modalità scelta */}
@@ -406,7 +431,25 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
             <div className="q-tela__in">
               <h2 id="g-avvio" className="play-leggio__titolo">{mode.title}</h2>
               <span className="q-divisorio" aria-hidden="true" />
-              <p className="play-leggio__desc">{mode.desc}</p>
+              {modeId === 'stanza' && !demo && (
+                <div className="coll-chips play-strade" role="radiogroup" aria-label="Cosa vuoi fare">
+                  <button type="button" role="radio" className="m-chip" aria-checked={roomView === 'entra'} onClick={() => setRoomTab('entra')}>
+                    Entra{rooms ? <span className="m-chip__n">{rooms.length}</span> : null}
+                  </button>
+                  <button type="button" role="radio" className="m-chip" aria-checked={roomView === 'apri'} onClick={() => setRoomTab('apri')}>
+                    {roomOpen ? 'La tua stanza' : 'Apri la tua'}
+                  </button>
+                </div>
+              )}
+              <p className="play-leggio__desc">
+                {modeId !== 'stanza' || demo
+                  ? mode.desc
+                  : joining
+                    ? 'Scegli chi sta aspettando: la serie parte subito con i mazzi selezionati.'
+                    : roomOpen
+                      ? 'In attesa di un avversario. La stanza usa i mazzi con cui l’hai aperta.'
+                      : 'Apri una stanza con i mazzi selezionati e aspetta che entri qualcuno.'}
+              </p>
               <p className="play-leggio__meta">{mode.meta}</p>
 
               {modeId === 'stanza' &&
@@ -419,20 +462,20 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                   </p>
                 ) : !rooms ? (
                   <p className="play-nota" role="status">Caricamento delle stanze…</p>
-                ) : (
+                ) : joining || waiting ? (
                   <div className="play-stanze">
-                    {roomOpen && (
+                    {waiting && roomOpen && (
                       <article className="play-stanza play-stanza--mia">
                         <div>
-                          <h3>La tua stanza</h3>
-                          <p>{roomOpen.code} · {factions[toFaction(roomOpen.creatorFaction)].name} nella prima partita · scade tra {timeLeft(roomOpen.expiresAt)}</p>
+                          <h3>{roomOpen.code}</h3>
+                          <p>Inizi con {factions[toFaction(roomOpen.creatorFaction)].name} · scade tra {timeLeft(roomOpen.expiresAt)}</p>
                         </div>
                         <button type="button" className="q-btn q-btn--acciaio sfide-btn" disabled={!!busy} aria-busy={busy === roomOpen.code} onClick={() => closeRoom(roomOpen)}>
                           <span className="q-btn__in">Chiudi</span>
                         </button>
                       </article>
                     )}
-                    {rooms.map((r) => {
+                    {joining && rooms.map((r) => {
                       // Chi entra gioca la prima partita con la fazione opposta a quella del creatore.
                       const mine: FactionId = toFaction(r.creatorFaction) === 'umani' ? 'artificiali' : 'umani'
                       return (
@@ -447,9 +490,14 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                         </article>
                       )
                     })}
-                    {rooms.length === 0 && !roomOpen && <p className="play-nota">Nessuna stanza aperta. Aprine una dal bottone qui sotto.</p>}
+                    {joining && rooms.length === 0 && (
+                      <p className="play-nota">
+                        Nessuno sta aspettando in questo momento.{' '}
+                        <button type="button" className="play-link" onClick={() => setRoomTab('apri')}>{roomOpen ? 'Torna alla tua stanza' : 'Apri la tua'}</button>
+                      </p>
+                    )}
                   </div>
-                ))}
+                ) : null)}
 
               {modeId === 'sfida' && (
                 <div className="play-sfida">
@@ -469,6 +517,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
               )}
 
               {/* Fazione della prima partita: nella seconda le fazioni si scambiano */}
+              {!joining && !waiting && (
               <div className="play-inizio">
                 <span id="g-start" className="play-inizio__etichetta">Prima partita con</span>
                 {/* Bilancia: i due nomi ai lati di un filo, il rombo scivola verso la fazione scelta */}
@@ -483,6 +532,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                   </span>
                 </div>
               </div>
+              )}
             </div>
             <span className="q-borchia q-borchia--n" />
           </div>
@@ -519,7 +569,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
             <button type="button" className="q-btn q-btn--argento play-rimedio" onClick={fix.action}>
               <span className="q-btn__in">{fix.label}</span>
             </button>
-          ) : (
+          ) : joining || waiting ? null : (
             <button type="button" className="q-btn q-btn--sigillo" disabled={!canStart} aria-busy={busy === 'avvio'} onClick={startMode}>
               <span className="q-btn__in">
                 <Star />
