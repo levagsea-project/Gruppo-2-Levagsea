@@ -1,4 +1,5 @@
 import type { GameCard } from '../../types/deck'
+import AbilityButton from './AbilityButton'
 
 // Gli effetti di una carta per esteso, accanto alla carta (Collezione e carta ingrandita).
 export default function AbilityList({ card }: { card: GameCard }) {
@@ -11,8 +12,15 @@ export default function AbilityList({ card }: { card: GameCard }) {
         <ul>
           {abilities.map((a) => (
             <li key={a.id}>
-              {!a.free && <b>{a.name}</b>}
+              {!a.free && <AbilityButton ability={a}>{a.name}</AbilityButton>}
               <span>{a.text}</span>
+              {a.free && !!a.related?.length && (
+                <span className="q-effetti__parole">
+                  {a.related.map((r) => (
+                    <AbilityButton key={r.id} ability={r}>{r.name}</AbilityButton>
+                  ))}
+                </span>
+              )}
             </li>
           ))}
         </ul>

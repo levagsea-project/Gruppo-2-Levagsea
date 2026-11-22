@@ -1,13 +1,16 @@
+import { Fragment } from 'react'
 import { cardArt, creatureFrame, TIER_NAMES } from '../../data/cardArt'
-import { abilityFront } from '../../lib/abilities'
+import { abilityFront, frontParts } from '../../lib/abilities'
 import { SUIT_NAMES, creatureTier, rankLabel } from '../../lib/cards'
 import type { GameCard } from '../../types/deck'
+import AbilityButton from './AbilityButton'
 import '../../styles/card-frame.css'
 
 type Props = {
   card: GameCard
   className?: string
   sizes?: string // larghezza a cui viene mostrata, per scegliere la cornice da 400 o da 800px
+  interactive?: boolean // parole chiave premibili: solo se la carta non sta dentro un altro bottone
 }
 
 const fmt = (n: number | null) => (n === null ? '–' : n.toLocaleString('it-IT'))
@@ -19,7 +22,7 @@ const fmt = (n: number | null) => (n === null ? '–' : n.toLocaleString('it-IT'
 // Le misure sono in percentuale della carta (card-frame.css), quindi funziona a qualsiasi larghezza.
 // Sotto i 140px di larghezza il nome nella cornice sarebbe illeggibile: si nasconde e nella sua casella
 // compare il seme. Chi mostra la carta così piccola deve scrivere il nome sotto (vedi EditorCard).
-export default function CreatureCard({ card, className = '', sizes = '160px' }: Props) {
+export default function CreatureCard({ card, className = '', sizes = '160px', interactive = false }: Props) {
   const tier = creatureTier(card.rank)
   const frame = creatureFrame(tier)
   const art = cardArt(card.code)
@@ -48,7 +51,20 @@ export default function CreatureCard({ card, className = '', sizes = '160px' }: 
       <span className="q-cf__tipo">{card.subfaction ?? TIER_NAMES[tier]}</span>
       {/* gli effetti nella casella grande: solo sulle carte larghe almeno 220px (card-frame.css), sotto non si leggono.
           La lore sta sul retro; la descrizione completa accanto alla carta (AbilityList) */}
-      {!!card.abilities?.length && <span className="q-cf__testo">{abilityFront(card.abilities)}</span>}
+      {!!card.abilities?.length && (
+        <span className="q-cf__testo">
+          {interactive
+            ? frontParts(card.abilities).map((part, i) => (
+                <Fragment key={part.ability.id}>
+                  {i > 0 && ' · '}
+                  {part.label && <AbilityButton ability={part.ability} className="q-cf__voce">{part.label}</AbilityButton>}
+                  {part.label && part.detail && ': '}
+                  {part.detail}
+                </Fragment>
+              ))
+            : abilityFront(card.abilities)}
+        </span>
+      )}
       <span className="q-cf__valore q-cf__valore--atk">
         <small>ATK</small>
         {fmt(card.atk)}

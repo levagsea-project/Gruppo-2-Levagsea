@@ -62,7 +62,7 @@ export default function CardZoom({ card, state, reason, onToggle, onClose }: Pro
 
       <div className="e-zoom__carta">
         {creature ? (
-          <CreatureCard card={card} sizes="(max-width: 767px) 80vw, 380px" />
+          <CreatureCard card={card} sizes="(max-width: 767px) 80vw, 380px" interactive />
         ) : (
           <span className="q-cg e-zoom__mini">
             <span className="q-cg__campo q-cg__arte e-arte">

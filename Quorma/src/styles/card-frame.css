@@ -52,6 +52,30 @@
   .q-cf .q-cf__sigillo { display: block; }
 }
 
+/* parole chiave premibili (AbilityButton): nell'elenco "Effetti" e sulla carta ingrandita */
+.q-abilita { align-self: flex-start; padding: 2px 0; border: 0; background: none; cursor: pointer; font: inherit; font-weight: 600; color: var(--petrol-300);
+  text-decoration: underline dotted; text-underline-offset: 3px; }
+.q-abilita:hover { color: var(--silver-100); }
+.q-abilita:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; border-radius: 2px; }
+.q-cf__voce { display: inline; padding: 0; font-weight: 700; }
+.q-effetti__parole { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+
+/* il pop-up con la spiegazione */
+.q-abilita-pop { width: min(420px, calc(100% - 32px)); max-height: calc(100% - 32px); margin: auto; padding: 0; overflow: auto; box-sizing: border-box;
+  border: 1px solid rgba(213,225,229,.22); border-radius: 6px; background: #0F1B20; color: #DCE7EA; box-shadow: 0 18px 50px rgba(0,0,0,.6); }
+.q-abilita-pop::backdrop { background: rgba(5,10,13,.62); }
+.q-abilita-pop__dentro { display: flex; flex-direction: column; gap: 10px; padding: 20px; }
+.q-abilita-pop__tipo { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--steel-300); }
+.q-abilita-pop h2 { margin: 0; font-family: var(--font-display); font-size: 22px; line-height: 1.2; color: var(--petrol-300); }
+.q-abilita-pop h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--petrol-300); }
+.q-abilita-pop p { margin: 0; font-size: 15px; line-height: 22px; }
+.q-abilita-pop .q-abilita-pop__nota { font-size: 13px; line-height: 19px; color: #A9BCC3; }
+.q-abilita-pop__collegata { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; border-top: 1px solid rgba(213,225,229,.14); }
+.q-abilita-pop__ok { align-self: flex-end; min-height: 44px; margin-top: 4px; padding: 0 18px; border: 1px solid rgba(213,225,229,.32); border-radius: 4px; background: transparent;
+  cursor: pointer; font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: #DCE7EA; }
+.q-abilita-pop__ok:hover { border-color: var(--petrol-300); color: var(--petrol-300); }
+.q-abilita-pop__ok:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+
 /* l'oro dell'Epica e l'argento della Rara tingono anche il rango */
 .q-cf--t4 .q-cf__rango { color: #E2C788; }
 .q-cf--t3 .q-cf__rango { color: #BFD4E8; }
