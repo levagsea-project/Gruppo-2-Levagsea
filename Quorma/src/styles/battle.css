@@ -96,12 +96,15 @@
 .bt-targa__pile b { color: var(--silver-100); font-variant-numeric: tabular-nums; }
 
 /* ---------- Asse del turno ---------- */
-.bt-asse { flex: none; display: flex; flex-direction: column; gap: 4px; width: calc(5 * var(--carta-w) + 4 * var(--gap)); min-width: min(100%, 620px); max-width: 100%; }
+/* sopra la carta che attacca (z-index 5) e sotto i numeri che salgono (8): turno e frase restano sempre leggibili.
+   Il velo sfuma ai lati, così quando non passa nessuna carta non si nota */
+.bt-asse { --velo: linear-gradient(90deg, rgba(8,16,20,0), rgba(8,16,20,.94) 12%, rgba(8,16,20,.94) 88%, rgba(8,16,20,0));
+  position: relative; z-index: 6; flex: none; display: flex; flex-direction: column; gap: 4px; width: calc(5 * var(--carta-w) + 4 * var(--gap)); min-width: min(100%, 620px); max-width: 100%; }
 .bt-asse__riga { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 14px; min-height: 26px; }
-.bt-asse__testo { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.bt-asse__testo { display: flex; align-items: center; gap: 10px; padding: 0 22px; white-space: nowrap; background: var(--velo); }
 /* la frase di ciò che sta accadendo, con gli effetti particolari sotto: altezza fissa perché il campo non salti */
 .bt-racconto { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 58px; text-align: center; animation: bt-fase .32s ease-out; }
-.bt-racconto p { margin: 0; font-size: 15px; line-height: 21px; color: var(--q-testo-tenue, #C4D2D7); text-wrap: balance; }
+.bt-racconto p { margin: 0; padding: 2px 34px; font-size: 15px; line-height: 21px; color: var(--q-testo-tenue, #C4D2D7); text-wrap: balance; background: var(--velo); }
 .bt-nome--mio { font-weight: 600; color: var(--petrol-300); }
 .bt-nome--suo { font-weight: 600; color: var(--ember-200); }
 .bt-tag { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 6px; margin: 0; padding: 0; list-style: none; }
@@ -184,7 +187,7 @@
 @media (max-width: 767px) {
   .bt { --carta-w: min(calc((100dvh - 400px) / 3), calc((100vw - 16px - 4 * var(--gap)) / 5)); }
   .bt-racconto { min-height: 62px; }
-  .bt-racconto p { font-size: 13px; line-height: 18px; }
+  .bt-racconto p { padding: 2px 16px; font-size: 13px; line-height: 18px; }
   .bt-tag li { font-size: 11px; line-height: 15px; padding: 2px 11px; }
   .bt-testa { align-items: flex-start; padding: 8px 8px 4px; gap: 6px; }
   .bt-serie strong { font-size: 13px; line-height: 18px; letter-spacing: .06em; }
@@ -206,7 +209,7 @@
   .bt-vita__num { font-size: 15px; line-height: 18px; }
   .bt-targa__mano { font-size: 11px; line-height: 14px; }
   .bt-asse { width: 100%; gap: 8px; min-height: 26px; }
-  .bt-asse__testo { gap: 6px; }
+  .bt-asse__testo { gap: 6px; padding: 0 12px; }
   .bt-asse__testo strong { font-size: 12px; letter-spacing: .08em; }
   .bt-asse__fase { font-size: 11px; }
   .bt-esito { padding: 18px 16px 16px; }

@@ -1,0 +1,14 @@
+/* In Cinzel l'1 è identico a una I maiuscola, e nei numeri (12, 1.800) si legge male.
+   Solo per la cifra 1 si usa il glifo di Libre Caslon Text, con il trattino in alto (public/fonts, licenza OFL).
+   Vale nelle pagine dell'app: landing e Home non usano .page e restano come sono. */
+@font-face {
+  font-family: "Quorma Uno";
+  src: url('/fonts/quorma-uno.woff2') format('woff2');
+  unicode-range: U+31;
+  font-weight: 400 900;
+  font-display: swap;
+}
+.page, .away {
+  --font-display: "Quorma Uno", Cinzel, Georgia, serif;
+  --serif: "Quorma Uno", 'Cinzel', serif;
+}

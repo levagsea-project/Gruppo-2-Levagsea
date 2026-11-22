@@ -33,7 +33,12 @@
 .sfide-campo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 1px; }
 .sfide-campo option { color: #EEF4F5; background: #0C161B; }
 .sfide-inizio { display: grid; grid-template-columns: 1fr 1fr; }
-.sfide-inizio button { padding: 4px 6px; font-size: 10.5px; letter-spacing: .08em; }
+.sfide-inizio button { min-height: 44px; padding: 4px 6px; cursor: pointer; border: 1px solid rgba(124,144,152,.45); background: rgba(10,20,24,.6);
+  font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--steel-300); transition: border-color .15s ease, color .15s ease; }
+.sfide-inizio button + button { margin-left: -1px; }
+.sfide-inizio button:hover { color: var(--silver-100); }
+.sfide-inizio button[aria-checked="true"] { position: relative; border-color: var(--petrol-300); color: var(--petrol-300); box-shadow: inset 0 0 14px rgba(74,166,173,.35); }
+.sfide-inizio button:focus-visible { position: relative; outline: 2px solid var(--petrol-300); outline-offset: 3px; }
 
 @media (max-width: 1279px) {
   .sfide-corpo { grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
@@ -44,7 +49,7 @@
 }
 @media (max-width: 767px) {
   .page.sfide-page { overflow: visible; gap: 16px; }
-  .sfide-lato { display: flex; }
+  .sfide-lato { display: flex; align-items: stretch; } /* annulla align-items: start della griglia a due colonne */
   .sfide-schede .q-marker__line { display: none; }
   .x-sfida { grid-template-columns: 38px minmax(0, 1fr); gap: 12px; padding: 14px; }
   .x-premio { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: flex-end; gap: 14px; }

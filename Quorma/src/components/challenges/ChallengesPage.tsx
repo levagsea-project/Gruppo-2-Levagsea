@@ -11,7 +11,9 @@ import {
   listChallenges, listRooms, openRoom, timeLeft, type Challenge, type Room,
 } from '../../lib/challenges'
 import { rememberSeries } from '../../lib/matches'
+import { onRadioKeyDown } from '../../lib/radioKeys'
 import { seriesScore, type DeckPick, type SeriesResponse } from '../../lib/series'
+import { prefersReducedMotion } from '../../lib/settings'
 import type { Deck, FactionId, PlayStatus } from '../../types/deck'
 import BattleScreen from '../battle/BattleScreen'
 import CurrencyBar from '../layout/CurrencyBar'
@@ -116,6 +118,21 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
     }
   }
 
+  const openMyRoom = () => {
+    if (!pick) return
+    void run('stanza', async () => {
+      await openRoom(start, pick)
+      setTab('stanze')
+    })
+  }
+
+  // Dallo stato vuoto al modulo: su telefono il modulo sta più in basso, quindi ci si porta anche lì.
+  const goToChallengeForm = () => {
+    const field = document.getElementById('sfida-nome')
+    field?.scrollIntoView({ block: 'center', behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+    field?.focus({ preventScroll: true })
+  }
+
   const send = (e: FormEvent) => {
     e.preventDefault()
     const name = opponent.trim()
@@ -143,9 +160,9 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
       <div className="sfide-corpo">
         <section className="sfide-lista" aria-label="Sfide e stanze">
           <div className="sfide-schede">
-            <div className="coll-chips" role="radiogroup" aria-label="Tipo di sfida">
+            <div className="coll-chips" role="radiogroup" aria-label="Tipo di sfida" onKeyDown={onRadioKeyDown}>
               {TABS.map(([id, label, n]) => (
-                <button key={id} type="button" role="radio" className="m-chip" aria-checked={tab === id} onClick={() => setTab(id)}>
+                <button key={id} type="button" role="radio" className="m-chip" aria-checked={tab === id} tabIndex={tab === id ? 0 : -1} onClick={() => setTab(id)}>
                   {label} <span className="m-chip__n">{n}</span>
                 </button>
               ))}
@@ -214,10 +231,28 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
                   </div>
                 </article>
               ))}
-              {rooms.length === 0 && !roomOpen && <p className="coll-vuoto">Nessuna stanza aperta. Aprine una dal riquadro qui accanto.</p>}
+              {rooms.length === 0 && !roomOpen && (
+                <div className="coll-vuoto">
+                  <p>{blocked ? `Nessuna stanza aperta. ${blocked}` : 'Nessuna stanza aperta: apri la tua e aspetta che entri qualcuno.'}</p>
+                  {blocked ? (
+                    <button type="button" className="q-btn q-btn--argento" onClick={() => onNavigate('mazzi')}>
+                      <span className="q-btn__in">Gestisci mazzi</span>
+                    </button>
+                  ) : (
+                    <button type="button" className="q-btn q-btn--argento" disabled={!canAct} aria-busy={busy === 'stanza'} onClick={openMyRoom}>
+                      <span className="q-btn__in">{busy === 'stanza' ? 'Apertura…' : 'Apri una stanza'}</span>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           ) : rows.length === 0 ? (
-            <p className="coll-vuoto">{tab === 'ricevute' ? 'Non hai ricevuto sfide.' : 'Non hai inviato sfide.'}</p>
+            <div className="coll-vuoto">
+              <p>{tab === 'ricevute' ? 'Non hai ricevuto sfide. Puoi lanciarne una tu.' : 'Non hai inviato sfide.'}</p>
+              <button type="button" className="q-btn q-btn--argento" onClick={goToChallengeForm}>
+                <span className="q-btn__in">Sfida un giocatore</span>
+              </button>
+            </div>
           ) : (
             <div className="sfide-righe">
               {rows.map((c) => {
@@ -287,9 +322,9 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
                 </div>
               ))}
               <span id="sfida-inizio" className="sfide-etichetta">Prima partita con</span>
-              <div role="radiogroup" aria-labelledby="sfida-inizio" className="play-inizio__scelte sfide-inizio">
+              <div role="radiogroup" aria-labelledby="sfida-inizio" className="sfide-inizio" onKeyDown={onRadioKeyDown}>
                 {FACTION_IDS.map((f) => (
-                  <button key={f} type="button" role="radio" aria-checked={start === f} onClick={() => setStart(f)}>{factions[f].name}</button>
+                  <button key={f} type="button" role="radio" aria-checked={start === f} tabIndex={start === f ? 0 : -1} onClick={() => setStart(f)}>{factions[f].name}</button>
                 ))}
               </div>
               {blocked && !demo && (
@@ -302,10 +337,7 @@ export default function ChallengesPage({ decks, playStatus, onNavigate, onOpenMa
                 className="q-btn q-btn--acciaio"
                 disabled={!canAct || !!roomOpen}
                 aria-busy={busy === 'stanza'}
-                onClick={() => pick && void run('stanza', async () => {
-                  await openRoom(start, pick)
-                  setTab('stanze')
-                })}
+                onClick={openMyRoom}
               >
                 <span className="q-btn__in">{roomOpen ? 'Stanza già aperta' : busy === 'stanza' ? 'Apertura…' : 'Apri una stanza'}</span>
               </button>

@@ -43,6 +43,7 @@ import './styles/pages.css'
 import './styles/decks.css'
 import './styles/newdeck.css'
 import './styles/mobile.css' // su telefono sovrascrive gli stili sopra
+import './styles/cifre.css'
 import './styles/preferences.css' // per ultimo: movimento ridotto e contrasto elevato vincono su tutto
 
 // Tutta l'app: sidebar a sinistra + la pagina scelta a destra.

@@ -52,7 +52,7 @@ export default function StatsPanel({ ready, overview }: { ready: boolean; overvi
         <div>
           <span className="pf-label">Mano migliore</span>
           <strong>{bestHand?.name ?? '—'}</strong>
-          <small>{bestHand ? `Ottenuta ${bestHand.times} ${bestHand.times === 1 ? 'volta' : 'volte'}` : 'Nessuna mano ancora'}</small>
+          <small>{bestHand ? `Ottenuta ${bestHand.times} ${bestHand.times === 1 ? 'volta' : 'volte'}` : total > 0 ? 'Apri una partita per scoprirla' : 'Nessuna mano ancora'}</small>
         </div>
         <div>
           <span className="pf-label">Fazione più vincente</span>
