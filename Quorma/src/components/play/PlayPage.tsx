@@ -283,37 +283,31 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
 
   return (
     <main className="page play-page">
-      <CurrencyBar />
-      <PageTitle title="GIOCA" subtitle="SCEGLI MODALITÀ E MAZZI" />
+      {/* Intestazione: titolo a sinistra, Gestisci mazzi e valute a destra */}
+      <header className="play-intestazione">
+        <PageTitle title="GIOCA" subtitle="SCEGLI MODALITÀ E MAZZI" />
+        <div className="play-intestazione__azioni">
+          <button type="button" className="q-btn q-btn--acciaio play-gestisci" onClick={() => onNavigate('mazzi')}>
+            <span className="q-btn__in">Gestisci mazzi</span>
+          </button>
+          <CurrencyBar />
+        </div>
+      </header>
 
       <div className="play-testa">
-        {/* Il filo di luce è l'asta a cui sono appesi gli stendardi delle modalità */}
         <span className="q-divisorio play-testa__filo" aria-hidden="true">
           <span className="q-borchia q-borchia--n" />
         </span>
-        <section aria-labelledby="g-mod">
-          <h2 id="g-mod" className="sr-only">Scegli la modalità</h2>
-          <div role="radiogroup" aria-labelledby="g-mod" className="play-modi">
+        <section aria-label="Scegli la modalità">
+          <div role="radiogroup" aria-label="Modalità di gioco" className="play-modi">
             {playModes.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                role="radio"
-                aria-checked={m.id === modeId}
-                className={`q-tela play-stendardo ${m.id === modeId ? 'q-acceso' : ''}`}
-                onClick={() => {
-                  setModeId(m.id)
-                  setError('')
-                }}
-              >
+              <button key={m.id} type="button" role="radio" aria-checked={m.id === modeId} className={`q-tela play-stendardo ${m.id === modeId ? 'q-acceso' : ''}`} onClick={() => { setModeId(m.id); setError('') }}>
                 <span className="q-tela__in">
                   <span className="play-stendardo__orlo" aria-hidden="true" />
                   <span className="play-stendardo__nome">{m.title}</span>
                   <span className="play-stendardo__stemma" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                      {m.paths.map((d) => (
-                        <path key={d} d={d} />
-                      ))}
+                      {m.paths.map((d) => <path key={d} d={d} />)}
                     </svg>
                   </span>
                 </span>
@@ -322,9 +316,6 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
             ))}
           </div>
         </section>
-        <button type="button" className="q-btn q-btn--acciaio play-gestisci" onClick={() => onNavigate('mazzi')}>
-          <span className="q-btn__in">Gestisci mazzi</span>
-        </button>
       </div>
 
       <div className="play-corpo" ref={corpo}>
