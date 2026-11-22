@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import type { CardKind, DeckDetail, FactionId, OwnedCard, SuitId } from '../../types/deck'
 import { factions } from '../../data/factions'
 import { ApiError } from '../../lib/api'
@@ -8,6 +8,7 @@ import { EDITOR_CLEAN, type EditorStatus } from '../../hooks/useLeaveGuard'
 import PageTitle from '../layout/PageTitle'
 import EditorCard, { type CardState } from './EditorCard'
 import CardZoom from './CardZoom'
+import DeckSheet from './DeckSheet'
 import '../../styles/editor.css'
 
 type Props = {
@@ -64,6 +65,10 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
   const [type, setType] = useState<CardKind>('CREATURE')
   const [suit, setSuit] = useState<SuitId | 'tutti'>('tutti')
   const [zoom, setZoom] = useState<Option | null>(null) // carta ingrandita (CardZoom)
+  const [deckOpen, setDeckOpen] = useState(false) // "Il tuo mazzo" nel pannello dal basso (solo telefono)
+  const closeDeck = useCallback(() => setDeckOpen(false), [])
+  const nameRef = useRef<HTMLInputElement>(null)
+  const errorsRef = useRef<HTMLDivElement>(null)
 
   const [saving, setSaving] = useState(false)
   const [nameError, setNameError] = useState('')
@@ -119,6 +124,12 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
   useEffect(() => onStatusChange({ dirty, saving }), [dirty, saving, onStatusChange])
   useEffect(() => () => onStatusChange(EDITOR_CLEAN), [onStatusChange]) // uscendo dall'editor non resta nulla da proteggere
 
+  // Salvando dalla barra fissa si può essere in fondo alla lista: l'errore va portato sotto gli occhi.
+  useEffect(() => {
+    if (nameError) nameRef.current?.focus()
+    else if (saveErrors.length > 0) errorsRef.current?.scrollIntoView({ block: 'center' })
+  }, [nameError, saveErrors])
+
   function stateOf(o: Option): { state: CardState; reason: string } {
     const c = o.card
     if (chosen[c.cardId]) return { state: 'dentro', reason: '' }
@@ -159,7 +170,16 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
       if (err instanceof ApiError && err.code === 'deck.name_taken') setNameError(err.message)
       else setSaveErrors(deckErrorMessages(err))
       setSaving(false)
+      setDeckOpen(false)
     }
+  }
+
+  // Salva dalla barra del telefono: se il mazzo non è pronto, mostra cosa manca invece di non fare nulla.
+  const trySave = () => {
+    if (valid) return void save()
+    if (name.trim()) return setDeckOpen(true)
+    setDeckOpen(false)
+    requestAnimationFrame(() => nameRef.current?.focus())
   }
 
   const list = options.filter((o) => o.card.kind === type && (type !== 'CREATURE' || suit === 'tutti' || o.card.suit === suit))
@@ -173,14 +193,63 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
     { ok: okCreatures, text: `Creature ${nC} · servono ${cLim.min}–${cLim.max}` },
     { ok: okSpells, text: `Magie ed equipaggiamenti ${nS} · servono ${sLim.min}–${sLim.max}` },
   ]
+  // La riga breve della barra del telefono: la prima cosa da sistemare.
+  const nextStep = !okTotal
+    ? rules[0].text
+    : !okCreatures
+      ? `Creature: servono ${cLim.min}–${cLim.max}`
+      : !okSpells
+        ? `Magie/equip.: servono ${sLim.min}–${sLim.max}`
+        : !name.trim()
+          ? 'Scrivi il nome del mazzo'
+          : 'Pronto da salvare'
+
+  const deckPieces = (
+    <>
+      <span className="editor-freccia">Creature · {nC}</span>
+      {SUITS.map((s) => {
+        const pieces = creatures.filter((o) => o.card.suit === s)
+        return (
+          <div key={s} className="editor-sezione">
+            <span className="editor-sezione__testa">
+              <span className={`deck-seme deck-seme--${s.toLowerCase()}`} aria-hidden="true" />
+              {SUIT_NAMES[s]}
+              <small>{pieces.length}</small>
+            </span>
+            <div className="editor-pezzi">
+              {pieces.map((o) => (
+                <Piece key={o.card.cardId} label={rankLabel(o.card.rank)} name={o.card.name} aria={`Togli ${o.card.name}, ${rankLabel(o.card.rank)} di ${SUIT_NAMES[s]}`} onRemove={() => toggle(o)} />
+              ))}
+              {pieces.length === 0 && <span className="editor-vuoto">Nessuna creatura di questo seme.</span>}
+            </div>
+          </div>
+        )
+      })}
+
+      <span className="editor-freccia">Magie ed equipaggiamenti · {nS}</span>
+      <div className="editor-sezione">
+        <div className="editor-pezzi">
+          {inDeck
+            .filter((o) => o.card.kind !== 'CREATURE')
+            .map((o) => (
+              <Piece key={o.card.cardId} label={o.card.kind === 'SPELL' ? 'M' : 'E'} name={o.card.name} aria={`Togli ${o.card.name}`} onRemove={() => toggle(o)} />
+            ))}
+          {nS === 0 && <span className="editor-vuoto">Nessuna magia o equipaggiamento.</span>}
+        </div>
+      </div>
+    </>
+  )
 
   return (
     <main className="page editor-page">
       <header className="editor-testa">
         <PageTitle title={deckId ? 'MODIFICA MAZZO' : 'NUOVO MAZZO'} subtitle={factions[faction].name.toUpperCase()} />
+        {/* su telefono la barra di stato lascia il posto alla barra fissa: Annulla sta qui */}
+        <button type="button" className="editor-annulla" onClick={onCancel}>Annulla</button>
         <label className="editor-nome">
           <span className="decks-etichetta">Nome del mazzo</span>
           <input
+            ref={nameRef}
             className="editor-nome__input"
             type="text"
             maxLength={64}
@@ -197,7 +266,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
       </header>
 
       {/* Avanzamento, regole e pulsanti */}
-      <section className="q-tela" aria-label="Stato del mazzo">
+      <section className="q-tela editor-stato" aria-label="Stato del mazzo">
         <div className="q-tela__in editor-barra">
           <span className="m-conta">
             <b>
@@ -227,7 +296,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
       </section>
 
       {saveErrors.length > 0 && (
-        <div className="editor-errori" role="alert">
+        <div ref={errorsRef} className="editor-errori" role="alert">
           <b>Il mazzo non è stato salvato:</b>
           <ul>
             {saveErrors.map((e) => (
@@ -297,41 +366,30 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
           <div className="q-tela__in">
             <h2 id="e-mazzo" className="decks-etichetta">Il tuo mazzo</h2>
             <p className="editor-mazzo__aiuto">Una creatura per ogni rango e seme. Premi un pezzo per toglierlo.</p>
-
-            <span className="editor-freccia">Creature · {nC}</span>
-            {SUITS.map((s) => {
-              const pieces = creatures.filter((o) => o.card.suit === s)
-              return (
-                <div key={s} className="editor-sezione">
-                  <span className="editor-sezione__testa">
-                    <span className={`deck-seme deck-seme--${s.toLowerCase()}`} aria-hidden="true" />
-                    {SUIT_NAMES[s]}
-                    <small>{pieces.length}</small>
-                  </span>
-                  <div className="editor-pezzi">
-                    {pieces.map((o) => (
-                      <Piece key={o.card.cardId} label={rankLabel(o.card.rank)} name={o.card.name} aria={`Togli ${o.card.name}, ${rankLabel(o.card.rank)} di ${SUIT_NAMES[s]}`} onRemove={() => toggle(o)} />
-                    ))}
-                    {pieces.length === 0 && <span className="editor-vuoto">Nessuna creatura di questo seme.</span>}
-                  </div>
-                </div>
-              )
-            })}
-
-            <span className="editor-freccia">Magie ed equipaggiamenti · {nS}</span>
-            <div className="editor-sezione">
-              <div className="editor-pezzi">
-                {inDeck
-                  .filter((o) => o.card.kind !== 'CREATURE')
-                  .map((o) => (
-                    <Piece key={o.card.cardId} label={o.card.kind === 'SPELL' ? 'M' : 'E'} name={o.card.name} aria={`Togli ${o.card.name}`} onRemove={() => toggle(o)} />
-                  ))}
-                {nS === 0 && <span className="editor-vuoto">Nessuna magia o equipaggiamento.</span>}
-              </div>
-            </div>
+            {deckPieces}
           </div>
         </section>
       </div>
+
+      {/* Telefono: contatore e Salva sempre visibili, sopra le schede. Il contatore apre il mazzo */}
+      <div className="editor-dock">
+        <button type="button" className="editor-dock__mazzo" aria-haspopup="dialog" aria-expanded={deckOpen} aria-label={`Apri il tuo mazzo: ${total} carte su ${DECK_SIZE}, ${nC} creature. ${nextStep}`} onClick={() => setDeckOpen(true)}>
+          <b>{total}/{DECK_SIZE} · Creature {nC}</b>
+          <small className={valid ? 'editor-dock__pronto' : ''} aria-live="polite">{nextStep}</small>
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m6 15 6-6 6 6" />
+          </svg>
+        </button>
+        <button type="button" className={`q-btn q-btn--argento editor-dock__salva ${valid ? '' : 'editor-dock__salva--attesa'}`} aria-label={valid ? 'Salva mazzo' : `Salva mazzo: ${nextStep}`} aria-busy={saving} onClick={trySave}>
+          <span className="q-btn__in">{saving ? 'Salvo…' : 'Salva'}</span>
+        </button>
+      </div>
+
+      {deckOpen && (
+        <DeckSheet total={total} size={DECK_SIZE} rules={rules} canSave={valid} saving={saving} onSave={trySave} onClose={closeDeck}>
+          {deckPieces}
+        </DeckSheet>
+      )}
 
       {/* Carta ingrandita: lo stato si ricalcola a ogni modifica, così dopo "Aggiungi" la finestra mostra "Togli" */}
       {zoom && (() => {

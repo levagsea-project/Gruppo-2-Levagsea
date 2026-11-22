@@ -93,6 +93,15 @@
   .e-cella:hover .e-lente, .e-lente:focus-visible { opacity: 1; }
 }
 
+/* al tocco: area da 44px, il disegno resta piccolo per non coprire l'illustrazione */
+@media (max-width: 767px), (pointer: coarse) {
+  .e-lente { left: calc(2.6cqw - 3px); top: calc(13.65cqw - 3px); isolation: isolate; width: 44px; height: 44px; background: none; box-shadow: none; }
+  .e-lente::before { inset: 9px; z-index: -1; background: rgba(8,16,20,.85); box-shadow: inset 0 0 0 1px rgba(213,225,229,.45); }
+  .e-lente:hover { color: #EEF4F5; background: none; }
+  .e-lente:active::before { background: #D5E1E5; }
+  .e-lente:active { color: var(--ground-950); }
+}
+
 /* ---------- Carta ingrandita (CardZoom) ---------- */
 .e-zoom { margin: auto; padding: 0; border: 0; overflow: visible; max-width: calc(100% - 32px); max-height: calc(100% - 32px); background: transparent; color: var(--silver-100); }
 .e-zoom[open] { display: flex; flex-direction: column; align-items: center; gap: 18px; }
@@ -167,6 +176,9 @@
   .editor-lista, .editor-mazzo > .q-tela__in { overflow: visible; }
 }
 
+/* Comandi solo da telefono: barra fissa e Annulla nell'intestazione */
+.editor-dock, .editor-annulla { display: none; }
+
 /* ---------- Mazzo salvato ---------- */
 .page.saved-page { gap: 24px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 .saved-corpo { flex: 1; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 56px; align-items: center; }
@@ -193,11 +205,64 @@
   .editor-griglia { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 10px; }
   .e-arte__rango { font-size: 28px; }
   .editor-mazzo > .q-tela__in { padding: 14px; }
-  .editor-pezzo { min-height: 40px; }
+  .editor-pezzo { min-height: 44px; }
+
+  /* La pagina lascia spazio a schede (76px) e barra fissa (65px) */
+  .page.editor-page { padding-bottom: calc(157px + env(safe-area-inset-bottom)); }
+  .editor-stato, .editor-mazzo { display: none; }
+  .editor-testa { align-items: flex-start; gap: 12px; }
+  .editor-testa .page-title { flex: 1; min-width: 0; }
+  .editor-annulla { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 44px; min-height: 44px; padding: 0 12px; cursor: pointer;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 600; letter-spacing: .08em; color: #C4D2D7; background: none; border: 0; box-shadow: inset 0 0 0 1px rgba(213,225,229,.28); }
+  .editor-annulla:active { color: #EEF4F5; background: rgba(213,225,229,.1); }
+  .editor-annulla:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+
+  /* Barra fissa sopra le schede: fondo pieno, le carte non si vedono sotto il testo */
+  .editor-dock { position: fixed; left: 0; right: 0; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 25; display: flex; align-items: center; gap: 10px; box-sizing: border-box;
+    padding: 8px max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left)); background: #0A1418; border-top: 1px solid rgba(213,225,229,.16); box-shadow: 0 -6px 16px rgba(0,0,0,.45); }
+  .editor-dock__mazzo { flex: 1; min-width: 0; min-height: 48px; display: grid; grid-template-columns: minmax(0, 1fr) 16px; column-gap: 8px; align-items: center; box-sizing: border-box; padding: 4px 10px;
+    cursor: pointer; text-align: left; color: #EEF4F5; background: linear-gradient(180deg, #15333A, #0C1B20); border: 0; box-shadow: inset 0 0 0 1px rgba(143,214,219,.45); }
+  .editor-dock__mazzo b { grid-column: 1; overflow: hidden; font-size: 14px; line-height: 20px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; text-overflow: ellipsis; }
+  .editor-dock__mazzo small { grid-column: 1; overflow: hidden; font-size: 12px; line-height: 16px; font-weight: 500; color: #E8B49A; white-space: nowrap; text-overflow: ellipsis; }
+  .editor-dock__mazzo small.editor-dock__pronto { color: var(--petrol-300); }
+  .editor-dock__mazzo svg { grid-column: 2; grid-row: 1 / span 2; color: var(--petrol-300); }
+  .editor-dock__mazzo:active { filter: brightness(1.2); }
+  .editor-dock__mazzo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+  .page .editor-dock__salva { flex: none; width: 104px; }
+  .editor-dock__salva .q-btn__in { min-width: 0; height: 48px; padding: 0 8px; font-size: 13px; letter-spacing: .08em; }
+  .editor-dock__salva--attesa { filter: saturate(.3) brightness(.62); }
+
+  /* "Il tuo mazzo": pannello dal basso. Testa e Salva restano fermi, scorrono solo i pezzi */
+  html:has(.editor-foglio[open]) { overflow: hidden; }
+  .editor-foglio { position: fixed; inset: auto 0 0; width: 100%; max-width: 100%; height: min(84dvh, 720px); max-height: calc(100dvh - 24px); margin: 0; padding: 0; box-sizing: border-box; overflow: hidden;
+    color: var(--silver-100); background: #0F1B20; border: 0; border-top: 1px solid rgba(143,214,219,.42); box-shadow: 0 -14px 40px rgba(0,0,0,.6); }
+  .editor-foglio[open] { display: flex; flex-direction: column; }
+  .editor-foglio::backdrop { background: rgba(5,10,13,.72); }
+  .editor-foglio__testa { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 8px 16px 12px; border-bottom: 1px solid rgba(213,225,229,.12); }
+  .editor-foglio__titolo { display: flex; align-items: center; gap: 10px; }
+  .editor-foglio h2 { margin: 0; font-family: var(--font-display); font-size: 18px; line-height: 1.2; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; }
+  .editor-foglio__titolo > span { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--petrol-300); }
+  .editor-foglio__chiudi { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0 -10px 0 auto; padding: 0; cursor: pointer; color: #EEF4F5; background: none; border: 0; }
+  .editor-foglio__chiudi:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
+  .editor-foglio__regole { display: flex; flex-direction: column; gap: 3px; }
+  .editor-foglio__corpo { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 2px 16px 12px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+  .editor-foglio__corpo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
+  .editor-foglio__piede { flex: none; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: #0A1418; border-top: 1px solid rgba(213,225,229,.16); }
+  .editor-foglio__piede .q-btn { display: flex; width: 100%; }
+  .editor-foglio__piede .q-btn[aria-disabled="true"] { cursor: not-allowed; filter: saturate(.3) brightness(.62); }
+  .editor-foglio__piede .q-btn__in { height: 48px; }
+
   .saved-corpo { display: flex; flex-direction: column; gap: 24px; align-items: stretch; }
   .saved-carta { width: 200px; }
   .saved-conte { grid-template-columns: repeat(3, auto); }
   .saved-conte .m-conta:last-child { grid-column: 1 / -1; }
   .saved-azioni { flex-direction: column; align-items: stretch; gap: 14px; }
   .saved-azioni .q-btn { display: flex; }
+}
+
+/* Telefoni molto stretti: il contatore deve restare intero */
+@media (max-width: 359px) {
+  .editor-dock { gap: 8px; padding-left: 12px; padding-right: 12px; }
+  .page .editor-dock__salva { width: 82px; }
+  .editor-dock__mazzo { padding: 4px 8px; column-gap: 4px; }
 }
