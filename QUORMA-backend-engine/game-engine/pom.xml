@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.networknt</groupId>
             <artifactId>json-schema-validator</artifactId>
-            <version>3.0.8</version>
+            <version>3.0.9</version>
             <scope>test</scope>
         </dependency>
         <!-- Test only: the validator logs through SLF4J. A no-op backend keeps test runs quiet (otherwise SLF4J warns
