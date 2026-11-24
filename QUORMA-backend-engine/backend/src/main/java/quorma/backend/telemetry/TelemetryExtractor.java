@@ -18,6 +18,14 @@ public final class TelemetryExtractor {
     private TelemetryExtractor() {
     }
 
+    /** The event of a series: every game's log read in order. */
+    public static SeriesFinishedEvent series(UUID seriesId, UUID playerAId, UUID playerBId, Result seriesResult,
+                                             List<GameLog> games) {
+        return new SeriesFinishedEvent(seriesId, playerAId, playerBId, seriesResult, games.stream()
+                .map(g -> from(g.matchId(), g.snapshotIdA(), g.snapshotIdB(), g.log()))
+                .toList());
+    }
+
     public static GameTelemetry from(UUID matchId, UUID snapshotIdA, UUID snapshotIdB, JsonNode log) {
         Result result;
         try {

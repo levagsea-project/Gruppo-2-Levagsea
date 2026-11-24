@@ -6,11 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-/** Background work. Telemetry has its own small pool, so it can never take threads from the API. */
+/** Background work: async tasks and scheduled jobs. Telemetry has its own small pool, so it can never take threads from the API. */
 @Configuration
 @EnableAsync
+@EnableScheduling
 public class AsyncConfig {
 
     public static final String TELEMETRY_EXECUTOR = "telemetryExecutor";

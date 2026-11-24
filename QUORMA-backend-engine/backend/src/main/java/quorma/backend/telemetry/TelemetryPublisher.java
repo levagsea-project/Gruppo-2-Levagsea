@@ -24,10 +24,7 @@ public class TelemetryPublisher {
 
     public void publish(UUID seriesId, UUID playerAId, UUID playerBId, Result seriesResult, List<GameLog> games) {
         try {
-            List<GameTelemetry> figures = games.stream()
-                    .map(g -> TelemetryExtractor.from(g.matchId(), g.snapshotIdA(), g.snapshotIdB(), g.log()))
-                    .toList();
-            events.publishEvent(new SeriesFinishedEvent(seriesId, playerAId, playerBId, seriesResult, figures));
+            events.publishEvent(TelemetryExtractor.series(seriesId, playerAId, playerBId, seriesResult, games));
         } catch (RuntimeException e) {
             LOG.warn("telemetry skipped for series {}: {}", seriesId, e.getMessage());
         }

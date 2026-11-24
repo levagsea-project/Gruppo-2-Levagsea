@@ -57,6 +57,15 @@ public class TelemetryAggregator {
         final Map<String, long[]> factions = new LinkedHashMap<>(); // faction -> {played, won}
     }
 
+    /**
+     * Marks games as handled without adding anything: used for games that can never be read again (the engine that
+     * played them is gone), so the catch-up does not try them for ever.
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void markSkipped(List<UUID> matchIds) {
+        matchIds.forEach(processed::markProcessed);
+    }
+
     /** @return the number of games added (0 if the series had already been aggregated) */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int aggregate(SeriesFinishedEvent event) {
