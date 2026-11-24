@@ -86,6 +86,8 @@ public final class ErrorCodes {
     public static final String MATCHMAKING_NO_OPPONENT = "matchmaking.no_opponent";
     public static final String MATCH_NOT_FOUND = "match.not_found";
 
+    public static final String USER_NOT_FOUND = "user.not_found";
+
     public static final String ENGINE_INPUT_INVALID = "engine.input_invalid";
     public static final String ENGINE_UNAVAILABLE = "engine.unavailable";
 

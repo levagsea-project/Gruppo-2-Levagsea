@@ -75,6 +75,7 @@
   "room.already_open": "Hai già una stanza aperta",
   "matchmaking.no_opponent": "Nessun avversario disponibile al momento, riprova più tardi",
   "match.not_found": "Partita non trovata",
+  "user.not_found": "Giocatore non trovato",
 
   "error.not_implemented": "Funzione non ancora disponibile",
 

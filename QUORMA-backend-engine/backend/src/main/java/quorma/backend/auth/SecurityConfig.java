@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                         .requestMatchers("/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/error").permitAll()
                         .requestMatchers("/decks/**").hasRole("PLAYER")
-                        .requestMatchers("/packs/**", "/collection/**", "/wallet/**", "/me/**").hasRole("PLAYER")
+                        .requestMatchers("/packs/**", "/collection/**", "/wallet/**", "/me/**", "/users/**").hasRole("PLAYER")
                         .requestMatchers("/challenges/**", "/rooms/**", "/matchmaking/**", "/matches/**").hasRole("PLAYER")
                         .requestMatchers("/v1/**", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
