@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Aggregated per-user figures. */
+/** Aggregated per-user figures: games (matches_*) and series (series_*, the best of three). */
 @Entity
 @Table(name = "user_stats")
 @Getter
@@ -41,6 +41,18 @@ public class UserStats {
 
     @Setter
     private long kills;
+
+    @Setter
+    private long seriesPlayed;
+
+    @Setter
+    private long seriesWins;
+
+    @Setter
+    private long seriesLosses;
+
+    @Setter
+    private long seriesDraws;
 
     @Setter
     private Instant updatedAt;

@@ -17,9 +17,42 @@ CREATE TABLE user_stats
     damage_dealt   bigint      NOT NULL DEFAULT 0 CHECK (damage_dealt >= 0),
     spill_damage   bigint      NOT NULL DEFAULT 0 CHECK (spill_damage >= 0), -- overflow damage to the player after a kill
     kills          bigint      NOT NULL DEFAULT 0 CHECK (kills >= 0),
+    -- A series is the best of three; matches_* above count single games.
+    series_played  bigint      NOT NULL DEFAULT 0 CHECK (series_played >= 0),
+    series_wins    bigint      NOT NULL DEFAULT 0 CHECK (series_wins >= 0),
+    series_losses  bigint      NOT NULL DEFAULT 0 CHECK (series_losses >= 0),
+    series_draws   bigint      NOT NULL DEFAULT 0 CHECK (series_draws >= 0),
     updated_at     timestamptz NOT NULL DEFAULT now(),
     version        bigint      NOT NULL DEFAULT 0,
-    CHECK (wins + losses + draws = matches_played)
+    CHECK (wins + losses + draws = matches_played),
+    CHECK (series_wins + series_losses + series_draws = series_played)
+);
+
+-- Turns in which the player had each hand (turns[].evaluation.<side>.hand_type of the match log).
+CREATE TABLE user_hand_stats
+(
+    user_id    uuid        NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    hand_type  varchar(24) NOT NULL CHECK (hand_type IN
+                                           ('FIVE_OF_A_KIND', 'ROYAL_FLUSH', 'STRAIGHT_FLUSH', 'FOUR_OF_A_KIND',
+                                            'FULL_HOUSE', 'FLUSH', 'STRAIGHT', 'THREE_OF_A_KIND', 'FOUR_OF_A_SUIT',
+                                            'TWO_PAIR', 'PAIR', 'HIGH_CARD', 'NONE')),
+    turns      bigint      NOT NULL DEFAULT 0 CHECK (turns >= 0),
+    updated_at timestamptz NOT NULL DEFAULT now(),
+    version    bigint      NOT NULL DEFAULT 0,
+    PRIMARY KEY (user_id, hand_type)
+);
+
+-- Games played and won with each faction (the faction swaps every game of a series).
+CREATE TABLE user_faction_stats
+(
+    user_id      uuid        NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+    faction      varchar(24) NOT NULL CHECK (faction IN ('RESISTENZA_UMANA', 'POTENZE_ARTIFICIALI')),
+    games_played bigint      NOT NULL DEFAULT 0 CHECK (games_played >= 0),
+    games_won    bigint      NOT NULL DEFAULT 0 CHECK (games_won >= 0),
+    updated_at   timestamptz NOT NULL DEFAULT now(),
+    version      bigint      NOT NULL DEFAULT 0,
+    PRIMARY KEY (user_id, faction),
+    CHECK (games_won <= games_played)
 );
 
 -- Global per-card figures inside one pool snapshot (balance tuning).
