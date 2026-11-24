@@ -62,13 +62,21 @@ final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContex
     Evaluation evaluation;
     int cycle;
 
+    /**
+     * Telemetry: the suit synergy tiers that decided a blow or a rescue this turn, per side (a set, so a tier counts
+     * once per turn). Shared by the phases of one turn; never read by the rules.
+     */
+    final Map<Side, java.util.Set<String>> decisive;
+
     final TriggerDispatcher triggers;
     final Destruction destruction;
 
     /** An equipment drawn and waiting for the next creature, per side (ruleset 10.6). */
     private final Map<Side, EquipmentCard> pendingEquipment = new LinkedHashMap<>();
 
-    Game(Ruleset rules, AbilityBinder binder, MatchState state, Evaluation evaluation, CardEffects cardEffects) {
+    Game(Ruleset rules, AbilityBinder binder, MatchState state, Evaluation evaluation, CardEffects cardEffects,
+            Map<Side, java.util.Set<String>> decisive) {
+        this.decisive = Objects.requireNonNull(decisive, "decisive");
         this.rules = Objects.requireNonNull(rules, "rules");
         this.binder = Objects.requireNonNull(binder, "binder");
         this.state = Objects.requireNonNull(state, "state");
@@ -76,6 +84,11 @@ final class Game implements EffectStack.Hooks, EffectContext, PlayerEffectContex
         this.cardEffects = Objects.requireNonNull(cardEffects, "cardEffects");
         this.triggers = new TriggerDispatcher(state, this::board);
         this.destruction = new Destruction(state, this::board);
+    }
+
+    /** Notes that {@code tierId} of {@code side} decided something this turn (telemetry). */
+    void decided(Side side, String tierId) {
+        decisive.computeIfAbsent(side, k -> new java.util.TreeSet<>()).add(tierId);
     }
 
     Board board() {

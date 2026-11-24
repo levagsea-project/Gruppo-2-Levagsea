@@ -22,6 +22,8 @@ import quorma.gameengine.model.MatchResult;
  * @param closing    End of turn: its T2 and T26 effects, and {@code MatchEnded} if the match ended
  * @param board      the table at the end of the turn, after Refill
  * @param result     present only if the match ended at the end of this turn
+ * @param decisive   telemetry: the suit synergy tiers that changed the outcome of a blow this turn (a kill, a survival
+ *                   or the spill), per side; always among the tiers of {@code evaluation.synergies()}
  */
 public record TurnReport(
         int turn,
@@ -33,12 +35,14 @@ public record TurnReport(
         List<MatchEvent> refill,
         List<MatchEvent> closing,
         BoardSnapshot board,
-        Optional<MatchResult> result) {
+        Optional<MatchResult> result,
+        Synergies decisive) {
 
     public TurnReport {
         Objects.requireNonNull(evaluation, "evaluation");
         Objects.requireNonNull(board, "board");
         Objects.requireNonNull(result, "result");
+        Objects.requireNonNull(decisive, "decisive");
         attacks = List.copyOf(attacks);
         opening = List.copyOf(opening);
         cycle1 = List.copyOf(cycle1);

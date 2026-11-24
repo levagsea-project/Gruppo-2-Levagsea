@@ -568,6 +568,17 @@
           "required": ["A", "B"],
           "properties": { "A": { "$ref": "#/$defs/player_totals" }, "B": { "$ref": "#/$defs/player_totals" } }
         },
+        "turns_total": {
+          "description": "Turns played (result.turns_played), once per match: the base of the share of active turns of every synergy tier. Present together with synergies; logs of earlier engines have neither.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "synergies": {
+          "description": "One entry per side and per suit synergy tier of the rule pack (data/synergies.json), side A first, then B, tier ids in alphabetical order. turns_active: turns in which the side had the tier active at Evaluate (ruleset 7.10), at most turns_total. decisive_turns: active turns in which the tier changed the outcome of at least one blow (a kill, a survival or the spill), at most turns_active; see docs/DECISIONS.md 2026-11-24-synergy-telemetry-engine.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/synergy_totals" }
+        },
         "cards": {
           "description": "One entry per card in the decks, player A first, each in header deck order.",
           "type": "array",
@@ -584,6 +595,17 @@
         "spill_damage": { "type": "integer", "minimum": 0 },
         "kills": { "type": "integer", "minimum": 0 },
         "creatures_lost": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "synergy_totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["side", "synergy_id", "turns_active", "decisive_turns"],
+      "properties": {
+        "side": { "$ref": "#/$defs/side" },
+        "synergy_id": { "type": "string", "pattern": "^(VINCOLO|FRATTURA|SPIRA|VESTIGIO)_[345]$" },
+        "turns_active": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "decisive_turns": { "type": "integer", "minimum": 0, "maximum": 50 }
       }
     },
     "card_totals": {

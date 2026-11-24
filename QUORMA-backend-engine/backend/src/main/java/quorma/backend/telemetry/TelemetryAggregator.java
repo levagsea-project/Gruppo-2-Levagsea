@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -29,18 +30,20 @@ public class TelemetryAggregator {
     private final UserFactionStatsRepository factionStats;
     private final CardStatsRepository cardStats;
     private final UserCardStatsRepository userCardStats;
+    private final SynergyStatsRepository synergyStats;
     private final CardRepository cards;
 
     public TelemetryAggregator(TelemetryProcessedMatchRepository processed, UserStatsRepository userStats,
                                UserHandStatsRepository handStats, UserFactionStatsRepository factionStats,
                                CardStatsRepository cardStats, UserCardStatsRepository userCardStats,
-                               CardRepository cards) {
+                               SynergyStatsRepository synergyStats, CardRepository cards) {
         this.processed = processed;
         this.userStats = userStats;
         this.handStats = handStats;
         this.factionStats = factionStats;
         this.cardStats = cardStats;
         this.userCardStats = userCardStats;
+        this.synergyStats = synergyStats;
         this.cards = cards;
     }
 
@@ -95,9 +98,29 @@ public class TelemetryAggregator {
                         card.kills());
             }
         }
+        addSynergies(fresh);
         save(event.playerAId(), a, wholeSeries, event.seriesResult(), Side.A);
         save(event.playerBId(), b, wholeSeries, event.seriesResult(), Side.B);
         return fresh.size();
+    }
+
+    /**
+     * Sums the synergy figures of the games by (ruleset version, tier): both sides' active and decisive turns, and the
+     * game's turns once per side (the table counts side-turns, so active never exceeds total). Games without figures (an older engine) add nothing. Written in key order, so two
+     * series adding at once take the rows in the same order.
+     */
+    private void addSynergies(List<GameTelemetry> games) {
+        Map<String, Map<String, long[]>> sums = new TreeMap<>(); // ruleset -> tier -> {total, active, decisive}
+        for (GameTelemetry game : games) {
+            for (SynergyTotals s : game.synergies()) {
+                long[] sum = sums.computeIfAbsent(game.rulesetVersion(), k -> new TreeMap<>())
+                        .computeIfAbsent(s.synergyId(), k -> new long[3]);
+                sum[0] += game.turnsTotal(); // once per side: the table counts side-turns, so active <= total
+                sum[1] += s.turnsActive();
+                sum[2] += s.decisiveTurns();
+            }
+        }
+        sums.forEach((ruleset, tiers) -> tiers.forEach((tier, n) -> synergyStats.add(ruleset, tier, n[0], n[1], n[2])));
     }
 
     private static void add(Figures f, GameTelemetry game, Side side) {

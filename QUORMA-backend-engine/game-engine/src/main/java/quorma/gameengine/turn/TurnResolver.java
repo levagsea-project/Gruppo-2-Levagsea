@@ -2,7 +2,9 @@ package quorma.gameengine.turn;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -67,13 +69,17 @@ public final class TurnResolver {
         this(rules, HandEvaluator::evaluate, HandEvaluator::compare, CardEffects.NONE);
     }
 
+    /** Telemetry of the turn being played: the tiers that decided a blow (see {@link Game#decisive}). */
+    private final Map<Side, Set<String>> decisive = new EnumMap<>(Side.class);
+
     private Game game(MatchState state, Evaluation evaluation) {
-        return new Game(rules, binder, state, evaluation, cardEffects);
+        return new Game(rules, binder, state, evaluation, cardEffects, decisive);
     }
 
     /** Plays the turn of {@code state}: every phase in order. Moves {@code state} to the next turn if the match goes on. */
     public TurnReport playTurn(MatchState state) {
         int turn = state.turn();
+        decisive.clear();
         Game g = game(state, null);
         List<MatchEvent> opening = new ArrayList<>();
         g.phase("Valutazione", opening);
@@ -104,7 +110,10 @@ public final class TurnResolver {
         if (result.isEmpty() && state.turn() < MatchState.LAST_TURN) {
             state.nextTurn();
         }
-        return new TurnReport(turn, evaluation, attacks, opening, cycle1, cycle2, refill, closing, board, result);
+        Map<Side, List<String>> decided = new EnumMap<>(Side.class);
+        decisive.forEach((side, ids) -> decided.put(side, List.copyOf(ids)));
+        return new TurnReport(turn, evaluation, attacks, opening, cycle1, cycle2, refill, closing, board, result,
+                new Synergies(decided));
     }
 
     /**

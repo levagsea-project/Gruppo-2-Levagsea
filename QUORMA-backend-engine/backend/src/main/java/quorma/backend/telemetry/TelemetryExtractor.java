@@ -53,10 +53,26 @@ public final class TelemetryExtractor {
                     number(card, "damage_dealt"), number(card, "spill_damage"), number(card, "kills")));
         }
 
+        // Logs of an engine before 1.0.0-alpha.1 have neither turns_total nor synergies: no synergy figures, the rest still counts.
+        List<SynergyTotals> synergies = new ArrayList<>();
+        long turnsTotal = 0;
+        if (totals.has("synergies")) {
+            turnsTotal = number(totals, "turns_total");
+            for (JsonNode s : array(totals, "synergies")) {
+                SynergyTotals entry = new SynergyTotals(side(s), text(s, "synergy_id"), number(s, "turns_active"),
+                        number(s, "decisive_turns"));
+                if (entry.turnsActive() > turnsTotal || entry.decisiveTurns() > entry.turnsActive()) {
+                    throw new TelemetryException("the match log has inconsistent figures for " + entry.synergyId());
+                }
+                synergies.add(entry);
+            }
+        }
+
         return new GameTelemetry(matchId, snapshotIdA, snapshotIdB, result,
                 text(players.path("A"), "faction"), text(players.path("B"), "faction"),
                 sideTotals(sidesTotals, Side.A), sideTotals(sidesTotals, Side.B),
-                hands.get(Side.A), hands.get(Side.B), cards);
+                hands.get(Side.A), hands.get(Side.B), cards,
+                synergies.isEmpty() ? "" : text(log.path("header"), "ruleset_version"), turnsTotal, synergies);
     }
 
     private static SideTotals sideTotals(JsonNode players, Side side) {
@@ -69,7 +85,7 @@ public final class TelemetryExtractor {
         try {
             return Side.valueOf(text(card, "side"));
         } catch (IllegalArgumentException e) {
-            throw new TelemetryException("the match log has a card total with an unknown side");
+            throw new TelemetryException("the match log has a total with an unknown side");
         }
     }
 

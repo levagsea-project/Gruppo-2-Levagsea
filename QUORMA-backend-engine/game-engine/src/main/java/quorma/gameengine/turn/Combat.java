@@ -207,7 +207,16 @@ final class Combat {
         Side attackerSide = attack.attacker();
         Target targetRef = attack.target().orElseThrow();
         Board.Active rescue = strike.killed() ? g.destruction.rescue(targetRef.side(), target) : null;
+        // Telemetry: a tier that decided the kill, or the spill (a Cycle 1 mutual kill has no spill to decide).
+        for (Strike.Decisive d : strike.decisive()) {
+            if (d.kill() || (d.spill() && !mutualKill)) {
+                g.decided(d.tier().side(), d.tier().id());
+            }
+        }
         if (rescue != null) {
+            if (g.rules.synergies().containsKey(rescue.e().abilityId())) {
+                g.decided(targetRef.side(), rescue.e().abilityId()); // a tier saved the creature
+            }
             boolean keepSpill = rescue.e().effectId().equals(SetDefRescueEffect.ID) && rescue.e().boolParam("spill_on_prevent", false);
             if (rescue.e().effectId().equals(SetDefRescueEffect.ID)) {
                 strike = strike.saved(target.currentDef(), keepSpill);

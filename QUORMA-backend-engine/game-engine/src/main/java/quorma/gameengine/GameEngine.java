@@ -115,7 +115,7 @@ public final class GameEngine {
 
         MatchReport report = MatchRunner.run(state, new TurnResolver(rules));
         return new Simulation(EngineVersion.VERSION, rules.rulesetVersion(), rulesetHash, input, life, drawOrder, setup,
-                setupBoard, report);
+                setupBoard, report, rules.synergies().keySet().stream().sorted().toList());
     }
 
     private void check(MatchInput input, AbilityBinder binder) {
