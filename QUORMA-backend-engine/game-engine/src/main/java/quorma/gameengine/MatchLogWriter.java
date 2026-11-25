@@ -555,6 +555,8 @@ final class MatchLogWriter {
             playerTotals.put(side.name(), t);
         }
         out.put("players", playerTotals);
+        out.put("turns_total", sim.report().turns().size());
+        out.put("synergies", synergyTotals(sim));
         List<Object> cardTotals = new ArrayList<>();
         for (Side side : Side.values()) {
             for (Card card : sim.input().player(side).deck()) {
@@ -573,7 +575,44 @@ final class MatchLogWriter {
         return out;
     }
 
-    /** A card of a deck: side and id (ids are unique within a deck). */
+    /**
+     * One entry per side (A, then B) and per tier of the rule pack (ids sorted), zeros included, so the reader can
+     * add {@code turns_total} to every tier. {@code turns_active} counts the turns the tier was active at Evaluate.
+     */
+    private static List<Object> synergyTotals(Simulation sim) {
+        // Looked up by key only, never iterated: output order comes from Side.values() and the sorted ids.
+        Map<Key, int[]> counts = new HashMap<>(); // turns_active, decisive_turns
+        for (Side side : Side.values()) {
+            for (String id : sim.synergyIds()) {
+                counts.put(new Key(side, id), new int[2]);
+            }
+        }
+        for (TurnReport turn : sim.report().turns()) {
+            for (Side side : Side.values()) {
+                for (String id : turn.evaluation().synergies().tiers(side)) {
+                    counts.get(new Key(side, id))[0]++;
+                }
+                for (String id : turn.decisive().tiers(side)) {
+                    counts.get(new Key(side, id))[1]++;
+                }
+            }
+        }
+        List<Object> out = new ArrayList<>();
+        for (Side side : Side.values()) {
+            for (String id : sim.synergyIds()) {
+                int[] c = counts.get(new Key(side, id));
+                Map<String, Object> t = new LinkedHashMap<>();
+                t.put("side", side.name());
+                t.put("synergy_id", id);
+                t.put("turns_active", c[0]);
+                t.put("decisive_turns", c[1]);
+                out.add(t);
+            }
+        }
+        return out;
+    }
+
+    /** A card of a deck, or a synergy tier: side and id (ids are unique within a deck). */
     private record Key(Side side, String cardId) {}
 
     private static void countDraws(List<MatchEvent> events, Map<Key, long[]> cards) {

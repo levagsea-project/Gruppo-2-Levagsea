@@ -23,6 +23,7 @@ import quorma.gameengine.turn.MatchReport;
  * @param setupEvents    ruleset 5: draws, cards set aside, reshuffles, player A first
  * @param setupBoard     the table after setup, before turn 1
  * @param report         every turn and the result
+ * @param synergyIds     the suit synergy tier ids of the rule pack, sorted: the entries of {@code totals.synergies}
  */
 public record Simulation(
         String engineVersion,
@@ -33,7 +34,8 @@ public record Simulation(
         Map<Side, List<String>> drawOrder,
         List<MatchEvent> setupEvents,
         BoardSnapshot setupBoard,
-        MatchReport report) {
+        MatchReport report,
+        List<String> synergyIds) {
 
     public Simulation {
         Objects.requireNonNull(engineVersion, "engineVersion");
@@ -46,6 +48,7 @@ public record Simulation(
         drawOrder.forEach((side, ids) -> orders.put(side, List.copyOf(ids)));
         drawOrder = Collections.unmodifiableMap(orders);
         setupEvents = List.copyOf(setupEvents);
+        synergyIds = List.copyOf(synergyIds);
     }
 
     /** The canonical MatchLog JSON of this match ({@code schemas/match-log.schema.json}). */

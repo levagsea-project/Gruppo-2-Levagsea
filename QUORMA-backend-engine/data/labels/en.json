@@ -6,12 +6,15 @@
   "validation.email.max_length": "At most {max} characters",
   "validation.password.size": "Between {min} and {max} characters",
   "validation.max_utf8_bytes": "At most {value} bytes in UTF-8",
+  "validation.display_name.pattern": "3-32 characters: letters, digits, _ . -",
+  "validation.avatar.unknown": "Unknown avatar",
   "validation.faction.unknown": "Unknown faction",
   "validation.deck_name.max_length": "At most {max} characters",
 
   "auth.username_taken": "Username already taken",
   "auth.email_taken": "Email already registered",
   "auth.credentials_taken": "Username or email already in use",
+  "auth.current_password_wrong": "The current password is wrong",
   "auth.invalid_credentials": "Invalid username or password",
 
   "deck.not_found": "Deck not found",
@@ -75,6 +78,7 @@
   "room.already_open": "You already have an open room",
   "matchmaking.no_opponent": "No opponent is available right now, please try again later",
   "match.not_found": "Match not found",
+  "user.not_found": "Player not found",
 
   "error.not_implemented": "Not available yet",
 

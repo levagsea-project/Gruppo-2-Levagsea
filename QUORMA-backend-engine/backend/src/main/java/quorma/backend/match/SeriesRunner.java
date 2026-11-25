@@ -15,6 +15,9 @@ import quorma.backend.catalogue.PoolSnapshotRepository;
 import quorma.backend.engine.EngineUnavailableException;
 import quorma.backend.engine.HttpGameEngine;
 import quorma.backend.engine.MatchLog;
+import quorma.backend.telemetry.GameLog;
+import quorma.backend.telemetry.Result;
+import quorma.backend.telemetry.TelemetryPublisher;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -40,15 +43,18 @@ public class SeriesRunner {
     private final MatchRepository matches;
     private final MatchNotificationRepository notifications;
     private final PoolSnapshotRepository snapshots;
+    private final TelemetryPublisher telemetry;
     private final SecureRandom random = new SecureRandom();
 
     public SeriesRunner(HttpGameEngine engine, MatchSeriesRepository series, MatchRepository matches,
-                        MatchNotificationRepository notifications, PoolSnapshotRepository snapshots) {
+                        MatchNotificationRepository notifications, PoolSnapshotRepository snapshots,
+                        TelemetryPublisher telemetry) {
         this.engine = engine;
         this.series = series;
         this.matches = matches;
         this.notifications = notifications;
         this.snapshots = snapshots;
+        this.telemetry = telemetry;
     }
 
     /** One game as played: the stored recipe row and the log the engine returned (not stored). */
@@ -109,6 +115,11 @@ public class SeriesRunner {
                         player.equals(viewerId) ? now : null));
             }
         }
+
+        // Telemetry reads the logs after this transaction commits, in the background; it never throws.
+        telemetry.publish(current.getId(), playerA, playerB, Result.valueOf(current.getOutcome().name()),
+                games.stream().map(g -> new GameLog(g.match().getId(), g.match().getPoolSnapshotAId(),
+                        g.match().getPoolSnapshotBId(), g.log())).toList());
         return new SeriesResult(current, games);
     }
 

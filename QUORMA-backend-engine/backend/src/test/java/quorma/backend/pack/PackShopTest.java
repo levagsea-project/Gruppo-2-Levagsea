@@ -42,7 +42,7 @@ class PackShopTest extends ApiTest {
     @BeforeEach
     void setUp() {
         bootstrap.bootstrap(BaseSet.SETS_DIR);
-        User user = users.save(new User("giocatore", "g@quorma.local", "x", Role.PLAYER, 5000));
+        User user = users.save(new User("giocatore", "g@quorma.local", "x", Role.PLAYER, 5000, "giocatore", "avatar-01"));
         player = user.getId();
         token = jwt.issue(user);
     }

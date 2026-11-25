@@ -59,6 +59,28 @@ matches:
   # Matchmaking skips players who have not logged in for longer than this (at most 7 days).
   matchmaking-max-offline: ${MATCHES_MATCHMAKING_MAX_OFFLINE:7d}
 
+telemetry:
+  catch-up:
+    # Recovers series the background aggregation missed (a restart, a full queue) by replaying them on the engine.
+    enabled: ${TELEMETRY_CATCH_UP_ENABLED:true}
+    interval: ${TELEMETRY_CATCH_UP_INTERVAL:PT5M}
+    # Only games older than this are picked up, so the live aggregation is not raced.
+    grace: ${TELEMETRY_CATCH_UP_GRACE:PT2M}
+    # Series handled in one run.
+    batch-size: ${TELEMETRY_CATCH_UP_BATCH_SIZE:10}
+
 auth:
   # Registration bonus for new users
   registration-bonus: ${AUTH_REGISTRATION_BONUS:0}
+
+profile:
+  # Codes of the predefined avatars (the images live in the frontend). The first one is every new player's avatar.
+  avatars:
+    - avatar-01
+    - avatar-02
+    - avatar-03
+    - avatar-04
+    - avatar-05
+    - avatar-06
+    - avatar-07
+    - avatar-08

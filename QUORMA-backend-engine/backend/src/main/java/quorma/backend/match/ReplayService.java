@@ -52,6 +52,17 @@ public class ReplayService {
                 .findFirst()
                 .orElseThrow(() -> new ChallengeException(HttpStatus.NOT_FOUND, ErrorCodes.MATCH_NOT_FOUND));
 
+        PlayedGame played = rebuild(match);
+        return new ReplayResponse(seriesId, gameNumber, match.getId(), factionOf(match.getPoolSnapshotAId()).name(),
+                factionOf(match.getPoolSnapshotBId()).name(), match.getOutcome(), match.getResultHash(), true,
+                played.log());
+    }
+
+    /**
+     * Plays a stored game again and checks it: the guard first, then the engine, then the result hash and outcome.
+     * No user check (the caller decides who may see it). Used by the replay endpoint and by the telemetry catch-up.
+     */
+    PlayedGame rebuild(Match match) {
         guard.requireSameEngine(match);
 
         Faction factionA = factionOf(match.getPoolSnapshotAId());
@@ -67,12 +78,11 @@ public class ReplayService {
         if (!played.resultHash().equals(match.getResultHash()) || played.outcome() != match.getOutcome()) {
             // Same engine and same rule pack, yet another game: a determinism bug or a damaged recipe. Never hide it.
             log.error("Replay of match {} (series {}, game {}) differs from the stored game: hash {} vs {}, outcome {} vs {}",
-                    match.getId(), seriesId, gameNumber, played.resultHash(), match.getResultHash(), played.outcome(),
-                    match.getOutcome());
+                    match.getId(), match.getSeriesId(), match.getGameNumber(), played.resultHash(), match.getResultHash(),
+                    played.outcome(), match.getOutcome());
             throw new ChallengeException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.REPLAY_RESULT_MISMATCH);
         }
-        return new ReplayResponse(seriesId, gameNumber, match.getId(), factionA.name(), factionB.name(), match.getOutcome(),
-                match.getResultHash(), true, played.log());
+        return played;
     }
 
     private Faction factionOf(UUID poolSnapshotId) {

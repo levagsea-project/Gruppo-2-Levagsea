@@ -42,7 +42,8 @@ class SeriesRunnerTest {
     private final MatchRepository matches = mock(MatchRepository.class);
     private final MatchNotificationRepository notifications = mock(MatchNotificationRepository.class);
     private final PoolSnapshotRepository snapshots = mock(PoolSnapshotRepository.class);
-    private final SeriesRunner runner = new SeriesRunner(engine, series, matches, notifications, snapshots);
+    private final SeriesRunner runner = new SeriesRunner(engine, series, matches, notifications, snapshots,
+            mock(quorma.backend.telemetry.TelemetryPublisher.class));
 
     private final UUID a = UUID.randomUUID();
     private final UUID b = UUID.randomUUID();

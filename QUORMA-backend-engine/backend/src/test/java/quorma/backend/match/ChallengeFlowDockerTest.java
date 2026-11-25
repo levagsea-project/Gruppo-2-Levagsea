@@ -128,8 +128,8 @@ class ChallengeFlowDockerTest {
 
     private UUID newUser(String prefix) {
         String name = prefix + UUID.randomUUID().toString().substring(0, 8);
-        return jdbc.queryForObject("insert into users (username, email, password_hash, role)"
-                + " values (?, ?, ?, 'PLAYER') returning id", UUID.class, name, name + "@test.it", "x".repeat(60));
+        return jdbc.queryForObject("insert into users (username, email, password_hash, role, display_name, avatar)"
+                + " values (?, ?, ?, 'PLAYER', ?, 'avatar-01') returning id", UUID.class, name, name + "@test.it", "x".repeat(60), name);
     }
 
     /** A player with one legal deck per faction, both of them defense decks. */

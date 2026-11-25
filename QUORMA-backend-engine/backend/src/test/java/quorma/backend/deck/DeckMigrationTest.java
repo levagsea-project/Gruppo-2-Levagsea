@@ -76,7 +76,7 @@ class DeckMigrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        admin = users.save(new User("sistema", "sistema@quorma.local", "x", Role.ADMIN, 0)).getId();
+        admin = users.save(new User("sistema", "sistema@quorma.local", "x", Role.ADMIN, 0, "sistema", "avatar-01")).getId();
         auth.register(new RegisterRequest("giocatore", "g@quorma.local", "password123"));
         player = users.findByUsernameIgnoreCase("giocatore").orElseThrow().getId();
 

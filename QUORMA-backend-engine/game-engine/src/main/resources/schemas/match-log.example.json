@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "header": {
-    "engine_version": "1.0.0-SNAPSHOT",
+    "engine_version": "1.0.0-alpha.1",
     "ruleset_version": "1.0-alpha",
     "ruleset_hash": "24d889830a3f797aac4479fd64d2833d976d5ae6f78ff1de00a6007b73e8fcc1",
     "prng": "SplitMix64",
@@ -676,6 +676,153 @@
         "creatures_lost": 1
       }
     },
+    "turns_total": 2,
+    "synergies": [
+      {
+        "side": "A",
+        "synergy_id": "FRATTURA_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "FRATTURA_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "FRATTURA_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "SPIRA_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "SPIRA_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "SPIRA_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "VESTIGIO_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "VESTIGIO_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "VESTIGIO_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "VINCOLO_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "VINCOLO_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "A",
+        "synergy_id": "VINCOLO_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "FRATTURA_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "FRATTURA_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "FRATTURA_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "SPIRA_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "SPIRA_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "SPIRA_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "VESTIGIO_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "VESTIGIO_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "VESTIGIO_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "VINCOLO_3",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "VINCOLO_4",
+        "turns_active": 0,
+        "decisive_turns": 0
+      },
+      {
+        "side": "B",
+        "synergy_id": "VINCOLO_5",
+        "turns_active": 0,
+        "decisive_turns": 0
+      }
+    ],
     "cards": [
       {
         "side": "A",
@@ -695,5 +842,5 @@
       }
     ]
   },
-  "result_hash": "694aef9f7c87779928ef7ee0ba9fa9483a1cb57fa19b90628525634a6be4a5a6"
+  "result_hash": "3551794633ecb00d4274c86fe8909d869d7ad6673596cb56e7cdab1229f7a7be"
 }

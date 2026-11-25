@@ -6,12 +6,15 @@
   "validation.email.max_length": "Al massimo {max} caratteri",
   "validation.password.size": "Da {min} a {max} caratteri",
   "validation.max_utf8_bytes": "Al massimo {value} byte in UTF-8",
+  "validation.display_name.pattern": "Da 3 a 32 caratteri: lettere, cifre, _ . -",
+  "validation.avatar.unknown": "Avatar sconosciuto",
   "validation.faction.unknown": "Fazione sconosciuta",
   "validation.deck_name.max_length": "Al massimo {max} caratteri",
 
   "auth.username_taken": "Nome utente già in uso",
   "auth.email_taken": "Email già registrata",
   "auth.credentials_taken": "Nome utente o email già in uso",
+  "auth.current_password_wrong": "La password attuale non è corretta",
   "auth.invalid_credentials": "Nome utente o password non validi",
 
   "deck.not_found": "Mazzo non trovato",
@@ -75,6 +78,7 @@
   "room.already_open": "Hai già una stanza aperta",
   "matchmaking.no_opponent": "Nessun avversario disponibile al momento, riprova più tardi",
   "match.not_found": "Partita non trovata",
+  "user.not_found": "Giocatore non trovato",
 
   "error.not_implemented": "Funzione non ancora disponibile",
 

@@ -29,7 +29,7 @@ public class SystemUser {
     @Transactional
     public UUID id() {
         return users.findByUsernameIgnoreCase(USERNAME)
-                .orElseGet(() -> users.save(new User(USERNAME, "sistema@quorma.local", NO_LOGIN, Role.ADMIN, 0)))
+                .orElseGet(() -> users.save(new User(USERNAME, "sistema@quorma.local", NO_LOGIN, Role.ADMIN, 0, USERNAME, "avatar-01")))
                 .getId();
     }
 }

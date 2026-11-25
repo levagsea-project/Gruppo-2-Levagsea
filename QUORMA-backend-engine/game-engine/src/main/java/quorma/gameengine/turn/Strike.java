@@ -27,6 +27,8 @@ import quorma.gameengine.model.Side;
  * @param damageModifiers effects that changed the damage, in card order; empty when the effective ATK is 0
  * @param spillModifiers  effects that changed the spill, in card order; empty unless the blow kills
  * @param spill           as if the blow were not part of a mutual kill; see {@link #withoutSpill()}
+ * @param decisive        the suit synergy tiers without which this blow would end differently (telemetry), see
+ *                        {@link #decisiveTiers}; empty for a blow only worked out (not about to land)
  */
 record Strike(
         int atk,
@@ -42,12 +44,23 @@ record Strike(
         int spillMultiplierPermille,
         int spill,
         List<Modifier> damageModifiers,
-        List<Modifier> spillModifiers) {
+        List<Modifier> spillModifiers,
+        List<Decisive> decisive) {
 
     Strike {
         damageModifiers = List.copyOf(damageModifiers);
         spillModifiers = List.copyOf(spillModifiers);
+        decisive = List.copyOf(decisive);
     }
+
+    /** A suit synergy tier of a side (a tier is the ability id of its expansions). */
+    record Tier(Side side, String id) {}
+
+    /**
+     * A tier that decided a blow: {@code kill} when the target would not have been destroyed without it (or would
+     * have been destroyed with it), {@code spill} when the spill would have had another value.
+     */
+    record Decisive(Tier tier, boolean kill, boolean spill) {}
 
     /**
      * The blow of {@code attacker} on {@code target}. With {@code land} true the blow is about to land: a T21
@@ -55,11 +68,54 @@ record Strike(
      */
     static Strike of(Game g, Board b, CycleStart start, Side attackerSide, Creature attacker, Side targetSide,
             Creature target, boolean land) {
+        Strike strike = of(g, b, start, attackerSide, attacker, targetSide, target, land, null);
+        return land ? strike.withDecisive(decisiveTiers(g, b, start, attackerSide, attacker, targetSide, target, strike)) : strike;
+    }
+
+    /**
+     * The tiers of the blow's own modifiers without which the blow would end differently: the blow is worked out
+     * again, only for that tier, with its ATK bonuses and its spill replacements left out, and the two are compared
+     * (both without the use of an E29 prevention, which would be spent twice). Only the single blow is recomputed,
+     * never the rest of the match (decision {@code 2026-11-24-synergy-telemetry-engine}).
+     */
+    private static List<Decisive> decisiveTiers(Game g, Board b, CycleStart start, Side attackerSide, Creature attacker,
+            Side targetSide, Creature target, Strike landed) {
+        List<Tier> tiers = new ArrayList<>();
+        for (List<Modifier> modifiers : List.of(landed.damageModifiers(), landed.spillModifiers())) {
+            for (Modifier m : modifiers) {
+                Tier tier = new Tier(m.source().side(), m.abilityId());
+                if (g.rules.synergies().containsKey(m.abilityId()) && !tiers.contains(tier)) {
+                    tiers.add(tier);
+                }
+            }
+        }
+        List<Decisive> out = new ArrayList<>();
+        if (tiers.isEmpty()) {
+            return out;
+        }
+        Strike with = of(g, b, start, attackerSide, attacker, targetSide, target, false, null);
+        for (Tier tier : tiers) {
+            Strike without = of(g, b, start, attackerSide, attacker, targetSide, target, false, tier);
+            boolean kill = with.killed() != without.killed();
+            boolean spill = with.spill() != without.spill();
+            if (kill || spill) {
+                out.add(new Decisive(tier, kill, spill));
+            }
+        }
+        return out;
+    }
+
+    /** The blow worked out with the modifiers of {@code without} (a tier) left out; null leaves nothing out. */
+    private static Strike of(Game g, Board b, CycleStart start, Side attackerSide, Creature attacker, Side targetSide,
+            Creature target, boolean land, Tier without) {
         int handMultiplierPermille = g.evaluation.multiplier(attackerSide);
         CreatureRef attackerRef = CreatureRef.of(attackerSide, attacker);
 
         // ATK that static effects (suit synergies, abilities, spells) add, worked out on the board as it is now.
-        List<Modifier> atkBonuses = b.atkBonuses(attacker, target, start);
+        List<Modifier> atkBonuses = new ArrayList<>(b.atkBonuses(attacker, target, start));
+        if (without != null) {
+            atkBonuses.removeIf(m -> without.id().equals(m.abilityId()) && without.side() == m.source().side());
+        }
         long atk = b.ownAtk(attacker);
         for (Modifier bonus : atkBonuses) {
             atk += bonus.kind() == Modifier.Kind.ATK_MALUS ? -bonus.value() : bonus.value();
@@ -153,6 +209,9 @@ record Strike(
                 BoundExpansion e = a.e();
                 Creature from = a.sourceOr(attacker);
                 CreatureRef fromRef = CreatureRef.of(b.sideOf(from), from);
+                if (without != null && without.id().equals(e.abilityId()) && without.side() == fromRef.side()) {
+                    continue;
+                }
                 if (e.effectId().equals(SpillMultiplierEffect.ID)) {
                     factors.add(e.intParam("factor"));
                     spillModifiers.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
@@ -168,7 +227,7 @@ record Strike(
         int spill = killed ? Damage.spill(damage, Damage.spillDef(defBefore, defShares), spillMultiplier) : 0;
 
         return new Strike(Math.toIntExact(atk), advantage, effectiveAtk, mitigation, damage, defBefore, defAfter, killed,
-                lethal, handMultiplierPermille, spillMultiplier, spill, damageModifiers, spillModifiers);
+                lethal, handMultiplierPermille, spillMultiplier, spill, damageModifiers, spillModifiers, List.of());
     }
 
     /**
@@ -178,13 +237,18 @@ record Strike(
     Strike saved(int defAfterSave, boolean keepSpill) {
         return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, defAfterSave,
                 false, false, handMultiplierPermille, keepSpill ? spillMultiplierPermille : handMultiplierPermille,
-                keepSpill ? spill : 0, damageModifiers, keepSpill ? spillModifiers : List.of());
+                keepSpill ? spill : 0, damageModifiers, keepSpill ? spillModifiers : List.of(), decisive);
     }
 
     /** The blow of a Cycle 1 mutual kill (ruleset 9.7): no spill, so Traboccante does not apply either. */
     Strike withoutSpill() {
         return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, defAfter,
-                killed, lethal, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of());
+                killed, lethal, handMultiplierPermille, handMultiplierPermille, 0, damageModifiers, List.of(), decisive);
+    }
+
+    private Strike withDecisive(List<Decisive> decisive) {
+        return new Strike(atk, advantagePermille, effectiveAtk, mitigationPermille, damage, defBefore, defAfter, killed,
+                lethal, handMultiplierPermille, spillMultiplierPermille, spill, damageModifiers, spillModifiers, decisive);
     }
 
     AttackResolved event(Attack attack, int cycle, boolean mutualKill) {

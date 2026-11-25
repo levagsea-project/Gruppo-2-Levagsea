@@ -128,7 +128,7 @@ class StarterDeckTest extends IntegrationTest {
     @Test
     void anAdminDoesNotGetStarterDecks() {
         bootstrap.bootstrap(BaseSet.SETS_DIR);
-        users.save(new User("amministratore", "a@quorma.local", encoder.encode("password123"), Role.ADMIN, 0));
+        users.save(new User("amministratore", "a@quorma.local", encoder.encode("password123"), Role.ADMIN, 0, "amministratore", "avatar-01"));
         auth.login(new LoginRequest("amministratore", "password123"));
         assertEquals(0, count("decks"));
         assertEquals(0, count("card_instances"));

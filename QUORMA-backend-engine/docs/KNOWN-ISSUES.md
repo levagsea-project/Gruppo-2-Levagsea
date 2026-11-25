@@ -13,6 +13,10 @@ Add an entry here instead of guessing. Remove it when fixed. Date format YYYY-MM
 
 ## Gaps
 
+### `2026-11-25-no-token-revocation`: A password change does not end the other sessions
+
+Tokens are stateless JWTs (24 h by default) and the API keeps no list of revoked ones, so after `PUT /me/password` a token issued before it keeps working until it expires. Same for a stolen token: changing the password does not lock the thief out at once. To decide when the account screens grow: a `password_changed_at` (or a token version) on `users` that `JwtService` writes into the token and the resource server compares, so older tokens are refused. Also not done: the new email is not verified (no mail service), and password recovery by email does not exist.
+
 ### `2026-11-17-base-set-engine-readings`: How the engine reads the base set where the data leaves room
 
 The engine resolves the whole base set (`2026-11-17-base-set-engine`). Where the vocabulary or the card text left a choice, it does the following; confirm or change each one.
