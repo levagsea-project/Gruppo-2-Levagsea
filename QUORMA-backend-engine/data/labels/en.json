@@ -14,6 +14,7 @@
   "auth.username_taken": "Username already taken",
   "auth.email_taken": "Email already registered",
   "auth.credentials_taken": "Username or email already in use",
+  "auth.current_password_wrong": "The current password is wrong",
   "auth.invalid_credentials": "Invalid username or password",
 
   "deck.not_found": "Deck not found",

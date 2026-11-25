@@ -28,7 +28,7 @@ public class ProfileController {
 
     @GetMapping("/me/profile")
     @Operation(operationId = "getMyProfile", summary = "My profile",
-            description = "`username` (the identity, never changes), `displayName` and `avatar` (a code from `GET /avatars`). Every player has both from registration: `displayName` starts as the username and `avatar` as the first code.")
+            description = "`username` (the identity, never changes), `displayName`, `avatar` (a code from `GET /avatars`) and `email` (private: only here, never in another player's profile). Every player has both from registration: `displayName` starts as the username and `avatar` as the first code.")
     public ProfileResponse mine(@AuthenticationPrincipal Jwt jwt) {
         return profiles.mine(UUID.fromString(jwt.getSubject()));
     }

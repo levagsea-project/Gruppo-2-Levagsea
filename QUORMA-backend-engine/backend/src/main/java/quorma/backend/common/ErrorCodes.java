@@ -25,6 +25,7 @@ public final class ErrorCodes {
     public static final String USERNAME_TAKEN = "auth.username_taken";
     public static final String EMAIL_TAKEN = "auth.email_taken";
     public static final String CREDENTIALS_TAKEN = "auth.credentials_taken";
+    public static final String CURRENT_PASSWORD_WRONG = "auth.current_password_wrong";
     public static final String INVALID_CREDENTIALS = "auth.invalid_credentials";
 
     public static final String PACK_UNKNOWN_TYPE = "pack.unknown_type";

@@ -42,7 +42,7 @@ public class ProfileService {
     }
 
     static ProfileResponse of(User user) {
-        return new ProfileResponse(user.getUsername(), user.getDisplayName(), user.getAvatar());
+        return new ProfileResponse(user.getUsername(), user.getDisplayName(), user.getAvatar(), user.getEmail());
     }
 
     private User find(UUID userId) {

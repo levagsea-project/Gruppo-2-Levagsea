@@ -14,6 +14,7 @@
   "auth.username_taken": "Nome utente già in uso",
   "auth.email_taken": "Email già registrata",
   "auth.credentials_taken": "Nome utente o email già in uso",
+  "auth.current_password_wrong": "La password attuale non è corretta",
   "auth.invalid_credentials": "Nome utente o password non validi",
 
   "deck.not_found": "Mazzo non trovato",

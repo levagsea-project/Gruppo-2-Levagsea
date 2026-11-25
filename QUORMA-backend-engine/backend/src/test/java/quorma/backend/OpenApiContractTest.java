@@ -79,6 +79,8 @@ class OpenApiContractTest extends ApiTest {
             "PUT /admin/catalogue/sets/{code}/cards/{cardCode}",
             "PUT /admin/catalogue/texts/{kind}/{code}/{locale}",
             "PUT /decks/{id}",
+            "PUT /me/email",
+            "PUT /me/password",
             "PUT /me/profile");
 
     private JsonNode spec() throws Exception {
