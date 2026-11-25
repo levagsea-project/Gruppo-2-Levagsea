@@ -53,7 +53,7 @@ jobs:
       - name: Start backend and export OpenAPI spec
         run: |
           mkdir -p ../build/api-docs
-          java -jar backend/target/backend-1.0.0-SNAPSHOT.jar > ../build/backend.log 2>&1 &
+          java -jar backend/target/backend-*.jar > ../build/backend.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -fsS http://localhost:8080/api-docs -o ../build/api-docs/openapi.json; then
               echo "Spec exported"; exit 0
