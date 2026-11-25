@@ -6,6 +6,9 @@ export type Faction = {
   name: string
   cover: string // illustrazione della fazione (1024×427): copertine dei mazzi, Nuovo mazzo, home su telefono
   coverFocus: string // dove sta il soggetto, per il ritaglio (background-position / object-position)
+  tint: string // colore della fazione: bordo e pila delle scatole dei mazzi
+  tintText: string // lo stesso colore, chiaro, per i testi
+
   cards: string
   creatures: string
   spells: string
@@ -18,6 +21,8 @@ export const factions: Record<FactionId, Faction> = {
     name: 'Resistenza Umana',
     cover: '/images/sfondi/fazione-umana.webp',
     coverFocus: '50% 70%', // il falò e i sopravvissuti con le torce
+    tint: '#E0874A', // brace
+    tintText: '#FFD7B0',
     cards: '32',
     creatures: '20–23',
     spells: '9–12',
@@ -33,6 +38,8 @@ export const factions: Record<FactionId, Faction> = {
     name: 'Potenze Artificiali',
     cover: '/images/sfondi/fazione-ia.webp',
     coverFocus: '80% 30%', // il costrutto più vicino, con gli occhi ciano
+    tint: '#4AA6AD', // petrolio
+    tintText: '#8FD6DB',
     cards: '32',
     creatures: '24–27',
     spells: '5–8',

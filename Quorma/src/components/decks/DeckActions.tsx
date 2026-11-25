@@ -5,6 +5,7 @@ type Props = {
   onDelete: () => void
   canPlay: boolean
   canDelete: boolean
+  editLabel: string
   duplicating: boolean
   busy: boolean // un'altra azione sul mazzo è in corso
   deleteHint?: string
@@ -17,8 +18,8 @@ const Star = () => (
 )
 
 // I pulsanti in fondo al pannello, come nel design: sigillo GIOCA (solo se il mazzo è usabile),
-// Modifica (argento, apre l'editor), Duplica ed Elimina (acciaio).
-export default function DeckActions({ onPlay, onEdit, onDuplicate, onDelete, canPlay, canDelete, duplicating, busy, deleteHint }: Props) {
+// Modifica (argento, apre l'editor), poi Duplica ed Elimina come semplici voci di testo.
+export default function DeckActions({ onPlay, onEdit, onDuplicate, onDelete, canPlay, canDelete, editLabel, duplicating, busy, deleteHint }: Props) {
   return (
     <div className="deck-actions">
       {canPlay && (
@@ -32,14 +33,14 @@ export default function DeckActions({ onPlay, onEdit, onDuplicate, onDelete, can
         </button>
       )}
       <button type="button" className="q-btn q-btn--argento" onClick={onEdit}>
-        <span className="q-btn__in">Modifica</span>
+        <span className="q-btn__in">{editLabel}</span>
       </button>
-      <div className="deck-actions__riga">
-        <button type="button" className="q-btn q-btn--acciaio" onClick={onDuplicate} disabled={busy} aria-busy={duplicating}>
-          <span className="q-btn__in">{duplicating ? 'Copia…' : 'Duplica'}</span>
+      <div className="d-azioni">
+        <button type="button" onClick={onDuplicate} disabled={busy} aria-busy={duplicating}>
+          {duplicating ? 'Copia…' : 'Duplica'}
         </button>
-        <button type="button" className="q-btn q-btn--acciaio" onClick={onDelete} disabled={!canDelete} aria-describedby={deleteHint ? 'deck-elimina-motivo' : undefined}>
-          <span className="q-btn__in">Elimina</span>
+        <button type="button" onClick={onDelete} disabled={!canDelete} aria-describedby={deleteHint ? 'deck-elimina-motivo' : undefined}>
+          Elimina
         </button>
       </div>
       {/* scritto per esteso: un title non si vede al tocco */}

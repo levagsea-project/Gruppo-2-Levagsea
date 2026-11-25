@@ -7,6 +7,10 @@ import { DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankLabel, toBackendFactio
 
 export { DECK_SIZE }
 
+// Lunghezza massima del nome che si può scrivere (come nel design). I nomi più lunghi già salvati
+// vengono tagliati con i puntini dove si mostrano (decks.css, editor.css).
+export const DECK_NAME_MAX = 24
+
 // ---------- Forma delle risposte del backend ----------
 type DeckSummary = {
   id: string

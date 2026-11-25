@@ -4,31 +4,28 @@ import { factions } from '../../data/factions'
 
 type Props = { deck: Deck; selected: boolean; onSelect: () => void }
 
-// Una carta-mazzo del design system: due "strati" dietro (il mazzo), arco con l'arte della fazione,
-// nome, fazione e stato. Scelta = filo petrolio acceso (q-acceso).
+// Un mazzo come scatola di carte (design "Pagina-Mazzi"): fronte con l'arte della fazione, pila e dorso a ventaglio
+// dietro, sotto nome e fazione. Scelto = bordo chiaro acceso.
 export default function DeckCard({ deck, selected, onSelect }: Props) {
   const faction = factions[deck.faction]
-  const status = deck.outdated ? 'Obsoleto' : deck.defense ? 'Difesa' : 'Valido'
+  const incomplete = deck.cards < deck.maxCards
+  const stato = deck.outdated ? 'Obsoleto' : incomplete ? `${deck.cards} / ${deck.maxCards} carte` : deck.defense ? 'Difesa' : ''
+  const aria = [deck.name, faction.name, deck.outdated ? 'obsoleto' : '', incomplete ? `incompleto: ${deck.cards} carte su ${deck.maxCards}` : '', deck.defense ? 'mazzo di difesa' : '']
+    .filter(Boolean)
+    .join(', ')
 
   return (
-    <button type="button" className="pick deck-pick" aria-pressed={selected} onClick={onSelect}>
-      <span className="q-mazzo">
-        <span className="q-mazzo__strato" aria-hidden="true" />
-        <span className="q-mazzo__strato" aria-hidden="true" />
-        <span className={`q-tela q-tela--arco q-carta ${selected ? 'q-acceso' : ''}`}>
-          <span className="q-tela__in">
-            <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus } as CSSProperties} />
-            <span className="q-divisorio" />
-            <span className="q-carta__targa">
-              <span className="q-carta__nome">{deck.name}</span>
-              <span className="q-carta__sotto">{faction.name}</span>
-              <span className={`deck-pick__stato ${deck.outdated ? 'deck-pick__stato--off' : ''}`}>
-                {deck.cards} / {deck.maxCards} · {status}
-              </span>
-            </span>
-          </span>
-          <span className="q-borchia q-borchia--n" aria-hidden="true" />
+    <button type="button" className="k-mazzo" aria-pressed={selected} aria-label={aria} onClick={onSelect}
+      style={{ '--f': faction.tint, '--ft': faction.tintText } as CSSProperties}>
+      <span className="k-scatola" aria-hidden="true">
+        <span className="k-fronte">
+          <span className="k-arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
         </span>
+      </span>
+      <span className="k-targa" aria-hidden="true">
+        <span className="k-nome" title={deck.name}>{deck.name}</span>
+        <span className="k-fazione">{faction.name}</span>
+        {stato && <span className={`k-stato ${deck.outdated || incomplete ? 'k-stato--off' : ''}`}>{stato}</span>}
       </span>
     </button>
   )

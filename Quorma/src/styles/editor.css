@@ -180,18 +180,22 @@
 
 /* ---------- Mazzo salvato ---------- */
 .page.saved-page { gap: 24px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
-.saved-corpo { flex: 1; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 56px; align-items: center; }
-.saved-carta { justify-self: center; width: 250px; }
-.saved-carta .q-carta__arte { background-size: cover; background-position: center 30%; }
-.saved-carta__targa { padding: 16px 10px; }
-.saved-carta .q-carta__nome { font-size: 19px; }
-.saved-dati { display: flex; flex-direction: column; gap: 22px; max-width: 700px; }
+/* scatola e dati al centro della pagina, non appoggiati a sinistra */
+.saved-corpo { flex: 1; display: grid; grid-template-columns: auto minmax(0, 700px); justify-content: center; gap: 56px; align-items: center; }
+/* la scatola del mazzo (k-*, decks.css): il padding lascia spazio al dorso a ventaglio dietro */
+.saved-carta { justify-self: center; width: 250px; padding: 16px 0 0 26px; box-sizing: border-box; }
+.saved-carta .k-mazzo { cursor: default; }
+.saved-carta .k-nome { font-size: 19px; }
+/* "NOME · FAZIONE" sotto il titolo: una riga sola, i nomi lunghi finiscono con i puntini */
+.saved-page .page-title { min-width: 0; max-width: 100%; }
+.saved-page .page-title p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved-dati { display: flex; flex-direction: column; gap: 22px; }
 .saved-stato { font-size: 15px; }
 .saved-conte { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 16px 32px; }
 .saved-difesa { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .saved-difesa p { margin: 0; max-width: 60ch; font-size: 14px; line-height: 22px; color: var(--q-testo-tenue, #A9BCC3); }
 .saved-azioni { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; padding-top: 4px; }
-@media (max-width: 1279px) { .saved-corpo { grid-template-columns: 240px minmax(0, 1fr); gap: 36px; } .saved-carta { width: 220px; } }
+@media (max-width: 1279px) { .saved-corpo { grid-template-columns: auto minmax(0, 1fr); gap: 36px; } .saved-carta { width: 220px; } }
 
 /* ---------- Telefono ---------- */
 @media (max-width: 767px) {
@@ -252,7 +256,7 @@
   .editor-foglio__piede .q-btn__in { height: 48px; }
 
   .saved-corpo { display: flex; flex-direction: column; gap: 24px; align-items: stretch; }
-  .saved-carta { width: 200px; }
+  .saved-carta { align-self: center; width: 200px; padding: 12px 0 0 22px; }
   .saved-conte { grid-template-columns: repeat(3, auto); }
   .saved-conte .m-conta:last-child { grid-column: 1 / -1; }
   .saved-azioni { flex-direction: column; align-items: stretch; gap: 14px; }

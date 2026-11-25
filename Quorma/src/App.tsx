@@ -60,7 +60,8 @@ export default function App() {
   const [awayOpen, setAwayOpen] = useState(true) // la finestra si mostra una volta per ingresso nell'app
   const [profileTab, setProfileTab] = useState<ProfileTab>('panoramica') // scheda con cui si apre il profilo
   // Mazzo in lavorazione nell'editor (deckId null = nuovo) e mazzo mostrato in "Mazzo salvato".
-  const [editing, setEditing] = useState<{ faction: FactionId; deckId: string | null }>({ faction: 'artificiali', deckId: null })
+  // name: il nome scelto in "Nuovo mazzo" per un mazzo nuovo ('' = usa quello proposto)
+  const [editing, setEditing] = useState<{ faction: FactionId; deckId: string | null; name: string }>({ faction: 'artificiali', deckId: null, name: '' })
   const [saved, setSaved] = useState<{ id: string; deck: DeckDetail | null } | null>(null)
   const { pendingChallenges, reloadChallenges } = useChallengeAlert() // sfide ricevute in attesa (braci sul menu)
   const challengeAlert = pendingChallenges > 0 ? `${pendingChallenges} ${pendingChallenges === 1 ? 'sfida' : 'sfide'} in attesa` : undefined
@@ -106,9 +107,15 @@ export default function App() {
     markAllSeen()
   }
 
-  const openEditor = (faction: FactionId, deckId: string | null) => {
-    setEditing({ faction, deckId })
+  const openEditor = (faction: FactionId, deckId: string | null, name = '') => {
+    setEditing({ faction, deckId, name })
     open('editor-mazzo')
+  }
+
+  // "Nuovo mazzo" da zero (dalla pagina Mazzi): dimentica fazione e nome di un mazzo nuovo lasciato a metà.
+  const startNewDeck = () => {
+    setEditing({ faction: 'artificiali', deckId: null, name: '' })
+    open('nuovo-mazzo')
   }
 
   // Dopo il salvataggio: la lista dei mazzi e "posso giocare?" cambiano, il mazzo salvato diventa quello scelto.
@@ -118,6 +125,7 @@ export default function App() {
     reloadPlayStatus()
     setSelectedId(deck.id)
     setSaved({ id: deck.id, deck })
+    setEditing((e) => ({ ...e, name: '' })) // il prossimo "Nuovo mazzo" propone di nuovo un nome libero
     finishSave(() => open('mazzo-salvato'))
   }
 
@@ -179,19 +187,27 @@ export default function App() {
           onDuplicate={copyDeck}
           onDelete={removeDeck}
           onSetDefense={makeDefense}
-          onNewDeck={() => open('nuovo-mazzo')}
+          onNewDeck={startNewDeck}
           onPlay={() => open('gioca')}
         />
       )}
 
-      {page === 'nuovo-mazzo' && <NewDeckPage onCancel={() => open('mazzi')} onCreate={(f) => openEditor(f, null)} />}
+      {/* Tornando indietro dall'editor la pagina ritrova la fazione e il nome scelti */}
+      {page === 'nuovo-mazzo' && (
+        <NewDeckPage
+          initialFaction={editing.deckId ? 'artificiali' : editing.faction}
+          initialName={(!editing.deckId && editing.name) || defaultName}
+          onCancel={() => open('mazzi')}
+          onCreate={(f, name) => openEditor(f, null, name)}
+        />
+      )}
 
       {page === 'editor-mazzo' && (
         <DeckEditorPage
           key={editing.deckId ?? `nuovo-${editing.faction}`}
           faction={editing.faction}
           deckId={editing.deckId}
-          defaultName={defaultName}
+          defaultName={editing.name || defaultName}
           onCancel={() => go(editing.deckId ? 'mazzi' : 'nuovo-mazzo')}
           onSaved={onSaved}
           onStatusChange={reportEditor}

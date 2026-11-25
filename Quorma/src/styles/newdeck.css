@@ -1,37 +1,53 @@
-.newdeck-intro { margin-top: 18px; max-width: 720px; font-size: 15px; line-height: 1.6; color: #c3cfd2; }
-.faction-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; width: 100%; max-width: 1180px; margin-top: 26px; }
+/* Pagina "Nuovo mazzo", dal design "Pagina-Mazzi-Fazione": due carte fazione al centro, in basso nome e pulsanti.
+   Il campo del nome usa .editor-nome__input (editor.css). Su telefono vale styles/mobile.css. */
+.page.newdeck-page { gap: 24px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
 
-.faction-card { position: relative; padding: 0; display: flex; flex-direction: column; overflow: hidden; text-align: left; color: var(--text); cursor: pointer;
-  background: #0a1a20; border: 1px solid var(--border); border-radius: 50% 50% 0 0 / 14px 14px 0 0; transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
-.faction-card:hover { transform: translateY(-2px); }
-.faction-card:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 4px; }
-.faction-card.is-selected { border-color: var(--cyan); box-shadow: 0 0 18px var(--cyan-dim); }
-.faction-img { width: 100%; height: auto; aspect-ratio: 478 / 210; object-fit: cover; }
-.faction-body { flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 22px 24px 22px; background: #0c1f27; }
-.faction-name { font-family: var(--serif); font-size: 22px; line-height: 1.2; font-weight: 700; letter-spacing: .1em; }
-.faction-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.faction-stats .stat-value { font-size: 24px; }
-.faction-stats .stat-label { font-size: 11px; letter-spacing: .12em; }
-.subfactions { display: flex; flex-wrap: wrap; gap: 10px 18px; }
-.subfaction { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
-.subfaction-badge { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--c); color: var(--c); font-size: 10px; }
+.faction-list { flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; align-content: center; gap: 40px; }
 
-.newdeck-buttons { margin-top: auto; padding-top: 22px; display: flex; justify-content: flex-end; gap: 14px; }
-/* la misura grande dei pulsanti del sito (come Entra nella landing) */
+/* Carta fazione: q-tela q-carta del design system, arte alta, targa allineata a sinistra */
+.newdeck-fazione { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  transition: transform .15s ease; }
+.newdeck-fazione:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 6px; }
+/* passaggio del mouse solo dove c'è un mouse: al tocco resterebbe acceso sulla carta non scelta */
+@media (hover: hover) {
+  .newdeck-fazione:hover { transform: translateY(-2px); }
+  .newdeck-fazione:hover .q-tela:not(.q-acceso) > .q-tela__in { box-shadow: inset 0 0 18px rgba(74,166,173,.45), inset 0 1px 0 rgba(213,225,229,.2); }
+}
+.newdeck-fazione:active { transform: translateY(1px); }
+.newdeck-fazione .q-carta { --arte-h: 240px; }
+.newdeck-fazione .q-carta__arte { background-size: cover; background-repeat: no-repeat; }
+.newdeck-fazione .q-carta__targa { align-items: flex-start; gap: 6px; padding: 18px 22px 20px; text-align: left; }
+.newdeck-fazione .q-carta__nome { font-size: 22px; letter-spacing: .1em; }
+.newdeck-fazione__meta { font-size: 13px; color: #A9BCC3; }
+.newdeck-fazione__meta b { font-weight: 600; color: #EEF4F5; }
+.newdeck-fazione__sotto { font-size: 12px; letter-spacing: .06em; color: var(--steel-300); }
+.newdeck-fazione__spunta { position: absolute; right: 14px; top: 14px; z-index: 2; display: none; align-items: center; justify-content: center; width: 30px; height: 30px;
+  background: var(--petrol-500); box-shadow: 0 0 10px rgba(74,166,173,.8); }
+.newdeck-fazione[aria-pressed="true"] .newdeck-fazione__spunta { display: flex; }
+
+/* In basso: nome del mazzo a sinistra, Annulla e Crea mazzo a destra */
+.newdeck-piede { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.newdeck-nome { display: flex; flex-direction: column; gap: 8px; width: 320px; max-width: 100%; }
+.newdeck-nome .q-elenco__titolo { margin: 0; }
+.newdeck-errore { font-size: 12.5px; color: #E8B49A; }
+.newdeck-buttons { display: flex; align-items: center; gap: 16px; }
 .newdeck-buttons .q-btn { display: flex; }
-.newdeck-buttons .q-btn__in { height: 46px; padding: 0 36px; font-size: 14px; }
 
 @media (max-width: 1279px) {
-  .faction-list { gap: 22px; }
-  .faction-body { padding: 18px; }
-  .faction-name { font-size: 19px; }
+  .faction-list { grid-template-columns: repeat(2, minmax(0, 320px)); gap: 28px; }
+  .newdeck-fazione .q-carta { --arte-h: 200px; }
 }
-/* schermi grandi: le due fazioni usano tutta la larghezza */
 @media (min-width: 1600px) {
-  .faction-list { max-width: none; }
-  .newdeck-intro { font-size: 16px; }
+  .faction-list { grid-template-columns: repeat(2, minmax(0, 420px)); gap: 56px; }
+  .newdeck-fazione .q-carta { --arte-h: 300px; }
+}
+/* Schermi bassi (telefono in orizzontale, finestre basse): immagini più corte, così carte e pulsanti stanno insieme */
+@media (min-width: 768px) and (max-height: 700px) {
+  .faction-list { align-content: start; }
+  .newdeck-fazione .q-carta { --arte-h: 130px; }
+  .newdeck-fazione .q-carta__targa { padding: 14px 18px 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .faction-card { transition: none; }
-  .faction-card:hover { transform: none; }
+  .newdeck-fazione { transition: none; }
+  .newdeck-fazione:hover, .newdeck-fazione:active { transform: none; }
 }

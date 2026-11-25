@@ -19,27 +19,69 @@
 .decks-avviso button { margin-left: 8px; padding: 0; border: 0; background: none; color: var(--petrol-300); font: inherit; font-weight: 600;
   text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
-.deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 34px 28px; align-content: start; }
+/* ---------- Scatole dei mazzi (design "Pagina-Mazzi", classi k-*) ----------
+   --f = colore della fazione (bordo, pila, dorso), --ft = il suo testo. Il padding lascia spazio alla pila e al dorso che sporgono. */
+.k-griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(164px, 1fr)); gap: 40px 44px; align-content: start; padding: 22px 0 0 34px; }
+.k-mazzo { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; padding: 0; border: 0; background: none; cursor: pointer;
+  color: inherit; font: inherit; text-align: center; }
+.k-mazzo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 8px; }
+.k-scatola { position: relative; isolation: isolate; display: block; width: calc(100% - 14px); margin-right: 14px; aspect-ratio: 2 / 3; transition: transform .18s ease; }
+/* la pila: bordi delle carte sotto la prima, in basso a destra */
+.k-scatola::before { content: ""; position: absolute; inset: 0; z-index: -1; background: #0A1317;
+  box-shadow: 2px 2px 0 #0A1317, 3px 3px 0 color-mix(in srgb, var(--f, #D5E1E5) 75%, transparent), 5px 5px 0 #0A1317, 6px 6px 0 color-mix(in srgb, var(--f, #D5E1E5) 58%, transparent),
+    8px 8px 0 #0A1317, 9px 9px 0 color-mix(in srgb, var(--f, #D5E1E5) 42%, transparent), 11px 11px 0 #0A1317, 12px 12px 0 color-mix(in srgb, var(--f, #D5E1E5) 28%, transparent),
+    14px 18px 22px rgba(0,0,0,.65); }
+/* una carta (dorso) che sporge a ventaglio dietro la prima */
+.k-scatola::after { content: ""; position: absolute; inset: 0; z-index: -2; transform-origin: 50% 100%; transform: rotate(-6deg); transition: transform .25s ease;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--f, #8FD6DB) 40%, transparent) 0 11%, transparent 12%),
+    radial-gradient(circle at 50% 50%, transparent 0 18%, color-mix(in srgb, var(--f, #8FD6DB) 30%, transparent) 19% 20%, transparent 21%),
+    linear-gradient(160deg, color-mix(in srgb, var(--f, #4AA6AD) 30%, #0B171C), #0B171C);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--f, #D5E1E5) 70%, transparent), inset 0 0 0 5px #0A1317,
+    inset 0 0 0 6px color-mix(in srgb, var(--f, #8FD6DB) 40%, transparent), 0 4px 12px rgba(0,0,0,.55); }
+.k-fronte { position: absolute; inset: 0; overflow: hidden; background: #0C161B; box-shadow: 0 0 0 1px var(--f, rgba(213,225,229,.6)); transition: box-shadow .18s ease; }
+.k-fronte::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--f, #081014) 22%, rgba(8,16,20,.92)) 0%, rgba(8,16,20,0) 38%);
+  box-shadow: inset 0 0 0 4px #0A1317, inset 0 0 0 5px color-mix(in srgb, var(--f, #D5E1E5) 45%, transparent); }
+.k-arte { position: absolute; inset: 0; background-size: cover; background-repeat: no-repeat; transition: transform .3s ease; }
+.k-mazzo[aria-pressed="true"] .k-fronte { box-shadow: 0 0 0 2px #EEF4F5, 0 0 20px rgba(238,244,245,.4); }
+.k-targa { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84%; padding-bottom: 10px;
+  background: linear-gradient(90deg, transparent, rgba(213,225,229,.3), transparent) center bottom / 100% 1px no-repeat; }
+/* nomi lunghi: al massimo due righe, poi i puntini */
+.k-nome { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; max-width: 100%; overflow-wrap: anywhere; font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--silver-100); }
+.k-fazione { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ft, var(--steel-300)); }
+.k-fazione::before { content: ""; width: 7px; height: 7px; transform: rotate(45deg); background: var(--f); box-shadow: 0 0 6px var(--f); }
+.k-stato { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--steel-300); }
+.k-stato--off { color: var(--ember-200); }
+.k-mazzo[aria-pressed="true"] .k-nome { color: #EEF4F5; }
+.k-mazzo[aria-pressed="true"] .k-targa { background-image: linear-gradient(90deg, transparent, #EEF4F5, transparent); }
+/* "Nuovo mazzo": scatola vuota, senza pila né dorso */
+.k-vuota::before, .k-vuota::after { display: none; }
+.k-vuota .k-fronte { display: flex; align-items: center; justify-content: center; color: var(--petrol-300); background: rgba(8,16,20,.4); box-shadow: inset 0 0 0 1px rgba(143,214,219,.4); }
+.k-vuota .k-fronte::after { display: none; }
 
-/* Carta-mazzo (q-mazzo + q-carta del design system, come nella pagina Gioca) */
-.deck-pick .q-carta { --arte-h: 168px; }
-.deck-pick .q-carta__arte { background-size: cover; background-position: center 30%; }
-.deck-pick__stato { margin-top: 4px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--silver-100); }
-.deck-pick__stato--off { color: var(--ember-200); }
+/* Effetti di passaggio solo con un mouse (o trackpad): al tocco su telefono resterebbero accesi dopo la scelta.
+   Solo sulle scatole cliccabili (button): quella di "Mazzo salvato" è un'anteprima ferma. */
+@media (hover: hover) {
+  button.k-mazzo:hover .k-scatola { transform: translateY(-3px); }
+  button.k-mazzo:hover .k-scatola::after { transform: rotate(-9deg); }
+  button.k-mazzo:hover .k-arte { transform: scale(1.04); }
+  button.k-mazzo:hover:not([aria-pressed="true"]) .k-fronte { box-shadow: 0 0 0 2px var(--f, rgba(143,214,219,.85)); }
+  button.k-mazzo:hover .k-vuota .k-fronte { background: rgba(74,166,173,.12); box-shadow: inset 0 0 0 1px var(--petrol-300); }
+}
+/* Al tocco: la scatola si abbassa appena mentre il dito è giù, così la scelta si sente */
+button.k-mazzo:active .k-scatola { transform: translateY(1px); }
 
-/* "Nuovo mazzo": arco vuoto alto quanto una carta-mazzo (il padding compensa gli strati delle altre) */
-.deck-pick--nuovo { height: 100%; padding: 12px 12px 0 0; box-sizing: border-box; }
-.deck-pick--nuovo .q-tela { height: 100%; min-height: 268px; }
-.deck-pick--nuovo .q-tela__in { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-  background: linear-gradient(180deg, rgba(13,23,29,.88), rgba(8,16,20,.94)); color: var(--petrol-300); } /* scuro: il filo d'argento sotto non deve trasparire */
-.deck-pick__nuovo { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #EEF4F5; text-align: center; }
-.deck-pick__carte { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) {
+  .k-scatola, .k-scatola::after, .k-arte { transition: none; }
+  button.k-mazzo:hover .k-scatola, button.k-mazzo:hover .k-arte, button.k-mazzo:active .k-scatola { transform: none; }
+  button.k-mazzo:hover .k-scatola::after { transform: rotate(-6deg); }
+}
 
 /* ---------- Pannello del mazzo scelto ---------- */
-.deck-details > .q-tela__in { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.deck-details > .q-tela__in { display: flex; flex-direction: column; gap: 18px; padding: 22px 22px 18px; }
 .decks-etichetta { font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--steel-300); }
-.deck-details__testa { display: flex; flex-direction: column; gap: 2px; }
-.deck-details__nome { margin: 0; overflow-wrap: anywhere; font-family: var(--font-display); font-size: 24px; line-height: 1.2; font-weight: 700;
+.deck-details__testa { display: flex; flex-direction: column; gap: 4px; }
+.deck-details__nome { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; margin: 0; overflow-wrap: anywhere; font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase; color: #EEF4F5; }
 .deck-details__fazione { font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol-300); }
 .deck-empty { margin: 0; font-size: 13px; line-height: 1.6; color: var(--steel-300); }
@@ -49,13 +91,7 @@
 .m-conta b { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #EEF4F5; font-variant-numeric: tabular-nums; }
 .m-conta small { font-size: 10.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--steel-300); }
 
-.deck-semi { display: flex; flex-direction: column; gap: 8px; }
-.suit-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.suit-list li { display: grid; grid-template-columns: 18px 72px 1fr 22px; align-items: center; gap: 8px; font-size: 12px; }
-.suit-bar { height: 6px; background: rgba(213,225,229,.1); }
-.suit-bar span { display: block; height: 100%; background: linear-gradient(90deg, #2E7F86, #4AA6AD); box-shadow: 0 0 6px rgba(74,166,173,.6); }
-.suit-value { text-align: right; font-variant-numeric: tabular-nums; color: #EEF4F5; }
-/* Icona del seme: il PNG fa da maschera, il colore è quello del tema */
+/* Icona del seme (usata anche da editor, collezione e Gioca): il PNG fa da maschera, il colore è quello del tema */
 .deck-seme { display: block; width: 16px; height: 16px; background: var(--petrol-300);
   -webkit-mask: var(--seme) center / contain no-repeat; mask: var(--seme) center / contain no-repeat; }
 .deck-seme--vincolo { --seme: url('/images/ui/semi/vincolo.png'); }
@@ -71,14 +107,17 @@
 .m-regola--off, .m-regola--errore { color: #E8B49A; }
 .m-regola--off::before, .m-regola--errore::before { background: var(--ember-500); }
 
-/* Pulsanti: sigillo GIOCA, Modifica (argento), Duplica ed Elimina (acciaio) */
+/* Pulsanti: sigillo GIOCA, Modifica (argento), poi Duplica ed Elimina come voci di testo */
 .deck-actions { margin-top: 6px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
 .deck-actions .q-btn { display: flex; }
 .deck-actions__gioca { margin: 0 14px; }
 .deck-actions__gioca .q-btn__in { min-width: 0; height: 52px; padding: 0 20px; font-size: 16px; letter-spacing: .2em; }
-.deck-actions__riga { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.deck-actions__riga .q-btn__in { padding: 0 10px; }
-.deck-actions .q-btn[aria-disabled="true"] { cursor: default; }
+.d-azioni { display: flex; justify-content: center; gap: 18px; }
+.d-azioni button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); }
+.d-azioni button:hover:not(:disabled) { color: #EEF4F5; }
+.d-azioni button:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+.d-azioni button:disabled { opacity: .45; cursor: default; }
 .deck-actions__motivo { margin: -4px 0 0; font-size: 13px; line-height: 18px; text-align: right; color: var(--q-testo-tenue, #A9BCC3); text-wrap: pretty; }
 
 /* Schermi abbastanza alti: il pannello resta fermo mentre l'elenco scorre */
@@ -89,6 +128,9 @@
 /* ---------- Fasce di larghezza ---------- */
 @media (max-width: 1279px) {
   .decks-body { grid-template-columns: minmax(0, 1fr) 290px; gap: 28px; }
+  /* colonna stretta: tre scatole per riga invece di due troppo grandi */
+  .k-griglia { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 34px 30px; padding: 18px 0 0 28px; }
+  .k-nome { font-size: 15px; }
 }
 @media (min-width: 1600px) {
   .decks-body { grid-template-columns: minmax(0, 1fr) 360px; }

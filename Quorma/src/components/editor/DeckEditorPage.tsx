@@ -4,7 +4,7 @@ import { factions } from '../../data/factions'
 import { ApiError } from '../../lib/api'
 import { matchesCard, sortCards, type CardSort } from '../../lib/cardFilters'
 import { CREATURE_LIMITS, DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankArticle, rankLabel, spellLimits, type Collection } from '../../lib/cards'
-import { deckErrorMessages, getDeck, saveDeck } from '../../lib/decks'
+import { DECK_NAME_MAX, deckErrorMessages, getDeck, saveDeck } from '../../lib/decks'
 import { EDITOR_CLEAN, type EditorStatus } from '../../hooks/useLeaveGuard'
 import CardToolbar, { type FilterGroup } from '../cards/CardToolbar'
 import PageTitle from '../layout/PageTitle'
@@ -277,7 +277,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
             ref={nameRef}
             className="editor-nome__input"
             type="text"
-            maxLength={64}
+            maxLength={DECK_NAME_MAX}
             value={name}
             onChange={(e) => {
               setName(e.target.value)

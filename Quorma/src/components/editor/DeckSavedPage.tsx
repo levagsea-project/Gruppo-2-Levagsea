@@ -6,7 +6,6 @@ import { getDeck, setDefenseDeck, statsOf } from '../../lib/decks'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
 import '../../styles/editor.css'
-import '../../styles/play.css' // q-mazzo: la carta-mazzo con gli strati
 
 type Props = {
   deckId: string
@@ -23,7 +22,7 @@ const Star = () => (
   </svg>
 )
 
-// Riepilogo del mazzo appena salvato, dal design "Pagina-Mazzi-Salvato": carta-mazzo, conteggi, azioni.
+// Riepilogo del mazzo appena salvato, dal design "Pagina-Mazzi-Salvato": scatola del mazzo, conteggi, azioni.
 // In più rispetto al design: "Usa come mazzo di difesa" (POST /decks/{id}/defense), che serve per poter giocare.
 // La scelta della copertina del design non c'è: il backend non salva una copertina.
 export default function DeckSavedPage({ deckId, saved, onPlay, onEdit, onBack, onDefenseChanged }: Props) {
@@ -82,22 +81,19 @@ export default function DeckSavedPage({ deckId, saved, onPlay, onEdit, onBack, o
       <PageTitle title="MAZZO SALVATO" subtitle={`${deck.name} · ${faction.name}`.toUpperCase()} />
 
       <div className="saved-corpo">
+        {/* la stessa scatola della pagina Mazzi (k-*, decks.css) */}
         <div className="saved-carta">
-          <span className="q-mazzo">
-            <span className="q-mazzo__strato" aria-hidden="true" />
-            <span className="q-mazzo__strato" aria-hidden="true" />
-            <span className="q-tela q-tela--arco q-carta q-acceso" style={{ '--arte-h': '300px' } as CSSProperties}>
-              <span className="q-tela__in">
-                <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
-                <span className="q-divisorio" />
-                <span className="q-carta__targa saved-carta__targa">
-                  <span className="q-carta__nome">{deck.name}</span>
-                  <span className="q-carta__sotto">{faction.name}</span>
-                </span>
+          <div className="k-mazzo" style={{ '--f': faction.tint, '--ft': faction.tintText } as CSSProperties}>
+            <span className="k-scatola" role="img" aria-label={`${deck.name}, ${faction.name}: copertina del mazzo`}>
+              <span className="k-fronte">
+                <span className="k-arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
               </span>
-              <span className="q-borchia q-borchia--n" aria-hidden="true" />
             </span>
-          </span>
+            <span className="k-targa">
+              <span className="k-nome" title={deck.name}>{deck.name}</span>
+              <span className="k-fazione">{faction.name}</span>
+            </span>
+          </div>
         </div>
 
         <div className="saved-dati">

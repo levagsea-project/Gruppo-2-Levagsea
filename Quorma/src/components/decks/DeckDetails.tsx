@@ -4,7 +4,6 @@ import { factions } from '../../data/factions'
 import { useDeckStats } from '../../hooks/useDeckStats'
 import { GENERIC } from '../../lib/api'
 import { deckErrorMessages } from '../../lib/decks'
-import SuitList from './SuitList'
 import DeckActions from './DeckActions'
 
 type Props = {
@@ -16,14 +15,15 @@ type Props = {
   onSetDefense: (id: string) => Promise<void>
 }
 
-// Stato del mazzo in una frase: obsoleto, di difesa, oppure pronto.
+// Stato del mazzo in una frase: obsoleto, incompleto, di difesa, oppure pronto.
 function statusText(deck: Deck) {
   if (deck.outdated) return 'Mazzo obsoleto per il pool di carte attuale: modificalo per usarlo di nuovo.'
+  if (deck.cards < deck.maxCards) return `Mancano ${deck.maxCards - deck.cards} carte.`
   if (deck.defense) return 'Mazzo di difesa della sua fazione, pronto per giocare.'
   return 'Mazzo valido, pronto per giocare.'
 }
 
-// Pannello a destra con i dettagli del mazzo scelto (pannello q-tela del design system).
+// Pannello a destra con i dettagli del mazzo scelto, come nel design: nome e fazione, tre conteggi, stato, azioni.
 export default function DeckDetails({ deck, onPlay, onEdit, onDuplicate, onDelete, onSetDefense }: Props) {
   const { stats, failed } = useDeckStats(deck?.id ?? null)
   const [deleting, setDeleting] = useState(false)
@@ -41,7 +41,6 @@ export default function DeckDetails({ deck, onPlay, onEdit, onDuplicate, onDelet
     return (
       <section className="q-tela deck-details" aria-label="Mazzo scelto">
         <div className="q-tela__in">
-          <span className="decks-etichetta">Mazzo scelto</span>
           <p className="deck-empty">Nessun mazzo creato. Premi "Nuovo mazzo" per iniziare.</p>
         </div>
       </section>
@@ -87,34 +86,25 @@ export default function DeckDetails({ deck, onPlay, onEdit, onDuplicate, onDelet
 
   // "–" finché i conteggi non arrivano dal backend.
   const count = (n: number | undefined) => (n === undefined ? '–' : n)
+  const incomplete = deck.cards < deck.maxCards
 
   return (
     <section className="q-tela deck-details" aria-labelledby="mazzo-scelto">
       <div className="q-tela__in" aria-live="polite">
-        <span className="decks-etichetta">{deck.defense ? 'Mazzo di difesa' : 'Mazzo scelto'}</span>
         <span className="deck-details__testa">
-          <h2 id="mazzo-scelto" className="deck-details__nome">{deck.name}</h2>
+          <h2 id="mazzo-scelto" className="deck-details__nome" title={deck.name}>{deck.name}</h2>
           <span className="deck-details__fazione">{factions[deck.faction].name}</span>
         </span>
-        <span className="q-divisorio" />
 
         <div className="deck-conte">
-          <span className="m-conta"><b>{deck.cards}</b><small>/ {deck.maxCards} carte</small></span>
+          <span className="m-conta"><b>{deck.cards}</b><small>Carte</small></span>
           <span className="m-conta"><b>{count(stats?.creatures)}</b><small>Creature</small></span>
-          <span className="m-conta"><b>{count(stats?.spells)}</b><small>Magie / Equip.</small></span>
+          <span className="m-conta"><b>{count(stats?.spells)}</b><small>Magie</small></span>
         </div>
+        {failed && <p className="deck-empty">Impossibile caricare le carte del mazzo.</p>}
 
-        <div className="deck-semi">
-          <span className="decks-etichetta">Creature per seme</span>
-          {stats ? (
-            <SuitList suits={stats.suits} />
-          ) : (
-            <p className="deck-empty">{failed ? 'Impossibile caricare le carte del mazzo.' : 'Caricamento…'}</p>
-          )}
-        </div>
-
-        <p className={`m-regola ${deck.outdated ? 'm-regola--off' : 'm-ok'}`}>{statusText(deck)}</p>
-        {!deck.defense && !deck.outdated && (
+        <p className={`m-regola ${deck.outdated || incomplete ? 'm-regola--off' : 'm-ok'}`}>{statusText(deck)}</p>
+        {!deck.defense && !deck.outdated && !incomplete && (
           // Per giocare serve un mazzo di difesa valido per ogni fazione: si sceglie da qui o dal riepilogo del mazzo.
           <button type="button" className="info-link deck-difesa" onClick={() => makeDefense(deck)} disabled={deleting}>
             Usa come mazzo di difesa della {factions[deck.faction].name}
@@ -127,7 +117,8 @@ export default function DeckDetails({ deck, onPlay, onEdit, onDuplicate, onDelet
           onEdit={() => onEdit(deck)}
           onDuplicate={() => duplicate(deck)}
           onDelete={() => remove(deck)}
-          canPlay={!deck.outdated}
+          canPlay={!deck.outdated && !incomplete}
+          editLabel={incomplete ? 'Completa il mazzo' : 'Modifica'}
           duplicating={duplicating}
           busy={deleting || duplicating}
           // Il mazzo di difesa non si può eliminare (il backend risponde deck.defense_undeletable).

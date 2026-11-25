@@ -20,7 +20,7 @@ type Props = {
   onPlay: () => void
 }
 
-// Pagina Mazzi, dal design "Pagina-Mazzi": titolo + griglia a sinistra, dettagli a destra.
+// Pagina Mazzi, dal design "Pagina-Mazzi": titolo con il numero di mazzi, scatole a sinistra, dettagli a destra.
 // Larghezze (styles/decks.css): pannello 290px sotto i 1280, 330px fino a 1599, 360px oltre; le colonne di carte
 // si adattano allo spazio. La pagina scorre se i mazzi non ci stanno, il pannello resta fermo.
 export default function DecksPage({ decks, state, error, onRetry, selected, onSelect, onEdit, onDuplicate, onDelete, onSetDefense, onNewDeck, onPlay }: Props) {
@@ -29,15 +29,10 @@ export default function DecksPage({ decks, state, error, onRetry, selected, onSe
   return (
     <main className="page decks-page">
       <CurrencyBar />
-      <PageTitle title="MAZZI" subtitle="I TUOI MAZZI" />
+      <PageTitle title="MAZZI" subtitle={state === 'ready' ? `${decks.length} ${decks.length === 1 ? 'mazzo' : 'mazzi'}` : 'I tuoi mazzi'} />
 
       <div className="decks-body">
-        <section className="decks-lista" aria-labelledby="i-tuoi-mazzi">
-          <div className="q-marker">
-            <h2 id="i-tuoi-mazzi" className="q-marker__title">I tuoi mazzi</h2>
-            <span className="q-marker__line" aria-hidden="true" />
-            <span className="decks-conta">{state === 'ready' ? `${decks.length} ${decks.length === 1 ? 'mazzo' : 'mazzi'}` : ''}</span>
-          </div>
+        <section className="decks-lista" aria-label="I tuoi mazzi">
 
           <div aria-live="polite">
             {state === 'loading' && <p className="decks-avviso">Caricamento dei mazzi…</p>}
