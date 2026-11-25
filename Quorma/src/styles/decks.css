@@ -43,7 +43,8 @@
   background: linear-gradient(0deg, color-mix(in srgb, var(--f, #081014) 22%, rgba(8,16,20,.92)) 0%, rgba(8,16,20,0) 38%);
   box-shadow: inset 0 0 0 4px #0A1317, inset 0 0 0 5px color-mix(in srgb, var(--f, #D5E1E5) 45%, transparent); }
 .k-arte { position: absolute; inset: 0; background-size: cover; background-repeat: no-repeat; transition: transform .3s ease; }
-.k-mazzo[aria-pressed="true"] .k-fronte { box-shadow: 0 0 0 2px #EEF4F5, 0 0 20px rgba(238,244,245,.4); }
+/* scelta: aria-pressed nella pagina Mazzi, aria-checked nei radio della pagina Gioca */
+.k-mazzo:is([aria-pressed="true"], [aria-checked="true"]) .k-fronte { box-shadow: 0 0 0 2px #EEF4F5, 0 0 20px rgba(238,244,245,.4); }
 .k-targa { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84%; padding-bottom: 10px;
   background: linear-gradient(90deg, transparent, rgba(213,225,229,.3), transparent) center bottom / 100% 1px no-repeat; }
 /* nomi lunghi: al massimo due righe, poi i puntini */
@@ -52,24 +53,26 @@
 .k-fazione::before { content: ""; width: 7px; height: 7px; transform: rotate(45deg); background: var(--f); box-shadow: 0 0 6px var(--f); }
 .k-stato { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--steel-300); }
 .k-stato--off { color: var(--ember-200); }
-.k-mazzo[aria-pressed="true"] .k-nome { color: #EEF4F5; }
-.k-mazzo[aria-pressed="true"] .k-targa { background-image: linear-gradient(90deg, transparent, #EEF4F5, transparent); }
+.k-mazzo:is([aria-pressed="true"], [aria-checked="true"]) .k-nome { color: #EEF4F5; }
+.k-mazzo:is([aria-pressed="true"], [aria-checked="true"]) .k-targa { background-image: linear-gradient(90deg, transparent, #EEF4F5, transparent); }
 /* "Nuovo mazzo": scatola vuota, senza pila né dorso */
 .k-vuota::before, .k-vuota::after { display: none; }
 .k-vuota .k-fronte { display: flex; align-items: center; justify-content: center; color: var(--petrol-300); background: rgba(8,16,20,.4); box-shadow: inset 0 0 0 1px rgba(143,214,219,.4); }
 .k-vuota .k-fronte::after { display: none; }
 
 /* Effetti di passaggio solo con un mouse (o trackpad): al tocco su telefono resterebbero accesi dopo la scelta.
-   Solo sulle scatole cliccabili (button): quella di "Mazzo salvato" è un'anteprima ferma. */
+   Solo sulle scatole cliccabili (button, non disattivate): quella di "Mazzo salvato" è un'anteprima ferma. */
 @media (hover: hover) {
-  button.k-mazzo:hover .k-scatola { transform: translateY(-3px); }
-  button.k-mazzo:hover .k-scatola::after { transform: rotate(-9deg); }
-  button.k-mazzo:hover .k-arte { transform: scale(1.04); }
-  button.k-mazzo:hover:not([aria-pressed="true"]) .k-fronte { box-shadow: 0 0 0 2px var(--f, rgba(143,214,219,.85)); }
+  button.k-mazzo:not([aria-disabled="true"]):hover .k-scatola { transform: translateY(-3px); }
+  button.k-mazzo:not([aria-disabled="true"]):hover .k-scatola::after { transform: rotate(-9deg); }
+  button.k-mazzo:not([aria-disabled="true"]):hover .k-arte { transform: scale(1.04); }
+  button.k-mazzo:not([aria-disabled="true"], [aria-pressed="true"], [aria-checked="true"]):hover .k-fronte { box-shadow: 0 0 0 2px var(--f, rgba(143,214,219,.85)); }
   button.k-mazzo:hover .k-vuota .k-fronte { background: rgba(74,166,173,.12); box-shadow: inset 0 0 0 1px var(--petrol-300); }
 }
 /* Al tocco: la scatola si abbassa appena mentre il dito è giù, così la scelta si sente */
-button.k-mazzo:active .k-scatola { transform: translateY(1px); }
+button.k-mazzo:not([aria-disabled="true"]):active .k-scatola { transform: translateY(1px); }
+/* non sceglibile (mazzo obsoleto, o stanza aperta in Gioca) */
+.k-mazzo[aria-disabled="true"] { cursor: not-allowed; }
 
 @media (prefers-reduced-motion: reduce) {
   .k-scatola, .k-scatola::after, .k-arte { transition: none; }

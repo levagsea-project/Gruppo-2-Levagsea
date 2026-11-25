@@ -329,6 +329,10 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         </div>
       </header>
 
+      {/* Due colonne: a sinistra modalità (sopra) e mazzi (sotto), a destra il leggìo per tutta l'altezza.
+          Così la pagina sta in una schermata senza scorrere. Su telefono le colonne si sciolgono (display: contents) */}
+      <div className="play-corpo" ref={corpo}>
+      <div className="play-sinistra">
       <div className="play-testa">
         <span className="q-divisorio play-testa__filo" aria-hidden="true">
           <span className="q-borchia q-borchia--n" />
@@ -360,7 +364,6 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         </section>
       </div>
 
-      <div className="play-corpo" ref={corpo}>
       <section className="play-step play-step--mazzi" aria-labelledby="g-deck">
         <h2 id="g-deck" className="sr-only">Scegli i mazzi</h2>
 
@@ -416,21 +419,20 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                               aria-label={d.defense ? `${shortName}, mazzo di difesa` : shortName}
                               title={shortName}
                               tabIndex={(waiting ? i === 0 : on) ? 0 : -1}
-                              className="play-mini__voce"
+                              className="k-mazzo play-k play-k--mini"
+                              style={{ '--f': faction.tint, '--ft': faction.tintText } as CSSProperties}
                               onClick={() => !waiting && setChosen((c) => ({ ...c, [f]: d.id }))}
                             >
-                              {/* arco a sesto acuto: il telaio è il filo d'argento, dentro copertina e targa con il rosone */}
-                              <span className="play-mini__telaio">
-                                <span className="play-mini__dentro">
-                                  <span className="play-mini__copertina" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus } as CSSProperties}>
-                                    {d.defense && <span className="play-mini__difesa">Difesa</span>}
-                                  </span>
-                                  <span className="play-mini__targa">
-                                    <span className="play-mini__nome">{shortName}</span>
-                                  </span>
+                              {/* la scatola del mazzo, come nella pagina Mazzi, in piccolo */}
+                              <span className="k-scatola" aria-hidden="true">
+                                <span className="k-fronte">
+                                  <span className="k-arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
+                                  {d.defense && <span className="play-mini__difesa">Difesa</span>}
                                 </span>
                               </span>
-                              <span className="q-borchia q-borchia--n" aria-hidden="true" />
+                              <span className="k-targa" aria-hidden="true">
+                                <span className="k-nome">{shortName}</span>
+                              </span>
                             </button>
                           )
                         })}
@@ -452,29 +454,25 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
                             aria-checked={on}
                             aria-disabled={!ok}
                             tabIndex={d.id === tabStop ? 0 : -1}
-                            className={ok ? 'pick' : 'pick pick--off'}
+                            className="k-mazzo play-k"
+                            style={{ '--f': faction.tint, '--ft': faction.tintText } as CSSProperties}
                             onClick={() => ok && setChosen((c) => ({ ...c, [f]: d.id }))}
                           >
-                            <span className="q-mazzo">
-                              <span className="q-mazzo__strato" aria-hidden="true" />
-                              <span className="q-mazzo__strato" aria-hidden="true" />
-                              <span className={`q-tela q-tela--arco q-carta ${on ? 'q-acceso' : ''}`}>
-                                <span className="q-tela__in">
-                                  <span className="q-carta__arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus } as CSSProperties} />
-                                  <span className="q-divisorio" />
-                                  <span className="q-carta__targa">
-                                    {/* la fazione è già nel titolo della colonna: a schermo il nome non la ripete */}
-                                    <span className="q-carta__nome" title={d.name}>
-                                      <span aria-hidden="true">{d.name.replace(` (${faction.name})`, '')}</span>
-                                      <span className="sr-only">{d.name}</span>
-                                    </span>
-                                    <DeckSignature deckId={d.id} />
-                                    <span className={d.outdated ? 'play-conta play-conta--off' : 'play-conta'}>
-                                      {d.outdated ? 'Obsoleto' : d.defense ? 'Difesa' : ''}
-                                    </span>
-                                  </span>
-                                </span>
-                                <span className="q-borchia q-borchia--n" />
+                            {/* la scatola del mazzo, come nella pagina Mazzi (k-*, decks.css) */}
+                            <span className="k-scatola" aria-hidden="true">
+                              <span className="k-fronte">
+                                <span className="k-arte" style={{ backgroundImage: `url(${faction.cover})`, backgroundPosition: faction.coverFocus }} />
+                              </span>
+                            </span>
+                            <span className="k-targa">
+                              {/* la fazione è già nel titolo della colonna: a schermo il nome non la ripete */}
+                              <span className="k-nome" title={d.name}>
+                                <span aria-hidden="true">{d.name.replace(` (${faction.name})`, '')}</span>
+                                <span className="sr-only">{d.name}</span>
+                              </span>
+                              <DeckSignature deckId={d.id} />
+                              <span className={d.outdated ? 'play-conta play-conta--off' : 'play-conta'}>
+                                {d.outdated ? 'Obsoleto' : d.defense ? 'Difesa' : ''}
                               </span>
                             </span>
                           </button>
@@ -491,6 +489,7 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
         {/* su telefono e su schermi grandi la spiegazione sta nel leggìo */}
         {!phone && <div className="play-serie play-serie--mazzi">{seriesNote}</div>}
       </section>
+      </div>
 
       {/* Il leggìo: tutto ciò che serve per avviare la modalità scelta */}
       <div className="play-lato">

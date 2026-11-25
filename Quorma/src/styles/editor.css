@@ -1,6 +1,6 @@
 /* Editor del mazzo e Mazzo salvato, dai design "Pagina-Mazzi-Editor" e "Pagina-Mazzi-Salvato".
    Usa anche classi definite altrove: m-conta, m-regola, decks-etichetta, deck-seme (decks.css), info-chip (info.css),
-   q-xp (sidebar.css), q-mazzo (play.css). */
+   q-xp (sidebar.css). */
 
 /* ---------- Carta "mini" del design system (q-cg), copiata dal foglio del design system ----------
    Senza la texture di pietra (non più disponibile nel canvas): il bordo usa il colore argento di riserva. */
