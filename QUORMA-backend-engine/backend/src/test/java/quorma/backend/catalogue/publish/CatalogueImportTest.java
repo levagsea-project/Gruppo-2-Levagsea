@@ -51,7 +51,7 @@ class CatalogueImportTest extends IntegrationTest {
 
     @BeforeEach
     void createAdmin() {
-        admin1 = users.save(new User("admin1", "admin1@quorma.local", "x", Role.ADMIN, 0)).getId();
+        admin1 = users.save(new User("admin1", "admin1@quorma.local", "x", Role.ADMIN, 0, "admin1", "avatar-01")).getId();
     }
 
     private Changeset batch(ObjectNode root) {

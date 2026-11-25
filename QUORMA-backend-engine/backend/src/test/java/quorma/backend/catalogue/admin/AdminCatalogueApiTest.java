@@ -55,8 +55,8 @@ class AdminCatalogueApiTest extends IntegrationTest {
 
     @BeforeEach
     void tokens() {
-        admin = jwt.issue(users.save(new User("admin1", "admin1@quorma.local", "x", Role.ADMIN, 0)));
-        player = jwt.issue(users.save(new User("giocatore", "g@quorma.local", "x", Role.PLAYER, 0)));
+        admin = jwt.issue(users.save(new User("admin1", "admin1@quorma.local", "x", Role.ADMIN, 0, "admin1", "avatar-01")));
+        player = jwt.issue(users.save(new User("giocatore", "g@quorma.local", "x", Role.PLAYER, 0, "giocatore", "avatar-01")));
     }
 
     private Reply call(String method, String path, String token, String body) throws Exception {
@@ -277,7 +277,7 @@ class AdminCatalogueApiTest extends IntegrationTest {
 
         // a type that was sold keeps its set and cannot be deleted
         asAdmin("PUT", "/admin/catalogue/sets/BASE", "{}");
-        jdbc.update("insert into users (username, email, password_hash, credits) values ('buyer', 'b@quorma.local', 'x', 1000)");
+        jdbc.update("insert into users (username, email, password_hash, credits, display_name, avatar) values ('buyer', 'b@quorma.local', 'x', 1000, 'buyer', 'avatar-01')");
         jdbc.update("insert into pack_openings (user_id, idempotency_key, pack_type, set_id, faction, snapshot_id, price, credits_after) "
                 + "select u.id, gen_random_uuid(), 'standard', t.set_id, 'RESISTENZA_UMANA', (select snapshot_id from active_snapshots where faction = 'RESISTENZA_UMANA'), 250, 750 "
                 + "from users u, pack_types t where u.username = 'buyer' and t.code = 'standard'");

@@ -11,6 +11,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import quorma.backend.common.ErrorCodes;
 import quorma.backend.deck.DeckMigrator;
 import quorma.backend.deck.StarterDeckService;
+import quorma.backend.profile.ProfileProperties;
 import quorma.backend.user.CreditTransaction;
 import quorma.backend.user.CreditTransactionRepository;
 import quorma.backend.user.CreditTransactionType;
@@ -31,10 +32,11 @@ public class AuthService {
     private final AuthProperties props;
     private final DeckMigrator deckMigrator;
     private final StarterDeckService starterDecks;
+    private final ProfileProperties profile;
 
     public AuthService(UserRepository users, CreditTransactionRepository ledger, PasswordEncoder encoder,
                        JwtService jwt, AuthProperties props, DeckMigrator deckMigrator,
-                       StarterDeckService starterDecks) {
+                       StarterDeckService starterDecks, ProfileProperties profile) {
         this.users = users;
         this.ledger = ledger;
         this.encoder = encoder;
@@ -42,6 +44,7 @@ public class AuthService {
         this.props = props;
         this.deckMigrator = deckMigrator;
         this.starterDecks = starterDecks;
+        this.profile = profile;
         this.dummyHash = encoder.encode("this-user-does-not-exist");
     }
 
@@ -54,7 +57,8 @@ public class AuthService {
             throw new AuthException(HttpStatus.CONFLICT, ErrorCodes.EMAIL_TAKEN);
         }
         long bonus = Math.max(0, props.registrationBonus());
-        User user = new User(req.username(), req.email(), encoder.encode(req.password()), Role.PLAYER, bonus);
+        User user = new User(req.username(), req.email(), encoder.encode(req.password()), Role.PLAYER, bonus,
+                req.username(), profile.defaultAvatar());
         try {
             users.saveAndFlush(user);
         } catch (DataIntegrityViolationException e) {

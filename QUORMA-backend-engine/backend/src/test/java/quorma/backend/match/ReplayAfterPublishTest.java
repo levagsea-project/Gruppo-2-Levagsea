@@ -85,7 +85,7 @@ class ReplayAfterPublishTest extends IntegrationTest {
         assertEquals(log, ENGINE.matchLog(before), "determinism: same recipe, same bytes");
 
         // a rebalance: every creature of the first deck gains attack, and a new snapshot is published for the faction
-        UUID admin = users.save(new User("admin1", "admin1@quorma.local", "x", Role.ADMIN, 0)).getId();
+        UUID admin = users.save(new User("admin1", "admin1@quorma.local", "x", Role.ADMIN, 0, "admin1", "avatar-01")).getId();
         ObjectNode tweaked = BaseSet.batch();
         for (JsonNode card : tweaked.get("cards")) {
             if (card.get("id").asString().startsWith("BASE-RES-") && card.get("kind").asString().equals("CREATURE")) {

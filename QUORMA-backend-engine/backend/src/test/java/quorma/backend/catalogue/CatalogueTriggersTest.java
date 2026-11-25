@@ -107,7 +107,7 @@ class CatalogueTriggersTest extends IntegrationTest {
 
     @Test
     void oneDraftIsOpenAtATime() {
-        jdbc.update("insert into users (username, email, password_hash, role) values ('adm', 'adm@quorma.local', 'x', 'ADMIN')");
+        jdbc.update("insert into users (username, email, password_hash, role, display_name, avatar) values ('adm', 'adm@quorma.local', 'x', 'ADMIN', 'adm', 'avatar-01')");
         String insertDraft = "insert into catalogue_drafts (source, created_by) select 'api', id from users where username = 'adm'";
         assertEquals(1, jdbc.update(insertDraft));
         assertTrue(refused(insertDraft).contains("catalogue_drafts_one_open_uq"));

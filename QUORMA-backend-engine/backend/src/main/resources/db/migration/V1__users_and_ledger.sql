@@ -15,6 +15,9 @@ CREATE TABLE users
     id            uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
     username      varchar(32)  NOT NULL CHECK (username ~ '^[A-Za-z0-9_.-]{3,32}$'),
     email         varchar(254) NOT NULL CHECK (position('@' IN email) > 1),
+    -- Shown to other players; not unique (the username is the identity). The avatar is a code from profile.avatars.
+    display_name  varchar(32)  NOT NULL CHECK (display_name ~ '^[A-Za-z0-9_.-]{3,32}$'),
+    avatar        varchar(32)  NOT NULL,
     password_hash varchar(100) NOT NULL,
     role          varchar(16)  NOT NULL DEFAULT 'PLAYER' CHECK (role IN ('PLAYER', 'ADMIN')),
     credits       bigint       NOT NULL DEFAULT 0 CHECK (credits >= 0),

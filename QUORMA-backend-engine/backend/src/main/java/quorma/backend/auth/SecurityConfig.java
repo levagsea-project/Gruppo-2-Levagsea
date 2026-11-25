@@ -23,9 +23,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 
 /** Stateless JWT security: only register, login and the API docs are public. */
+import quorma.backend.profile.ProfileProperties;
+
 @Configuration
 @EnableWebSecurity
-@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class})
+@EnableConfigurationProperties({JwtProperties.class, AuthProperties.class, ProfileProperties.class})
 public class SecurityConfig {
 
     @Bean
@@ -38,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
                         .requestMatchers("/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/error").permitAll()
                         .requestMatchers("/decks/**").hasRole("PLAYER")
-                        .requestMatchers("/packs/**", "/collection/**", "/wallet/**", "/me/**", "/users/**").hasRole("PLAYER")
+                        .requestMatchers("/packs/**", "/collection/**", "/wallet/**", "/me/**", "/users/**", "/avatars/**").hasRole("PLAYER")
                         .requestMatchers("/challenges/**", "/rooms/**", "/matchmaking/**", "/matches/**").hasRole("PLAYER")
                         .requestMatchers("/v1/**", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

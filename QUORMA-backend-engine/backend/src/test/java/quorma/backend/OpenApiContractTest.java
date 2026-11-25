@@ -30,6 +30,8 @@ class OpenApiContractTest extends ApiTest {
             "GET /admin/catalogue/export",
             "GET /admin/catalogue/pack-types",
             "GET /admin/catalogue/sets",
+            "GET /admin/telemetry/cards",
+            "GET /avatars",
             "GET /challenges",
             "GET /challenges/{id}",
             "GET /collection",
@@ -39,9 +41,14 @@ class OpenApiContractTest extends ApiTest {
             "GET /matches",
             "GET /matches/{seriesId}",
             "GET /matches/{seriesId}/games/{n}/replay",
+            "GET /me/profile",
+            "GET /me/stats",
+            "GET /me/stats/cards",
             "GET /packs",
             "GET /rooms",
             "GET /rooms/mine",
+            "GET /users/{username}/profile",
+            "GET /users/{username}/stats",
             "GET /wallet",
             "POST /admin/catalogue/drafts",
             "POST /admin/catalogue/drafts/{id}/publish",
@@ -71,7 +78,8 @@ class OpenApiContractTest extends ApiTest {
             "PUT /admin/catalogue/sets/{code}",
             "PUT /admin/catalogue/sets/{code}/cards/{cardCode}",
             "PUT /admin/catalogue/texts/{kind}/{code}/{locale}",
-            "PUT /decks/{id}");
+            "PUT /decks/{id}",
+            "PUT /me/profile");
 
     private JsonNode spec() throws Exception {
         Reply r = call("GET", "/api-docs", null, null);

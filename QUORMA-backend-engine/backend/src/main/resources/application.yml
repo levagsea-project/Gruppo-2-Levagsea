@@ -72,3 +72,15 @@ telemetry:
 auth:
   # Registration bonus for new users
   registration-bonus: ${AUTH_REGISTRATION_BONUS:0}
+
+profile:
+  # Codes of the predefined avatars (the images live in the frontend). The first one is every new player's avatar.
+  avatars:
+    - avatar-01
+    - avatar-02
+    - avatar-03
+    - avatar-04
+    - avatar-05
+    - avatar-06
+    - avatar-07
+    - avatar-08

@@ -33,6 +33,12 @@ public class User {
 
     private String email;
 
+    /** Shown to other players, not unique. Changed only by {@link UserRepository#updateProfile}, never by saving the entity. */
+    private String displayName;
+
+    /** A code from {@code profile.avatars}. */
+    private String avatar;
+
     @Setter
     private String passwordHash;
 
@@ -49,9 +55,12 @@ public class User {
     @Column(insertable = false, updatable = false)
     private Instant createdAt;
 
-    public User(String username, String email, String passwordHash, Role role, long credits) {
+    public User(String username, String email, String passwordHash, Role role, long credits,
+                String displayName, String avatar) {
         this.username = username;
         this.email = email;
+        this.displayName = displayName;
+        this.avatar = avatar;
         this.passwordHash = passwordHash;
         this.role = role;
         this.credits = credits;

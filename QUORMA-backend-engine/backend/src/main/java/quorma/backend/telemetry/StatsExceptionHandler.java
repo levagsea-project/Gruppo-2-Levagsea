@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/** Errors of the statistics endpoints carry a language-neutral {@code code}; the frontend translates it. */
-@RestControllerAdvice(basePackages = "quorma.backend.telemetry")
+/** Errors of the statistics endpoints (and of the profile of another player, which embeds them) carry a language-neutral {@code code}; the frontend translates it. */
+@RestControllerAdvice(basePackages = {"quorma.backend.telemetry", "quorma.backend.profile"})
 class StatsExceptionHandler {
 
     @ExceptionHandler(StatsException.class)

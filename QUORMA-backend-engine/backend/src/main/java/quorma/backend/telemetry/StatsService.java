@@ -72,10 +72,15 @@ public class StatsService {
     /** Another player's statistics, by username; 404 {@code user.not_found} if there is no such player (admins do not play). */
     @Transactional(readOnly = true)
     public StatsResponse forUsername(String username) {
-        User user = users.findByUsernameIgnoreCase(username)
+        return forUser(findPlayer(username).getId());
+    }
+
+    /** The player with that username (case-insensitive); 404 {@code user.not_found} for an unknown name or an admin. */
+    @Transactional(readOnly = true)
+    public User findPlayer(String username) {
+        return users.findByUsernameIgnoreCase(username)
                 .filter(u -> u.getRole() == Role.PLAYER)
                 .orElseThrow(() -> new StatsException(HttpStatus.NOT_FOUND, ErrorCodes.USER_NOT_FOUND));
-        return forUser(user.getId());
     }
 
     /** The player's own figures for each card they played, the most played first. */

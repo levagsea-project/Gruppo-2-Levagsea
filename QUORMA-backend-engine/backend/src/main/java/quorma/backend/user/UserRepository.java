@@ -27,6 +27,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "update users set last_login_at = now() where id = :id", nativeQuery = true)
     void touchLogin(@Param("id") UUID id);
 
+    /**
+     * Changes the profile with a plain UPDATE for the same reason as {@link #touchLogin}: saving the entity would bump
+     * {@code users.version}, which guards the credit balance, and a profile change would race with a pack purchase.
+     */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query(value = "update users set display_name = :displayName, avatar = :avatar where id = :id", nativeQuery = true)
+    void updateProfile(@Param("id") UUID id, @Param("displayName") String displayName, @Param("avatar") String avatar);
+
     /** Random players (not {@code me}) who logged in since {@code since}: the pool for matchmaking. */
     @Query(value = "select id from users where role = 'PLAYER' and id <> :me and last_login_at >= :since"
             + " order by random() limit :max", nativeQuery = true)

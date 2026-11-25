@@ -59,7 +59,7 @@ class CardApiTest extends ApiTest {
     @BeforeEach
     void setUp() {
         bootstrap.bootstrap(BaseSet.SETS_DIR);
-        User user = users.save(new User("giocatore", "g@quorma.local", "x", Role.PLAYER, 1000));
+        User user = users.save(new User("giocatore", "g@quorma.local", "x", Role.PLAYER, 1000, "giocatore", "avatar-01"));
         player = user.getId();
         token = jwt.issue(user);
         italianName = BaseSet.cardText(TRANSLATED).get("name").asString();

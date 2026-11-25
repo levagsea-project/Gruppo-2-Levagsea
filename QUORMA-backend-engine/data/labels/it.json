@@ -6,6 +6,8 @@
   "validation.email.max_length": "Al massimo {max} caratteri",
   "validation.password.size": "Da {min} a {max} caratteri",
   "validation.max_utf8_bytes": "Al massimo {value} byte in UTF-8",
+  "validation.display_name.pattern": "Da 3 a 32 caratteri: lettere, cifre, _ . -",
+  "validation.avatar.unknown": "Avatar sconosciuto",
   "validation.faction.unknown": "Fazione sconosciuta",
   "validation.deck_name.max_length": "Al massimo {max} caratteri",
 

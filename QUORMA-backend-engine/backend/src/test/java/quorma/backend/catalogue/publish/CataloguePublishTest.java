@@ -49,7 +49,7 @@ class CataloguePublishTest extends IntegrationTest {
 
     @BeforeEach
     void createAdmin() {
-        admin = users.save(new User("sistema", "sistema@quorma.local", "x", Role.ADMIN, 0)).getId();
+        admin = users.save(new User("sistema", "sistema@quorma.local", "x", Role.ADMIN, 0, "sistema", "avatar-01")).getId();
     }
 
     private UUID openWithBaseSet() {

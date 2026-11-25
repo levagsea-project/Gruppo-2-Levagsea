@@ -17,6 +17,8 @@ public final class ErrorCodes {
     public static final String EMAIL_MAX_LENGTH = "validation.email.max_length";
     public static final String PASSWORD_SIZE = "validation.password.size";
     public static final String MAX_UTF8_BYTES = "validation.max_utf8_bytes";
+    public static final String DISPLAY_NAME_PATTERN = "validation.display_name.pattern";
+    public static final String AVATAR_UNKNOWN = "validation.avatar.unknown";
     public static final String FACTION_UNKNOWN = "validation.faction.unknown";
     public static final String DECK_NAME_MAX_LENGTH = "validation.deck_name.max_length";
 
