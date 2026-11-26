@@ -47,3 +47,14 @@
   .home { gap: var(--space-4); }
   .hero-text, .info-cards { gap: var(--space-4); }
 }
+
+/* ---------- Filo d'argento più spesso ----------
+   Il bordo di guglie, pulsanti, tele, stendardi e ogive della navata è il padding dell'elemento esterno
+   (il ::before d'argento si vede nello spazio lasciato dall'interno). Da 1px passa a 2px.
+   Per cambiarlo basta --filo. */
+:root { --filo: 2px; }
+.q-tela, .q-btn, .q-stendardo__telo, .q-profilo, .q-navata .q-ogiva { padding: var(--filo); }
+.q-btn--sigillo { padding: calc(var(--filo) + .5px); }
+/* Guglie: l'interno ha le punte un po' più corte, così il filo resta parallelo anche sui lati obliqui */
+.q-btn__in, .q-tela--guglia > .q-tela__in {
+  clip-path: polygon(14.5px 0, calc(100% - 14.5px) 0, 100% 50%, calc(100% - 14.5px) 100%, 14.5px 100%, 0 50%); }
