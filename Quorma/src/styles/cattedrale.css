@@ -1,0 +1,49 @@
+/* Cattedrale: spazi, caratteri e titolo di pagina dal design system "QUORMA Cattedrale".
+   I componenti (pulsanti, tele, scatole, carte, sidebar…) restano quelli del sito: qui cambia solo ciò che li circonda.
+   Su telefono (< 768px) restano gli spazi di mobile.css. Per toglierlo basta rimuovere l'import in App.tsx. */
+
+:root {
+  /* Caratteri: EB Garamond prende il posto di Spectral per la prosa e le citazioni; Cinzel Decorative per le miniature */
+  --font-prosa: 'EB Garamond', Georgia, serif;
+  --font-serif: var(--font-prosa);
+  --font-miniatura: 'Cinzel Decorative', Cinzel, Georgia, serif;
+  /* Simboli d'argento usati come maschera */
+  --orn-giglio: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cg%20fill%3D%22%23D5E1E5%22%3E%3Cpath%20d%3D%22M24%203c3.2%206%205.2%2011.4%204.4%2017.4-.4%203.2-2%205.4-4.4%206.6-2.4-1.2-4-3.4-4.4-6.6C18.8%2014.4%2020.8%209%2024%203z%22%2F%3E%3Cpath%20d%3D%22M20.2%2025.6c-5.4%201.4-11-.6-12.6-5.4-1-3.2.6-6.6%203.6-6.8%202.6-.2%204%202.2%203%204.4%202.4-.6%204.8%201.6%206%205.2z%22%2F%3E%3Cpath%20d%3D%22M27.8%2025.6c5.4%201.4%2011-.6%2012.6-5.4%201-3.2-.6-6.6-3.6-6.8-2.6-.2-4%202.2-3%204.4-2.4-.6-4.8%201.6-6%205.2z%22%2F%3E%3Crect%20x%3D%2215%22%20y%3D%2227%22%20width%3D%2218%22%20height%3D%223.2%22%20rx%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M22%2031.4h4l-.8%208.2%203.2%204.6h-8.8l3.2-4.6z%22%2F%3E%3Cpath%20d%3D%22M19.6%2031.6c-2.6%203-5.2%204.4-8.4%204.2%203.6%202.6%207.6%201.2%209.6-3z%22%2F%3E%3Cpath%20d%3D%22M28.4%2031.6c2.6%203%205.2%204.4%208.4%204.2-3.6%202.6-7.6%201.2-9.6-3z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --orn-catena: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2012%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%201l5%205-5%205-5-5z%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2217.5%22%20cy%3D%226%22%20r%3D%221.6%22%20fill%3D%22%23D5E1E5%22%2F%3E%3Cpath%20d%3D%22M11%206h4.5M19.5%206H24M0%206h1%22%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Simbolo d'argento a maschera: prende il colore del testo */
+.q-orn { display: inline-block; flex: none; width: 1em; height: 1em; background: currentColor;
+  -webkit-mask: var(--orn) center / contain no-repeat; mask: var(--orn) center / contain no-repeat; }
+.q-orn--giglio { --orn: var(--orn-giglio); }
+
+/* ---------- Titolo di pagina: la targa con il fregio del giglio al posto del filo petrolio ---------- */
+.page-title-fregio { display: flex; align-items: center; gap: 10px; width: 120px; margin-bottom: 6px; font-size: 13px; color: var(--silver-100); }
+.page-title-fregio::before, .page-title-fregio::after { content: ""; flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(74,166,173,.2), rgba(74,166,173,.9)); box-shadow: 0 0 6px rgba(74,166,173,.5); }
+.page-title-fregio::after { background: linear-gradient(270deg, rgba(74,166,173,.2), rgba(74,166,173,.9)); }
+.page-title-fregio .q-orn { filter: drop-shadow(0 0 4px rgba(74,166,173,.6)); }
+.page-title h1 { font-weight: 600; letter-spacing: .05em; text-wrap: balance; }
+@media (max-width: 767px) { .page-title-fregio { width: 96px; margin-bottom: 2px; font-size: 11px; } }
+
+@media (min-width: 768px) {
+  /* ---------- Spazi: il ritmo del design system tra i blocchi di pagina ----------
+     space-6 (24px) tra i blocchi principali, space-8 (32px) tra le colonne, space-4 (16px) nelle griglie di carte */
+  .page.sfide-page, .page.coll-page, .page.shop-page, .page.open-page,
+  .page.editor-page, .page.saved-page, .page.decks-page, .page.newdeck-page,
+  .info-page, .rules-page, .profile-page, .home { gap: var(--space-6); }
+  .hero-text, .play-row { gap: var(--space-6); }
+  .info-cards { gap: var(--space-6); }
+  .info-header { gap: var(--space-3) var(--space-6); }
+  .editor-testa, .play-intestazione { gap: var(--space-4) var(--space-6); }
+  .editor-griglia { gap: var(--space-4); }
+  .open-carte { gap: var(--space-6); }
+  .open-azioni, .d-azioni { gap: var(--space-4); }
+  .play-corpo, .play-fazioni { gap: var(--space-8); }
+  .play-lato { gap: var(--space-4); }
+}
+/* Schermi bassi o stretti: la Home resta compatta, un gradino sotto */
+@media (min-width: 768px) and (max-height: 820px), (min-width: 768px) and (max-width: 1279px) {
+  .home { gap: var(--space-4); }
+  .hero-text, .info-cards { gap: var(--space-4); }
+}

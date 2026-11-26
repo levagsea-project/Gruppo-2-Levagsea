@@ -43,6 +43,7 @@ import './styles/ui.css'
 import './styles/pages.css'
 import './styles/decks.css'
 import './styles/newdeck.css'
+import './styles/cattedrale.css' // spazi, caratteri e titolo di pagina del design system Cattedrale
 import './styles/mobile.css' // su telefono sovrascrive gli stili sopra
 import './styles/cifre.css'
 import './styles/preferences.css' // per ultimo: movimento ridotto e contrasto elevato vincono su tutto

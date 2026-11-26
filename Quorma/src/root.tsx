@@ -15,7 +15,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Fira+Sans:wght@400;500;600;700&family=Spectral:ital,wght@1,400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cinzel+Decorative:wght@700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Fira+Sans:wght@400;500;600;700&display=swap"
         />
         <Meta />
         <Links />
