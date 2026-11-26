@@ -58,3 +58,33 @@
 /* Guglie: l'interno ha le punte un po' più corte, così il filo resta parallelo anche sui lati obliqui */
 .q-btn__in, .q-tela--guglia > .q-tela__in {
   clip-path: polygon(14.5px 0, calc(100% - 14.5px) 0, 100% 50%, calc(100% - 14.5px) 100%, 14.5px 100%, 0 50%); }
+
+/* ---------- Tela doppia e ornata (design system Cattedrale, componente Tela) ----------
+   Rettangolo ad angoli incisi (intaglio di 10px), un secondo filo a 12px dal bordo e gli angoli di traforo d'argento.
+   Per i riquadri importanti; al massimo una tela ornata per schermata.
+   Markup: .q-tela.q-tela--doppia.q-tela--ornata > .q-tela__in > .q-tela__titolo + .q-divisorio-giglio + .q-tela__testo */
+:root {
+  --q-angolo-tl: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%2046V2h44%22%20opacity%3D%22.45%22%2F%3E%3Cpath%20d%3D%22M2%2040Q2%202%2040%202%22%2F%3E%3Cpath%20d%3D%22M2%2026Q2%202%2026%202%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%224.6%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%226.6%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%226.6%22%20cy%3D%2222%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%222%22%20cy%3D%2240%22%20r%3D%221.8%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%222%22%20r%3D%221.8%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M2%200l2%202-2%202-2-2z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --q-angolo-tr: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cg%20transform%3D%22matrix(-1%200%200%201%2048%200)%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%2046V2h44%22%20opacity%3D%22.45%22%2F%3E%3Cpath%20d%3D%22M2%2040Q2%202%2040%202%22%2F%3E%3Cpath%20d%3D%22M2%2026Q2%202%2026%202%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%224.6%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%226.6%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%226.6%22%20cy%3D%2222%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%222%22%20cy%3D%2240%22%20r%3D%221.8%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%222%22%20r%3D%221.8%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M2%200l2%202-2%202-2-2z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --q-angolo-bl: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cg%20transform%3D%22matrix(1%200%200%20-1%200%2048)%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%2046V2h44%22%20opacity%3D%22.45%22%2F%3E%3Cpath%20d%3D%22M2%2040Q2%202%2040%202%22%2F%3E%3Cpath%20d%3D%22M2%2026Q2%202%2026%202%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%224.6%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%226.6%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%226.6%22%20cy%3D%2222%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%222%22%20cy%3D%2240%22%20r%3D%221.8%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%222%22%20r%3D%221.8%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M2%200l2%202-2%202-2-2z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --q-angolo-br: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cg%20transform%3D%22matrix(-1%200%200%20-1%2048%2048)%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%2046V2h44%22%20opacity%3D%22.45%22%2F%3E%3Cpath%20d%3D%22M2%2040Q2%202%2040%202%22%2F%3E%3Cpath%20d%3D%22M2%2026Q2%202%2026%202%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%224.6%22%2F%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%226.6%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%226.6%22%20cy%3D%2222%22%20r%3D%222.2%22%2F%3E%3Ccircle%20cx%3D%222%22%20cy%3D%2240%22%20r%3D%221.8%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%222%22%20r%3D%221.8%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M2%200l2%202-2%202-2-2z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+}
+.q-tela--doppia, .q-tela--ornata { --n: 10px;
+  --forma: polygon(var(--n) 0, calc(100% - var(--n)) 0, calc(100% - var(--n)) var(--n), 100% var(--n), 100% calc(100% - var(--n)), calc(100% - var(--n)) calc(100% - var(--n)), calc(100% - var(--n)) 100%, var(--n) 100%, var(--n) calc(100% - var(--n)), 0 calc(100% - var(--n)), 0 var(--n), var(--n) var(--n)); }
+.q-tela--doppia > .q-tela__in::after { content: ""; position: absolute; inset: 12px; pointer-events: none; border: 1px solid rgba(213,225,229,.22); }
+.q-tela--ornata > .q-tela__in {
+  background:
+    var(--q-angolo-tl) left 7px top 7px / 30px no-repeat,
+    var(--q-angolo-tr) right 7px top 7px / 30px no-repeat,
+    var(--q-angolo-bl) left 7px bottom 7px / 30px no-repeat,
+    var(--q-angolo-br) right 7px bottom 7px / 30px no-repeat,
+    linear-gradient(115deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,0) 40%),
+    linear-gradient(180deg, rgba(21,36,44,.92) 0%, rgba(10,18,23,.95) 100%); }
+.q-tela__titolo { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--titolo, #EEF4F5); }
+.q-tela__testo { margin: 0; font-size: 14px; line-height: 21px; color: var(--q-testo-tenue, #A9BCC3); text-wrap: pretty; }
+.q-tela__nota { font-size: 11px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol-300); }
+/* divisorio con il giglio al centro: due fili petrolio che si accendono verso il simbolo */
+.q-divisorio-giglio { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 16px; color: var(--silver-100); }
+.q-divisorio-giglio::before, .q-divisorio-giglio::after { content: ""; flex: 1; height: 1px; box-shadow: 0 0 6px rgba(74,166,173,.35);
+  background: linear-gradient(90deg, rgba(74,166,173,0), rgba(74,166,173,.6) 55%, rgba(213,225,229,.8)); }
+.q-divisorio-giglio::after { background: linear-gradient(270deg, rgba(74,166,173,0), rgba(74,166,173,.6) 55%, rgba(213,225,229,.8)); }
