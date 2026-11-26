@@ -1,0 +1,46 @@
+/* Stendardo (design system Cattedrale): le modalità di Gioca appese a un'asta d'argento.
+   Telo petrolio con traforo, punta in basso, icona della modalità e nome. Quello scelto (aria-checked) ha il filo acceso e la luce petrolio.
+   Adattato alla pagina Gioca: altezza fissa (--stendardo-h, --punta da play.css), senza descrizione (sta nel leggìo). */
+
+:root {
+  --orn-pinnacolo: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2032%22%3E%3Cpath%20d%3D%22M12%201l5%2015-5%2015-5-15z%22%20fill%3D%22%23D5E1E5%22%2F%3E%3Cpath%20d%3D%22M3%2016h18%22%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M12%204l2.2%2012L12%2028l-2.2-12z%22%20fill%3D%22%23F2F7F8%22%20opacity%3D%22.55%22%2F%3E%3C%2Fsvg%3E");
+  --traforo-velato: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20opacity%3D%22.18%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23D5E1E5%22%20stroke-width%3D%221%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M20%2020A6%206%200%200%201%2032%2020A6%206%200%200%201%2032%2032A6%206%200%200%201%2020%2032A6%206%200%200%201%2020%2020Z%22%20transform%3D%22translate(-10%20-10)%22%2F%3E%3Cpath%20d%3D%22M20%2020A6%206%200%200%201%2032%2020A6%206%200%200%201%2032%2032A6%206%200%200%201%2020%2032A6%206%200%200%201%2020%2020Z%22%20transform%3D%22translate(22%2022)%22%2F%3E%3Ccircle%20cx%3D%2248%22%20cy%3D%2216%22%20r%3D%229%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2248%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M48%207v18M39%2016h18M16%2039v18M7%2048h18%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M0%2032h64M32%200v64%22%20opacity%3D%22.25%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+}
+
+.q-stendardo { --telo: polygon(0 0, 100% 0, 100% calc(100% - var(--punta, 26px)), 50% 100%, 0 calc(100% - var(--punta, 26px)));
+  position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; padding: 10px 0 0; border: 0; background: none;
+  font: inherit; color: var(--silver-100); text-align: center; cursor: pointer; transition: transform .2s ease, filter .2s ease; }
+/* l'asta d'argento con i pinnacoli alle estremità */
+.q-stendardo__asta { position: absolute; z-index: 2; top: 4px; left: -2px; right: -2px; height: 6px;
+  background: linear-gradient(180deg, #F2F7F8 0%, #C3D1D6 50%, #93A7AF 100%); box-shadow: 0 2px 3px rgba(0,0,0,.6); }
+.q-stendardo__asta::before, .q-stendardo__asta::after { content: ""; position: absolute; top: -4px; width: 10px; height: 14px; background: var(--orn-pinnacolo) center / contain no-repeat; }
+.q-stendardo__asta::before { left: -8px; transform: rotate(-90deg); }
+.q-stendardo__asta::after { right: -8px; transform: rotate(90deg); }
+/* il telo: filo d'argento brunito di 1px attorno al panno */
+.q-stendardo__telo { position: relative; isolation: isolate; width: 100%; height: var(--stendardo-h, 98px); padding: 1px; box-sizing: border-box; transition: height .22s cubic-bezier(.22, 1, .36, 1); }
+.q-stendardo__telo::before { content: ""; position: absolute; inset: 0; z-index: -1; clip-path: var(--telo);
+  background: linear-gradient(160deg, rgba(242,247,248,.75) 0%, rgba(124,144,152,.5) 26%, rgba(213,225,229,.65) 50%, rgba(62,80,88,.55) 76%, rgba(168,196,200,.7) 100%); }
+.q-stendardo__in { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; box-sizing: border-box; padding: 14px 10px 0; clip-path: var(--telo);
+  background: linear-gradient(180deg, rgba(18,58,63,.95), rgba(10,18,23,.97) 70%), var(--traforo-velato) center / 48px; }
+.q-stendardo__ico { flex: none; width: 24px; height: 24px; color: var(--silver-100); transition: color .2s ease; }
+.q-stendardo__nome { font-family: var(--font-display); font-size: clamp(13px, 1.12vw, 20px); line-height: 1.15; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--steel-300); white-space: nowrap; transition: color .15s ease; }
+
+.q-stendardo:hover { transform: translateY(2px); }
+.q-stendardo:hover .q-stendardo__nome { color: var(--silver-50); }
+.q-stendardo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 6px; }
+/* scelto: filo acceso, telo più lungo e più luminoso, simbolo petrolio */
+.q-stendardo[aria-checked="true"] { filter: drop-shadow(0 0 16px rgba(74,166,173,.5)); }
+.q-stendardo[aria-checked="true"] .q-stendardo__telo { height: calc(var(--stendardo-h, 98px) + 12px); }
+.q-stendardo[aria-checked="true"] .q-stendardo__telo::before { background: linear-gradient(160deg, #F2F7F8, #4AA6AD 45%, #BFE4E7); }
+.q-stendardo[aria-checked="true"] .q-stendardo__in { background: radial-gradient(ellipse at 50% 30%, rgba(46,127,134,.95), rgba(18,58,63,.97) 50%, rgba(10,18,23,.98)), var(--traforo-velato) center / 48px; }
+.q-stendardo[aria-checked="true"] .q-stendardo__ico { color: var(--petrol-300); filter: drop-shadow(0 0 6px rgba(74,166,173,.8)); }
+.q-stendardo[aria-checked="true"] .q-stendardo__nome { color: var(--titolo, #EEF4F5); }
+
+@media (max-width: 1279px) { .q-stendardo__nome { letter-spacing: .06em; } }
+@media (max-width: 767px) {
+  .q-stendardo__asta::before, .q-stendardo__asta::after { display: none; } /* fra stendardi vicini i pinnacoli si toccherebbero */
+  .q-stendardo__in { gap: 4px; padding: 12px 4px 0; }
+  .q-stendardo__ico { width: 18px; height: 18px; }
+  .q-stendardo__nome { font-size: 12px; letter-spacing: .05em; white-space: normal; } /* "Partita libera" va su due righe */
+}
+@media (prefers-reduced-motion: reduce) { .q-stendardo, .q-stendardo__telo { transition: none; } }

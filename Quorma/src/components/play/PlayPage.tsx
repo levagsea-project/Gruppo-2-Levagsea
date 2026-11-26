@@ -21,6 +21,7 @@ import PageTitle from '../layout/PageTitle'
 import DeckSignature from './DeckSignature'
 import '../../styles/challenges.css'
 import '../../styles/play.css'
+import '../../styles/stendardo.css'
 
 const Star = () => (
   <svg className="q-stella" aria-hidden="true" viewBox="0 0 20 28">
@@ -334,30 +335,27 @@ export default function PlayPage({ decks, decksState, playStatus, playStatusFail
       <div className="play-corpo" ref={corpo}>
       <div className="play-sinistra">
       <div className="play-testa">
-        <span className="q-divisorio play-testa__filo" aria-hidden="true">
-          <span className="q-borchia q-borchia--n" />
-        </span>
         <section aria-label="Scegli la modalità">
           <div role="radiogroup" aria-label="Modalità di gioco" className="play-modi" onKeyDown={onRadioKeyDown}>
             {playModes.map((m) => (
-              <button key={m.id} type="button" role="radio" aria-checked={m.id === modeId} tabIndex={m.id === mode.id ? 0 : -1} className={`q-tela play-stendardo ${m.id === modeId ? 'q-acceso' : ''}`} onClick={() => { setModeId(m.id); setError('') }}>
-                <span className="q-tela__in">
-                  <span className="play-stendardo__orlo" aria-hidden="true" />
-                  <span className="play-stendardo__nome">{m.title}</span>
-                  {/* le stanze aperte si vedono da qualsiasi modalità */}
-                  {m.id === 'stanza' && !!rooms?.length && (
-                    <span className="play-stendardo__n">
-                      <span aria-hidden="true">{rooms.length}</span>
-                      <span className="sr-only">{rooms.length === 1 ? ', 1 stanza aperta' : `, ${rooms.length} stanze aperte`}</span>
-                    </span>
-                  )}
-                  <span className="play-stendardo__stemma" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              // Stendardo del design system Cattedrale (styles/stendardo.css): asta d'argento, telo con traforo, simbolo e nome
+              <button key={m.id} type="button" role="radio" aria-checked={m.id === modeId} tabIndex={m.id === mode.id ? 0 : -1} className="q-stendardo" onClick={() => { setModeId(m.id); setError('') }}>
+                <span className="q-stendardo__asta" aria-hidden="true" />
+                <span className="q-stendardo__telo">
+                  <span className="q-stendardo__in">
+                    <svg className="q-stendardo__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       {m.paths.map((d) => <path key={d} d={d} />)}
                     </svg>
+                    <span className="q-stendardo__nome">{m.title}</span>
+                    {/* le stanze aperte si vedono da qualsiasi modalità */}
+                    {m.id === 'stanza' && !!rooms?.length && (
+                      <span className="play-stendardo__n">
+                        <span aria-hidden="true">{rooms.length}</span>
+                        <span className="sr-only">{rooms.length === 1 ? ', 1 stanza aperta' : `, ${rooms.length} stanze aperte`}</span>
+                      </span>
+                    )}
                   </span>
                 </span>
-                <span className="q-borchia q-borchia--s" />
               </button>
             ))}
           </div>

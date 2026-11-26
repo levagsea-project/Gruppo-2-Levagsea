@@ -11,52 +11,12 @@
 .pick:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 6px; }
 .pick:hover .q-tela:not(.q-acceso) > .q-tela__in { box-shadow: inset 0 0 18px rgba(74,166,173,.45), inset 0 1px 0 rgba(213,225,229,.2); }
 
-/* modalità: stendardi appesi al filo di luce. Quello scelto scende di più e si accende;
-   l'altezza del gruppo è fissa, così la pagina non si sposta quando cambia la scelta */
-/* i tre stendardi occupano tutta la larghezza della colonna di sinistra */
+/* modalità: stendardi del design system (styles/stendardo.css) su tutta la larghezza della colonna di sinistra.
+   Quello scelto scende di più e si accende; l'altezza del gruppo è fissa, così la pagina non si sposta quando cambia la scelta */
 .play-page { --stendardo-h: 98px; --punta: 26px; }
 .play-testa { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
 .play-testa > section { min-width: 0; }
-.play-testa__filo { grid-column: 1 / -1; }
 .play-modi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: clamp(14px, 1.6vw, 26px); height: calc(var(--stendardo-h) + 26px); }
-.play-modi .play-stendardo { --forma: polygon(0 0, 100% 0, 100% calc(100% - var(--punta)), 50% 100%, 0 calc(100% - var(--punta)));
-  width: 100%; height: var(--stendardo-h); padding: 0 1px 1px; border: 0; background: none; cursor: pointer; text-align: center; color: var(--steel-300);
-  transition: height .22s cubic-bezier(.22, 1, .36, 1), filter .2s ease, color .15s ease; }
-/* gli anelli che tengono il drappo all'asta */
-.play-stendardo::after { content: ""; position: absolute; z-index: 2; top: -4px; left: 14px; right: 14px; height: 9px; pointer-events: none;
-  background:
-    radial-gradient(circle, transparent 2px, #D5E1E5 2.4px, #7C9098 3.6px, transparent 4px) left center / 9px 9px no-repeat,
-    radial-gradient(circle, transparent 2px, #D5E1E5 2.4px, #7C9098 3.6px, transparent 4px) center / 9px 9px no-repeat,
-    radial-gradient(circle, transparent 2px, #D5E1E5 2.4px, #7C9098 3.6px, transparent 4px) right center / 9px 9px no-repeat; }
-.play-stendardo > .q-tela__in { display: flex; flex-direction: column; align-items: center; padding: 19px 14px 0; }
-/* il drappo: orlo ricamato che segue la forma, fregio di rombi in alto e pieghe verticali */
-.play-stendardo__orlo { position: absolute; inset: 4px 4px 3px; clip-path: var(--forma); background: linear-gradient(160deg, rgba(242,247,248,.5), rgba(124,144,152,.22) 45%, rgba(168,196,200,.42)); }
-.play-stendardo__orlo::after { content: ""; position: absolute; inset: 1px; clip-path: var(--forma);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M6 1 9 4 6 7 3 4z' fill='%238FA4AD' fill-opacity='.6'/%3E%3C/svg%3E") center 1px / 12px 8px repeat-x,
-    linear-gradient(180deg, rgba(213,225,229,.09) 0 10px, rgba(213,225,229,.34) 10px 11px, transparent 11px),
-    linear-gradient(90deg, rgba(0,0,0,.28), transparent 18%, rgba(255,255,255,.04) 33%, rgba(0,0,0,.1) 50%, rgba(255,255,255,.04) 67%, transparent 82%, rgba(0,0,0,.28)),
-    linear-gradient(180deg, #16262E 0%, #0D181E 100%); }
-.play-stendardo.q-acceso .play-stendardo__orlo { background: linear-gradient(160deg, #F2F7F8, #4AA6AD 50%, #BFE4E7); }
-.play-stendardo.q-acceso .play-stendardo__orlo::after {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M6 1 9 4 6 7 3 4z' fill='%238FD6DB' fill-opacity='.9'/%3E%3C/svg%3E") center 1px / 12px 8px repeat-x,
-    linear-gradient(180deg, rgba(74,166,173,.16) 0 10px, rgba(143,214,219,.6) 10px 11px, transparent 11px),
-    linear-gradient(90deg, rgba(0,0,0,.24), transparent 18%, rgba(255,255,255,.05) 33%, rgba(0,0,0,.08) 50%, rgba(255,255,255,.05) 67%, transparent 82%, rgba(0,0,0,.24)),
-    radial-gradient(ellipse at 50% 70%, rgba(74,166,173,.34), transparent 72%),
-    linear-gradient(180deg, #17303A 0%, #0D1C22 100%); }
-.play-stendardo__nome { position: relative; display: flex; align-items: center; justify-content: center; min-height: 26px; font-family: var(--font-display); font-size: clamp(13px, 1.12vw, 22px); line-height: 1.15; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: inherit; white-space: nowrap; }
-/* gli stendardi stanno nella colonna di sinistra: il nome scala con la finestra e resta su una riga */
-/* lo stemma: un rombo d'argento con l'icona, che scende nella punta */
-.play-stendardo__stemma { position: relative; flex: none; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: auto 0 16px; transform: rotate(45deg); background: linear-gradient(180deg, #15242C, #0C161B); box-shadow: 0 0 0 1px rgba(213,225,229,.5), inset 0 1px 0 rgba(213,225,229,.12); }
-.play-stendardo__stemma svg { flex: none; width: 18px; height: 18px; transform: rotate(-45deg); }
-.play-stendardo.q-acceso .play-stendardo__stemma { color: var(--petrol-300); box-shadow: 0 0 0 1px var(--petrol-300), 0 0 10px rgba(74,166,173,.7); }
-/* il pendaglio sulla punta */
-.play-stendardo > .q-borchia--s { bottom: -13px; opacity: .6; filter: none; transition: opacity .2s ease; }
-.play-stendardo.q-acceso > .q-borchia--s { opacity: 1; filter: drop-shadow(0 0 6px rgba(74,166,173,.8)); }
-.play-modi .play-stendardo:hover { height: calc(var(--stendardo-h) + 5px); color: var(--silver-50); }
-.play-modi .play-stendardo.q-acceso { height: calc(var(--stendardo-h) + 12px); color: #EEF4F5; }
-.play-stendardo:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
 /* intestazione: titolo a sinistra; Gestisci mazzi e valute sulla stessa riga, a destra (le valute qui non sono sovrapposte alla pagina) */
 .play-intestazione { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px 24px; }
 .play-intestazione .page-title { min-width: 0; }
@@ -65,7 +25,6 @@
 .page.play-page .currency-bar { position: relative; top: auto; right: auto; }
 .play-page .play-gestisci { display: flex; }
 .play-page .play-gestisci .q-btn__in { height: 44px; padding: 0 26px; font-size: 12px; letter-spacing: .12em; }
-@media (prefers-reduced-motion: reduce) { .play-modi .play-stendardo { transition: none; } }
 
 /* corpo: due colonne. A sinistra modalità sopra e mazzi sotto; a destra il leggìo, per tutta l'altezza.
    min-height: 0 lascia che il corpo si stringa nella finestra invece di farla scorrere */
@@ -192,7 +151,6 @@
 @media (max-width: 1279px) {
   .play-corpo { grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; }
   .play-fazioni { gap: 24px; }
-  .play-stendardo__nome { letter-spacing: .06em; }
 }
 
 /* finestra stretta: restano due colonne, con il leggìo più stretto, così la pagina non scorre */
@@ -225,10 +183,6 @@
   .play-corpo, .play-sinistra, .play-lato { display: contents; }
   .play-page { --stendardo-h: 104px; --punta: 18px; }
   .play-modi { gap: 8px; }
-  .play-stendardo > .q-tela__in { padding: 18px 5px 0; }
-  .play-stendardo__nome { min-height: 30px; font-size: 12px; letter-spacing: .05em; white-space: normal; } /* su telefono "Partita libera" va su due righe */
-  .play-stendardo__stemma { width: 24px; height: 24px; margin-bottom: 12px; }
-  .play-stendardo__stemma svg { width: 16px; height: 16px; }
   .play-intestazione { align-items: center; gap: 12px; }
   .play-intestazione__azioni { margin-top: 0; }
   .play-page .play-gestisci .q-btn__in { padding: 0 16px; font-size: 11px; letter-spacing: .08em; }
@@ -253,10 +207,7 @@
   /* modalità, due selettori e fazione stanno nella prima schermata, con l'avvio */
   .page.play-page { gap: 12px; }
   .play-page { --stendardo-h: 88px; --punta: 14px; }
-  .play-modi { height: calc(var(--stendardo-h) + 18px); }
-  .play-stendardo > .q-tela__in { padding-top: 15px; }
-  .play-stendardo__stemma { width: 20px; height: 20px; margin-bottom: 9px; }
-  .play-stendardo__stemma svg { width: 14px; height: 14px; }
+  .play-modi { height: calc(var(--stendardo-h) + 22px); }
   .play-stendardo__n { top: 12px; right: 7px; min-width: 18px; padding: 0 3px; font-size: 11.5px; line-height: 18px; }
   .play-fazioni { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .play-fazione { gap: 4px; }
@@ -299,5 +250,5 @@
 @media (max-width: 359px) {
   .play-fazione__nome { white-space: normal; }
   .play-fazione .play-rombo { display: none; }
-  .play-stendardo__n { top: auto; bottom: 26px; right: 8px; } /* accanto allo stemma: sul nome non c'è spazio */
+  .play-stendardo__n { top: auto; bottom: 26px; right: 8px; } /* in basso, nella punta: sul nome non c'è spazio */
 }
