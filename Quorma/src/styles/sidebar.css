@@ -6,6 +6,9 @@
 .q-navata::after{content:"";position:absolute;top:0;bottom:0;right:6px;width:1px;background:linear-gradient(180deg,rgba(74,166,173,0),rgba(74,166,173,.35) 30%,rgba(74,166,173,.35) 70%,rgba(74,166,173,0));pointer-events:none}
 .q-navata__logo{display:block;padding:0 28px}
 .q-navata__logo img{display:block;width:180px;max-width:100%;height:auto;filter:drop-shadow(0 0 12px rgba(74,166,173,.25))}
+/* Divisorio "Lama" tra logo e menu: largo come il menu, una lama d'argento che si assottiglia verso le punte */
+.q-navata__lama{flex:none;display:block;height:8px;margin:0 24px}
+.q-navata__lama svg{display:block;width:100%;height:100%}
 .q-navata__menu{display:flex;flex-direction:column;padding:0 16px 0 24px}
 .q-navata__item{display:flex;align-items:center;gap:14px;height:47px;color:var(--steel-300);text-decoration:none;font-family:var(--font-display);font-size:13.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
 .q-navata__item:hover{color:var(--silver-50)}
@@ -85,6 +88,7 @@
   .q-navata::after{right:0}
   .q-navata__logo{padding:0;display:flex;justify-content:center}
   .q-navata__logo img{width:44px;height:44px;object-fit:cover;object-position:0 50%}
+  .q-navata__lama{margin:0 14px;height:6px}
   .q-navata__menu{padding:0;align-items:center}
   .q-navata__item{gap:0;justify-content:center;width:56px}
   .q-navata__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -131,3 +135,26 @@
 .q-profilo__nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .q-profilo__avatar .q-ogiva__in{position:relative;padding:0;overflow:hidden}
 .q-profilo__foto{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+
+/* ---------- Menu che riempie la navata ----------
+   Il menu prende tutto lo spazio tra il divisorio e il profilo e distribuisce le voci in altezza;
+   voci, ogive e icone un po' più grandi. Se lo schermo è basso, le voci restano alla misura minima e la navata scorre. */
+/* il menu sta dentro <nav>: è il <nav> a crescere nella colonna, poi il menu lo riempie */
+.q-navata > nav{flex:1 0 auto;display:flex;flex-direction:column}
+.q-navata .q-navata__menu{flex:1 0 auto;justify-content:space-evenly;gap:6px}
+.q-navata .q-navata__item{height:52px;gap:16px;font-size:14.5px}
+.q-navata .q-navata__menu .q-ogiva{width:38px;height:48px}
+.q-navata .q-navata__menu .q-ogiva__in{padding-bottom:8px}
+.q-navata .q-navata__menu .q-navata__ico{width:22px;height:22px}
+.q-navata .q-profilo{margin-top:0}
+@media (max-width:1279px){
+  .q-navata .q-navata__item{width:60px;gap:0}
+  .q-navata .q-navata__menu .q-ogiva{width:36px;height:46px}
+}
+@media (min-width:1280px) and (max-height:860px){
+  .q-navata .q-navata__menu{gap:4px}
+  .q-navata .q-navata__item{height:44px}
+  .q-navata .q-navata__menu .q-ogiva{width:34px;height:43px}
+  .q-navata .q-navata__menu .q-ogiva__in{padding-bottom:6px}
+  .q-navata .q-navata__menu .q-navata__ico{width:20px;height:20px}
+}
