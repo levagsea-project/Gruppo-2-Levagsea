@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { factions } from '../../data/factions'
 import { creatureTier } from '../../lib/cards'
-import { packName, pendingPacks, removePending } from '../../lib/shop'
+import { packName, pendingCount, pendingPacks, removePending } from '../../lib/shop'
 import CardFace from '../cards/CardFace'
 import PageTitle from '../layout/PageTitle'
 import '../../styles/collection.css'
 
-type Props = { queue: string[]; onCollection: () => void; onShop: () => void }
+type Props = { queue: string[]; onCollection: () => void; onShop: () => void; onPacks: () => void }
 
 // Apertura delle buste (design: Pagina-Apertura). Le carte sono già nella collezione dal momento dell'acquisto:
 // qui si rivelano. Quando sono tutte girate la busta esce da "Buste da aprire".
-export default function PackOpeningPage({ queue, onCollection, onShop }: Props) {
+export default function PackOpeningPage({ queue, onCollection, onShop, onPacks }: Props) {
   const packs = useMemo(() => {
     const all = pendingPacks()
     return queue.flatMap((id) => all.filter((p) => p.id === id))
@@ -92,6 +92,10 @@ export default function PackOpeningPage({ queue, onCollection, onShop }: Props) 
             </button>
           )}
           <button type="button" className="q-btn q-btn--acciaio" onClick={onCollection}><span className="q-btn__in">Vai alla Collezione</span></button>
+          {/* finita la coda, se restano altre buste comprate si torna a sceglierle */}
+          {left === 0 && allRevealed && pendingCount() > 0 && (
+            <button type="button" className="q-btn q-btn--argento" onClick={onPacks}><span className="q-btn__in">Altre buste da aprire</span></button>
+          )}
           {left > 0 && (
             <button
               type="button"

@@ -6,17 +6,17 @@ type Props = {
   current: Page // pagina aperta ora
   onNavigate: (page: Page) => void
   challengeAlert?: string // sfide ricevute in attesa: braci sulla voce Sfide
-  packAlert?: string // buste da aprire: braci sulla voce Collezione
+  packAlert?: string // buste da aprire: braci sulla voce Buste
 }
 
 // Lista di tutte le voci del menu.
 export default function NavMenu({ current, onNavigate, challengeAlert, packAlert }: Props) {
-  // Nuovo mazzo, editor e mazzo salvato fanno parte di Mazzi; l'apertura delle buste fa parte di Collezione.
+  // Nuovo mazzo, editor e mazzo salvato fanno parte di Mazzi; l'apertura delle buste fa parte di Buste.
   const section =
     current === 'nuovo-mazzo' || current === 'editor-mazzo' || current === 'mazzo-salvato'
       ? 'mazzi'
       : current === 'apertura'
-        ? 'collezione'
+        ? 'buste'
         : current
 
   return (
@@ -26,7 +26,7 @@ export default function NavMenu({ current, onNavigate, challengeAlert, packAlert
           <NavItem
             key={item.label}
             {...item}
-            alert={item.page === 'sfide' ? challengeAlert : item.page === 'collezione' ? packAlert : item.alert}
+            alert={item.page === 'sfide' ? challengeAlert : item.page === 'buste' ? packAlert : item.alert}
             active={item.page === section}
             onClick={() => item.page && onNavigate(item.page)}
           />

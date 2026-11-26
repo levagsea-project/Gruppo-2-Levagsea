@@ -5,7 +5,7 @@ import type { NavIconName } from '../components/layout/NavIcon'
 export type Page =
   | 'home' | 'gioca' | 'mazzi' | 'nuovo-mazzo' | 'editor-mazzo' | 'mazzo-salvato' | 'regole'
   | 'chi-siamo' | 'faq' | 'glossario' | 'contatti' | 'privacy' | 'cookie' | 'termini' // pagine "Informazioni"
-  | 'sfide' | 'collezione' | 'apertura' | 'negozio'
+  | 'sfide' | 'collezione' | 'buste' | 'apertura' | 'negozio' // buste = scelta delle buste da aprire, apertura = rivelazione
   | 'profilo' | 'modifica-profilo' // si apre dal riquadro del giocatore
   | 'altro' // 'altro' esiste solo su telefono
 
@@ -21,6 +21,7 @@ export const navItems: NavItemData[] = [
   { label: 'Gioca', icon: 'gioca', page: 'gioca' },
   { label: 'Sfide', icon: 'sfide', page: 'sfide' },
   { label: 'Collezione', icon: 'collezione', page: 'collezione' },
+  { label: 'Buste', icon: 'buste', page: 'buste' }, // scelta delle buste da aprire; le braci si accendono se ce ne sono
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi' },
   { label: 'Scambi', icon: 'scambi' }, // senza pagina: visibile ma non premibile
   { label: 'Negozio', icon: 'negozio', page: 'negozio' },

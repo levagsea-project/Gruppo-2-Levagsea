@@ -30,7 +30,8 @@ import LegalPage from './components/info/LegalPage'
 import ProfilePage from './components/profile/ProfilePage'
 import EditProfilePage from './components/profile/EditProfilePage'
 import ChallengesPage from './components/challenges/ChallengesPage'
-import CollectionPage, { type CollectionTab } from './components/collection/CollectionPage'
+import CollectionPage from './components/collection/CollectionPage'
+import PacksPage from './components/collection/PacksPage'
 import PackOpeningPage from './components/collection/PackOpeningPage'
 import ShopPage from './components/shop/ShopPage'
 import LeaveDialog from './components/editor/LeaveDialog'
@@ -68,7 +69,6 @@ export default function App() {
   const challengeAlert = pendingChallenges > 0 ? `${pendingChallenges} ${pendingChallenges === 1 ? 'sfida' : 'sfide'} in attesa` : undefined
   const packsToOpen = useSyncExternalStore(subscribePending, pendingCount) // buste comprate e non ancora rivelate
   const packAlert = packsToOpen > 0 ? `${packsToOpen} ${packsToOpen === 1 ? 'busta' : 'buste'} da aprire` : undefined
-  const [collectionTab, setCollectionTab] = useState<CollectionTab>('carte')
   const [packQueue, setPackQueue] = useState<string[]>([]) // buste da rivelare nella pagina Apertura
   const { reportEditor, leave, stay, confirmLeave, finishSave, askingToLeave } = useLeaveGuard() // modifiche non salvate dell'editor
 
@@ -86,7 +86,6 @@ export default function App() {
     if (next === 'home') reloadNews() // dopo una partita l'ultima serie della home cambia
     if (next === 'home' || next === 'sfide') reloadChallenges()
     if (next === 'profilo') setProfileTab('panoramica')
-    if (next === 'collezione') setCollectionTab(packsToOpen > 0 ? 'buste' : 'carte') // chi ha buste da aprire arriva lì
   }
 
   // Per i comandi sempre visibili (menu, barra in alto, schede): dall'editor chiedono conferma se ci sono modifiche.
@@ -259,12 +258,14 @@ export default function App() {
         />
       )}
 
-      {page === 'collezione' && <CollectionPage key={collectionTab} initialTab={collectionTab} onNavigate={open} onOpenPacks={openPacks} />}
+      {page === 'collezione' && <CollectionPage onNavigate={open} />}
+      {page === 'buste' && <PacksPage onOpen={openPacks} onShop={() => open('negozio')} onCollection={() => open('collezione')} />}
       {page === 'apertura' && (
         <PackOpeningPage
           key={packQueue.join()}
           queue={packQueue}
           onCollection={() => open('collezione')}
+          onPacks={() => open('buste')}
           onShop={() => open('negozio')}
         />
       )}
@@ -291,6 +292,7 @@ export default function App() {
             setProfileTab('impostazioni')
           }}
           challengeAlert={challengeAlert}
+          packAlert={packAlert}
         />
       )}
 

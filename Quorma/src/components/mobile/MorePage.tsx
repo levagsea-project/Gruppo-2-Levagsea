@@ -34,7 +34,7 @@ const SettingsIcon = () => (
 )
 
 // Pagina "Altro" (solo telefono): tutte le sezioni che non stanno nella barra in basso.
-export default function MorePage({ onNavigate, onOpenSettings, challengeAlert }: { onNavigate: (page: Page) => void; onOpenSettings: () => void; challengeAlert?: string }) {
+export default function MorePage({ onNavigate, onOpenSettings, challengeAlert, packAlert }: { onNavigate: (page: Page) => void; onOpenSettings: () => void; challengeAlert?: string; packAlert?: string }) {
   const navigate = useNavigate()
   const player = currentPlayer()
 
@@ -54,6 +54,7 @@ export default function MorePage({ onNavigate, onOpenSettings, challengeAlert }:
         <MobileRow title="Scambi" detail="Scambia i doppioni con altri giocatori" icon={<Arch><NavIcon name="scambi" /></Arch>} />
         <MobileRow title="Sfide" detail={challengeAlert ?? 'Sfida gli altri giocatori'} icon={<Arch alert={!!challengeAlert}><NavIcon name="sfide" /></Arch>} onClick={() => onNavigate('sfide')} />
         <MobileRow title="Negozio" detail="Buste" icon={<Arch><NavIcon name="negozio" /></Arch>} onClick={() => onNavigate('negozio')} />
+        <MobileRow title="Buste" detail={packAlert ?? 'Apri le buste comprate'} icon={<Arch alert={!!packAlert}><NavIcon name="buste" /></Arch>} onClick={() => onNavigate('buste')} />
         <MobileRow
           title="Regole"
           detail="Regolamento base · v1.0-alpha"

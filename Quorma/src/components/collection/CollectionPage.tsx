@@ -5,7 +5,6 @@ import { ApiError, GENERIC } from '../../lib/api'
 import { isDemoSession } from '../../lib/auth'
 import { matchesCard, sortCards, type CardSort } from '../../lib/cardFilters'
 import { SUITS, SUIT_NAMES, getCollection, rankLabel } from '../../lib/cards'
-import { packName, pendingPacks, type OpenedPack } from '../../lib/shop'
 import type { CardKind, FactionId, OwnedCard, SuitId } from '../../types/deck'
 import AbilityList from '../cards/AbilityList'
 import CardBack from '../cards/CardBack'
@@ -14,10 +13,8 @@ import CardStats from '../cards/CardStats'
 import CardToolbar, { type FilterGroup } from '../cards/CardToolbar'
 import CurrencyBar from '../layout/CurrencyBar'
 import PageTitle from '../layout/PageTitle'
-import SealedPack from '../shop/SealedPack'
 import '../../styles/collection.css'
 
-export type CollectionTab = 'carte' | 'buste'
 type Entry = { card: OwnedCard; copies: number }
 type View = 'tutte' | 'doppioni' | 'singole'
 
@@ -47,14 +44,13 @@ function group(cards: OwnedCard[]): Entry[] {
   )
 }
 
-type Props = { initialTab: CollectionTab; onNavigate: (page: Page) => void; onOpenPacks: (ids: string[]) => void }
+type Props = { onNavigate: (page: Page) => void }
 
-// Collezione (design: Pagina-Collezione e Pagina-Collezione-Buste).
+// Collezione (design: Pagina-Collezione). Le buste da aprire hanno la loro pagina (PacksPage), dalla voce Buste del menu.
 // Il backend restituisce solo le carte possedute, non tutto il catalogo: niente percentuale di completamento
 // né carte mancanti. Il filtro "Mostra" lavora quindi sulle copie.
-export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: Props) {
+export default function CollectionPage({ onNavigate }: Props) {
   const demo = isDemoSession()
-  const [tab, setTab] = useState<CollectionTab>(initialTab)
   const [cards, setCards] = useState<OwnedCard[] | null>(null)
   const [error, setError] = useState('')
   const [faction, setFaction] = useState<FactionId | 'tutte'>('tutte')
@@ -170,22 +166,15 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
     },
   ]
 
-  const pending = pendingPacks()
-
   return (
     <main className="page coll-page">
       <CurrencyBar />
-      <PageTitle title="COLLEZIONE" subtitle={tab === 'carte' ? 'LE TUE CARTE' : 'BUSTE DA APRIRE'} />
-      <div className="coll-chips" role="radiogroup" aria-label="Sezioni della collezione">
-        <button type="button" role="radio" className="m-chip" aria-checked={tab === 'carte'} onClick={() => setTab('carte')}>Carte</button>
-        <button type="button" role="radio" className="m-chip" aria-checked={tab === 'buste'} onClick={() => setTab('buste')}>
-          Buste da aprire{pending.length > 0 && <span className="m-chip__n">{pending.length}</span>}
-        </button>
+      {/* Su desktop la testata sta in una riga (la pagina non scorre); altrove la testata non esiste (display: contents) */}
+      <div className="coll-testa">
+        <PageTitle title="COLLEZIONE" subtitle="LE TUE CARTE" />
       </div>
 
-      {tab === 'buste' ? (
-        <PacksTab packs={pending} onOpen={onOpenPacks} onShop={() => onNavigate('negozio')} />
-      ) : demo ? (
+      {demo ? (
         <p className="coll-vuoto">In modalità demo la collezione non è disponibile: serve il backend.</p>
       ) : error ? (
         <div className="coll-vuoto" role="alert">
@@ -278,77 +267,5 @@ export default function CollectionPage({ initialTab, onNavigate, onOpenPacks }: 
         </div>
       )}
     </main>
-  )
-}
-
-// Le buste comprate e non ancora rivelate, raggruppate per tipo e fazione.
-function PacksTab({ packs, onOpen, onShop }: { packs: OpenedPack[]; onOpen: (ids: string[]) => void; onShop: () => void }) {
-  const groups = useMemo(() => {
-    const map = new Map<string, { key: string; packType: string; faction: FactionId; size: number; setName?: string; ids: string[] }>()
-    for (const p of packs) {
-      const key = `${p.packType}:${p.faction}`
-      const g = map.get(key)
-      if (g) g.ids.push(p.id)
-      else map.set(key, { key, packType: p.packType, faction: p.faction, size: p.cards.length, setName: p.cards[0]?.sets[0]?.name, ids: [p.id] })
-    }
-    return [...map.values()]
-  }, [packs])
-  const [selKey, setSelKey] = useState<string | null>(null)
-  const sel = groups.find((g) => g.key === selKey) ?? groups[0] ?? null
-
-  if (!sel) {
-    return (
-      <div className="coll-vuoto">
-        <p>Non hai buste da aprire.</p>
-        <button type="button" className="q-btn q-btn--argento" onClick={onShop}><span className="q-btn__in">Vai al negozio</span></button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="shop-corpo">
-      <section className="shop-articoli" aria-label="Le tue buste">
-        <div className="q-marker">
-          <h2 className="q-marker__title">Le tue buste</h2>
-          <span className="q-marker__line" />
-          <span className="coll-nota">{packs.length} da aprire</span>
-        </div>
-        <div role="radiogroup" aria-label="Scegli le buste da aprire" className="buste-griglia">
-          {groups.map((g) => {
-            const on = g.key === sel.key
-            const f = factions[g.faction]
-            return (
-              <button key={g.key} type="button" role="radio" aria-checked={on} aria-label={`${packName(g.packType)} ${f.name}: ${g.size} carte, ${g.ids.length} da aprire`} className="pick shop-busta" onClick={() => setSelKey(g.key)}>
-                <SealedPack code={g.packType} faction={g.faction} size={g.size} setName={g.setName} count={g.ids.length} />
-                <span className="shop-busta__nome">{packName(g.packType).replace(/^Pacchetto\s+/i, '')}</span>
-                <span className="shop-busta__fazione">{f.name}</span>
-              </button>
-            )
-          })}
-        </div>
-      </section>
-
-      <section className="q-tela shop-acquisto" aria-label="Apertura">
-        <div className="q-tela__in" aria-live="polite">
-          <h2 className="q-elenco__titolo">Buste scelte</h2>
-          <span className="shop-nome">
-            <b>{packName(sel.packType)}</b>
-            <small>{factions[sel.faction].name}</small>
-          </span>
-          <span className="q-divisorio" />
-          <div className="coll-totali">
-            <span className="m-conta"><b>{sel.ids.length}</b><small>Da aprire</small></span>
-            <span className="m-conta"><b>Negozio</b><small>Provenienza</small></span>
-          </div>
-          <p className="coll-nota-testo">Le carte sono già nella tua collezione. Si rivelano una alla volta: premile per girarle, oppure rivelale tutte insieme.</p>
-          <div className="shop-azioni">
-            <button type="button" className="q-btn q-btn--argento" onClick={() => onOpen([sel.ids[0]])}><span className="q-btn__in">Apri una</span></button>
-            <button type="button" className="q-btn q-btn--acciaio" onClick={() => onOpen(sel.ids)}>
-              <span className="q-btn__in">{sel.ids.length > 1 ? `Apri tutte (${sel.ids.length})` : 'Apri tutte'}</span>
-            </button>
-          </div>
-        </div>
-      </section>
-    </div>
   )
 }

@@ -1,0 +1,115 @@
+/* Buste da aprire (components/collection/PacksPage.tsx), come una vetrina:
+   a sinistra stemma, nome fra due frecce, stato, azione e descrizione; a destra la busta grande con la successiva dietro.
+   La busta si misura sulla scena (container query), così su desktop la pagina non scorre a nessuna altezza.
+   --tinta e --tinta-chiara: il colore della fazione della busta scelta. */
+
+.buste-corpo { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(300px, 440px) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: var(--space-8); align-items: center; }
+
+/* ---------- Colonna di sinistra ---------- */
+.buste-lato { display: flex; flex-direction: column; align-items: center; gap: 20px; min-width: 0; padding-top: 56px; text-align: center; }
+
+/* ritorno alla Collezione, in alto a sinistra come il titolo delle altre pagine */
+.buste-indietro { position: absolute; z-index: 2; top: 28px; left: 30px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 10px; cursor: pointer;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--silver-100);
+  background: linear-gradient(180deg, #15242C, #0C161B); box-shadow: inset 0 0 0 2px rgba(213,225,229,.35); transition: color .15s ease, box-shadow .15s ease; }
+.buste-indietro svg { width: 12px; height: 12px; }
+.buste-indietro:hover { color: var(--silver-50); box-shadow: inset 0 0 0 2px rgba(143,214,219,.7), inset 0 0 14px rgba(74,166,173,.35); }
+.buste-indietro:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+
+/* stemma: l'illustrazione della fazione in un rombo d'argento */
+.buste-stemma { flex: none; display: block; width: 104px; height: 104px; padding: 3px; box-sizing: border-box; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: linear-gradient(160deg, #F2F7F8, #7C9098 30%, #D5E1E5 55%, #3E5058 80%, #A8C4C8); filter: drop-shadow(0 0 14px rgba(74,166,173,.35)); }
+.buste-stemma > span { display: block; width: 100%; height: 100%; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); background-size: cover; background-repeat: no-repeat; }
+
+/* nome della busta fra le due frecce */
+.buste-giro { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 8px; width: 100%; }
+.buste-titolo { grid-column: 2; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.buste-nome { margin: 0; font-family: var(--font-display); font-size: clamp(30px, 2.6vw, 42px); line-height: 1.08; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--titolo, #EEF4F5); text-wrap: balance; overflow-wrap: anywhere; }
+.buste-fazione { font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--tinta-chiara, var(--petrol-300)); }
+.buste-freccia { display: flex; align-items: center; justify-content: center; width: 44px; height: 64px; padding: 0; cursor: pointer; color: var(--steel-300); transition: color .15s ease, transform .15s ease; }
+.buste-freccia:first-child { grid-column: 1; }
+.buste-freccia:last-child { grid-column: 3; }
+.buste-freccia svg { width: 16px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.buste-freccia:hover { color: var(--silver-50); }
+.buste-freccia:first-child:hover { transform: translateX(-3px); }
+.buste-freccia:last-child:hover { transform: translateX(3px); }
+.buste-freccia:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+
+/* stato: quante buste di questo tipo aspettano */
+.buste-stato { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.buste-sigillo { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; font-size: 13px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--petrol-300);
+  background: var(--ground-950); box-shadow: inset 0 0 0 2px rgba(74,166,173,.6), 0 0 12px rgba(74,166,173,.25); }
+.buste-sigillo svg { width: 11px; height: 11px; fill: var(--petrol-500); filter: drop-shadow(0 0 4px rgba(74,166,173,.9)); }
+.buste-posizione { font-size: 12px; letter-spacing: .1em; color: var(--steel-300); font-variant-numeric: tabular-nums; }
+
+/* l'azione: grande, con la quantità sulla destra */
+.buste-azioni { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 8px; }
+.buste-azioni .q-btn { display: flex; width: 100%; }
+.buste-apri .q-btn__in { justify-content: space-between; padding: 0 40px; font-size: 15px; letter-spacing: .18em; }
+.buste-conta { font-family: var(--font-sans); font-size: 15px; font-weight: 700; letter-spacing: .04em; opacity: .75; font-variant-numeric: tabular-nums; }
+
+/* descrizione: tela doppia e ornata del design system (stili in cattedrale.css); qui solo misure e allineamento */
+.buste-descrizione { width: 100%; margin-top: 12px; text-align: center; }
+.buste-descrizione > .q-tela__in { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 30px 34px; }
+
+/* ---------- Scena: la busta grande e quella dopo, dietro ---------- */
+.buste-scena { position: relative; height: 100%; min-height: 0; min-width: 0; container-type: size; display: grid; place-items: center; }
+.buste-davanti { --busta-h: min(84cqh, 100cqw * .6 * 7 / 5, 700px); --dente: 7px; --sigillo: 20px; position: relative; z-index: 2; transform: rotate(3deg); animation: buste-entra .45s cubic-bezier(.22, 1, .36, 1); }
+.buste-dietro { --busta-h: min(66cqh, 100cqw * .46 * 7 / 5, 540px); --dente: 6px; --sigillo: 16px; position: absolute; z-index: 1; top: 50%; left: 2%; padding: 0; cursor: pointer;
+  transform: translateY(-50%) rotate(-8deg); filter: brightness(.42) saturate(.7); transition: filter .2s ease, transform .2s ease; }
+.buste-dietro:hover { filter: brightness(.62) saturate(.85); transform: translateY(-50%) rotate(-6deg) translateX(-6px); }
+.buste-dietro:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 6px; }
+.buste-dietro .shop-busta__info, .buste-dietro .shop-busta__logo { display: none; }
+
+/* le scritte della busta crescono con la busta */
+.buste-davanti .shop-busta__ombra { filter: drop-shadow(0 18px 30px rgba(0,0,0,.7)) drop-shadow(0 0 18px rgba(74,166,173,.18)); }
+.buste-davanti .shop-busta__logo { top: calc(var(--sigillo) + 22px); width: 62%; }
+.buste-davanti .shop-busta__info { gap: 4px; padding: 70px 16px 22px; }
+.buste-davanti .shop-busta__info b { font-size: clamp(15px, 2.6cqh, 22px); }
+.buste-davanti .shop-busta__info small { font-size: clamp(11px, 1.7cqh, 14px); }
+.buste-davanti .shop-busta__conta { right: -16px; top: -18px; padding: 4px 11px; font-size: 16px; }
+.buste-davanti .shop-busta__strato { transform: translate(12px, -10px); }
+.buste-davanti .shop-busta__strato--2 { transform: translate(24px, -20px); }
+.buste-davanti:hover .shop-busta__riflesso { animation: busta-riflesso 1.1s cubic-bezier(.3, .7, .3, 1); }
+
+@keyframes buste-entra { from { opacity: 0; transform: translateX(40px) rotate(8deg); } to { opacity: 1; transform: rotate(3deg); } }
+
+/* nessuna busta */
+.buste-vuoto { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: 52ch; margin-top: 96px; }
+.buste-vuoto p { margin: 0; font-size: 15px; line-height: 23px; color: var(--q-testo-tenue, #A9BCC3); }
+
+/* ---------- Tablet e finestre strette: colonna di sinistra più stretta ---------- */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .buste-corpo { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: var(--space-6); }
+  .buste-apri .q-btn__in { padding: 0 28px; }
+}
+
+/* ---------- Telefono: una colonna, la busta fra lo stato e l'azione ---------- */
+@media (max-width: 767px) {
+  .buste-corpo { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .buste-lato { display: contents; }
+  .buste-indietro { position: static; align-self: flex-start; order: 0; }
+  .buste-stemma { order: 1; width: 76px; height: 76px; }
+  .buste-giro { order: 2; }
+  .buste-stato { order: 3; }
+  .buste-scena { order: 4; container-type: normal; width: 100%; height: auto; padding: 18px 0 8px; }
+  .buste-azioni { order: 5; margin-top: 0; }
+  .buste-descrizione { order: 6; margin-top: 0; }
+  .buste-nome { font-size: 28px; }
+  .buste-davanti { --busta-h: 300px; --sigillo: 14px; }
+  .buste-davanti .shop-busta__info { padding: 40px 8px 12px; }
+  .buste-davanti .shop-busta__info b { font-size: 15px; }
+  .buste-davanti .shop-busta__info small { font-size: 11px; }
+  .buste-dietro { --busta-h: 230px; left: 0; }
+  .buste-apri .q-btn__in { padding: 0 28px; }
+  .buste-vuoto { margin-top: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buste-davanti { animation: none; }
+  .buste-dietro, .buste-freccia { transition: none; }
+  .buste-davanti:hover .shop-busta__riflesso { animation: none; }
+}
+/* il tasto che fa la stessa cosa, solo dove c'è una tastiera */
+.buste-esc { margin-left: 4px; padding: 1px 5px; font-family: var(--font-sans); font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: none; color: var(--steel-300); box-shadow: inset 0 0 0 1px rgba(213,225,229,.3); }
+@media (hover: none) { .buste-esc { display: none; } }
