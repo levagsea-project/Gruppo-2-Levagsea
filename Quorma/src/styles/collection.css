@@ -265,6 +265,36 @@
   .b-carta:not([aria-pressed="true"]):hover .q-giro__dentro { transform: none; }
 }
 
+/* ---------- Collezione su desktop: la pagina non scorre, scorrono solo le carte ----------
+   Titolo e pulsante (Buste da aprire / Vai alla Collezione) stanno sulla stessa riga; sotto, la griglia delle carte prende
+   l'altezza che resta e scorre al suo interno. Il dettaglio della carta si adatta all'altezza della finestra.
+   Telefono e tablet (sotto i 1280px) restano come prima. */
+.coll-testa { display: contents; }
+@media (min-width: 1280px) {
+  .page.coll-page { overflow: hidden; }
+  .coll-testa { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 28px; padding-right: 340px; } /* a destra ci sono le valute */
+  .coll-testa .coll-vai { margin-bottom: 4px; }
+
+  /* Carte: griglia che scorre, testata e pagine sempre visibili */
+  .coll-page .coll-corpo { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
+  .coll-page .coll-carte { min-height: 0; }
+  .coll-page .coll-griglia { flex: 1 1 auto; min-height: 0; align-content: start; overflow-y: auto; margin: -6px -10px 0 -6px; padding: 6px 10px 10px 6px; /* spazio per il sollevamento e l'alone delle carte */
+    scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; scrollbar-gutter: stable; }
+  .coll-page .coll-pagine { flex: none; }
+
+  /* Dettaglio: la carta si rimpicciolisce sugli schermi bassi; se proprio non basta, scorre solo la colonna */
+  .coll-page .coll-dettaglio { position: static; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+  .coll-page .coll-giro { flex: none; width: min(100%, 300px, calc((100dvh - 520px) * 2 / 3)); min-width: 160px; }
+  .coll-page .coll-dettaglio > .q-btn { flex: none; align-self: flex-start; }
+
+  /* Pagina Buste (PacksPage, anche lei coll-page): stessa idea, scorrono solo le buste */
+  .coll-page .shop-corpo { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: start; }
+  .coll-page .shop-articoli { display: flex; flex-direction: column; gap: 12px; height: 100%; min-height: 0; }
+  .coll-page .buste-griglia { flex: 1 1 auto; min-height: 0; align-content: start; overflow-y: auto; padding-right: 8px; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+  .coll-page .shop-acquisto { max-height: 100%; min-height: 0; }
+  .coll-page .shop-acquisto > .q-tela__in { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+}
+
 /* ---------- Telefono ---------- */
 @media (max-width: 767px) {
   .page.coll-page, .page.shop-page, .page.open-page { overflow: visible; gap: 16px; }
