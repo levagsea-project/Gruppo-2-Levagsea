@@ -4,7 +4,7 @@ import { factions } from '../../data/factions'
 import { ApiError } from '../../lib/api'
 import { matchesCard, sortCards, type CardSort } from '../../lib/cardFilters'
 import { CREATURE_LIMITS, DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankArticle, rankLabel, spellLimits, type Collection } from '../../lib/cards'
-import { DECK_NAME_MAX, deckErrorMessages, getDeck, saveDeck } from '../../lib/decks'
+import { DECK_NAME_MAX, deckErrorMessages, fitDeckName, getDeck, saveDeck } from '../../lib/decks'
 import { EDITOR_CLEAN, type EditorStatus } from '../../hooks/useLeaveGuard'
 import CardToolbar, { type FilterGroup } from '../cards/CardToolbar'
 import PageTitle from '../layout/PageTitle'
@@ -90,10 +90,10 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
         setCollection(col)
         setOriginal(deck)
         if (deck) {
-          setName(deck.name)
+          setName(fitDeckName(deck.name)) // un nome più lungo (vecchio o del server) si accorcia qui e al salvataggio
           const picked = Object.fromEntries(deck.cardList.map((c) => [c.cardId, c.instanceId]))
           setChosen(picked)
-          setInitial(deckSignature(deck.name, picked))
+          setInitial(deckSignature(fitDeckName(deck.name), picked))
         }
       })
       .catch((err: unknown) => current && setLoadError(err instanceof Error ? err.message : 'Impossibile caricare le carte.'))

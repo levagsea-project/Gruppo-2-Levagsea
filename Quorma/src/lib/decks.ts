@@ -7,9 +7,14 @@ import { DECK_SIZE, SUITS, SUIT_NAMES, getCollection, rankLabel, toBackendFactio
 
 export { DECK_SIZE }
 
-// Lunghezza massima del nome che si può scrivere (come nel design). I nomi più lunghi già salvati
-// vengono tagliati con i puntini dove si mostrano (decks.css, editor.css).
+// Lunghezza massima del nome del mazzo (come nel design). La decide il frontend: il backend accetta fino a 64,
+// quindi il limite vale per ciò che si scrive (maxLength dei campi) e per ciò che si invia (fitDeckName in saveDeck).
+// I nomi più lunghi già salvati, o creati dal server come i mazzi iniziali, si accorciano al primo salvataggio;
+// finché restano lunghi vengono tagliati con i puntini dove si mostrano (decks.css, editor.css).
 export const DECK_NAME_MAX = 24
+
+/** Il nome come lo vuole il gioco: senza spazi ai bordi ed entro DECK_NAME_MAX caratteri. */
+export const fitDeckName = (name: string) => name.trim().slice(0, DECK_NAME_MAX).trimEnd()
 
 // ---------- Forma delle risposte del backend ----------
 type DeckSummary = {
@@ -119,7 +124,7 @@ export async function saveDeck({ id, name, faction, snapshotIds, instanceIds }: 
   let lastError: unknown = new ApiError(400, 'deck.snapshot_invalid', translate('deck.snapshot_invalid'))
   for (const snapshotId of snapshotIds) {
     try {
-      const body = { name: name.trim(), snapshotId, cardInstanceIds: instanceIds }
+      const body = { name: fitDeckName(name), snapshotId, cardInstanceIds: instanceIds }
       const r = id
         ? await authedRequest<DeckResponse>('PUT', `/decks/${id}`, body)
         : await authedRequest<DeckResponse>('POST', '/decks', { ...body, faction: toBackendFaction(faction) })
@@ -132,14 +137,12 @@ export async function saveDeck({ id, name, faction, snapshotIds, instanceIds }: 
   throw lastError
 }
 
-const NAME_MAX = 64
-
 /** Il primo nome libero per la copia: "Nome (copia)", "Nome (copia 2)"… sempre entro la lunghezza massima. */
 function copyName(name: string, taken: string[]) {
   const used = new Set(taken.map((n) => n.toLowerCase()))
   for (let n = 1; ; n++) {
     const suffix = n === 1 ? ' (copia)' : ` (copia ${n})`
-    const candidate = name.slice(0, NAME_MAX - suffix.length).trimEnd() + suffix
+    const candidate = fitDeckName(name.trim().slice(0, DECK_NAME_MAX - suffix.length) + suffix)
     if (!used.has(candidate.toLowerCase())) return candidate
   }
 }
