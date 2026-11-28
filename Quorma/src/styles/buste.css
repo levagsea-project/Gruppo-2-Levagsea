@@ -48,6 +48,13 @@
 .buste-apri .q-btn__in { justify-content: space-between; padding: 0 40px; font-size: 15px; letter-spacing: .18em; }
 .buste-conta { font-family: var(--font-sans); font-size: 15px; font-weight: 700; letter-spacing: .04em; opacity: .75; font-variant-numeric: tabular-nums; }
 
+/* quante buste aprire insieme: gli stessi chip della quantità nel Negozio (m-chip), − numero + e "Tutte" */
+.buste-quante { display: flex; flex-direction: column; align-items: center; }
+.buste-quante__riga { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.buste-passo { justify-content: center; width: 32px; padding: 0; font-size: 15px; }
+.buste-numero { min-width: 64px; text-align: center; font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--silver-100); font-variant-numeric: tabular-nums; }
+.buste-tutte { margin-left: 8px; }
+
 /* descrizione: tela doppia e ornata del design system (stili in cattedrale.css); qui solo misure e allineamento */
 .buste-descrizione { width: 100%; margin-top: 12px; text-align: center; }
 .buste-descrizione > .q-tela__in { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 30px 34px; }

@@ -26,17 +26,27 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
     return [...map.values()]
   }, [packs])
   const [index, setIndex] = useState(0)
+  const [qty, setQty] = useState(1) // quante buste del tipo scelto aprire insieme
   const n = groups.length
   const i = n ? index % n : 0
   const sel = groups[i]
   const next = n > 1 ? groups[(i + 1) % n] : null
-  const go = (step: number) => setIndex((v) => (((v + step) % n) + n) % n)
+  const owned = sel?.ids.length ?? 0
+  const q = Math.min(Math.max(qty, 1), Math.max(owned, 1))
+  const go = (step: number) => {
+    setIndex((v) => (((v + step) % n) + n) % n)
+    setQty(1)
+  }
+  const more = (d: number) => setQty(Math.min(Math.max(q + d, 1), owned))
 
-  // tastiera: frecce per scorrere le buste, Esc per tornare alla Collezione (non mentre si scrive in un campo)
+  // tastiera: frecce per scorrere le buste, + e − per quante aprirne, Esc per tornare alla Collezione
+  // (non mentre si scrive in un campo)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, dialog')) return
       if (e.key === 'Escape') onCollection()
+      if (e.key === '+' || e.key === '=') more(1)
+      if (e.key === '-') more(-1)
       if (n < 2) return
       if (e.key === 'ArrowLeft') go(-1)
       if (e.key === 'ArrowRight') go(1)
@@ -106,14 +116,21 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
           </div>
 
           <div className="buste-azioni">
-            <button type="button" className="q-btn q-btn--argento q-btn--gioca buste-apri" onClick={() => onOpen([sel.ids[0]])}>
-              <span className="q-btn__in">Apri la busta<span className="buste-conta">× 1</span></span>
-            </button>
-            {sel.ids.length > 1 && (
-              <button type="button" className="q-btn q-btn--acciaio" onClick={() => onOpen(sel.ids)}>
-                <span className="q-btn__in">Apri tutte ({sel.ids.length})</span>
-              </button>
+            {/* quante aprirne insieme: si aprono tutte in una sola schermata */}
+            {owned > 1 && (
+              <div className="buste-quante" role="group" aria-labelledby="buste-quante-titolo">
+                <span id="buste-quante-titolo" className="q-elenco__titolo">Quante aprirne</span>
+                <div className="buste-quante__riga">
+                  <button type="button" className={`m-chip buste-passo ${q <= 1 ? 'm-chip--off' : ''}`} aria-label="Una busta in meno" disabled={q <= 1} onClick={() => more(-1)}>−</button>
+                  <output className="buste-numero" aria-live="polite">{q} <span className="m-chip__n">di {owned}</span></output>
+                  <button type="button" className={`m-chip buste-passo ${q >= owned ? 'm-chip--off' : ''}`} aria-label="Una busta in più" disabled={q >= owned} onClick={() => more(1)}>+</button>
+                  <button type="button" className="m-chip buste-tutte" data-on={q === owned} aria-pressed={q === owned} onClick={() => setQty(owned)}>Tutte</button>
+                </div>
+              </div>
             )}
+            <button type="button" className="q-btn q-btn--argento q-btn--gioca buste-apri" onClick={() => onOpen(sel.ids.slice(0, q))}>
+              <span className="q-btn__in">{q === 1 ? 'Apri la busta' : 'Apri le buste'}<span className="buste-conta">× {q}</span></span>
+            </button>
           </div>
 
           {/* Tela doppia e ornata del design system (styles/cattedrale.css): l'unica ornata della schermata */}
