@@ -140,6 +140,23 @@
 .open-conte { display: flex; gap: 28px; }
 .open-bottoni { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 
+/* Più buste insieme: una riga per busta con la sua etichetta, carte più piccole, azioni ferme in fondo */
+.open-buste { display: flex; flex-direction: column; }
+.open-page--multi .open-buste { gap: 22px; }
+.open-page--multi .open-busta { display: flex; flex-direction: column; align-items: center; gap: 10px; scroll-margin: 24px 0 120px; }
+.open-page--multi .open-busta + .open-busta { padding-top: 20px; border-top: 2px solid rgba(213,225,229,.1); }
+.open-busta__testa { display: flex; align-items: baseline; gap: 14px; width: 100%; max-width: calc(var(--n, 5) * 176px); margin: 0; font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--silver-100); }
+.open-busta__nuove { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: .2em; color: var(--ember-500); }
+.open-page--multi .open-carte { grid-template-columns: repeat(var(--n, 5), minmax(0, 160px)); gap: 16px; width: 100%; padding-top: 0; }
+.open-page--multi .b-nota { height: 14px; margin-top: 6px; font-size: 10px; }
+/* da tablet in su la pagina non scorre: scorrono solo le righe, e la barra con conteggi e pulsanti resta sotto, separata */
+@media (min-width: 768px) {
+  .page.open-page--multi { overflow: hidden; }
+  .open-page--multi .open-buste { flex: 1 1 auto; min-height: 0; overflow-y: auto; margin: 0 -10px; padding: 8px 10px 16px; /* spazio per il sollevamento e l'alone delle carte */
+    scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; scrollbar-gutter: stable both-edges; }
+  .open-page--multi .open-azioni { flex: none; margin-top: 0; padding-top: 14px; border-top: 2px solid rgba(213,225,229,.12); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .q-giro__dentro, .g-cella { transition: none; }
 }
@@ -157,6 +174,7 @@
   .coll-corpo { grid-template-columns: minmax(0, 1fr); }
   .coll-dettaglio { position: static; }
   .open-carte { grid-template-columns: repeat(3, minmax(0, 190px)); }
+  .open-page--multi .open-carte { grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: 10px; }
 }
 
 /* ---------- Negozio su desktop: tutto in una schermata, senza scorrere ----------
@@ -372,4 +390,6 @@
   .open-conte { justify-content: space-between; }
   .open-bottoni { flex-direction: column; align-items: stretch; }
   .open-bottoni .q-btn { display: flex; }
+  /* su telefono righe da 3 carte, e scorre tutta la pagina come le altre */
+  .open-page--multi .open-carte { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 }
