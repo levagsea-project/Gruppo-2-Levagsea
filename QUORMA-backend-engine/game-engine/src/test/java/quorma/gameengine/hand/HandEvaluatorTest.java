@@ -106,17 +106,16 @@ class HandEvaluatorTest {
     @Test
     void fourOfASuitWithFourCreatures() {
         assertResult(
-                HandEvaluator.evaluate(hand("3V 9V JV 6V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3, 4), 11, 9, 6, 3);
+                HandEvaluator.evaluate(hand("3V 9V JV 6V")), HandType.FOUR_OF_A_SUIT, List.of(2, 3, 4), 11, 9, 6, 3);
     }
 
     @Test
     void fourOfASuitWithFiveCreaturesUsesTheOddOneAsKicker() {
-        // Vincolo in lanes 1, 3, 4, 5; the Frattura 9 in lane 2 does not attack but is the kicker
+        // Vincolo in lanes 1, 3, 4, 5; the 3 in lane 1 is the weakest and drops out; the Frattura 9 in lane 2 is the kicker
         assertResult(
                 HandEvaluator.evaluate(hand("3V 9F JV 6V KV")),
                 HandType.FOUR_OF_A_SUIT,
-                List.of(1, 3, 4, 5),
-                13, 11, 6, 3, 9);
+                List.of(3, 4, 5), 13, 11, 6, 3, 9);
     }
 
     @Test
@@ -204,7 +203,7 @@ class HandEvaluatorTest {
     void fourCreaturesCannotFormAStraightOrFlush() {
         // 5-6-7-8 of one suit: not a Straight flush (needs 5 creatures), it is Four of a suit
         assertResult(
-                HandEvaluator.evaluate(hand("5V 6V 7V 8V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3, 4), 8, 7, 6, 5);
+                HandEvaluator.evaluate(hand("5V 6V 7V 8V")), HandType.FOUR_OF_A_SUIT, List.of(2, 3, 4), 8, 7, 6, 5);
     }
 
     // ---- aces and straights ----
@@ -243,13 +242,20 @@ class HandEvaluatorTest {
         // 9V 9V 4V 2V is also a Pair, but Four of a suit ranks higher. Equal ranks in one suit are
         // fabricated input (a rank-changing effect)
         assertResult(
-                HandEvaluator.evaluate(hand("9V 9V 4V 2V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3, 4), 9, 9, 4, 2);
+                HandEvaluator.evaluate(hand("9V 9V 4V 2V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3), 9, 9, 4, 2);
+    }
+
+    @Test
+    void fourOfASuitAttacksWithTheThreeStrongestAndTiesKeepTheLowestLane() {
+        // the 5s in lanes 1 and 4 tie for the third place: lane 1 attacks, lane 4 drops out
+        assertResult(
+                HandEvaluator.evaluate(hand("5V KV 9V 5V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3), 13, 9, 5, 5);
     }
 
     @Test
     void fourOfASuitContainingTwoPairIsFourOfASuit() {
         assertResult(
-                HandEvaluator.evaluate(hand("9V 9V 4V 4V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3, 4), 9, 9, 4, 4);
+                HandEvaluator.evaluate(hand("9V 9V 4V 4V")), HandType.FOUR_OF_A_SUIT, List.of(1, 2, 3), 9, 9, 4, 4);
     }
 
     @Test

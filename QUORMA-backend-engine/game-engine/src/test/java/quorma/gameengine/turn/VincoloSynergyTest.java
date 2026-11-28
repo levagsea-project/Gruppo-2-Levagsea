@@ -89,19 +89,19 @@ class VincoloSynergyTest {
 
     @Test
     void vincolo4AddsTheNeighboursBonusToEveryAttacker() {
-        // Four of a suit: all four attack. Tiers 3 and 4 are active.
+        // Four of a suit: the three strongest (lanes 1-3) attack, lane 4 does not. Tiers 3 and 4 are active.
         //   lane 1: 1000 + 600 (tier 3) + 400 (tier 4, from lane 2)                = 2000
         //   lane 2: 1000 + 600 + 400 (from lane 1) + 400 (from lane 3)            = 2400
         //   lane 3: 1000 + 600 + 400 (from lane 2) + 400 (from lane 4)            = 2400
-        //   lane 4: 1000 + 600 + 400 (from lane 3)                                = 2000
+        
         List<AttackResolved> blows = blowsOfA(match(
-                "1:2V(1000/9000) 2:3V(1000/9000) 3:4V(1000/9000) 4:5V(1000/9000)",
+                "1:5V(1000/9000) 2:4V(1000/9000) 3:3V(1000/9000) 4:2V(1000/9000)",
                 "1:9F(100/9000) 2:KS(100/9000) 3:5T(100/9000) 4:JF(100/9000)"));
 
-        assertEquals(List.of(2000, 2400, 2400, 2000), blows.stream().map(AttackResolved::atk).toList());
+        assertEquals(List.of(2000, 2400, 2400), blows.stream().map(AttackResolved::atk).toList());
         // Modifiers are listed by the lane of the creature that has the effect, then in the order of its abilities.
         assertEquals(List.of(
-                bonus("VINCOLO_4", 1, "2V", 400), bonus("VINCOLO_3", 2, "3V", 600), bonus("VINCOLO_4", 3, "4V", 400)),
+                bonus("VINCOLO_4", 1, "5V", 400), bonus("VINCOLO_3", 2, "4V", 600), bonus("VINCOLO_4", 3, "3V", 400)),
                 blows.get(1).modifiers());
     }
 

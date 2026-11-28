@@ -21,7 +21,8 @@ public final class HandEvaluator {
      * Finds the best hand formed by the creatures in play and the creatures that attack.
      *
      * <p>Input is 0 to 5 cards with distinct lanes. An empty list gives {@link HandResult#none()}.
-     * When the lowest rank is tied in a Four of a suit, the first matching card in the input is excluded.
+     * A Four of a suit is made of 4 suited cards but only the 3 strongest attack; the weakest is excluded, and on
+     * a tie of ranks the card in the lowest lane is kept.
      *
      * @throws IllegalArgumentException if there are more than 5 cards or two cards share a lane
      */
@@ -67,7 +68,10 @@ public final class HandEvaluator {
                     if (card.suit() != suit) kicker = Math.max(kicker, value(card));
                 }
                 if (kicker != 0) tie.add(kicker);
-                best.offer(HandType.FOUR_OF_A_SUIT, suited, tie);
+                // Only the 3 strongest suited cards attack; on equal ranks the lowest lane (1-5) goes first.
+                List<HandCard> ranked = new ArrayList<>(suited);
+                ranked.sort(Comparator.comparingInt((HandCard c) -> -value(c)).thenComparingInt(HandCard::lane));
+                best.offer(HandType.FOUR_OF_A_SUIT, ranked.subList(0, 3), tie);
             }
         }
  

@@ -125,9 +125,9 @@ class VestigioSynergyTest {
         assertTrue(Boards.creature(a, 1).condemned());
         assertTrue(a.isLocked("VESTIGIO_5"));
 
-        // Lane 2 is destroyed: the lockout is set. Spill (20000 - 9000) x 1100 / 1000 = 12100 (a Pair).
+        // Lane 2 is destroyed: the lockout is set. Spill (20000 - 9000) x 1150 / 1000 = 12650 (a Pair).
         assertTrue(blowsOfB.get(1).killed());
-        assertEquals(12100, blowsOfB.get(1).spill());
+        assertEquals(12650, blowsOfB.get(1).spill());
         assertTrue(Boards.creature(a, 2).destroyed());
         assertTrue(cycle1.contains(new CreatureDestroyed(Side.A, 2, "3T")));
 

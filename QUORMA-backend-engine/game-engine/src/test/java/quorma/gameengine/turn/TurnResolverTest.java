@@ -62,7 +62,7 @@ class TurnResolverTest {
                 "A first, then B, each in ascending lane order");
         assertEquals(hand(HandType.PAIR, 1), evaluation.a());
         assertEquals(hand(HandType.STRAIGHT, 2, 5), evaluation.b());
-        assertEquals(1100, evaluation.multiplierA(), "Pair, from balance.json");
+        assertEquals(1150, evaluation.multiplierA(), "Pair, from balance.json");
         assertEquals(1600, evaluation.multiplierB(), "Straight, from balance.json");
     }
 
@@ -102,18 +102,18 @@ class TurnResolverTest {
     /** The events of {@link #fiveAgainstFive(int)} up to the end of Refill, worked out by hand. */
     private static List<MatchEvent> fiveAgainstFiveEvents() {
         return List.of(
-                // Evaluate: A has a Pair (1100), B has a High card (1000)
-                new HandEvaluated(1, Side.A, PAIR_1_2, 1100),
+                // Evaluate: A has a Pair (1150), B has a High card (1000)
+                new HandEvaluated(1, Side.A, PAIR_1_2, 1150),
                 new HandEvaluated(1, Side.B, HIGH_CARD_3, 1000),
                 // Declare: attackers by lane: A1, A2, B3, each on the opposite lane
                 new TargetDeclared(hit(Side.A, 1, 1)),
                 new TargetDeclared(hit(Side.A, 2, 2)),
                 new TargetDeclared(hit(Side.B, 3, 3)),
-                // Cycle 1. A1: ATK 4000 against DEF 1200 kills, spill (4000 - 1200) * 1100 / 1000 = 3080
-                plain(hit(Side.A, 1, 1), 1, 4000, 1000, 4000, 1200, -2800, true, 3080, false, 1100),
+                // Cycle 1. A1: ATK 4000 against DEF 1200 kills, spill (4000 - 1200) * 1150 / 1000 = 3220
+                plain(hit(Side.A, 1, 1), 1, 4000, 1000, 4000, 1200, -2800, true, 3220, false, 1150),
                 new CreatureDestroyed(Side.B, 1, "2V"),
                 // A2: ATK 3500 against DEF 4000 leaves 500, no spill
-                plain(hit(Side.A, 2, 2), 1, 3500, 1000, 3500, 4000, 500, false, 0, false, 1100),
+                plain(hit(Side.A, 2, 2), 1, 3500, 1000, 3500, 4000, 500, false, 0, false, 1150),
                 // B3: ATK 5000 against DEF 5000 kills, spill (5000 - 5000) * 1000 / 1000 = 0
                 plain(hit(Side.B, 3, 3), 1, 5000, 1000, 5000, 5000, 0, true, 0, false, 1000),
                 new CreatureDestroyed(Side.A, 3, "7S"),
@@ -135,7 +135,7 @@ class TurnResolverTest {
         TurnReport report = fiveAgainstFiveResolver().playTurn(state);
 
         assertEquals(1, report.turn());
-        assertEquals(Evaluators.evaluation(PAIR_1_2, 1100, HIGH_CARD_3, 1000), report.evaluation());
+        assertEquals(Evaluators.evaluation(PAIR_1_2, 1150, HIGH_CARD_3, 1000), report.evaluation());
         assertEquals(List.of(hit(Side.A, 1, 1), hit(Side.A, 2, 2), hit(Side.B, 3, 3)), report.attacks());
         assertEquals(fiveAgainstFiveEvents(), report.events());
         assertEquals(Optional.empty(), report.result());
@@ -143,7 +143,7 @@ class TurnResolverTest {
         PlayerState a = state.player(Side.A);
         PlayerState b = state.player(Side.B);
         assertEquals(12000, a.life());
-        assertEquals(12000 - 3080, b.life());
+        assertEquals(12000 - 3220, b.life());
         assertEquals(500, Boards.creature(b, 2).currentDef(), "damage stays");
         assertEquals("QT", Boards.creature(b, 1).card().id());
         assertEquals(2600, Boards.creature(b, 1).currentDef());
@@ -180,7 +180,7 @@ class TurnResolverTest {
 
     @Test
     void lifeBelowZeroEndsTheMatchOnlyAtTheEndOfTheTurn() {
-        // same turn, but B has 1000 life: A1's spill takes it to 1000 - 3080 = -2080 and the turn still plays out
+        // same turn, but B has 1000 life: A1's spill takes it to 1000 - 3220 = -2080 and the turn still plays out
         MatchState state = fiveAgainstFive(1000);
 
         TurnReport report = fiveAgainstFiveResolver().playTurn(state);
@@ -190,7 +190,7 @@ class TurnResolverTest {
         expected.add(new MatchEnded(1, result));
         assertEquals(expected, report.events(), "Refill still happens before the match ends");
         assertEquals(Optional.of(result), report.result());
-        assertEquals(1000 - 3080, state.player(Side.B).life());
+        assertEquals(1000 - 3220, state.player(Side.B).life());
         assertEquals(1, state.turn(), "a finished match does not move on to another turn");
     }
 
@@ -250,7 +250,7 @@ class TurnResolverTest {
 
         assertEquals(HandType.PAIR, evaluation.a().type());
         assertEquals(List.of(1, 2), evaluation.a().attackerLanes());
-        assertEquals(1100, evaluation.multiplierA());
+        assertEquals(1150, evaluation.multiplierA());
         assertEquals(HandResult.none(), evaluation.b());
         assertEquals(0, evaluation.multiplierB());
     }

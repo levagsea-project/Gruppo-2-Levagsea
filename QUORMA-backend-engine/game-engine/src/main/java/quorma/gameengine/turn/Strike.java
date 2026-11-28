@@ -91,9 +91,10 @@ record Strike(
                 reductions.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
                         Modifier.Kind.DAMAGE_REDUCTION_FLAT, reduction.value()));
             } else {
-                pcts.add(reduction.value());
+                pcts.add(reduction.reductionPermille());
                 reductions.add(new Modifier(fromRef, e.abilityId(), e.effectId(),
-                        Modifier.Kind.DAMAGE_REDUCTION_PCT, reduction.value()));
+                        reduction.fine() ? Modifier.Kind.DAMAGE_REDUCTION_PERMILLE : Modifier.Kind.DAMAGE_REDUCTION_PCT,
+                        reduction.value()));
             }
         }
 
@@ -106,7 +107,7 @@ record Strike(
                     a.e().intParam("pct")));
         }
 
-        int mitigation = Damage.mitigationPermille(pcts, pierce, mitigationFloor(g));
+        int mitigation = Damage.mitigationFromPermille(pcts, pierce, mitigationFloor(g));
         int damage = Damage.damage(effectiveAtk, Damage.pierce(flat, pierce), mitigation, minDamage);
 
         if (effectiveAtk > 0) {

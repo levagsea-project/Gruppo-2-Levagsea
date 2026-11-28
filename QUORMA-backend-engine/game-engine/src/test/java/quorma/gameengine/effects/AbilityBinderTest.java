@@ -252,11 +252,6 @@ class AbilityBinderTest {
                 "S1", Map.of(), "D_Permanente", List.of(), ResClass.T);
         assertTrue(refusedKeyword(otherTrigger).contains("trigger T14 is not implemented"));
 
-        ExpansionDef otherMode = new ExpansionDef("T0", Map.of(), "E28",
-                Map.of("mode", new Value.StrV("permille"), "permille", new Value.IntV(800)),
-                "S1", Map.of(), "D_Permanente", List.of(), ResClass.C);
-        assertTrue(refusedKeyword(otherMode).contains("effect E28 with mode permille is not implemented"));
-
         ExpansionDef badOnce = new ExpansionDef("T19", Map.of(), "E1",
                 Map.of("mode", new Value.StrV("pct_base_atk"), "permille", new Value.IntV(100)),
                 "S1", Map.of(), "D_Permanente", List.of(), ResClass.T, Map.of("once_per_turn", new Value.IntV(1)));

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Damage arithmetic: effective ATK (ruleset 9.1) and spill (9.6). Every expected value is worked out by hand;
- * multipliers are the ruleset's, per mille (Pair 1100, Four of a suit 1350, ...).
+ * multipliers are the ruleset's, per mille (Pair 1100, Four of a suit 1280, ...).
  */
 class DamageTest {
 

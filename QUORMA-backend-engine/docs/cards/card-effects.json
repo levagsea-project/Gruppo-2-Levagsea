@@ -285,12 +285,12 @@
         "description": "Le creature avversarie in corsie adiacenti (differenza di 1) a quella della creatura danneggiata o dichiarata come bersaglio. Si ferma alla prima corsia vuota."
       },
       "S45": {
-        "name": "Creature avversarie nella corsia della sorgente e in quelle adiacenti",
+        "name": "Creature avversarie nelle corsie adiacenti a quella della sorgente",
         "kind": [
           "creature"
         ],
         "requires_context": null,
-        "description": "Le creature avversarie nella corsia opposta alla sorgente e nelle due corsie adiacenti."
+        "description": "Le creature avversarie nelle due corsie adiacenti a quella della sorgente (la corsia opposta alla sorgente non e' inclusa)."
       },
       "S47": {
         "name": "Creatura di rango piu' alto tra le prime carte del mazzo [COUNT]",
@@ -2649,7 +2649,7 @@
       ],
       "needs_new_vocab": [],
       "fit": "alto",
-      "note": "Imprevedibilita' e prezzo: Letale riscritto (spill al 35% della DEF). Doppio Colpo tolto: Letale uccide nel Ciclo 1 e lascia Doppio Colpo senza un secondo bersaglio (con entrambi -9,1; senza Doppio Colpo 50,6%, report-set-base-1).",
+      "note": "Imprevedibilita' e prezzo: Letale riscritto (spill al 28% della DEF). Doppio Colpo tolto: Letale uccide nel Ciclo 1 e lascia Doppio Colpo senza un secondo bersaglio (con entrambi -9,1; senza Doppio Colpo 50,6%, report-set-base-1).",
       "roles": [
         "attacco"
       ],
@@ -2741,7 +2741,7 @@
           "ref": "K_ACCUMULO",
           "status": "proposed",
           "params": {
-            "permille": 48,
+            "permille": 67,
             "max_stacks": 3
           },
           "form": "keyword",
@@ -2850,7 +2850,7 @@
           "ref": "K_ECO",
           "status": "proposed",
           "params": {
-            "permille": 480
+            "permille": 360
           },
           "form": "keyword"
         }
@@ -4225,7 +4225,7 @@
           "ref": "K_CAMPI_VUOTI",
           "status": "proposed",
           "params": {
-            "permille": 96
+            "permille": 80
           },
           "form": "keyword"
         }
@@ -7557,7 +7557,7 @@
           "ref": "K_ECO",
           "status": "proposed",
           "params": {
-            "permille": 480
+            "permille": 360
           },
           "form": "keyword"
         }
@@ -7772,7 +7772,7 @@
           "ref": "K_CATENA",
           "status": "proposed",
           "params": {
-            "permille": 360,
+            "permille": 300,
             "on": "kill"
           },
           "form": "keyword"
@@ -7837,7 +7837,7 @@
           "ref": "K_CAMPI_VUOTI",
           "status": "proposed",
           "params": {
-            "permille": 96
+            "permille": 80
           },
           "form": "keyword"
         },
@@ -8501,7 +8501,7 @@
           "ref": "K_CATENA",
           "status": "proposed",
           "params": {
-            "permille": 360,
+            "permille": 300,
             "on": "hit"
           },
           "form": "keyword"
@@ -8699,7 +8699,7 @@
           "ref": "K_CAMPI_VUOTI",
           "status": "proposed",
           "params": {
-            "permille": 96
+            "permille": 80
           },
           "form": "keyword"
         },
@@ -8767,7 +8767,7 @@
           "ref": "EVO_RINFORZO",
           "status": "proposed",
           "params": {
-            "permille": 300
+            "permille": 350
           },
           "form": "keyword"
         },
@@ -8775,7 +8775,7 @@
           "ref": "K_INDURISCE",
           "status": "proposed",
           "params": {
-            "permille": 300
+            "permille": 500
           },
           "form": "keyword",
           "becomes": {
@@ -8800,14 +8800,14 @@
       ],
       "stat_model": {
         "archetype": "bastione",
-        "def_atk_ratio": 2.5,
+        "def_atk_ratio": 2.35,
         "cost_pct_total": 28.65,
         "extra_cost_pct": 0,
-        "stat_points": 5708
+        "stat_points": 6525
       },
       "stats": {
-        "atk": 2550,
-        "def": 6350
+        "atk": 3000,
+        "def": 7050
       },
       "needs_restore": [
         "T36"
@@ -8994,18 +8994,18 @@
         "def_atk_ratio": 4,
         "cost_pct_total": 12,
         "extra_cost_pct": 0,
-        "stat_points": 7040
+        "stat_points": 6300
       },
       "stats": {
-        "atk": 2350,
-        "def": 9400
+        "atk": 2100,
+        "def": 8400
       },
       "needs_restore": [
         "K_MURO"
       ],
       "needs_new_vocab": [],
       "fit": "alto",
-      "note": "Il punto che regge ogni colpo: Muro riscritto (puo' attaccare, Scudo 30%, Provocazione integrata, costo 12). Rapporto DEF/ATK 4, il massimo riservato al Muro.",
+      "note": "Il punto che regge ogni colpo: Muro riscritto (puo' attaccare, Scudo 20%, Provocazione integrata, costo 12). Rapporto DEF/ATK 4, il massimo riservato al Muro.",
       "roles": [
         "difesa"
       ],

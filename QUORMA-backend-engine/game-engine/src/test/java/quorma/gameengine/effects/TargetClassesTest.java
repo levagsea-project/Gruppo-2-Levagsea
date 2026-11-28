@@ -100,6 +100,7 @@ class TargetClassesTest {
         assertFalse(target("S6").reaches(view, Side.A, source, Side.B, foeNext));
         assertTrue(target("S45").reaches(view, Side.A, source, Side.B, foeNext));
         assertFalse(target("S45").reaches(view, Side.A, source, Side.B, foeFar));
+        assertFalse(target("S45").reaches(view, Side.A, source, Side.B, foeSameLane), "the lane facing the source is not reached");
         assertTrue(target("S9").reaches(view, Side.A, source, Side.A, ally));
         assertFalse(target("S9").reaches(view, Side.A, source, Side.B, foeNext));
         assertTrue(target("S10").reaches(view, Side.A, source, Side.B, foeNext));

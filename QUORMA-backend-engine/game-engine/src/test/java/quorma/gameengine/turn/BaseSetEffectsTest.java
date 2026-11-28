@@ -80,7 +80,7 @@ class BaseSetEffectsTest {
     }
 
     @Test
-    void letaleDestroysWhateverTheDefAndItsSpillReadsTheDefAt35Percent() {
+    void letaleDestroysWhateverTheDefAndItsSpillReadsTheDefAt42Percent() {
         PlayerState a = a("1:AV(4000/6000)");
         Boards.give(a, 1, ref("K_LETALE"));
         PlayerState b = b("1:2S(1000/9000)");
@@ -92,13 +92,13 @@ class BaseSetEffectsTest {
         assertEquals(5000, blow.defAfter());
         assertTrue(blow.killed(), "Letale: any combat damage destroys");
         assertTrue(Boards.creature(b, 1).destroyed());
-        // spill = (4000 - floor(9000 x 0.35)) x 1.1 = (4000 - 3150) x 1.1 = 935
-        assertEquals(935, blow.spill());
-        assertEquals(12000 - 935, b.life());
+        // spill = (4000 - floor(9000 x 0.42)) x 1.1 = (4000 - 3780) x 1.1 = 242 (the test hand is a fixed Pair of 1100)
+        assertEquals(242, blow.spill());
+        assertEquals(12000 - 242, b.life());
     }
 
     @Test
-    void muroTakesTheAttacksOnItsNeighboursAndReducesDamageBy30Percent() {
+    void muroTakesTheAttacksOnItsNeighboursAndReducesDamageBy20Percent() {
         PlayerState a = a("1:AV(4000/6000)");
         PlayerState b = b("1:3S(1000/5000) 2:2T(1000/9000)");
         Boards.give(b, 2, ref("K_MURO"));
@@ -109,9 +109,9 @@ class BaseSetEffectsTest {
         assertTrue(log.stream().anyMatch(e -> e instanceof AttackRedirected r && r.to().lane() == 2 && r.abilityId().equals("K_MURO")));
 
         AttackResolved blow = blow(cycle1(state, pairAgainstHighCard, attacks.toArray(Attack[]::new)));
-        assertEquals(700, blow.mitigationPermille());
-        assertEquals(2800, blow.damage());
-        assertEquals(6200, Boards.creature(b, 2).currentDef());
+        assertEquals(800, blow.mitigationPermille());
+        assertEquals(3200, blow.damage());
+        assertEquals(5800, Boards.creature(b, 2).currentDef());
         assertEquals(5000, Boards.creature(b, 1).currentDef(), "the creature declared as target is not hit");
     }
 

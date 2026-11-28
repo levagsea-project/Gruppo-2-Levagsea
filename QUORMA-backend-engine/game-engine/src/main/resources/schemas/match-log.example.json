@@ -3,7 +3,7 @@
   "header": {
     "engine_version": "1.0.0-SNAPSHOT",
     "ruleset_version": "1.0-alpha",
-    "ruleset_hash": "24d889830a3f797aac4479fd64d2833d976d5ae6f78ff1de00a6007b73e8fcc1",
+    "ruleset_hash": "61f60f2c8d9f37d3554fba67fda54686f2464a9b5014d60d7bb940b1925f9e24",
     "prng": "SplitMix64",
     "shuffle": "FISHER_YATES",
     "seed": 42,
@@ -695,5 +695,5 @@
       }
     ]
   },
-  "result_hash": "694aef9f7c87779928ef7ee0ba9fa9483a1cb57fa19b90628525634a6be4a5a6"
+  "result_hash": "1e2aa2392173fce6d41a4611e582bdce8ee5da1d79e1999c512ead72540e754f"
 }

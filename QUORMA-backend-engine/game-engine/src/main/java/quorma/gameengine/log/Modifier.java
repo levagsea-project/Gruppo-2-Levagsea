@@ -15,6 +15,8 @@ public record Modifier(CreatureRef source, String abilityId, String effectId, Ki
         ATK_BONUS,
         /** {@code value}% less damage (Scudo). */
         DAMAGE_REDUCTION_PCT,
+        /** {@code value} per mille less damage (Muro: 275 is 27.5% less). */
+        DAMAGE_REDUCTION_PERMILLE,
         /** {@code value} less damage per blow (flat Scudo). */
         DAMAGE_REDUCTION_FLAT,
         /** Ignores {@code value}% of the target's reductions (Perforante). */
