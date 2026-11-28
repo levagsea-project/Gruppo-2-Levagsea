@@ -76,9 +76,9 @@ export default function PackOpeningPage({ queue, onCollection, onShop, onPacks }
   if (!packs.length) {
     return (
       <main className="page open-page">
-        <PageTitle title="APERTURA" subtitle="NESSUNA BUSTA" />
+        <PageTitle title="APERTURA" subtitle="NESSUN PACCHETTO" />
         <div className="coll-vuoto">
-          <p>Non ci sono buste da aprire.</p>
+          <p>Non ci sono pacchetti da aprire.</p>
           <button type="button" className="q-btn q-btn--argento" onClick={onShop}><span className="q-btn__in">Vai al negozio</span></button>
         </div>
       </main>
@@ -92,13 +92,13 @@ export default function PackOpeningPage({ queue, onCollection, onShop, onPacks }
 
   const first = packs[0]
   const sameKind = packs.every((p) => p.packType === first.packType && p.faction === first.faction)
-  const subtitle = sameKind ? `${packName(first.packType)} · ${factions[first.faction].name}` : `${packs.length} buste`
+  const subtitle = sameKind ? `${packName(first.packType)} · ${factions[first.faction].name}` : `${packs.length} pacchetti`
 
   return (
     <main className={`page open-page ${multi ? 'open-page--multi' : ''}`}>
       <div className="open-testa">
         <PageTitle title="APERTURA" subtitle={subtitle} />
-        {multi && <span className="coll-nota">{packs.length} buste · {total} carte</span>}
+        {multi && <span className="coll-nota">{packs.length} pacchetti · {total} carte</span>}
       </div>
       <p className="open-suggerimento" aria-live="polite">
         {allRevealed ? 'Tutte le carte sono nella tua collezione.' : cascading ? 'Le carte si stanno girando.' : 'Premi una carta per girarla.'}
@@ -108,10 +108,10 @@ export default function PackOpeningPage({ queue, onCollection, onShop, onPacks }
         {packs.map((p, pi) => {
           const nuove = countNew(pi)
           return (
-            <section key={p.id} ref={(el) => { rows.current[pi] = el }} className="open-busta" aria-label={multi ? `Busta ${pi + 1}` : 'Carte della busta'}>
+            <section key={p.id} ref={(el) => { rows.current[pi] = el }} className="open-busta" aria-label={multi ? `Pacchetto ${pi + 1}` : 'Carte del pacchetto'}>
               {multi && (
                 <h2 className="open-busta__testa">
-                  <span>Busta {pi + 1}</span>
+                  <span>Pacchetto {pi + 1}</span>
                   {nuove > 0 && <span className="open-busta__nuove">{nuove === 1 ? '1 nuova' : `${nuove} nuove`}</span>}
                 </h2>
               )}
@@ -164,7 +164,7 @@ export default function PackOpeningPage({ queue, onCollection, onShop, onPacks }
           <button type="button" className="q-btn q-btn--acciaio" onClick={onCollection}><span className="q-btn__in">Vai alla Collezione</span></button>
           {/* finite queste, se restano altre buste comprate si torna a sceglierle */}
           {allRevealed && pendingCount() > 0 && (
-            <button type="button" className="q-btn q-btn--argento" onClick={onPacks}><span className="q-btn__in">Altre buste da aprire</span></button>
+            <button type="button" className="q-btn q-btn--argento" onClick={onPacks}><span className="q-btn__in">Altri pacchetti da aprire</span></button>
           )}
         </div>
       </div>

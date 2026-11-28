@@ -96,7 +96,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
       else retry.current = null
       void refreshBalance() // l'acquisto può essere passato anche se la risposta non è arrivata
       const message = err instanceof ApiError ? err.message : GENERIC
-      const partial = done.length === 1 ? `Acquistata 1 busta su ${count}.` : `Acquistate ${done.length} buste su ${count}.`
+      const partial = done.length === 1 ? `Acquistato 1 pacchetto su ${count}.` : `Acquistati ${done.length} pacchetti su ${count}.`
       setError(done.length ? `${partial} ${message}` : message)
     } finally {
       setRetryWhat(retry.current?.what ?? null)
@@ -114,14 +114,14 @@ export default function ShopPage({ onOpenPacks }: Props) {
   return (
     <main className="page shop-page">
       <CurrencyBar always />
-      <PageTitle title="NEGOZIO" subtitle="BUSTE" />
+      <PageTitle title="NEGOZIO" subtitle="PACCHETTI" />
 
       <div className="shop-corpo">
         <section aria-label="Articoli" className="shop-articoli">
           <div className="q-marker shop-testa">
-            <h2 className="sr-only">Buste</h2>
+            <h2 className="sr-only">Pacchetti</h2>
             <div className="coll-chips" role="group" aria-label="Sezione del negozio">
-              <span className="m-chip" data-on="true">Buste</span>
+              <span className="m-chip" data-on="true">Pacchetti</span>
             </div>
             <span className="q-marker__line" />
           </div>
@@ -134,12 +134,12 @@ export default function ShopPage({ onOpenPacks }: Props) {
               <button type="button" className="q-btn q-btn--acciaio" onClick={load}><span className="q-btn__in">Riprova</span></button>
             </div>
           ) : !packs ? (
-            <p className="coll-vuoto" role="status">Caricamento delle buste…</p>
+            <p className="coll-vuoto" role="status">Caricamento dei pacchetti…</p>
           ) : packs.length === 0 ? (
-            <p className="coll-vuoto">Nessuna busta in vendita al momento.</p>
+            <p className="coll-vuoto">Nessun pacchetto in vendita al momento.</p>
           ) : (
             <div className="shop-matrice">
-              <div role="radiogroup" aria-label="Scegli una busta" className="shop-fazioni">
+              <div role="radiogroup" aria-label="Scegli un pacchetto" className="shop-fazioni">
                 {FACTION_IDS.map((f) => (
                   <div key={f} className="shop-fazione">
                     <h3 className="shop-fazione__nome">{factions[f].name}</h3>
@@ -219,7 +219,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
                   {bought.length > 0 && !(error && uncertain) ? (
                     <div className="shop-fatto">
                       <b>Acquisto completato</b>
-                      <span>{bought.length === 1 ? 'La busta è pronta da aprire.' : `${bought.length} buste sono pronte da aprire.`}</span>
+                      <span>{bought.length === 1 ? 'Il pacchetto è pronto da aprire.' : `${bought.length} pacchetti sono pronti da aprire.`}</span>
                       <div className="shop-fatto__azioni">
                         <button type="button" className="q-btn q-btn--acciaio" onClick={() => setBought([])}>
                           <span className="q-btn__in">Più tardi</span>
@@ -235,7 +235,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
                       className="q-btn q-btn--argento shop-compra"
                       disabled={buying || short}
                       aria-busy={buying}
-                      aria-label={buying || resuming ? undefined : `Acquista ${qty === 1 ? '1 busta' : `${qty} buste`} per ${fmt(total)} Valuta 2`}
+                      aria-label={buying || resuming ? undefined : `Acquista ${qty === 1 ? '1 pacchetto' : `${qty} pacchetti`} per ${fmt(total)} Valuta 2`}
                       onClick={askToBuy}
                     >
                       <span className="q-btn__in">{buying ? 'Acquisto…' : resuming ? 'Riprova l’acquisto' : `Acquista · ${fmt(total)}`}</span>
@@ -244,7 +244,7 @@ export default function ShopPage({ onOpenPacks }: Props) {
                 </div>
               </>
             ) : (
-              <p className="coll-nota-testo">Scegli una busta.</p>
+              <p className="coll-nota-testo">Scegli un pacchetto.</p>
             )}
           </div>
         </section>

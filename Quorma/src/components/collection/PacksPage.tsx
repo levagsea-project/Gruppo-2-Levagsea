@@ -68,8 +68,8 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
         <CurrencyBar />
         {back}
         <div className="buste-vuoto">
-          <h1 className="buste-nome">Nessuna busta</h1>
-          <p>Non hai buste da aprire. Le buste che compri nel negozio aspettano qui finché non le apri.</p>
+          <h1 className="buste-nome">Nessun pacchetto</h1>
+          <p>Non hai pacchetti da aprire. I pacchetti che compri nel negozio aspettano qui finché non li apri.</p>
           <button type="button" className="q-btn q-btn--argento q-btn--grande" onClick={onShop}><span className="q-btn__in">Vai al negozio</span></button>
         </div>
       </main>
@@ -83,7 +83,7 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
     <main className="page coll-page buste-page" style={{ '--tinta': f.tint, '--tinta-chiara': f.tintText } as CSSProperties}>
       <CurrencyBar />
       <div className="buste-corpo">
-        <section className="buste-lato" aria-label="Busta scelta">
+        <section className="buste-lato" aria-label="Pacchetto scelto">
           {back}
 
           {/* lo stemma della fazione: l'illustrazione in un rombo d'argento */}
@@ -91,7 +91,7 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
 
           <div className="buste-giro">
             {n > 1 && (
-              <button type="button" className="buste-freccia" aria-label="Busta precedente" onClick={() => go(-1)}>
+              <button type="button" className="buste-freccia" aria-label="Pacchetto precedente" onClick={() => go(-1)}>
                 <svg viewBox="0 0 16 32" aria-hidden="true"><path d="M12 3 4 16l8 13" /></svg>
               </button>
             )}
@@ -100,7 +100,7 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
               <span className="buste-fazione">{f.name}</span>
             </div>
             {n > 1 && (
-              <button type="button" className="buste-freccia" aria-label="Busta successiva" onClick={() => go(1)}>
+              <button type="button" className="buste-freccia" aria-label="Pacchetto successivo" onClick={() => go(1)}>
                 <svg viewBox="0 0 16 32" aria-hidden="true"><path d="M4 3l8 13-8 13" /></svg>
               </button>
             )}
@@ -120,21 +120,21 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
             <div className="buste-quante" role="group" aria-labelledby="buste-quante-titolo">
               <span id="buste-quante-titolo" className="q-elenco__titolo">Quante aprirne</span>
               <div className="buste-quante__riga">
-                <button type="button" className={`m-chip buste-passo ${q <= 1 ? 'm-chip--off' : ''}`} aria-label="Una busta in meno" disabled={q <= 1} onClick={() => more(-1)}>−</button>
+                <button type="button" className={`m-chip buste-passo ${q <= 1 ? 'm-chip--off' : ''}`} aria-label="Un pacchetto in meno" disabled={q <= 1} onClick={() => more(-1)}>−</button>
                 <output className="buste-numero" aria-live="polite">{q} <span className="m-chip__n">di {owned}</span></output>
-                <button type="button" className={`m-chip buste-passo ${q >= owned ? 'm-chip--off' : ''}`} aria-label="Una busta in più" disabled={q >= owned} onClick={() => more(1)}>+</button>
+                <button type="button" className={`m-chip buste-passo ${q >= owned ? 'm-chip--off' : ''}`} aria-label="Un pacchetto in più" disabled={q >= owned} onClick={() => more(1)}>+</button>
                 <button type="button" className={`m-chip buste-tutte ${owned <= 1 ? 'm-chip--off' : ''}`} data-on={owned > 1 && q === owned} aria-pressed={owned > 1 && q === owned} disabled={owned <= 1} onClick={() => setQty(owned)}>Tutte</button>
               </div>
             </div>
             <button type="button" className="q-btn q-btn--argento q-btn--gioca buste-apri" onClick={() => onOpen(sel.ids.slice(0, q))}>
-              <span className="q-btn__in">{q === 1 ? 'Apri la busta' : 'Apri le buste'}<span className="buste-conta">× {q}</span></span>
+              <span className="q-btn__in">{q === 1 ? 'Apri il pacchetto' : 'Apri i pacchetti'}<span className="buste-conta">× {q}</span></span>
             </button>
           </div>
 
           {/* Tela doppia e ornata del design system (styles/cattedrale.css): l'unica ornata della schermata */}
           <div className="q-tela q-tela--doppia q-tela--ornata buste-descrizione">
             <div className="q-tela__in">
-              <span className="q-tela__titolo">{`Busta da ${sel.size} carte`}</span>
+              <span className="q-tela__titolo">{`Pacchetto da ${sel.size} carte`}</span>
               <span className="q-divisorio-giglio" aria-hidden="true"><span className="q-orn q-orn--giglio" /></span>
               <p className="q-tela__testo">Le carte sono già nella tua collezione: si rivelano una alla volta, premendole per girarle, oppure tutte insieme.</p>
               {sel.setName && <span className="q-tela__nota">{sel.setName}</span>}
@@ -144,7 +144,7 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
 
         {/* Carosello: la busta scelta al centro, le altre ai lati nell'ordine delle frecce (le ultime girano a sinistra).
             Ogni busta ha la sua posizione (data-d = distanza dalla scelta) e scivola alla nuova quando si cambia. */}
-        <div className="buste-scena" role="group" aria-roledescription="carosello" aria-label="Buste da aprire">
+        <div className="buste-scena" role="group" aria-roledescription="carosello" aria-label="Pacchetti da aprire">
           {groups.map((g, gi) => {
             let d = (gi - i + n) % n
             if (d > n / 2) d -= n

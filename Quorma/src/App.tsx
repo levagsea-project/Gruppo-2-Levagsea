@@ -69,7 +69,7 @@ export default function App() {
   const { pendingChallenges, reloadChallenges } = useChallengeAlert() // sfide ricevute in attesa (braci sul menu)
   const challengeAlert = pendingChallenges > 0 ? `${pendingChallenges} ${pendingChallenges === 1 ? 'sfida' : 'sfide'} in attesa` : undefined
   const packsToOpen = useSyncExternalStore(subscribePending, pendingCount) // buste comprate e non ancora rivelate
-  const packAlert = packsToOpen > 0 ? `${packsToOpen} ${packsToOpen === 1 ? 'busta' : 'buste'} da aprire` : undefined
+  const packAlert = packsToOpen > 0 ? `${packsToOpen} ${packsToOpen === 1 ? 'pacchetto' : 'pacchetti'} da aprire` : undefined
   const [packQueue, setPackQueue] = useState<string[]>([]) // buste da rivelare nella pagina Apertura
   const { reportEditor, leave, stay, confirmLeave, finishSave, askingToLeave } = useLeaveGuard() // modifiche non salvate dell'editor
 

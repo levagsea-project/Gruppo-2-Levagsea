@@ -100,7 +100,7 @@ export const faq = [
   },
   {
     q: 'Come ottengo nuove carte?',
-    a: 'QUORMA è un gioco di carte collezionabili esclusivamente digitale: le carte si raccolgono aprendo le buste e scambiandole con gli altri giocatori.',
+    a: 'QUORMA è un gioco di carte collezionabili esclusivamente digitale: le carte si raccolgono aprendo i pacchetti e scambiandole con gli altri giocatori.',
   },
   {
     q: 'Cosa sono i semi?',

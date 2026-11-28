@@ -361,7 +361,7 @@ export default function DeckEditorPage({ faction, deckId, defaultName, onCancel,
             )}
             {collection && !hasCards && (
               <p className="deck-empty">
-                Non hai ancora carte della {factions[faction].name}. Le carte si ottengono aprendo le buste del Negozio.
+                Non hai ancora carte della {factions[faction].name}. Le carte si ottengono aprendo i pacchetti del Negozio.
               </p>
             )}
             {collection && hasCards && list.length === 0 && (

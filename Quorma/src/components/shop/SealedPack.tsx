@@ -29,7 +29,7 @@ export default function SealedPack({ code, faction, size, setName, featured = fa
         <img className="shop-busta__logo" src="/images/ui/logo-quorma.png" alt="" />
         {featured && <em className="shop-busta__tag">In evidenza</em>}
         <span className="shop-busta__info">
-          <b><span className="shop-busta__da">Busta da </span>{size} carte</b>
+          <b><span className="shop-busta__da">Pacchetto da </span>{size} carte</b>
           {setName && <small>{setName}</small>}
         </span>
       </span>

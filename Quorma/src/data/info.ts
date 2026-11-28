@@ -160,13 +160,13 @@ export const faq: FaqItem[] = [
   },
   {
     topic: 'Negozio',
-    q: 'Cosa contiene una busta?',
-    a: 'Una busta contiene carte casuali di una fazione a tua scelta: creature di diverse rarità (Comune, Non comune, Rara, Epica) e alcune magie o equipaggiamenti. I tipi di busta si differenziano per prezzo e per quante carte rare contengono; prezzi e contenuti sono ancora in fase di bilanciamento.',
+    q: 'Cosa contiene un pacchetto?',
+    a: 'Un pacchetto contiene carte casuali di una fazione a tua scelta: creature di diverse rarità (Comune, Non comune, Rara, Epica) e alcune magie o equipaggiamenti. I tipi di pacchetto si differenziano per prezzo e per quante carte rare contengono; prezzi e contenuti sono ancora in fase di bilanciamento.',
   },
   {
     topic: 'Negozio',
     q: 'Posso acquistare con denaro reale?',
-    a: 'No. Le valute e le buste si ottengono solo giocando: al momento QUORMA non accetta pagamenti in denaro.',
+    a: 'No. Le valute e i pacchetti si ottengono solo giocando: al momento QUORMA non accetta pagamenti in denaro.',
   },
 ]
 
@@ -178,7 +178,6 @@ export const faq: FaqItem[] = [
 export const glossary: { term: string; rules?: string; text: string }[] = [
   { term: 'Asso', rules: 'Carte', text: 'Il rango più alto, di Tier 4. Nelle scale conta sia alto sia basso: A-2-3-4-5 è la scala più bassa, 10-J-Q-K-A la più alta.' },
   { term: 'Attaccante', rules: 'Fase di Valutazione', text: 'Una creatura scelta dalla mano di poker per attaccare in quel turno. Le creature non scelte restano in corsia ma non attaccano.' },
-  { term: 'Busta', text: 'Una confezione di carte casuali di una fazione, con creature di diverse rarità e alcune magie o equipaggiamenti. Si ottiene con le valute del gioco.' },
   { term: 'Carta alta', rules: 'Fase di Valutazione', text: 'La mano più debole: attacca solo la creatura di rango più alto e il danno che trabocca non viene moltiplicato.' },
   { term: 'Corsia', rules: 'Setup', text: 'Ognuno dei cinque spazi in cui un giocatore schiera le creature, numerati da 1 a 5 da sinistra a destra. Una creatura attacca di norma la corsia opposta.' },
   { term: 'DEF base', rules: 'Fase di Valutazione', text: 'La Difesa stampata sulla carta. I danni la riducono per il resto della partita; le cure possono riportarla al massimo fino alla DEF base.' },
@@ -186,6 +185,7 @@ export const glossary: { term: string; rules?: string; text: string }[] = [
   { term: 'Fazione', rules: 'Fazioni', text: 'Resistenza Umana o Potenze Artificiali. Ogni fazione ha il proprio pool di carte e un mazzo usa le carte di una sola fazione.' },
   { term: 'Five of a kind', rules: 'Fase di Valutazione', text: 'Cinque creature dello stesso rango: la mano migliore. È possibile solo con effetti che fanno contare una creatura come un altro rango.' },
   { term: 'Mano di poker', rules: 'Fase di Valutazione', text: 'La combinazione che le tue creature in gioco formano a ogni turno con ranghi e semi. Decide gli attaccanti e il moltiplicatore del danno che trabocca.' },
+  { term: 'Pacchetto', text: 'Una confezione di carte casuali di una fazione, con creature di diverse rarità e alcune magie o equipaggiamenti. Si ottiene con le valute del gioco.' },
   { term: 'Pila', rules: 'Pila', text: 'L’elenco degli effetti in attesa di risolversi. L’ultimo effetto aggiunto è il primo a risolversi.' },
   { term: 'Rango', rules: 'Carte', text: 'Il valore di una creatura, dall’Asso al King. Determina il Tier della carta e le mani di poker che può formare.' },
   { term: 'Rifornimento', rules: 'Fase di Rifornimento', text: 'La fase in cui le creature distrutte vanno negli scarti e le corsie vuote si riempiono pescando dal mazzo. Le magie e gli equipaggiamenti pescati si applicano subito.' },
@@ -230,7 +230,7 @@ const privacy: Section[] = [
         ul: [
           'Nome del giocatore e indirizzo email, che inserisci alla registrazione.',
           'La password, che conserviamo solo in forma cifrata (hash): nessuno, nemmeno noi, può leggerla.',
-          'I dati di gioco legati al tuo account: collezione di carte, mazzi, buste aperte, movimenti delle valute e risultati delle partite.',
+          'I dati di gioco legati al tuo account: collezione di carte, mazzi, pacchetti aperti, movimenti delle valute e risultati delle partite.',
         ],
       },
       { p: 'Non raccogliamo dati di pagamento, perché al momento il gioco non accetta pagamenti in denaro.' },
@@ -297,7 +297,7 @@ const cookie: Section[] = [
           'il codice di accesso della tua sessione, che scade al massimo dopo 24 ore, e il nome del giocatore;',
           'il nome e l’immagine scelti in Modifica profilo;',
           'le impostazioni, la velocità della battaglia e le ultime scelte della pagina Gioca;',
-          'i dettagli delle partite giocate e le buste da rivelare.',
+          'i dettagli delle partite giocate e i pacchetti da rivelare.',
         ],
       },
       { p: 'Se spunti “Ricordami su questo dispositivo” il codice di accesso resta salvato anche dopo la chiusura del browser; altrimenti viene cancellato quando chiudi la scheda. Quando esci dal gioco lo cancelliamo subito. Sono dati tecnici e funzionali, usati solo per far funzionare il sito.' },
@@ -356,7 +356,7 @@ const termini: Section[] = [
       { p: 'Ti chiediamo di giocare in modo corretto. In particolare non è permesso:' },
       {
         ul: [
-          'usare programmi, script o automatismi per giocare, accumulare valute o aprire buste;',
+          'usare programmi, script o automatismi per giocare, accumulare valute o aprire pacchetti;',
           'sfruttare errori del gioco invece di segnalarceli;',
           'tentare di accedere ad account o sistemi che non ti appartengono;',
           'disturbare il servizio o gli altri giocatori.',
@@ -369,8 +369,8 @@ const termini: Section[] = [
     id: 'contenuti',
     title: 'Carte e valute virtuali',
     blocks: [
-      { p: 'Carte, buste e valute di QUORMA sono contenuti virtuali: ti diamo il diritto di usarli all’interno del gioco, ma non ne diventi proprietario. Non hanno valore in denaro, non sono rimborsabili e non possono essere venduti o scambiati fuori dal gioco.' },
-      { p: 'Al momento valute e buste si ottengono solo giocando. Se in futuro saranno disponibili acquisti con denaro reale, le relative condizioni verranno aggiunte a questi termini prima dell’attivazione.' },
+      { p: 'Carte, pacchetti e valute di QUORMA sono contenuti virtuali: ti diamo il diritto di usarli all’interno del gioco, ma non ne diventi proprietario. Non hanno valore in denaro, non sono rimborsabili e non possono essere venduti o scambiati fuori dal gioco.' },
+      { p: 'Al momento valute e pacchetti si ottengono solo giocando. Se in futuro saranno disponibili acquisti con denaro reale, le relative condizioni verranno aggiunte a questi termini prima dell’attivazione.' },
     ],
   },
   {

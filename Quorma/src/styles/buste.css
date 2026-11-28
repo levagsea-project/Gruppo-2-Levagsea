@@ -90,6 +90,7 @@
 .buste-slot .shop-busta__logo { top: calc(var(--sigillo) + 22px); width: 62%; }
 .buste-slot .shop-busta__info { gap: 4px; padding: 70px 16px 22px; }
 .buste-slot .shop-busta__info b { font-size: clamp(15px, 2.6cqh, 22px); }
+.buste-slot .shop-busta__da { display: inline; }
 .buste-slot .shop-busta__info small { font-size: clamp(11px, 1.7cqh, 14px); }
 .buste-slot .shop-busta__conta { right: -16px; top: -18px; padding: 4px 11px; font-size: 16px; }
 .buste-slot .shop-busta__strato { transform: translate(12px, -10px); }

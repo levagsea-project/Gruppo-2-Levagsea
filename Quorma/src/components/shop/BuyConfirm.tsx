@@ -43,8 +43,8 @@ export default function BuyConfirm({ qty, packLabel, factionName, total, credits
     >
       <div className="q-tela q-tela--arco">
         <div className="q-tela__in">
-          <h2 id="acquisto-titolo">Acquistare {qty} buste?</h2>
-          <p id="acquisto-testo" className="away__lead">{packLabel} · {factionName}. Le buste si aprono con l'acquisto, che non si può annullare.</p>
+          <h2 id="acquisto-titolo">Acquistare {qty} pacchetti?</h2>
+          <p id="acquisto-testo" className="away__lead">{packLabel} · {factionName}. I pacchetti si aprono con l'acquisto, che non si può annullare.</p>
           <dl className="shop-conti">
             <div><dt>Totale</dt><dd>{fmt(total)} Valuta 2</dd></div>
             {credits !== null && (

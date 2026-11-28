@@ -21,7 +21,7 @@ export const navItems: NavItemData[] = [
   { label: 'Gioca', icon: 'gioca', page: 'gioca' },
   { label: 'Sfide', icon: 'sfide', page: 'sfide' },
   { label: 'Collezione', icon: 'collezione', page: 'collezione' },
-  { label: 'Buste', icon: 'buste', page: 'buste' }, // scelta delle buste da aprire; le braci si accendono se ce ne sono
+  { label: 'Pacchetti', icon: 'buste', page: 'buste' }, // scelta dei pacchetti da aprire (pagina 'buste' nel codice); le braci si accendono se ce ne sono
   { label: 'Mazzi', icon: 'mazzi', page: 'mazzi' },
   { label: 'Scambi', icon: 'scambi', page: 'scambi' }, // amici e scambi: gli endpoint arrivano dal backend (lib/trades.ts)
   { label: 'Negozio', icon: 'negozio', page: 'negozio' },

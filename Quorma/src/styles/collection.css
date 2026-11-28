@@ -215,6 +215,8 @@
 .shop-busta__tag { position: absolute; z-index: 1; left: 0; right: 0; top: calc(var(--sigillo) + 36px); font-size: 9.5px; font-style: normal; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ember-200); text-shadow: 0 1px 4px #000; }
 .shop-busta__info { position: absolute; z-index: 1; left: 0; right: 0; bottom: var(--sigillo); display: flex; flex-direction: column; gap: 1px; padding: 26px 4px 7px; background: linear-gradient(0deg, rgba(8,16,20,.96) 30%, rgba(8,16,20,0)); }
 .shop-busta__info b { font-size: 11.5px; font-weight: 700; letter-spacing: .03em; color: #EEF4F5; }
+/* "Pacchetto da" va a capo sulle bustine piccole: lì basta "8 carte". Torna sul pacchetto grande della pagina Pacchetti (buste.css) */
+.shop-busta__da { display: none; }
 .shop-busta__info small { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--petrol-300); }
 .shop-busta__nome { font-family: var(--font-display); font-size: 14px; line-height: 18px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #EEF4F5; }
 .pick.shop-busta[aria-checked="true"] .shop-busta__nome { color: var(--petrol-300); }
