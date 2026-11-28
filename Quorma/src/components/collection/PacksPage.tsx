@@ -30,7 +30,6 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
   const n = groups.length
   const i = n ? index % n : 0
   const sel = groups[i]
-  const next = n > 1 ? groups[(i + 1) % n] : null
   const owned = sel?.ids.length ?? 0
   const q = Math.min(Math.max(qty, 1), Math.max(owned, 1))
   const go = (step: number) => {
@@ -116,18 +115,17 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
           </div>
 
           <div className="buste-azioni">
-            {/* quante aprirne insieme: si aprono tutte in una sola schermata */}
-            {owned > 1 && (
-              <div className="buste-quante" role="group" aria-labelledby="buste-quante-titolo">
-                <span id="buste-quante-titolo" className="q-elenco__titolo">Quante aprirne</span>
-                <div className="buste-quante__riga">
-                  <button type="button" className={`m-chip buste-passo ${q <= 1 ? 'm-chip--off' : ''}`} aria-label="Una busta in meno" disabled={q <= 1} onClick={() => more(-1)}>−</button>
-                  <output className="buste-numero" aria-live="polite">{q} <span className="m-chip__n">di {owned}</span></output>
-                  <button type="button" className={`m-chip buste-passo ${q >= owned ? 'm-chip--off' : ''}`} aria-label="Una busta in più" disabled={q >= owned} onClick={() => more(1)}>+</button>
-                  <button type="button" className="m-chip buste-tutte" data-on={q === owned} aria-pressed={q === owned} onClick={() => setQty(owned)}>Tutte</button>
-                </div>
+            {/* quante aprirne insieme: si aprono tutte in una sola schermata. C'è sempre, anche con una busta sola
+                (spento), così la colonna non cambia altezza passando da un tipo all'altro */}
+            <div className="buste-quante" role="group" aria-labelledby="buste-quante-titolo">
+              <span id="buste-quante-titolo" className="q-elenco__titolo">Quante aprirne</span>
+              <div className="buste-quante__riga">
+                <button type="button" className={`m-chip buste-passo ${q <= 1 ? 'm-chip--off' : ''}`} aria-label="Una busta in meno" disabled={q <= 1} onClick={() => more(-1)}>−</button>
+                <output className="buste-numero" aria-live="polite">{q} <span className="m-chip__n">di {owned}</span></output>
+                <button type="button" className={`m-chip buste-passo ${q >= owned ? 'm-chip--off' : ''}`} aria-label="Una busta in più" disabled={q >= owned} onClick={() => more(1)}>+</button>
+                <button type="button" className={`m-chip buste-tutte ${owned <= 1 ? 'm-chip--off' : ''}`} data-on={owned > 1 && q === owned} aria-pressed={owned > 1 && q === owned} disabled={owned <= 1} onClick={() => setQty(owned)}>Tutte</button>
               </div>
-            )}
+            </div>
             <button type="button" className="q-btn q-btn--argento q-btn--gioca buste-apri" onClick={() => onOpen(sel.ids.slice(0, q))}>
               <span className="q-btn__in">{q === 1 ? 'Apri la busta' : 'Apri le buste'}<span className="buste-conta">× {q}</span></span>
             </button>
@@ -144,15 +142,26 @@ export default function PacksPage({ onOpen, onShop, onCollection }: Props) {
           </div>
         </section>
 
-        <div className="buste-scena">
-          {next && (
-            <button type="button" className="buste-dietro" aria-label={`Passa a ${packName(next.packType)}, ${factions[next.faction].name}`} onClick={() => go(1)}>
-              <SealedPack code={next.packType} faction={next.faction} size={next.size} setName={next.setName} />
-            </button>
-          )}
-          <div key={sel.key} className="buste-davanti">
-            <SealedPack code={sel.packType} faction={sel.faction} size={sel.size} setName={sel.setName} count={sel.ids.length} />
-          </div>
+        {/* Carosello: la busta scelta al centro, le altre ai lati nell'ordine delle frecce (le ultime girano a sinistra).
+            Ogni busta ha la sua posizione (data-d = distanza dalla scelta) e scivola alla nuova quando si cambia. */}
+        <div className="buste-scena" role="group" aria-roledescription="carosello" aria-label="Buste da aprire">
+          {groups.map((g, gi) => {
+            let d = (gi - i + n) % n
+            if (d > n / 2) d -= n
+            const far = Math.abs(d) > 2
+            const pos = far ? (d < 0 ? '-lontano' : 'lontano') : String(d)
+            return (
+              // la busta resta sempre montata (niente scatti quando cambia posto); le laterali hanno sopra un pulsante trasparente
+              <div key={g.key} className="buste-slot" data-d={pos} aria-hidden={far || undefined}>
+                <div className="buste-slot__busta">
+                  <SealedPack code={g.packType} faction={g.faction} size={g.size} setName={g.setName} count={g.ids.length} />
+                </div>
+                {d !== 0 && (
+                  <button type="button" className="buste-slot__vai" tabIndex={far ? -1 : undefined} aria-label={`Passa a ${packName(g.packType)}, ${factions[g.faction].name}`} onClick={() => go(d)} />
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
     </main>
