@@ -52,26 +52,111 @@ html { scroll-behavior: smooth; }
 .l-griglia-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 52px; }
 .l-feat .q-tela__in { display: flex; flex-direction: column; gap: 8px; padding: 40px 26px 26px; }
 
-/* Come si gioca */
-.l-come { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 64px; align-items: center; }
-.l-passi { list-style: none; display: flex; flex-direction: column; gap: 26px; margin-top: 30px; }
-.l-passo { display: grid; grid-template-columns: 48px 1fr; gap: 6px 18px; align-items: start; }
-.l-passo .q-marker__num { grid-row: span 2; width: 34px; height: 34px; margin: 6px 0 0 6px; }
-.l-tavolo { margin: 0; }
-.l-tavolo .q-tela__in { display: flex; flex-direction: column; gap: 8px; padding: 22px; }
-.l-tavolo .l-kicker { margin: 0 0 6px; font-size: 11px; }
-.l-corsie { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-.l-slot { position: relative; aspect-ratio: 2 / 3; background: linear-gradient(180deg, #12252D, #08131A); box-shadow: inset 0 0 0 1px rgba(213,225,229,.3); }
-.l-slot--att { box-shadow: inset 0 0 0 1px var(--petrol-300), 0 0 12px rgba(74,166,173,.5); }
-.l-slot b { position: absolute; left: 6px; top: 4px; font-family: var(--font-display); font-size: 14px; color: #EEF4F5; }
-.l-slot .l-seme { position: absolute; right: 6px; bottom: 6px; width: 14px; height: 14px; color: var(--petrol-300); }
+/* Come si gioca (design: Landing-Quorma, Demo della partita): i passi sono pulsanti, il tavolo mostra il passo scelto.
+   Le classi l-p0…l-p3 sul tavolo dicono a che passo siamo; tutto il movimento è CSS. */
+.l-come { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 64px; align-items: center; }
+.l-come__lead { font-size: 15px; line-height: 24px; }
+.l-passi { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 26px; padding: 0; }
+.l-passo-btn { display: grid; grid-template-columns: 48px 1fr; gap: 4px 16px; align-items: start; width: 100%; padding: 14px 14px 14px 8px; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; transition: background .25s ease, box-shadow .25s ease; }
+.l-passo-btn:hover { background: rgba(213,225,229,.05); }
+.l-passo-btn:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+.l-passo-btn[aria-pressed="true"] { background: rgba(74,166,173,.1); box-shadow: inset 3px 0 0 var(--petrol-500); }
+.l-passo-btn .q-marker__num { grid-row: span 2; width: 34px; height: 34px; margin: 4px 0 0 6px; transition: box-shadow .3s ease, background .3s ease; }
+.l-passo-btn[aria-pressed="true"] .q-marker__num { background: radial-gradient(circle at 50% 60%, #2A6A70, #12262D); box-shadow: inset 0 0 0 1px var(--petrol-300), 0 0 12px rgba(74,166,173,.7); }
+.l-passo-btn__titolo { font-family: var(--font-display); font-size: 18px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #A9BCC3; transition: color .25s ease; }
+.l-passo-btn[aria-pressed="true"] .l-passo-btn__titolo { color: #EEF4F5; }
+.l-passo-btn__testo { font-size: 14px; line-height: 22px; color: #A9BCC3; }
+.l-avanz { grid-column: 2; height: 2px; margin-top: 8px; background: rgba(213,225,229,.1); overflow: hidden; }
+.l-avanz i { display: block; height: 100%; width: 0; background: var(--petrol-300); }
+.l-auto .l-passo-btn[aria-pressed="true"] .l-avanz i { animation: l-riempi 3.4s linear forwards; }
+@keyframes l-riempi { to { width: 100%; } }
+
+.l-tavolo-box { margin: 0; }
+.l-tavolo { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 20px 22px 18px; }
+.l-tavolo .l-kicker { margin: 0; font-size: 11px; }
+.l-vita { display: flex; align-items: center; gap: 12px; }
+.l-vita b { flex: none; min-width: 70px; font-family: var(--font-display); font-size: 17px; color: #EEF4F5; font-variant-numeric: tabular-nums; text-align: right; transition: color .4s ease; }
+.l-vita i { position: relative; flex: 1; height: 8px; background: #071014; box-shadow: inset 0 0 0 1px rgba(213,225,229,.2); }
+.l-vita i::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--v, 100%); background: linear-gradient(90deg, #A8502A, #E0874A); box-shadow: 0 0 8px rgba(224,135,74,.6); transition: width 1.1s cubic-bezier(.3,.7,.2,1) .5s; }
+.l-p3 .l-vita b { color: var(--ember-200, #FFD7B0); }
+.l-riga { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
 .l-num { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--steel-300); text-align: center; }
-.l-frecce { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; height: 34px; }
-.l-frecce span { display: flex; justify-content: center; }
-.l-frecce span::before { content: ""; width: 1px; height: 100%; background: linear-gradient(180deg, rgba(143,214,219,.9), rgba(143,214,219,0)); }
-.l-frecce span.l-no::before { background: none; }
-.l-tavolo figcaption { margin-top: 8px; font-size: 13px; color: #A9BCC3; text-align: center; }
-.l-tavolo figcaption b { color: #EEF4F5; }
+
+/* una carta: fronte (rango e seme) e dorso; le tue partono coperte e si girano dal passo 2 */
+.l-c { position: relative; aspect-ratio: 2 / 3; perspective: 600px; }
+.l-c__in { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,.7,.2,1); }
+.l-c__f, .l-c__r { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; background: linear-gradient(180deg, #12252D, #08131A); box-shadow: inset 0 0 0 1px rgba(213,225,229,.3); }
+.l-c__f > span { position: absolute; left: 6px; top: 4px; font-family: var(--font-display); font-size: 15px; font-weight: 700; color: #EEF4F5; }
+.l-c__f .l-seme { position: absolute; right: 6px; bottom: 6px; width: 14px; height: 14px; color: var(--petrol-300); }
+.l-c__r { transform: rotateY(180deg); display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 45%, #16353B, #0A1418 75%); }
+.l-c__r::before { content: ""; width: 46%; height: 46%; transform: rotate(45deg); box-shadow: inset 0 0 0 1px rgba(143,214,219,.5); }
+.l-mio .l-c__in { transform: rotateY(180deg); }
+.l-p1 .l-mio .l-c__in, .l-p2 .l-mio .l-c__in, .l-p3 .l-mio .l-c__in { transform: none; }
+.l-mio .l-c:nth-child(2) .l-c__in { transition-delay: .08s; }
+.l-mio .l-c:nth-child(3) .l-c__in { transition-delay: .16s; }
+.l-mio .l-c:nth-child(4) .l-c__in { transition-delay: .24s; }
+.l-mio .l-c:nth-child(5) .l-c__in { transition-delay: .32s; }
+/* passo 1: le carte arrivano dal mazzo */
+.l-p0 .l-mio .l-c { animation: l-pesca .6s cubic-bezier(.2,.7,.2,1) backwards; }
+.l-p0 .l-mio .l-c:nth-child(2) { animation-delay: .08s; }
+.l-p0 .l-mio .l-c:nth-child(3) { animation-delay: .16s; }
+.l-p0 .l-mio .l-c:nth-child(4) { animation-delay: .24s; }
+.l-p0 .l-mio .l-c:nth-child(5) { animation-delay: .32s; }
+@keyframes l-pesca { from { opacity: 0; transform: translateY(30px) scale(.9); } }
+/* passo 2: le Queen si accendono; passo 3: attaccano e i bersagli tremano */
+.l-c.l-q .l-c__f { transition: box-shadow .4s ease .5s; }
+.l-p1 .l-c.l-q .l-c__f, .l-p2 .l-c.l-q .l-c__f, .l-p3 .l-c.l-q .l-c__f { box-shadow: inset 0 0 0 1px var(--petrol-300), 0 0 14px rgba(74,166,173,.7); }
+.l-p2 .l-c.l-q, .l-p3 .l-c.l-q { animation: l-attacca .7s ease; }
+@keyframes l-attacca { 40% { transform: translateY(-14px); } }
+.l-avv .l-c.l-bersaglio .l-c__f { transition: box-shadow .3s ease .35s, filter .3s ease .35s; }
+.l-p2 .l-avv .l-c.l-bersaglio, .l-p3 .l-avv .l-c.l-bersaglio { animation: l-colpito .5s ease .3s; }
+.l-p2 .l-avv .l-c.l-bersaglio .l-c__f, .l-p3 .l-avv .l-c.l-bersaglio .l-c__f { box-shadow: inset 0 0 0 1px #E8B49A; filter: brightness(.6); }
+@keyframes l-colpito { 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+.l-danno { position: absolute; left: 50%; top: 30%; z-index: 2; transform: translate(-50%, 0); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: #E8B49A; text-shadow: 0 1px 4px #000; opacity: 0; pointer-events: none; white-space: nowrap; }
+.l-p2 .l-danno { animation: l-sale 1.2s ease .45s forwards; }
+.l-p3 .l-danno { opacity: 1; transform: translate(-50%, -6px); }
+@keyframes l-sale { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, -6px); } }
+/* passo 4: il danno in eccesso sale verso la vita dell'avversario */
+.l-trab { position: absolute; left: 50%; top: -6px; z-index: 3; transform: translateX(-50%); font-size: 11px; font-weight: 700; color: var(--ember-200, #FFD7B0); text-shadow: 0 0 8px rgba(224,135,74,.9); opacity: 0; pointer-events: none; white-space: nowrap; }
+.l-p3 .l-trab { animation: l-trabocca 1.3s ease .1s forwards; }
+@keyframes l-trabocca { 0% { opacity: 0; transform: translate(-50%, 40px); } 35% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -70px); } }
+.l-fr { display: flex; justify-content: center; height: 30px; }
+.l-fr::before { content: ""; width: 1px; height: 100%; background: linear-gradient(180deg, rgba(143,214,219,0), rgba(143,214,219,.95)); transform: scaleY(0); transform-origin: bottom; transition: transform .35s ease; }
+.l-p2 .l-fr.l-si::before, .l-p3 .l-fr.l-si::before { transform: scaleY(1); }
+.l-mano { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 28px; opacity: 0; transform: translateY(6px); transition: opacity .4s ease .6s, transform .4s ease .6s; }
+.l-p1 .l-mano, .l-p2 .l-mano, .l-p3 .l-mano { opacity: 1; transform: none; }
+.l-mano b { font-family: var(--font-display); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #EEF4F5; }
+.l-mano span { padding: 2px 8px; font-size: 12px; font-weight: 600; color: var(--petrol-300); box-shadow: inset 0 0 0 1px rgba(143,214,219,.45); }
+.l-didascalia { min-height: 44px; margin: 4px 0 0; font-size: 13.5px; line-height: 21px; color: #A9BCC3; text-align: center; }
+.l-didascalia b { color: #EEF4F5; }
+.l-didascalia__testo { display: block; }
+.l-comandi { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.l-comandi button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 0; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--silver-100); background: transparent; box-shadow: inset 0 0 0 1px rgba(213,225,229,.25); }
+.l-comandi button:hover { background: rgba(213,225,229,.08); }
+.l-comandi button:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+.l-comandi button[aria-disabled="true"] { opacity: .35; cursor: default; }
+.l-comandi svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Comparsa allo scorrimento e link attivo (design: Landing-Quorma) ----------
+   l-js la mette LandingPage nel browser, mai con il movimento ridotto: senza, tutto resta visibile. */
+.l-js .l-rivela { opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+.l-js .l-rivela.l-visto { opacity: 1; transform: none; }
+.l-js-avvio .l-rivela { transition: none !important; }
+.l-js .l-rivela:nth-child(2) { transition-delay: .08s; }
+.l-js .l-rivela:nth-child(3) { transition-delay: .16s; }
+.l-js .l-rivela:nth-child(4) { transition-delay: .24s; }
+.l-js .l-rivela:nth-child(5) { transition-delay: .32s; }
+.l-bar .l-link { position: relative; }
+.l-bar .l-link[aria-current] { color: #EEF4F5; }
+.l-bar .l-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px; background: var(--petrol-300); box-shadow: 0 0 6px rgba(143,214,219,.8); transform: scaleX(0); transition: transform .35s ease; }
+.l-bar .l-link[aria-current]::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .l-js .l-rivela { opacity: 1; transform: none; transition: none; }
+  .l-c__in, .l-vita i::before, .l-mano, .l-fr::before, .l-bar .l-link::after { transition: none; }
+  .l-c, .l-danno, .l-trab, .l-avanz i { animation: none !important; }
+  .l-p2 .l-danno, .l-p3 .l-danno { opacity: 1; }
+}
 
 /* Simboli dei semi: immagine usata come maschera, colorata con currentColor */
 .l-seme { display: block; flex: none; background: currentColor; -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
@@ -85,6 +170,9 @@ html { scroll-behavior: smooth; }
 .l-fazione { --arte-h: 210px; }
 .l-fazione .q-carta__arte { overflow: hidden; }
 .l-fazione .q-carta__arte img { width: 100%; height: 100%; object-fit: cover; }
+/* la luce che segue il puntatore (FactionCard): schiarisce l'illustrazione senza coprirla */
+.l-fazione__arte { position: relative; isolation: isolate; }
+.l-fazione__luce { position: absolute; inset: 0; z-index: 1; mix-blend-mode: screen; pointer-events: none; opacity: 0; }
 .l-fazione__corpo { display: flex; flex-direction: column; gap: 12px; padding: 18px 24px 24px; }
 .l-fazione__nome { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #EEF4F5; }
 .l-sottofazioni { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
@@ -120,6 +208,17 @@ html { scroll-behavior: smooth; }
 .l-domanda summary svg { flex: none; color: var(--steel-300); transition: transform .2s ease; }
 .l-domanda[open] summary svg { transform: rotate(180deg); color: var(--petrol-300); }
 .l-domanda p { padding: 0 6px 18px 27px; font-size: 15px; line-height: 24px; color: #A9BCC3; }
+/* apertura morbida dove il browser sa animare fino ad "auto"; altrove si apre di colpo come nel design */
+@supports (interpolate-size: allow-keywords) {
+  .l-domanda { interpolate-size: allow-keywords; }
+  .l-domanda::details-content { block-size: 0; overflow: hidden; transition: block-size .35s cubic-bezier(.2,.7,.2,1), content-visibility .35s allow-discrete; }
+  .l-domanda[open]::details-content { block-size: auto; }
+  .l-domanda p { opacity: 0; transform: translateY(-4px); transition: opacity .3s ease .05s, transform .35s cubic-bezier(.2,.7,.2,1); }
+  .l-domanda[open] p { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .l-domanda::details-content, .l-domanda p { transition: none; }
+}
 
 /* Invito finale */
 .l-entra { text-align: center; background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(74,166,173,.18), rgba(74,166,173,0) 70%); }
@@ -140,6 +239,12 @@ html { scroll-behavior: smooth; }
 /* ---------- Finestra di accesso e registrazione ---------- */
 .l-dialog { margin: auto; /* index.css azzera i margini: serve per centrarla */ width: 440px;max-width: calc(100% - 32px); max-height: calc(100% - 32px); padding: 14px 0 0; overflow: visible; color: var(--silver-100); background: transparent; border: 0; }
 .l-dialog::backdrop { background: rgba(5,10,13,.78); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+/* entrata della finestra; si chiude cambiando pagina, quindi senza uscita animata */
+.l-dialog[open] { animation: l-dlg-entra .32s cubic-bezier(.2,.7,.2,1); }
+.l-dialog[open]::backdrop { animation: l-dlg-velo .32s ease; }
+@keyframes l-dlg-entra { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+@keyframes l-dlg-velo { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .l-dialog[open], .l-dialog[open]::backdrop { animation: none; } }
 .l-dialog > .q-tela { max-height: calc(100vh - 48px); }
 .l-dialog .q-tela__in { display: flex; flex-direction: column; gap: 16px; padding: 44px 30px 28px; overflow-y: auto; }
 .l-dialog__logo { display: block; width: 150px; height: auto; margin: 0 auto; }
@@ -179,7 +284,7 @@ html { scroll-behavior: smooth; }
   .l-bar nav { display: none; }
   .l-griglia-3 { grid-template-columns: 1fr; gap: 24px; margin-top: 36px; }
   .l-come, .l-semi-blocco, .l-faq { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-  .l-tavolo { max-width: 420px; }
+  .l-tavolo-box { max-width: 440px; width: 100%; }
   .l-griglia-2 { grid-template-columns: 1fr; }
   .l-hero__bg::after { background: linear-gradient(90deg, rgba(13,23,29,.9) 0%, rgba(13,23,29,.6) 60%, rgba(13,23,29,.3) 100%), linear-gradient(0deg, rgba(13,23,29,1) 0%, rgba(13,23,29,0) 40%); }
 }
