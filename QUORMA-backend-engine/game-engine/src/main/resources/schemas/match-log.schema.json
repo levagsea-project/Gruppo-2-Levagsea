@@ -223,8 +223,8 @@
         "ability_id": { "$ref": "#/$defs/ability_id" },
         "effect_id": { "$ref": "#/$defs/effect_id" },
         "kind": {
-          "description": "atk_bonus: value more ATK (a suit synergy). damage_reduction_pct: value % less damage (Scudo). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante). spill_def_permille: spill treats the target's DEF before the blow as value / 1000 of itself. atk_malus: value less ATK (a static malus). atk_set: the ATK is set to value, the printed ATK (E4). damage_prevented: value damage was prevented (E23, E29). lethal: the blow destroys whatever the target's DEF (Letale).",
-          "enum": ["atk_bonus", "damage_reduction_pct", "damage_reduction_flat", "pierce_pct", "spill_multiplier", "spill_def_permille",
+          "description": "atk_bonus: value more ATK (a suit synergy). damage_reduction_pct: value % less damage (Scudo). damage_reduction_permille: value / 1000 less damage (Muro). damage_reduction_flat: value less damage per blow (flat Scudo). pierce_pct: ignores value % of the target's reductions (Perforante). spill_multiplier: hand multiplier x value / 1000 (Traboccante). spill_def_permille: spill treats the target's DEF before the blow as value / 1000 of itself. atk_malus: value less ATK (a static malus). atk_set: the ATK is set to value, the printed ATK (E4). damage_prevented: value damage was prevented (E23, E29). lethal: the blow destroys whatever the target's DEF (Letale).",
+          "enum": ["atk_bonus", "damage_reduction_pct", "damage_reduction_permille", "damage_reduction_flat", "pierce_pct", "spill_multiplier", "spill_def_permille",
                    "atk_malus", "atk_set", "damage_prevented", "lethal"]
         },
         "value": { "type": "integer", "minimum": 0 }

@@ -24,8 +24,8 @@ import quorma.gameengine.testkit.TurnResolvers;
 
 /**
  * The Evolutions Crescita (survives combat damage: +15% of the base ATK) and Trincea (declared as a target: +20% of
- * the base DEF), and the Spira synergies that count, scale and force them (3: +200 ATK per Evolution fired, 4: values
- * x1.2, 5: every Spira Evolution fires). An Evolution fires once per creature. Every expected value is worked out
+ * the base DEF), and the Spira synergies that count, scale and force them (3: +350 ATK per Evolution fired, 4: values
+ * x1.3, 5: every Spira Evolution fires). An Evolution fires once per creature. Every expected value is worked out
  * by hand from {@code balance.json}.
  */
 class EvolutionAndSpiraTest {
@@ -90,8 +90,8 @@ class EvolutionAndSpiraTest {
     }
 
     @Test
-    void spira4MultipliesTheEvolutionValuesBy1_2() {
-        // Four Spira: tiers 3 and 4. Crescita gives floor(1000 x floor(150 x 1200 / 1000) / 1000) = 180.
+    void spira4MultipliesTheEvolutionValuesBy1_3() {
+        // Four Spira: tiers 3 and 4. Crescita gives floor(1000 x floor(150 x 1300 / 1000) / 1000) = 195.
         PlayerState a = Boards.side(Subfaction.ADATTATI, 12000, "1:2S(1000/9000) 2:3S(1000/9000) 3:4S(1000/9000) 4:5S(1000/9000)");
         Boards.give(a, 1, CRESCITA);
         MatchState state = match(a, "1:KS(2000/90000)");
@@ -100,14 +100,14 @@ class EvolutionAndSpiraTest {
 
         resolver.cycle1(state, evaluation, resolver.declare(state, evaluation), new ArrayList<>());
 
-        assertEquals(1180, Boards.creature(a, 1).currentAtk());
+        assertEquals(1195, Boards.creature(a, 1).currentAtk());
     }
 
     @Test
     void spira3GivesEverySpiraCreatureAnAtkBonusPerEvolutionThatFired() {
-        // Round 1: Crescita fires on lane 1 (one Evolution fired). Round 2: four of a suit, all four attack. Each gets
-        // Spira 3: +200 x 1. Lane 2 (base 1000) attacks with 1200; lane 1 has Crescita's 180 more (1000 + 180 + 200).
-        PlayerState a = Boards.side(Subfaction.ADATTATI, 12000, "1:2S(1000/9000) 2:3S(1000/9000) 3:4S(1000/9000) 4:5S(1000/9000)");
+        // Round 1: Crescita fires on lane 1 (one Evolution fired). Round 2: four of a suit, the three strongest (lanes 1-3) attack. Each gets
+        // Spira 3: +350 x 1. Lane 2 (base 1000) attacks with 1350; lane 1 has Crescita's 195 more (1000 + 195 + 350).
+        PlayerState a = Boards.side(Subfaction.ADATTATI, 12000, "1:5S(1000/9000) 2:4S(1000/9000) 3:3S(1000/9000) 4:2S(1000/9000)");
         Boards.give(a, 1, CRESCITA);
         MatchState state = match(a, "1:KS(2000/90000) 2:9F(100/90000) 3:5T(100/90000) 4:JV(100/90000)");
         Evaluation round1 = resolver.evaluate(state);
@@ -120,15 +120,15 @@ class EvolutionAndSpiraTest {
 
         List<AttackResolved> blows = log.stream().filter(e -> e instanceof AttackResolved).map(e -> (AttackResolved) e)
                 .filter(e -> e.attack().attacker() == Side.A).toList();
-        assertEquals(List.of(1380, 1200, 1200, 1200), blows.stream().map(AttackResolved::atk).toList());
-        assertEquals(List.of(new Modifier(new CreatureRef(Side.A, 2, "3S"), "SPIRA_3", "E1", Modifier.Kind.ATK_BONUS, 200)),
+        assertEquals(List.of(1545, 1350, 1350), blows.stream().map(AttackResolved::atk).toList());
+        assertEquals(List.of(new Modifier(new CreatureRef(Side.A, 2, "4S"), "SPIRA_3", "E1", Modifier.Kind.ATK_BONUS, 350)),
                 blows.get(1).modifiers());
     }
 
     @Test
     void spira5FiresTheEvolutionsOfEverySpiraCreatureOnce() {
         // A straight flush of Spira: tier 5 forces Crescita on lane 3 without any damage. Tier 4 is active too, so
-        // the value is 180: 1000 + 180.
+        // the value is 195: 1000 + 195.
         PlayerState a = Boards.side(Subfaction.ADATTATI, 12000,
                 "1:2S(1000/9000) 2:3S(1000/9000) 3:4S(1000/9000) 4:5S(1000/9000) 5:6S(1000/9000)");
         Boards.give(a, 3, CRESCITA);
@@ -138,13 +138,13 @@ class EvolutionAndSpiraTest {
         List<MatchEvent> log = new ArrayList<>();
         resolver.forceEvolutions(state, log);
 
-        assertEquals(1180, Boards.creature(a, 3).currentAtk());
+        assertEquals(1195, Boards.creature(a, 3).currentAtk());
         assertEquals("T5", triggered(log).get(0).triggerId(), "the log shows what forced it");
         assertEquals("EVO_CRESCITA", triggered(log).get(0).abilityId());
 
         List<MatchEvent> again = new ArrayList<>();
         resolver.forceEvolutions(state, again);
-        assertEquals(1180, Boards.creature(a, 3).currentAtk());
+        assertEquals(1195, Boards.creature(a, 3).currentAtk());
         assertTrue(triggered(again).isEmpty(), "already fired");
     }
 }

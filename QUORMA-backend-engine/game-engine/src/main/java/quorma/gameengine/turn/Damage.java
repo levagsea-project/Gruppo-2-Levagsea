@@ -36,9 +36,14 @@ public final class Damage {
      * @param floorPermille {@code balance.globals.mitigation_floor_permille}
      */
     public static int mitigationPermille(List<Integer> reductionPcts, int piercePct, int floorPermille) {
+        return mitigationFromPermille(reductionPcts.stream().map(pct -> 10 * pct).toList(), piercePct, floorPermille);
+    }
+
+    /** Same as {@link #mitigationPermille} with each reduction given in per mille of the damage (275 = 27.5%). */
+    public static int mitigationFromPermille(List<Integer> reductionPermilles, int piercePct, int floorPermille) {
         long m = 1000;
-        for (int pct : reductionPcts) {
-            m = m * (1000 - 10L * pct) / 1000;
+        for (int permille : reductionPermilles) {
+            m = m * (1000 - permille) / 1000;
         }
         int reduction = Math.min((int) (1000 - m), 1000 - floorPermille);
         return 1000 - pierce(reduction, piercePct);

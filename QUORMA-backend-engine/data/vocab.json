@@ -1895,7 +1895,7 @@
       }
     },
     "S45": {
-      "name": "Creature avversarie nella corsia della sorgente e in quelle adiacenti",
+      "name": "Creature avversarie nelle corsie adiacenti a quella della sorgente",
       "kind": [
         "creature"
       ],
@@ -1903,7 +1903,7 @@
         "C"
       ],
       "requires_context": null,
-      "description": "Le creature avversarie nella corsia opposta alla sorgente e nelle due corsie adiacenti."
+      "description": "Le creature avversarie nelle due corsie adiacenti a quella della sorgente (la corsia opposta alla sorgente non e' inclusa)."
     },
     "S47": {
       "name": "Creatura di rango piu' alto tra le prime carte del mazzo [COUNT]",

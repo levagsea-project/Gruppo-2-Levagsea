@@ -358,8 +358,8 @@
         "trigger_params": {},
         "effect_id": "E28",
         "effect_params": {
-          "mode": "reduction_pct",
-          "pct": "$tune.K_MURO.pct"
+          "mode": "permille",
+          "permille": "$tune.K_MURO.permille"
         },
         "target_id": "S1",
         "target_params": {},
@@ -807,7 +807,7 @@
     "class": "C",
     "balance_ref": "K_CONFINE",
     "params": {},
-    "description": "Le creature avversarie nella corsia di questa creatura e in quelle adiacenti non ricevono bonus di ATK o DEF.",
+    "description": "Le creature avversarie nelle due corsie adiacenti a quella di questa creatura non ricevono bonus di ATK o DEF.",
     "expands_to": [
       {
         "trigger_id": "T0",

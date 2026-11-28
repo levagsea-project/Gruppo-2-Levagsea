@@ -3,7 +3,7 @@ package quorma.gameengine.effects;
 import quorma.gameengine.model.Creature;
 import quorma.gameengine.model.Side;
 
-/** S45: the enemy creatures in the source's lane and the lanes next to it. */
+/** S45: the enemy creatures in the two lanes next to the source's lane (not the lane facing the source). */
 public final class EnemyNeighboursTarget implements Target {
 
     @Override
@@ -13,6 +13,6 @@ public final class EnemyNeighboursTarget implements Target {
 
     @Override
     public boolean reaches(TargetView view, Side abilitySide, Creature source, Side side, Creature receiver) {
-        return source != null && side != abilitySide && Math.abs(receiver.lane() - source.lane()) <= 1;
+        return source != null && side != abilitySide && Math.abs(receiver.lane() - source.lane()) == 1;
     }
 }

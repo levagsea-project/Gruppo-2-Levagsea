@@ -34,10 +34,10 @@
   "hand_multipliers_permille": {
     "_note": "Moltiplicatore del danno da traboccamento (spill) per mano di poker (regolamento 7.8), in per-mille: 1100 = x1.1. Chiavi = nomi dell'enum HandType del motore. NONE (nessuna creatura) non infligge spill. Valori segnaposto in attesa di playtest.",
     "HIGH_CARD": 1000,
-    "PAIR": 1100,
-    "TWO_PAIR": 1300,
-    "FOUR_OF_A_SUIT": 1350,
-    "THREE_OF_A_KIND": 1400,
+    "PAIR": 1150,
+    "TWO_PAIR": 1340,
+    "FOUR_OF_A_SUIT": 1280,
+    "THREE_OF_A_KIND": 1500,
     "STRAIGHT": 1600,
     "FLUSH": 1700,
     "FULL_HOUSE": 1800,
@@ -280,10 +280,10 @@
         "low_atk"
       ],
       "params": {
-        "spill_def_permille": 350
+        "spill_def_permille": 420
       },
       "display": {
-        "spill_def_pct": 35
+        "spill_def_pct": 42
       },
       "sim": {
         "status": "untested",
@@ -511,10 +511,10 @@
         "defensive"
       ],
       "params": {
-        "pct": 30
+        "permille": 800
       },
       "display": {
-        "reduction_pct": 30
+        "reduction_pct": 20
       },
       "sim": {
         "status": "untested",
@@ -1474,21 +1474,21 @@
       "atk": 1000
     },
     "FRATTURA_3": {
-      "atk": 1200
+      "atk": 800
     },
     "FRATTURA_4": {
-      "factor": 1200,
-      "def_permille": 800
+      "factor": 1100,
+      "def_permille": 900
     },
     "FRATTURA_5": {
-      "permille": 500,
+      "permille": 700,
       "factor": 1200
     },
     "SPIRA_3": {
-      "atk_per_evolution": 200
+      "atk_per_evolution": 350
     },
     "SPIRA_4": {
-      "factor": 1200
+      "factor": 1300
     },
     "SPIRA_5": {},
     "VESTIGIO_3": {

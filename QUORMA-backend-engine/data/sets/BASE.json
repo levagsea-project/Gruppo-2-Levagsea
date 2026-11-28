@@ -102,7 +102,7 @@
         {
           "id": "K_ACCUMULO",
           "params": {
-            "permille": 48,
+            "permille": 67,
             "max_stacks": 3
           }
         }
@@ -157,7 +157,7 @@
         {
           "id": "K_ECO",
           "params": {
-            "permille": 480
+            "permille": 360
           }
         }
       ]
@@ -752,7 +752,7 @@
         {
           "id": "K_CAMPI_VUOTI",
           "params": {
-            "permille": 96
+            "permille": 80
           }
         }
       ]
@@ -2179,7 +2179,7 @@
         {
           "id": "K_ECO",
           "params": {
-            "permille": 480
+            "permille": 360
           }
         }
       ]
@@ -2256,7 +2256,7 @@
         {
           "id": "K_CATENA",
           "params": {
-            "permille": 360,
+            "permille": 300,
             "on": "kill"
           }
         }
@@ -2277,7 +2277,7 @@
         {
           "id": "K_CAMPI_VUOTI",
           "params": {
-            "permille": 96
+            "permille": 80
           }
         },
         {
@@ -2565,7 +2565,7 @@
         {
           "id": "K_CATENA",
           "params": {
-            "permille": 360,
+            "permille": 300,
             "on": "hit"
           }
         },
@@ -2651,7 +2651,7 @@
         {
           "id": "K_CAMPI_VUOTI",
           "params": {
-            "permille": 96
+            "permille": 80
           }
         },
         {
@@ -2668,19 +2668,19 @@
       "rank": 1,
       "suit": "SPIRA",
       "subfaction": "ADATTATI",
-      "atk": 2550,
-      "def": 6350,
+      "atk": 3000,
+      "def": 7050,
       "abilities": [
         {
           "id": "EVO_RINFORZO",
           "params": {
-            "permille": 300
+            "permille": 350
           }
         },
         {
           "id": "K_INDURISCE",
           "params": {
-            "permille": 300
+            "permille": 500
           }
         }
       ]
@@ -2746,8 +2746,8 @@
       "rank": 2,
       "suit": "VESTIGIO",
       "subfaction": "SPEZZASIGILLI",
-      "atk": 2350,
-      "def": 9400,
+      "atk": 2100,
+      "def": 8400,
       "abilities": [
         {
           "id": "K_MURO"

@@ -155,10 +155,10 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
 | Mano | Attaccanti | Moltiplicatore |
 |---|---|---|
 | Carta alta | La creatura con il rango più alto (l'Asso conta come alto) | [1.000] |
-| Coppia | Le 2 creature accoppiate | [1.100] |
-| Doppia coppia | Le 4 creature accoppiate | [1.300] |
-| Quattro dello stesso seme | Le 4 creature corrispondenti | [1.350] |
-| Tris | Le 3 creature corrispondenti | [1.400] |
+| Coppia | Le 2 creature accoppiate | [1.150] |
+| Doppia coppia | Le 4 creature accoppiate | [1.340] |
+| Quattro dello stesso seme | Le 3 creature più forti del seme (a parità di rango, quella nella casella più bassa); la quarta non attacca | [1.280] |
+| Tris | Le 3 creature corrispondenti | [1.500] |
 | Scala | Tutte e 5 | [1.600] |
 | Colore | Tutte e 5 | [1.700] |
 | Full | Tutte e 5 | [1.800] |
@@ -185,11 +185,11 @@ Ridurre la vita del proprio avversario a 0 o meno, oppure lasciarlo senza creatu
 | Vincolo | 3 | Ogni creatura Vincolo guadagna +[600] ATK mentre è adiacente a un'altra creatura Vincolo. |
 | Vincolo | 4 | Ogni creatura Vincolo concede +[400] ATK a ogni attaccante adiacente, anche se è a sua volta un attaccante. |
 | Vincolo | 5 | Ogni creatura Vincolo guadagna +[1000] ATK. Le creature Vincolo sono sempre considerate adiacenti tra loro per gli effetti delle carte. |
-| Frattura | 3 | Un attaccante Frattura guadagna +[1200] ATK quando attacca un bersaglio la cui DEF attuale è superiore all'ATK attuale dell'attaccante (senza questo bonus). Entrambi i valori vengono presi all'inizio del ciclo in cui si risolve l'attacco. |
-| Frattura | 4 | Quando un attaccante Frattura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per [1.2] per quell'attacco e il suo spill tratta la DEF del bersaglio prima del colpo mortale come l'[80]% del suo valore. |
-| Frattura | 5 | Quando un attaccante Frattura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per [1.2] per quell'attacco e il suo spill tratta la DEF del bersaglio prima del colpo mortale come il [50]% del suo valore. L'ATK attuale delle creature Frattura non può essere ridotto dagli effetti. Sostituisce l'effetto del Tier 4. |
-| Spira | 3 | Per ogni Evoluzione innescata su una tua creatura, ogni tua creatura Spira guadagna +[200] ATK. |
-| Spira | 4 | Ogni valore numerico sugli effetti Evoluzione delle creature Spira viene moltiplicato per [1.2] prima di essere usato. |
+| Frattura | 3 | Un attaccante Frattura guadagna +[800] ATK quando attacca un bersaglio la cui DEF attuale è superiore all'ATK attuale dell'attaccante (senza questo bonus). Entrambi i valori vengono presi all'inizio del ciclo in cui si risolve l'attacco. |
+| Frattura | 4 | Quando un attaccante Frattura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per [1.10] per quell'attacco e il suo spill tratta la DEF del bersaglio prima del colpo mortale come l'[90]% del suo valore. |
+| Frattura | 5 | Quando un attaccante Frattura uccide un bersaglio, il moltiplicatore della mano usato per il suo spill viene moltiplicato per [1.2] per quell'attacco e il suo spill tratta la DEF del bersaglio prima del colpo mortale come il [70]% del suo valore. L'ATK attuale delle creature Frattura non può essere ridotto dagli effetti. Sostituisce l'effetto del Tier 4. |
+| Spira | 3 | Per ogni Evoluzione innescata su una tua creatura, ogni tua creatura Spira guadagna +[350] ATK. |
+| Spira | 4 | Ogni valore numerico sugli effetti Evoluzione delle creature Spira viene moltiplicato per [1.3] prima di essere usato. |
 | Spira | 5 | La keyword Evoluzione di ogni creatura Spira viene innescata anche se la sua condizione di innesco non è soddisfatta. |
 | Vestigio | 3 | Quando una delle tue creature Vestigio viene distrutta, la creatura (di qualsiasi seme) che la sostituisce in quella corsia durante la fase di rifornimento guadagna +[1000] ATK fino a quando non distrugge una creatura. |
 | Vestigio | 4 | All'inizio di ogni fase di rifornimento, ognuna delle tue creature Vestigio cura [1400] DEF, fino alla sua DEF base. Le creature distrutte non vengono curate. |
