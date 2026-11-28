@@ -24,6 +24,7 @@ export default function SealedPack({ code, faction, size, setName, featured = fa
         </>
       )}
       <span className="shop-busta__corpo" style={cover}>
+        <span className="shop-busta__vignetta" aria-hidden="true" />
         <span className="shop-busta__riflesso" aria-hidden="true" />
         <img className="shop-busta__logo" src="/images/ui/logo-quorma.png" alt="" />
         {featured && <em className="shop-busta__tag">In evidenza</em>}

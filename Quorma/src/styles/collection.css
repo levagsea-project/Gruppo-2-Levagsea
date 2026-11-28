@@ -184,6 +184,11 @@
 .shop-busta__corpo { position: relative; display: block; height: var(--busta-h); aspect-ratio: 5 / 7; overflow: hidden; background-color: var(--ground-950); background-repeat: no-repeat; background-size: cover;
   -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(2 * var(--dente)) 51% repeat-x, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(2 * var(--dente)) 51% repeat-x;
   mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / calc(2 * var(--dente)) 51% repeat-x, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(2 * var(--dente)) 51% repeat-x; }
+/* vignetta sopra l'illustrazione: scura in alto, dove sta il logo argentato, e leggera sui bordi */
+.shop-busta__vignetta { position: absolute; z-index: 1; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 95% 26% at 50% 7%, rgba(8,16,20,.82), rgba(8,16,20,.5) 55%, rgba(8,16,20,0)),
+    linear-gradient(180deg, rgba(8,16,20,.6), rgba(8,16,20,0) 32%),
+    radial-gradient(ellipse 80% 70% at 50% 50%, rgba(8,16,20,0) 55%, rgba(8,16,20,.55)); }
 /* le due fasce di chiusura, con le righe verticali della saldatura */
 .shop-busta__corpo::before, .shop-busta__corpo::after { content: ""; position: absolute; z-index: 2; left: 0; right: 0; height: var(--sigillo); background: repeating-linear-gradient(90deg, rgba(242,247,248,.3) 0 1px, rgba(8,16,20,.3) 1px 3px), linear-gradient(180deg, #5C707A, #26363D); }
 .shop-busta__corpo::before { top: 0; box-shadow: 0 1px 3px rgba(0,0,0,.7); }
