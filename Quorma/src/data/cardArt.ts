@@ -57,13 +57,15 @@ export const cardArt = (code: string): { src: string; srcSet: string } | null =>
   return { src: `${base}.webp`, srcSet: `${base}-320.webp 320w, ${base}.webp 768w` }
 }
 
-// COPERTINE DELLE BUSTE (public/images/carte/buste/): busta-<tipo>-<ia|umani>.webp, 640×640.
+// COPERTINE DELLE BUSTE (public/images/carte/buste/): busta-<tipo>-<ia|umani>.webp, 640×896 (5:7 come la busta).
+//   Stile da copertina TCG cupa, con uno STYLE proprio: i workflow sono in tools/comfy/runs/busta-*-dark.json.
 const PACK_COVERS = new Set(['standard', 'advanced', 'elite'])
+const PACK_COVERS_VERSION = 5 // da alzare quando si rigenerano le copertine, così il browser non tiene le vecchie in cache
 
 /** Sfondo della busta per tipo e fazione. Un tipo nuovo, senza copertina, usa l'illustrazione della fazione. */
 export const packCover = (code: string, faction: FactionId): CSSProperties =>
   PACK_COVERS.has(code)
-    ? { backgroundImage: `url(/images/carte/buste/busta-${code}-${faction === 'umani' ? 'umani' : 'ia'}.webp)`, backgroundPosition: 'center' }
+    ? { backgroundImage: `url(/images/carte/buste/busta-${code}-${faction === 'umani' ? 'umani' : 'ia'}.webp?v=${PACK_COVERS_VERSION})`, backgroundPosition: 'center' }
     : { backgroundImage: `url(${factions[faction].cover})`, backgroundPosition: factions[faction].coverFocus }
 
 export type Tier = 1 | 2 | 3 | 4
