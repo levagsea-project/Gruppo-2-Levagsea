@@ -58,7 +58,7 @@ export default function HomePage(props: Props) {
         <section className="home-santuario">
           <HeroText onPlay={() => onNavigate('gioca')} notice={notice} onNoticeAction={onNoticeAction} />
         </section>
-        <InfoCards decks={decks} decksState={decksState} onManageDecks={() => onNavigate('mazzi')} />
+        <InfoCards decks={decks} decksState={decksState} onManageDecks={() => onNavigate('mazzi')} onTrades={() => onNavigate('scambi')} />
       </div>
       <MobileHome
         lastDeck={lastDeck}

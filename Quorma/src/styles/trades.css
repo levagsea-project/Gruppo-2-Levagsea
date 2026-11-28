@@ -1,0 +1,129 @@
+/* Scambi (components/trades): design Pagina-Scambi e Pagina-Scambi-Proposta.
+   Elenco: amici | proposte | dettaglio. Proposta: le tue carte | carte dell'amico | riepilogo.
+   Su desktop alto la pagina non scorre e scorrono le colonne; sotto i 1280px la terza colonna va a capo,
+   su telefono tutto in colonna. */
+
+.page.scambi-page { gap: 18px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+.scambi-page .q-tela__in { display: flex; flex-direction: column; gap: 12px; padding: 18px 16px; }
+.scambi-page .q-elenco__titolo { margin: 0; }
+.scambi-page .q-btn[disabled], .scambi-page .q-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+.scambi-page .m-chip[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* anteprima con dati di prova (solo in sviluppo, finché il backend non ha gli scambi) */
+.scambi-prova { margin: 0; padding: 10px 14px; font-size: 13px; line-height: 19px; color: var(--silver-100); background: rgba(224,135,74,.08); box-shadow: inset 0 0 0 2px rgba(224,135,74,.4); }
+.scambi-prova b { color: var(--ember-200, #FFD7B0); }
+
+/* titoletto azzurro con la riga che sfuma */
+.scambi-freccia { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol-300); }
+.scambi-freccia::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(74,166,173,.55), rgba(74,166,173,0)); }
+.scambi-vuoto { margin: 4px 2px; font-size: 13px; line-height: 19px; color: var(--steel-300); }
+.scambi-nota { margin: 0; font-size: 12px; line-height: 17px; color: var(--steel-300); }
+
+/* iniziali nell'ogiva d'argento */
+.scambi-ini { flex: none; display: flex; }
+.scambi-ini .q-ogiva { width: 30px; height: 38px; background: linear-gradient(160deg, rgba(213,225,229,.6), rgba(124,144,152,.35) 50%, rgba(168,196,200,.55)); }
+.scambi-ini .q-ogiva__in { padding-bottom: 6px; font-family: var(--font-display); font-size: 11px; font-weight: 700; color: var(--silver-50); overflow: hidden; }
+
+/* ---------- Elenco: tre colonne ---------- */
+.scambi-corpo { display: grid; grid-template-columns: 300px minmax(0, 1fr) 360px; gap: 28px; align-items: start; }
+
+/* Amici */
+.scambi-cerca { display: flex; gap: 8px; }
+.scambi-cerca .scambi-campo { flex: 1; min-width: 0; }
+.scambi-cerca .m-chip { min-height: 44px; }
+.scambi-gruppo { display: flex; flex-direction: column; gap: 2px; }
+.scambi-elenco { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.scambi-amico { display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 6px 4px; box-sizing: border-box; border-bottom: 1px solid rgba(213,225,229,.07); }
+.scambi-amico:last-child { border-bottom: 0; }
+.scambi-amico__nome { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.3; }
+.scambi-amico__nome b { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: .06em; color: #EEF4F5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scambi-amico__nome small { font-size: 11.5px; color: var(--steel-300); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scambi-x { padding: 0 10px; }
+
+/* Proposte */
+.scambi-proposte { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.scambi-nuova { flex: none; min-height: 32px; padding: 0 2px; cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--petrol-300); }
+.scambi-nuova:hover { color: var(--silver-50); }
+.scambi-nuova:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: 2px; }
+.scambi-righe { display: flex; flex-direction: column; gap: 2px; }
+.scambi-riga { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 4px 10px; box-sizing: border-box; cursor: pointer; text-align: left; color: var(--silver-100); transition: background .15s ease; }
+.scambi-riga:hover { background: rgba(213,225,229,.07); }
+.scambi-riga[aria-current="true"] { background: rgba(74,166,173,.12); box-shadow: inset 3px 0 0 var(--petrol-500); }
+.scambi-riga:focus-visible { outline: 2px solid var(--petrol-300); outline-offset: -2px; }
+.scambi-riga__testo { display: flex; flex: 1; flex-direction: column; min-width: 0; line-height: 1.35; }
+.scambi-riga__testo b { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: .06em; color: #EEF4F5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scambi-riga__testo small, .scambi-riga__stato small { font-size: 12px; color: var(--steel-300); }
+.scambi-riga__stato { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
+.scambi-nuova-tag { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ember-200, #FFD7B0); text-shadow: 0 0 8px rgba(224,135,74,.8); }
+.scambi-esito { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--silver-100); }
+
+/* Dettaglio */
+.scambi-dettaglio .q-tela__in { gap: 14px; padding: 18px; }
+.scambi-con { display: flex; flex-direction: column; gap: 2px; }
+.scambi-con b { font-family: var(--font-display); font-size: 21px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #EEF4F5; overflow-wrap: anywhere; }
+.scambi-con small { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--petrol-300); }
+.scambi-carte { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.scambi-carta { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.scambi-carta small { font-size: 10.5px; letter-spacing: .06em; text-align: center; color: var(--steel-300); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scambi-azioni { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 4px; }
+.scambi-azioni .q-btn { display: flex; width: 100%; }
+.scambi-azioni__due { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.scambi-azioni__due .q-btn__in { min-width: 0; padding: 0 10px; }
+
+/* ---------- Proposta ---------- */
+.scambi-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.scambi-barra .q-elenco__titolo { margin: 0 4px 0 12px; }
+.scambi-composizione { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 300px; gap: 28px; align-items: start; }
+.scambi-lato { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.scambi-conta { flex: none; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--steel-300); font-variant-numeric: tabular-nums; }
+.scambi-nota--alta { display: flex; align-items: center; min-height: 32px; } /* alta come i filtri accanto: le griglie partono alla stessa altezza */
+.scambi-griglia-box { padding: 4px; }
+.scambi-griglia { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-content: start; margin: 0; padding: 0; list-style: none; }
+.scambi-cella[disabled] { opacity: .45; cursor: not-allowed; }
+.scambi-cella[disabled]:hover { transform: none; filter: none; }
+.scambi-tag { position: absolute; left: 50%; top: 46%; z-index: 3; transform: translate(-50%, -50%); padding: 2px 6px; box-shadow: 0 2px 8px rgba(0,0,0,.6); white-space: nowrap; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ground-950); background: var(--ember-200, #FFD7B0); }
+.scambi-tag--difesa { color: #EEF4F5; background: rgba(8,16,20,.9); box-shadow: 0 0 0 1px rgba(213,225,229,.35), 0 2px 8px rgba(0,0,0,.6); }
+.scambi-spunta { position: absolute; right: 6px; top: 6px; z-index: 3; display: none; align-items: center; justify-content: center; width: 22px; height: 22px; background: var(--petrol-500); box-shadow: 0 0 8px rgba(74,166,173,.8); }
+.scambi-spunta svg { width: 12px; height: 12px; fill: none; stroke: var(--ground-950); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.scambi-cella--on .scambi-spunta { display: flex; }
+.scambi-riepilogo .q-tela__in { padding: 18px; }
+.scambi-nomi { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--silver-100); }
+.scambi-nomi__vuoto { color: var(--steel-300); }
+
+/* ---------- Desktop alto: la pagina non scorre, scorrono le colonne ---------- */
+@media (min-width: 1280px) and (min-height: 820px) {
+  .page.scambi-page { overflow: hidden; }
+  .scambi-corpo, .scambi-composizione { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
+  .scambi-amici, .scambi-dettaglio, .scambi-riepilogo { min-height: 0; }
+  .scambi-amici > .q-tela__in, .scambi-dettaglio > .q-tela__in { height: 100%; box-sizing: border-box; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+  .scambi-riepilogo > .q-tela__in { height: 100%; box-sizing: border-box; }
+  .scambi-proposte, .scambi-lato { min-height: 0; }
+  .scambi-righe, .scambi-griglia-box { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(213,225,229,.3) transparent; }
+}
+@media (min-width: 1600px) {
+  .scambi-corpo { grid-template-columns: 320px minmax(0, 1fr) 420px; }
+  .scambi-composizione { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 340px; }
+  .scambi-griglia { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+/* ---------- Tablet: la terza colonna va a capo ---------- */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .scambi-corpo { grid-template-columns: 260px minmax(0, 1fr); }
+  .scambi-dettaglio { grid-column: 1 / -1; }
+  .scambi-composizione { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .scambi-riepilogo { grid-column: 1 / -1; }
+  .scambi-griglia { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ---------- Telefono: tutto in colonna, scorre la pagina ---------- */
+@media (max-width: 767px) {
+  .page.scambi-page { overflow: visible; gap: 16px; }
+  .scambi-corpo, .scambi-composizione { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .scambi-griglia { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .scambi-barra .q-elenco__titolo { margin-left: 0; }
+  .scambi-riga { min-height: 60px; padding: 4px 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scambi-riga { transition: none; }
+}

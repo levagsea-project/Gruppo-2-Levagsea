@@ -51,7 +51,7 @@ export default function MorePage({ onNavigate, onOpenSettings, challengeAlert, p
       </div>
 
       <Group title="Gioco">
-        <MobileRow title="Scambi" detail="Scambia i doppioni con altri giocatori" icon={<Arch><NavIcon name="scambi" /></Arch>} />
+        <MobileRow title="Scambi" detail="Scambia i doppioni con altri giocatori" icon={<Arch><NavIcon name="scambi" /></Arch>} onClick={() => onNavigate('scambi')} />
         <MobileRow title="Sfide" detail={challengeAlert ?? 'Sfida gli altri giocatori'} icon={<Arch alert={!!challengeAlert}><NavIcon name="sfide" /></Arch>} onClick={() => onNavigate('sfide')} />
         <MobileRow title="Negozio" detail="Buste" icon={<Arch><NavIcon name="negozio" /></Arch>} onClick={() => onNavigate('negozio')} />
         <MobileRow title="Buste" detail={packAlert ?? 'Apri le buste comprate'} icon={<Arch alert={!!packAlert}><NavIcon name="buste" /></Arch>} onClick={() => onNavigate('buste')} />

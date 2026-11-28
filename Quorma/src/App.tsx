@@ -34,6 +34,7 @@ import CollectionPage from './components/collection/CollectionPage'
 import PacksPage from './components/collection/PacksPage'
 import PackOpeningPage from './components/collection/PackOpeningPage'
 import ShopPage from './components/shop/ShopPage'
+import TradesPage from './components/trades/TradesPage'
 import LeaveDialog from './components/editor/LeaveDialog'
 import { useChallengeAlert } from './hooks/useChallengeAlert'
 import { useLeaveGuard } from './hooks/useLeaveGuard'
@@ -270,6 +271,7 @@ export default function App() {
         />
       )}
       {page === 'negozio' && <ShopPage onOpenPacks={openPacks} />}
+      {page === 'scambi' && <TradesPage />}
 
       {page === 'regole' && <RulesPage />}
 
